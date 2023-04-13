@@ -1,0 +1,4080 @@
+{
+    "name": "JoJo",
+    "type": "character",
+    "img": "icons/svg/mystery-man.svg",
+    "data": {
+        "abilities": {
+            "str": {
+                "value": 17,
+                "proficient": 1,
+                "bonuses": {
+                    "check": "",
+                    "save": ""
+                }
+            },
+            "dex": {
+                "value": 13,
+                "proficient": 0,
+                "bonuses": {
+                    "check": "",
+                    "save": ""
+                }
+            },
+            "con": {
+                "value": 19,
+                "proficient": 1,
+                "bonuses": {
+                    "check": "",
+                    "save": ""
+                }
+            },
+            "int": {
+                "value": 8,
+                "proficient": 0,
+                "bonuses": {
+                    "check": "",
+                    "save": ""
+                }
+            },
+            "wis": {
+                "value": 12,
+                "proficient": 0,
+                "bonuses": {
+                    "check": "",
+                    "save": ""
+                }
+            },
+            "cha": {
+                "value": 8,
+                "proficient": 0,
+                "bonuses": {
+                    "check": "",
+                    "save": ""
+                }
+            }
+        },
+        "attributes": {
+            "ac": {
+                "flat": null,
+                "calc": "default",
+                "formula": ""
+            },
+            "hp": {
+                "value": 170,
+                "min": 0,
+                "max": 170,
+                "temp": 0,
+                "tempmax": 0
+            },
+            "init": {
+                "value": 0,
+                "bonus": 0
+            },
+            "movement": {
+                "burrow": null,
+                "climb": null,
+                "fly": null,
+                "swim": null,
+                "walk": 30,
+                "units": "ft",
+                "hover": false
+            },
+            "attunement": {
+                "max": 3
+            },
+            "senses": {
+                "darkvision": 60,
+                "blindsight": 0,
+                "tremorsense": 0,
+                "truesight": 0,
+                "units": "ft",
+                "special": ""
+            },
+            "spellcasting": "int",
+            "death": {
+                "success": 0,
+                "failure": 0
+            },
+            "exhaustion": 0,
+            "inspiration": 0,
+            "prof": 5
+        },
+        "details": {
+            "biography": {
+                "value": "",
+                "public": ""
+            },
+            "alignment": "",
+            "race": "Custom Lineage; Darkvision",
+            "background": "Soldier",
+            "originalClass": "2UtvyFtGl7xlSgRD",
+            "xp": {
+                "value": 165000,
+                "min": 0,
+                "max": 195000,
+                "pct": 0
+            },
+            "appearance": "",
+            "trait": "I have a crude sense of humor.\n\nI've lost too many friends, and I'm slow to make new ones.",
+            "ideal": "Greater Good. Our lot is to lay down our lives in defense of others. (Good)",
+            "bond": "",
+            "flaw": "I have little respect for anyone who is not a proven warrior."
+        },
+        "traits": {
+            "size": "med",
+            "di": {
+                "value": [],
+                "custom": ""
+            },
+            "dr": {
+                "value": [],
+                "custom": ""
+            },
+            "dv": {
+                "value": [],
+                "custom": ""
+            },
+            "ci": {
+                "value": [],
+                "custom": ""
+            },
+            "languages": {
+                "value": [
+                    "common",
+                    "giant",
+                    "goblin",
+                    "orc"
+                ],
+                "custom": ""
+            },
+            "weaponProf": {
+                "value": [
+                    "sim",
+                    "mar"
+                ],
+                "custom": ""
+            },
+            "armorProf": {
+                "value": [
+                    "lgt",
+                    "med",
+                    "shl"
+                ],
+                "custom": ""
+            },
+            "toolProf": {
+                "value": [],
+                "custom": ""
+            }
+        },
+        "currency": {
+            "pp": 0,
+            "gp": 10,
+            "ep": 0,
+            "sp": 0,
+            "cp": 0
+        },
+        "skills": {
+            "acr": {
+                "value": 0,
+                "ability": "dex",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "ani": {
+                "value": 0,
+                "ability": "wis",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "arc": {
+                "value": 0,
+                "ability": "int",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "ath": {
+                "value": 1,
+                "ability": "str",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "dec": {
+                "value": 0,
+                "ability": "cha",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "his": {
+                "value": 0,
+                "ability": "int",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "ins": {
+                "value": 0,
+                "ability": "wis",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "itm": {
+                "value": 1,
+                "ability": "cha",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "inv": {
+                "value": 0,
+                "ability": "int",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "med": {
+                "value": 0,
+                "ability": "wis",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "nat": {
+                "value": 0,
+                "ability": "int",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "prc": {
+                "value": 0,
+                "ability": "wis",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "prf": {
+                "value": 0,
+                "ability": "cha",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "per": {
+                "value": 0,
+                "ability": "cha",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "rel": {
+                "value": 0,
+                "ability": "int",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "slt": {
+                "value": 1,
+                "ability": "dex",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "ste": {
+                "value": 1,
+                "ability": "dex",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            },
+            "sur": {
+                "value": 1,
+                "ability": "wis",
+                "bonuses": {
+                    "check": "",
+                    "passive": ""
+                }
+            }
+        },
+        "spells": {
+            "spell1": {
+                "value": 0,
+                "override": null
+            },
+            "spell2": {
+                "value": 0,
+                "override": null
+            },
+            "spell3": {
+                "value": 0,
+                "override": null
+            },
+            "spell4": {
+                "value": 0,
+                "override": null
+            },
+            "spell5": {
+                "value": 0,
+                "override": null
+            },
+            "spell6": {
+                "value": 0,
+                "override": null
+            },
+            "spell7": {
+                "value": 0,
+                "override": null
+            },
+            "spell8": {
+                "value": 0,
+                "override": null
+            },
+            "spell9": {
+                "value": 0,
+                "override": null
+            },
+            "pact": {
+                "value": 0,
+                "override": null
+            }
+        },
+        "bonuses": {
+            "mwak": {
+                "attack": "",
+                "damage": ""
+            },
+            "rwak": {
+                "attack": "",
+                "damage": ""
+            },
+            "msak": {
+                "attack": "",
+                "damage": ""
+            },
+            "rsak": {
+                "attack": "",
+                "damage": ""
+            },
+            "abilities": {
+                "check": "",
+                "save": "",
+                "skill": ""
+            },
+            "spell": {
+                "dc": ""
+            }
+        },
+        "resources": {
+            "primary": {
+                "value": 0,
+                "max": 0,
+                "sr": 0,
+                "lr": 0
+            },
+            "secondary": {
+                "value": 0,
+                "max": 0,
+                "sr": 0,
+                "lr": 0
+            },
+            "tertiary": {
+                "value": 0,
+                "max": 0,
+                "sr": 0,
+                "lr": 0
+            }
+        }
+    },
+    "token": {
+        "name": "JoJoAltenate",
+        "img": "icons/svg/mystery-man.svg",
+        "displayName": 0,
+        "actorLink": true,
+        "width": 1,
+        "height": 1,
+        "scale": 1,
+        "mirrorX": false,
+        "mirrorY": false,
+        "lockRotation": false,
+        "rotation": 0,
+        "alpha": 1,
+        "vision": true,
+        "dimSight": 60,
+        "brightSight": 0,
+        "sightAngle": 0,
+        "light": {
+            "alpha": 0.5,
+            "angle": 0,
+            "bright": 0,
+            "color": null,
+            "coloration": 1,
+            "dim": 0,
+            "gradual": true,
+            "luminosity": 0.5,
+            "saturation": 0,
+            "contrast": 0,
+            "shadows": 0,
+            "animation": {
+                "speed": 5,
+                "intensity": 5,
+                "reverse": false
+            },
+            "darkness": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "disposition": 1,
+        "displayBars": 0,
+        "bar1": {
+            "attribute": "attributes.hp"
+        },
+        "bar2": {
+            "attribute": null
+        },
+        "flags": {
+            "patrol": {
+                "enablePatrol": false,
+                "enableSpotting": false,
+                "makePatroller": false,
+                "multiPath": false,
+                "patrolPathName": "",
+                "pathNodeIndex": ""
+            }
+        },
+        "randomImg": false
+    },
+    "items": [
+        {
+            "_id": "m0fk86ilRI35rzei",
+            "name": "Creature Type",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/family-tree.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>You are a humanoid. You determine your appearance and whether you resemble any of your kin.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 0,
+                    "max": "0",
+                    "per": null
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {}
+        },
+        {
+            "_id": "b5rFyTdMLoscdHgp",
+            "name": "Feat",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/family-tree.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>You gain one <a href=\"https://5etools-mirror-1.github.io/feats.html#\">feat</a> of your choice for which you qualify.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 0,
+                    "max": "0",
+                    "per": null
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {}
+        },
+        {
+            "_id": "KftTr9Dqn6wFx8uB",
+            "name": "Variable Trait; Darkvision",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/family-tree.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>You gain <span class=\"help help--hover\" data-plut-hover=\"true\" data-plut-hover-preload=\"true\" data-plut-hover-preload-id=\"108\">darkvision</span> with a range of 60 feet.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 0,
+                    "max": "0",
+                    "per": null
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {}
+        },
+        {
+            "_id": "s6UwafEMryTe3BK8",
+            "name": "Languages",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/family-tree.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>You can speak, read, and write Common and one other language that you and your DM agree is appropriate for your character.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 0,
+                    "max": "0",
+                    "per": null
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {}
+        },
+        {
+            "_id": "2UtvyFtGl7xlSgRD",
+            "name": "Barbarian",
+            "type": "class",
+            "img": "icons/skills/melee/hand-grip-sword-orange.webp",
+            "data": {
+                "description": {
+                    "value": "<table class=\"cls-tbl shadow-big w-100 mb-3\">\n\t\t\t<tbody>\n\t\t\t<tr><th class=\"border\" colspan=\"15\"></th></tr>\n\t\t\t\n\t\t\t<tr>\n\t\t\t\t<th colspan=\"3\"></th>\n\t\t\t\t<th colspan=\"2\"></th>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<th class=\"cls-tbl__col-level\">Level</th>\n\t\t\t\t<th class=\"cls-tbl__col-prof-bonus\">Proficiency Bonus</th>\n\t\t\t\t<th>Features</th>\n\t\t\t\t<th class=\"cls-tbl__col-generic-center\"><div class=\"cls__squash_header\">Rages</div></th><th class=\"cls-tbl__col-generic-center\"><div class=\"cls__squash_header\">Rage Damage</div></th>\n\t\t\t</tr>\n\t\t\t<tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">1st</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+2</td>\n\t\t\t\t<td><div class=\"inline-block\">Rage<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Unarmored Defense</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">2</td><td class=\"cls-tbl__col-generic-center\">+2</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">2nd</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+2</td>\n\t\t\t\t<td><div class=\"inline-block\">Danger Sense<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Survival Instincts<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Reckless Attack</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">2</td><td class=\"cls-tbl__col-generic-center\">+2</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">3rd</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+2</td>\n\t\t\t\t<td><div class=\"inline-block\">Primal Path<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Primal Knowledge</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">3</td><td class=\"cls-tbl__col-generic-center\">+2</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">4th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+2</td>\n\t\t\t\t<td><div class=\"inline-block\">Ability Score Improvement<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Proficiency Versatility</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">3</td><td class=\"cls-tbl__col-generic-center\">+2</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">5th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+3</td>\n\t\t\t\t<td><div class=\"inline-block\">Extra Attack<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Fast Movement<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Instinctive Pounce</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">3</td><td class=\"cls-tbl__col-generic-center\">+2</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">6th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+3</td>\n\t\t\t\t<td><div class=\"inline-block\">Path Feature</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">4</td><td class=\"cls-tbl__col-generic-center\">+2</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">7th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+3</td>\n\t\t\t\t<td><div class=\"inline-block\">Feral Instinct<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Instinctive Pounce</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">4</td><td class=\"cls-tbl__col-generic-center\">+2</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">8th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+3</td>\n\t\t\t\t<td><div class=\"inline-block\">Ability Score Improvement<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Proficiency Versatility</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">4</td><td class=\"cls-tbl__col-generic-center\">+2</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">9th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+4</td>\n\t\t\t\t<td><div class=\"inline-block\">Brutal Critical (1 die)</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">4</td><td class=\"cls-tbl__col-generic-center\">+3</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">10th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+4</td>\n\t\t\t\t<td><div class=\"inline-block\">Path feature</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">4</td><td class=\"cls-tbl__col-generic-center\">+3</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">11th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+4</td>\n\t\t\t\t<td><div class=\"inline-block\">Relentless Rage</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">4</td><td class=\"cls-tbl__col-generic-center\">+3</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">12th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+4</td>\n\t\t\t\t<td><div class=\"inline-block\">Ability Score Improvement<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Proficiency Versatility</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">5</td><td class=\"cls-tbl__col-generic-center\">+3</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">13th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+5</td>\n\t\t\t\t<td><div class=\"inline-block\">Brutal Critical (2 dice)</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">5</td><td class=\"cls-tbl__col-generic-center\">+3</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">14th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+5</td>\n\t\t\t\t<td><div class=\"inline-block\">Path feature</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">5</td><td class=\"cls-tbl__col-generic-center\">+3</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">15th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+5</td>\n\t\t\t\t<td><div class=\"inline-block\">Persistent Rage</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">5</td><td class=\"cls-tbl__col-generic-center\">+3</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">16th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+5</td>\n\t\t\t\t<td><div class=\"inline-block\">Ability Score Improvement<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Proficiency Versatility</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">5</td><td class=\"cls-tbl__col-generic-center\">+4</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">17th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+6</td>\n\t\t\t\t<td><div class=\"inline-block\">Brutal Critical (3 dice)</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">6</td><td class=\"cls-tbl__col-generic-center\">+4</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">18th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+6</td>\n\t\t\t\t<td><div class=\"inline-block\">Indomitable Might</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">6</td><td class=\"cls-tbl__col-generic-center\">+4</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">19th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+6</td>\n\t\t\t\t<td><div class=\"inline-block\">Ability Score Improvement<span class=\"mr-1\">,</span></div><div class=\"inline-block\">Proficiency Versatility</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">6</td><td class=\"cls-tbl__col-generic-center\">+4</td>\n\t\t\t</tr><tr class=\"cls-tbl__stripe-odd\">\n\t\t\t\t<td class=\"cls-tbl__col-level\">20th</td>\n\t\t\t\t<td class=\"cls-tbl__col-prof-bonus\">+6</td>\n\t\t\t\t<td><div class=\"inline-block\">Primal Champion</div></td>\n\t\t\t\t<td class=\"cls-tbl__col-generic-center\">Unlimited</td><td class=\"cls-tbl__col-generic-center\">+4</td>\n\t\t\t</tr>\n\t\t\t<tr><th class=\"border\" colspan=\"15\"></th></tr>\n\t\t\t</tbody>\n\t\t</table><div class=\"rd__b  rd__b--0\"><p>A tall human tribesman strides through a blizzard, draped in fur and hefting his axe. He laughs as he charges toward the frost giant who dared poach his people's elk herd.</p><p>A half-orc snarls at the latest challenger to her authority over their savage tribe, ready to break his neck with her bare hands as she did to the last six rivals.</p><p>Frothing at the mouth, a dwarf slams his helmet into the face of his drow foe, then turns to drive his armored elbow into the gut of another.</p><p>These barbarians, different as they might be, are defined by their rage: unbridled, unquenchable, and unthinking fury. More than a mere emotion, their anger is the ferocity of a cornered predator, the unrelenting assault of a storm, the churning turmoil of the sea.</p><p>For some, their rage springs from a communion with fierce animal spirits. Others draw from a roiling reservoir of anger at a world full of pain. For every barbarian, rage is a power that fuels not just a battle frenzy but also uncanny reflexes, resilience, and feats of strength.</p><div class=\"rd__b  rd__b--1\"><span class=\"rd__h rd__h--1\" data-title-index=\"84\"> <span class=\"entry-title-inner\">Primal Instinct</span><span class=\"ve-flex-vh-center\"><span class=\"rd__h-toggle ml-2 clickable\" data-rd-h-toggle-button=\"true\">[–]</span></span></span> <p>People of towns and cities take pride in how their civilized ways set them apart from animals, as if denying one's own nature was a mark of superiority. To a barbarian, though, civilization is no virtue, but a sign of weakness. The strong embrace their animal nature—keen instincts, primal physicality, and ferocious rage. Barbarians are uncomfortable when hedged in by walls and crowds. They thrive in the wilds of their homelands: the tundra, jungle, or grasslands where their tribes live and hunt.</p><p>Barbarians come alive in the chaos of combat. They can enter a berserk state where rage takes over, giving them superhuman strength and resilience. A barbarian can draw on this reservoir of fury only a few times without resting, but those few rages are usually sufficient to defeat whatever threats arise.</p></div><div class=\"rd__b  rd__b--1\"><span class=\"rd__h rd__h--1\" data-title-index=\"85\"> <span class=\"entry-title-inner\">A Life of Danger</span><span class=\"ve-flex-vh-center\"><span class=\"rd__h-toggle ml-2 clickable\" data-rd-h-toggle-button=\"true\">[–]</span></span></span> <p>Not every member of the tribes deemed \"barbarians\" by scions of civilized society has the barbarian class. A true barbarian among these people is as uncommon as a skilled fighter in a town, and he or she plays a similar role as a protector of the people and a leader in times of war. Life in the wild places of the world is fraught with peril: rival tribes, deadly weather, and terrifying monsters. Barbarians charge headlong into that danger so that their people don't have to.</p><p>Their courage in the face of danger makes barbarians perfectly suited for adventuring. Wandering is often a way of life for their native tribes, and the rootless life of the adventurer is little hardship for a barbarian. Some barbarians miss the close-knit family structures of the tribe, but eventually find them replaced by the bonds formed among the members of their adventuring parties.</p></div><div class=\"rd__b  rd__b--1\"><span class=\"rd__h rd__h--1\" data-title-index=\"86\"> <span class=\"entry-title-inner\">Creating a Barbarian</span><span class=\"ve-flex-vh-center\"><span class=\"rd__h-toggle ml-2 clickable\" data-rd-h-toggle-button=\"true\">[–]</span></span></span> <p>When creating a barbarian character, think about where your character comes from and his or her place in the world. Talk with your DM about an appropriate origin for your barbarian. Did you come from a distant land, making you a stranger in the area of the campaign? Or is the campaign set in a rough-and-tumble frontier where barbarians are common?</p><p>What led you to take up the adventuring life? Were you lured to settled lands by the promise of riches? Did you join forces with soldiers of those lands to face a shared threat? Did monsters or an invading horde drive you out of your homeland, making you a rootless refugee? Perhaps you were a prisoner of war, brought in chains to \"civilized\" lands and only now able to win your freedom. Or you might have been cast out from your people because of a crime you committed, a taboo you violated, or a coup that removed you from a position of authority.</p><div class=\"rd__b  rd__b--2\"><span class=\"rd__h rd__h--2\" data-title-index=\"87\"> <span class=\"entry-title-inner\">Quick Build</span><span class=\"ve-flex-vh-center\"><span class=\"rd__h-toggle ml-2 clickable\" data-rd-h-toggle-button=\"true\">[–]</span></span></span> <p>You can make a barbarian quickly by following these suggestions. First, put your highest ability score in Strength, followed by Constitution. Second, choose the <a href=\"https://5etools-mirror-1.github.io/backgrounds.html#outlander_phb\" data-vet-page=\"backgrounds.html\" data-vet-source=\"PHB\" data-vet-hash=\"outlander_phb\">outlander</a> background.</p></div></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "identifier": "barbarian",
+                "levels": 15,
+                "hitDice": "d12",
+                "hitDiceUsed": 0,
+                "advancement": [],
+                "saves": [
+                    "str",
+                    "con"
+                ],
+                "skills": {
+                    "number": 2,
+                    "choices": [
+                        "ath",
+                        "itm"
+                    ],
+                    "value": [
+                        "ath",
+                        "itm"
+                    ]
+                },
+                "spellcasting": {
+                    "progression": "none",
+                    "ability": ""
+                },
+                "subclass": "Path of the Beast"
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classes.html",
+                    "source": "PHB",
+                    "hash": "barbarian_phb",
+                    "sourceSubclass": "TCE",
+                    "hashSubclass": "barbarian_phb,state:sub-beast-tce=b1",
+                    "filterValues": {
+                        "Source": {
+                            "TCE": 1,
+                            "ERLW": 1,
+                            "UAClassFeatureVariants": 0,
+                            "UA2020SubclassesPt3": 0,
+                            "UAArtificer": 0,
+                            "UAArtificerRevisited": 0,
+                            "PHB": 1,
+                            "XGE": 1,
+                            "UABarbarianPrimalPaths": 0,
+                            "UARevisedSubclasses": 0,
+                            "SCAG": 1,
+                            "UA2020SubclassesPt1": 0,
+                            "UABarbarianAndMonk": 0,
+                            "UA2020SubclassesPt2": 0,
+                            "UABardAndPaladin": 0,
+                            "UABardBardColleges": 0,
+                            "UAKitsOfOld": 0,
+                            "VRGR": 1,
+                            "UA2020SubclassesPt4": 0,
+                            "UATheRangerRevised": 0,
+                            "UA2021MagesOfStrixhaven": 0,
+                            "PSA": 0,
+                            "UAModernMagic": 0,
+                            "DMG": 1,
+                            "UAClericDivineDomains": 0,
+                            "GGR": 1,
+                            "UAOrderDomain": 0,
+                            "UAClericDruidWizard": 0,
+                            "UADruid": 0,
+                            "UAThreeSubclasses": 0,
+                            "UARevisedClassOptions": 0,
+                            "UASidekicks": 0,
+                            "UALightDarkUnderdark": 0,
+                            "UAWaterborneAdventures": 0,
+                            "UAFighter": 0,
+                            "EGW": 1,
+                            "UAGothicHeroes": 0,
+                            "UA2020PsionicOptionsRevisited": 0,
+                            "UAFighterRogueWizard": 0,
+                            "UAFighterRangerRogue": 0,
+                            "Generic": 1,
+                            "FTD": 1,
+                            "UA2020SubclassesPt5": 0,
+                            "UAATrioOfSubclasses": 0,
+                            "UAMonk": 0,
+                            "UATheMysticClass": 0,
+                            "UAPaladin": 0,
+                            "MOT": 1,
+                            "UAPrestigeClassesRunMagic": 0,
+                            "UARangerAndRogue": 0,
+                            "UARanger": 0,
+                            "UAModifyingClasses": 0,
+                            "UA2020SubclassesRevisited": 0,
+                            "UASorcererAndWarlock": 0,
+                            "UASorcerer": 0,
+                            "UAGiantSoulSorcerer": 0,
+                            "PSK": 0,
+                            "UATheFaithful": 0,
+                            "UAWarlockAndWizard": 0,
+                            "UAEberron": 0,
+                            "UAWizardRevisited": 0,
+                            "_isActive": true,
+                            "_totals": {
+                                "yes": 12,
+                                "no": 0,
+                                "ignored": 49
+                            },
+                            "_combineBlue": "or",
+                            "_combineRed": "or"
+                        },
+                        "Miscellaneous": {
+                            "Reprinted": 2,
+                            "Sidekick": 2,
+                            "SRD": 0,
+                            "Basic Rules": 0,
+                            "_isActive": true,
+                            "_totals": {
+                                "yes": 0,
+                                "no": 2,
+                                "ignored": 2
+                            },
+                            "_combineBlue": "or",
+                            "_combineRed": "or"
+                        },
+                        "Other/Text Options": {
+                            "isDisplayClassIfSubclassActive": false,
+                            "isClassFeatureVariant": true,
+                            "_isActive": false
+                        }
+                    },
+                    "isPrimaryClass": true
+                }
+            }
+        },
+        {
+            "_id": "5EmtLtnrMRvxF4Mg",
+            "name": "Rage",
+            "type": "feat",
+            "img": "icons/creatures/abilities/mouth-teeth-human.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action.</p><div class=\"rd__spc-inline-post\"></div><p>While raging, you gain the following benefits if you aren't wearing heavy armor:</p><ul class=\"rd__list\"><li class=\"rd__li \">You have advantage on Strength checks and Strength saving throws.</li><li class=\"rd__li \">When you make a melee weapon attack using Strength, you gain a +2 bonus to the damage roll. This bonus increases as you level.</li><li class=\"rd__li \">You have resistance to bludgeoning, piercing, and slashing damage.</li></ul><p>If you are able to cast spells, you can't cast them or concentrate on them while raging.</p><p>Your rage lasts for 1 minute. It ends early if you are knocked @condition[unconscious] or if your turn ends and you haven't attacked a hostile creature since your last turn or taken damage since then. You can also end your rage on your turn as a bonus action.</p><p>Once you have raged the maximum number of times for your barbarian level, you must finish a long rest before you can rage again. You may rage 2 times at 1st level, 3 at 3rd, 4 at 6th, 5 at 12th, and 6 at 17th.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "bonus",
+                    "cost": 1,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": 1,
+                    "units": "minute"
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": "self"
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": "self"
+                },
+                "uses": {
+                    "value": 2,
+                    "max": "@scale.barbarian.rages",
+                    "per": "lr"
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 1",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [
+                {
+                    "_id": "eWhL8hUr0c2ujDUm",
+                    "flags": {},
+                    "changes": [
+                        {
+                            "key": "data.bonuses.mwak.damage",
+                            "mode": 2,
+                            "value": "+@scale.barbarian.rage-damage"
+                        },
+                        {
+                            "key": "data.traits.dr.value",
+                            "mode": 2,
+                            "value": "slashing"
+                        },
+                        {
+                            "key": "data.traits.dr.value",
+                            "mode": 2,
+                            "value": "piercing"
+                        },
+                        {
+                            "key": "data.traits.dr.value",
+                            "mode": 2,
+                            "value": "bludgeoning"
+                        }
+                    ],
+                    "disabled": true,
+                    "duration": {
+                        "startTime": null,
+                        "rounds": 10
+                    },
+                    "icon": "icons/creatures/abilities/mouth-teeth-human.webp",
+                    "label": "Rage",
+                    "origin": "Item.bdfYHJstcltQC7SZ",
+                    "tint": null,
+                    "transfer": true
+                }
+            ],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "rage_barbarian_phb_1_phb"
+                }
+            }
+        },
+        {
+            "_id": "yEcW2ucKbKn3KkUz",
+            "name": "Unarmored Defense",
+            "type": "feat",
+            "img": "icons/magic/control/silhouette-hold-change-blue.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>While you are not wearing any armor, your Armor Class equals 10 + your Dexterity modifier + your Constitution modifier. You can use a shield and still gain this benefit.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 1",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [
+                {
+                    "_id": "hEgUnQNVxtBo2zkK",
+                    "changes": [
+                        {
+                            "key": "data.attributes.ac.calc",
+                            "mode": 5,
+                            "value": "unarmoredBarb"
+                        }
+                    ],
+                    "disabled": false,
+                    "duration": {
+                        "startTime": null
+                    },
+                    "icon": "icons/magic/control/silhouette-hold-change-blue.webp",
+                    "label": "Unarmored Defense",
+                    "origin": "Item.aIMXb43ACIxMItbh",
+                    "transfer": true,
+                    "flags": {},
+                    "tint": null
+                }
+            ],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "unarmored%20defense_barbarian_phb_1_phb"
+                }
+            }
+        },
+        {
+            "_id": "EZWpAgCrGFOUE3uN",
+            "name": "Danger Sense",
+            "type": "feat",
+            "img": "icons/skills/wounds/injury-face-impact-orange.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>At 2nd level, you gain an uncanny sense of when things nearby aren't as they should be, giving you an edge when you dodge away from danger. You have advantage on Dexterity saving throws against effects that you can see, such as traps and spells. To gain this benefit, you can't be @condition[blinded], @condition[deafened], or @condition[incapacitated].</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": "",
+                    "units": ""
+                },
+                "target": {
+                    "value": "",
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": "",
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 2",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "danger%20sense_barbarian_phb_2_phb"
+                }
+            }
+        },
+        {
+            "_id": "2aWlMAJhZRknyRFz",
+            "name": "Reckless Attack",
+            "type": "feat",
+            "img": "icons/skills/melee/blade-tips-triple-bent-white.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>Starting at 2nd level, you can throw aside all concern for defense to attack with fierce desperation. When you make your first attack on your turn, you can decide to attack recklessly. Doing so gives you advantage on melee weapon attack rolls using Strength during this turn, but attack rolls against you have advantage until your next turn.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "none",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": 1,
+                    "units": "round"
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": null,
+                    "type": "self"
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": "self"
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 2",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "reckless%20attack_barbarian_phb_2_phb"
+                }
+            }
+        },
+        {
+            "_id": "L20kIPJIVoq44GPd",
+            "name": "Path of the Beast",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/mighty-force.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--1\"><p>Barbarians who walk the Path of the Beast draw their rage from a bestial spark burning within their souls. That beast bursts forth in the throes of rage, physically transforming the barbarian.</p><p>Such a barbarian might be inhabited by a primal spirit or be descended from shape-shifters. You can choose the origin of your feral might or determine it by rolling on the Origin of the Beast table.</p><table class=\"rd__table  stripe-odd-table\"><caption>Origin of the Beast</caption><thead><tr><th class=\"col-2 text-center\" data-rd-isroller=\"true\">[[/r d4]]</th><th class=\"col-10\" data-rd-isroller=\"false\">Origin</th></tr></thead><tbody><tr><td class=\"col-2 text-center\" data-roll-min=\"1\" data-roll-max=\"1\">1</td><td class=\"col-10\">One of your parents is a lycanthrope, and you've inherited some of their curse.</td></tr><tr><td class=\"col-2 text-center\" data-roll-min=\"2\" data-roll-max=\"2\">2</td><td class=\"col-10\">You are descended from an archdruid and inherited the ability to partially change shape.</td></tr><tr><td class=\"col-2 text-center\" data-roll-min=\"3\" data-roll-max=\"3\">3</td><td class=\"col-10\">A fey spirit gifted you with the ability to adopt different bestial aspects.</td></tr><tr><td class=\"col-2 text-center\" data-roll-min=\"4\" data-roll-max=\"4\">4</td><td class=\"col-10\">An ancient animal spirit dwells within you, allowing you to walk this path.</td></tr></tbody></table></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 0,
+                    "max": "0",
+                    "per": null
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "Barbarian 3 (Beast)",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "TCE",
+                    "hash": "path%20of%20the%20beast_barbarian_phb_beast_tce_3_tce"
+                }
+            }
+        },
+        {
+            "_id": "t2a2ZvMz6xpDTsuS",
+            "name": "Form of the Beast",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/mighty-force.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--1\"><p><i>3rd-level Path of the Beast feature</i></p><p>When you enter your rage, you can transform, revealing the bestial power within you. Until the rage ends, you manifest a natural weapon. It counts as a simple melee weapon for you, and you add your Strength modifier to the attack and damage rolls when you attack with it, as normal.</p><p>You choose the weapon's form each time you rage:</p><ul class=\"rd__list rd__list-hang-notitle\"><li class=\"rd__li \"><p class=\"rd__p-list-item\"><span class=\"bold rd__list-item-name\">Bite.</span> Your mouth transforms into a bestial muzzle or great mandibles (your choice). It deals [[/r 1d8]] piercing damage on a hit. Once on each of your turns when you damage a creature with this bite, you regain a number of hit points equal to your proficiency bonus, provided you have less than half your hit points when you hit.</p></li><li class=\"rd__li \"><p class=\"rd__p-list-item\"><span class=\"bold rd__list-item-name\">Claws.</span> Each of your hands transforms into a claw, which you can use as a weapon if it's empty. It deals [[/r 1d6]] slashing damage on a hit. Once on each of your turns when you attack with a claw using the @action[Attack] action, you can make one additional claw attack as part of the same action.</p></li><li class=\"rd__li \"><p class=\"rd__p-list-item\"><span class=\"bold rd__list-item-name\">Tail.</span> You grow a lashing, spiny tail, which deals [[/r 1d8]] piercing damage on a hit and has the reach property. If a creature you can see within 10 feet of you hits you with an attack roll, you can use your reaction to swipe your tail and roll a [[/r d8]], applying a bonus to your AC equal to the number rolled, potentially causing the attack to miss you.</p></li></ul></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "reaction",
+                    "cost": 1,
+                    "condition": "If a creature you can see within 10 feet of you hits you with an attack roll"
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 0,
+                    "max": "0",
+                    "per": null
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [
+                        [
+                            "1d8",
+                            "piercing"
+                        ],
+                        [
+                            "1d6",
+                            "slashing"
+                        ],
+                        [
+                            "1d8",
+                            "piercing"
+                        ]
+                    ],
+                    "versatile": ""
+                },
+                "formula": "d8",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "Barbarian 3 (Beast)",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "adnd5e": {
+                    "itemInfo": {
+                        "type": "reaction"
+                    }
+                },
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "TCE",
+                    "hash": "form%20of%20the%20beast_barbarian_phb_beast_tce_3_tce"
+                }
+            }
+        },
+        {
+            "_id": "E4aXV4agxIHAWGcm",
+            "name": "Primal Knowledge",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/mighty-force.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--1\"><p><i>3rd-level barbarian @variantrule[optional class features|tce|optional feature]</i></p><p>When you reach 3rd level and again at 10th level, you gain proficiency in one skill of your choice from the list of skills available to barbarians at 1st level.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 0,
+                    "max": "0",
+                    "per": null
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "Barbarian 3",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "TCE",
+                    "hash": "primal%20knowledge_barbarian_phb_3_tce"
+                }
+            }
+        },
+        {
+            "_id": "47LyX8K0XzTJzpQG",
+            "name": "Extra Attack",
+            "type": "feat",
+            "img": "icons/skills/melee/spear-tips-triple-orange.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>Beginning at 5th level, you can attack twice, instead of once, whenever you take the @action[Attack] action on your turn.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": "",
+                    "units": ""
+                },
+                "target": {
+                    "value": "",
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": "",
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 5, Monk 5, Paladin 5, Ranger 5",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "extra%20attack_barbarian_phb_5_phb"
+                }
+            }
+        },
+        {
+            "_id": "jnsx0fKgfoOOhC2d",
+            "name": "Fast Movement",
+            "type": "feat",
+            "img": "icons/skills/movement/feet-winged-boots-brown.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>Starting at 5th level, your speed increases by 10 feet while you aren't wearing heavy armor.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": "",
+                    "units": ""
+                },
+                "target": {
+                    "value": "",
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": "",
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 5",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [
+                {
+                    "_id": "TIBmPKKnAAiWYuN4",
+                    "changes": [
+                        {
+                            "key": "data.attributes.movement.walk",
+                            "mode": 2,
+                            "value": "10"
+                        }
+                    ],
+                    "disabled": false,
+                    "duration": {
+                        "startTime": null
+                    },
+                    "icon": "icons/skills/movement/feet-winged-boots-brown.webp",
+                    "label": "Fast Movement",
+                    "origin": "Item.Kl6zifJ5OmdHlOi2",
+                    "transfer": true,
+                    "flags": {},
+                    "tint": null
+                }
+            ],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "fast%20movement_barbarian_phb_5_phb"
+                }
+            }
+        },
+        {
+            "_id": "GO85kgfHHkmsnK6Q",
+            "name": "Bestial Soul",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/mighty-force.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--1\"><p><i>6th-level Path of the Beast feature</i></p><p>The feral power within you increases, causing the natural weapons of your Form of the Beast to count as magical for the purpose of overcoming resistance and immunity to nonmagical attacks and damage.</p><p>You can also alter your form to help you adapt to your surroundings. When you finish a short or long rest, choose one of the following benefits, which lasts until you finish your next short or long rest:</p><ul class=\"rd__list\"><li class=\"rd__li \">You gain a swimming speed equal to your walking speed, and you can breathe underwater.</li><li class=\"rd__li \">You gain a climbing speed equal to your walking speed, and you can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check.</li><li class=\"rd__li \">When you jump, you can make a Strength (<span class=\"help help--hover\" data-plut-hover=\"true\" data-plut-hover-preload=\"true\" data-plut-hover-preload-id=\"109\">Athletics</span>) check and extend your jump by a number of feet equal to the check's total. You can make this special check only once per turn.</li></ul></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 1,
+                    "max": "1",
+                    "per": "sr"
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "Barbarian 6 (Beast)",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "TCE",
+                    "hash": "bestial%20soul_barbarian_phb_beast_tce_6_tce"
+                }
+            }
+        },
+        {
+            "_id": "K6hBVyyZXGkKsgdM",
+            "name": "Feral Instinct",
+            "type": "feat",
+            "img": "icons/creatures/mammals/wolf-howl-moon-forest-blue.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>By 7th level, your instincts are so honed that you have advantage on initiative rolls.</p><div class=\"rd__spc-inline-post\"></div><p>Additionally, if you are surprised at the beginning of combat and aren't @condition[incapacitated], you can act normally on your first turn, but only if you enter your rage before doing anything else on that turn.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": "",
+                    "units": ""
+                },
+                "target": {
+                    "value": "",
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": "",
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 7",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [
+                {
+                    "_id": "q7TkJQX7PeVOzTQH",
+                    "changes": [
+                        {
+                            "key": "flags.dnd5e.initiativeAdv",
+                            "mode": 5,
+                            "value": "true"
+                        }
+                    ],
+                    "disabled": false,
+                    "duration": {
+                        "startTime": null
+                    },
+                    "icon": "icons/creatures/mammals/wolf-howl-moon-forest-blue.webp",
+                    "label": "Feral Instinct",
+                    "origin": "Item.o1i0LwvZQPm0Bxpa",
+                    "transfer": true,
+                    "flags": {},
+                    "tint": null
+                }
+            ],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "feral%20instinct_barbarian_phb_7_phb"
+                }
+            }
+        },
+        {
+            "_id": "8t2zZO98IzcJcB2H",
+            "name": "Instinctive Pounce",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/mighty-force.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--1\"><p><i>7th-level barbarian @variantrule[optional class features|tce|optional feature]</i></p><p>As part of the bonus action you take to enter your rage, you can move up to half your speed.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "bonus",
+                    "cost": 1,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 0,
+                    "max": "0",
+                    "per": null
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "Barbarian 7",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "TCE",
+                    "hash": "instinctive%20pounce_barbarian_phb_7_tce"
+                }
+            }
+        },
+        {
+            "_id": "mh2uKYe0SFgbfaqY",
+            "name": "Brutal Critical (1 die)",
+            "type": "feat",
+            "img": "icons/skills/melee/strike-axe-blood-red.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>Beginning at 9th level, you can roll one additional weapon damage die when determining the extra damage for a critical hit with a melee attack.</p><div class=\"rd__spc-inline-post\"></div><p>This increases to two additional dice at 13th level and three additional dice at 17th level.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": "",
+                    "units": ""
+                },
+                "target": {
+                    "value": "",
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": "",
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 9",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "brutal%20critical%20(1%20die)_barbarian_phb_9_phb"
+                }
+            }
+        },
+        {
+            "_id": "jUYeo6Rc32v9pHi9",
+            "name": "Infectious Fury",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/mighty-force.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--1\"><p><i>10th-level Path of the Beast feature</i></p><p>When you hit a creature with your natural weapons while you are raging, the beast within you can curse your target with rabid fury. The target must succeed on a Wisdom saving throw (DC equal to 8 + your Constitution modifier + your proficiency bonus) or suffer one of the following effects (your choice):</p><ul class=\"rd__list\"><li class=\"rd__li \">The target must use its reaction to make a melee attack against another creature of your choice that you can see.</li><li class=\"rd__li \">The target takes [[/r 2d12]] psychic damage.</li></ul><p>You can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 5,
+                    "max": "@prof",
+                    "per": "lr"
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [
+                        [
+                            "2d12",
+                            "psychic"
+                        ]
+                    ],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "Barbarian 10 (Beast)",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "TCE",
+                    "hash": "infectious%20fury_barbarian_phb_beast_tce_10_tce"
+                }
+            }
+        },
+        {
+            "_id": "6pR06404jdThAKRz",
+            "name": "Relentless Rage",
+            "type": "feat",
+            "img": "icons/skills/social/intimidation-impressing.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>Starting at 11th level, your rage can keep you fighting despite grievous wounds. If you drop to 0 hit points while you're raging and don't die outright, you can make a DC 10 Constitution saving throw. If you succeed, you drop to 1 hit point instead.</p><div class=\"rd__spc-inline-post\"></div><p>Each time you use this feature after the first, the DC increases by 5. When you finish a short or long rest, the DC resets to 10.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": "",
+                    "units": ""
+                },
+                "target": {
+                    "value": "",
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": "",
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "con",
+                    "dc": 10,
+                    "scaling": "flat",
+                    "value": ""
+                },
+                "requirements": "Barbarian 11",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "relentless%20rage_barbarian_phb_11_phb"
+                }
+            }
+        },
+        {
+            "_id": "w8CEZEZMNFSUDvwN",
+            "name": "Brutal Critical (2 dice)",
+            "type": "feat",
+            "img": "icons/skills/melee/strike-axe-blood-red.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>At 13th level, you can roll two additional weapon damage dice when determining the extra damage for a critical hit with a melee attack.</p><div class=\"rd__spc-inline-post\"></div><p>This increases to three additional dice at 17th level.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": "",
+                    "units": ""
+                },
+                "target": {
+                    "value": "",
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": "",
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 9",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "brutal%20critical%20(2%20dice)_barbarian_phb_13_phb"
+                }
+            }
+        },
+        {
+            "_id": "pKlHFoaRalSTs550",
+            "name": "Call the Hunt",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/mighty-force.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--1\"><p><i>14th-level Path of the Beast feature</i></p><p>The beast within you grows so powerful that you can spread its ferocity to others and gain resilience from them joining your hunt. When you enter your rage, you can choose a number of other willing creatures you can see within 30 feet of you equal to your Constitution modifier (minimum of one creature).</p><p>You gain 5 temporary hit points for each creature that accepts this feature. Until the rage ends, the chosen creatures can each use the following benefit once on each of their turns: when the creature hits a target with an attack roll and deals damage to it, the creature can roll a [[/r d6]] and gain a bonus to the damage equal to the number rolled.</p><p>You can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "TCE",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": 30,
+                    "width": null,
+                    "units": "ft",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 5,
+                    "max": "@prof",
+                    "per": "lr"
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "d6",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "Barbarian 14 (Beast)",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "TCE",
+                    "hash": "call%20the%20hunt_barbarian_phb_beast_tce_14_tce"
+                },
+                "target": {
+                    "value": 30,
+                    "units": "ft"
+                }
+            }
+        },
+        {
+            "_id": "IlAKIYwhfmJTufTT",
+            "name": "Persistent Rage",
+            "type": "feat",
+            "img": "icons/skills/social/intimidation-impressing.webp",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>Beginning at 15th level, your rage is so fierce that it ends early only if you fall @condition[unconscious] or if you choose to end it.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": "",
+                    "units": ""
+                },
+                "target": {
+                    "value": "",
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": "",
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": null
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Barbarian 15",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "classfeatures.html",
+                    "source": "PHB",
+                    "hash": "persistent%20rage_barbarian_phb_15_phb"
+                }
+            }
+        },
+        {
+            "_id": "MPUmE8kJGueqMkDY",
+            "name": "Feature: Military Rank",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/farmer.svg",
+            "data": {
+                "description": {
+                    "value": "<div class=\"rd__b  rd__b--3\"><p>You have a military rank from your career as a soldier. Soldiers loyal to your former military organization still recognize your authority and influence, and they defer to you if they are of a lower rank. You can invoke your rank to exert influence over other soldiers and requisition simple equipment or horses for temporary use. You can also usually gain access to friendly military encampments and fortresses where your rank is recognized.</p><div class=\"rd__spc-inline-post\"></div></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": null,
+                    "long": null,
+                    "units": ""
+                },
+                "uses": {
+                    "value": 0,
+                    "max": "0",
+                    "per": null
+                },
+                "consume": {
+                    "type": null,
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "other",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "flat"
+                },
+                "requirements": "",
+                "recharge": {
+                    "value": null,
+                    "charged": false
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {}
+        },
+        {
+            "_id": "sLYkmHG88Q920dEI",
+            "name": "Grappler",
+            "type": "feat",
+            "img": "modules/plutonium/media/icon/feat/phb-grappler.webp",
+            "data": {
+                "description": {
+                    "value": "<div>\n\t\t\t\t<p><i>Prerequisite: Prerequisite: Strength 13 or higher</i></p>\n\t\t\t\t<div class=\"rd__b  rd__b--3\"><p>You've developed the skills necessary to hold your own in close-quarters grappling. You gain the following benefits:</p><div class=\"rd__spc-inline-post\"></div><ul class=\"rd__list\"><li class=\"rd__li \">You have advantage on attack rolls against a creature you are grappling.</li><li class=\"rd__li \">You can use your action to try to pin a creature @condition[grappled] by you. To do so, make another grapple check. If you succeed, you and the creature are both @condition[restrained] until the grapple ends.</li></ul></div>\n\t\t\t</div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "activation": {
+                    "type": "",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": 0,
+                    "units": ""
+                },
+                "target": {
+                    "value": 0,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": 0,
+                    "long": 0,
+                    "units": null
+                },
+                "uses": {
+                    "value": 0,
+                    "max": 0,
+                    "per": ""
+                },
+                "consume": {
+                    "type": "",
+                    "target": null,
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "",
+                "attackBonus": null,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "requirements": "Strength 13 or higher",
+                "recharge": {
+                    "value": 0,
+                    "charged": true
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "feats.html",
+                    "source": "PHB",
+                    "hash": "grappler_phb"
+                }
+            }
+        },
+        {
+            "_id": "jVT6HUdGuLdU5CDM",
+            "name": "Common Clothes",
+            "type": "equipment",
+            "img": "icons/equipment/chest/shirt-collared-brown.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 3,
+                "price": 0.5,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "activation": {
+                    "type": "none",
+                    "cost": 0,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": ""
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": null,
+                "actionType": "",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "armor": {
+                    "value": null,
+                    "type": "clothing",
+                    "dex": null
+                },
+                "hp": {
+                    "value": 0,
+                    "max": 0,
+                    "dt": null,
+                    "conditions": ""
+                },
+                "baseItem": "",
+                "speed": {
+                    "value": null,
+                    "conditions": ""
+                },
+                "strength": 0,
+                "stealth": false,
+                "proficient": true,
+                "attuned": false
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "common%20clothes_phb"
+                }
+            }
+        },
+        {
+            "_id": "9AWWlWCbutbwR2dz",
+            "name": "Bone Dice Set",
+            "type": "tool",
+            "img": "icons/sundries/gaming/dice-runed-brown.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 0,
+                "price": 0.1,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "toolType": "game",
+                "baseItem": "",
+                "ability": "dex",
+                "chatFlavor": "",
+                "proficient": true,
+                "bonus": "",
+                "damage": {
+                    "parts": []
+                },
+                "attuned": false,
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "dice%20set_phb"
+                }
+            }
+        },
+        {
+            "_id": "U42RZNCIuiT4P1zF",
+            "name": "Backpack",
+            "type": "backpack",
+            "img": "icons/containers/bags/pack-simple-leather.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"><p>A <i>backpack</i> can hold one cubic foot or 30 pounds of gear. You can also strap items, such as a bedroll or a coil of rope, to the outside of a <i>backpack</i>.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 5,
+                "price": 2,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "capacity": {
+                    "type": "weight",
+                    "value": 30,
+                    "weightless": false
+                },
+                "currency": {
+                    "cp": 0,
+                    "sp": 0,
+                    "ep": 0,
+                    "gp": 0,
+                    "pp": 0
+                },
+                "damage": {
+                    "parts": []
+                },
+                "proficient": true,
+                "attuned": false,
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "backpack_phb"
+                }
+            }
+        },
+        {
+            "_id": "NYZUYgvxBTlqKiVo",
+            "name": "Bedroll",
+            "type": "loot",
+            "img": "icons/sundries/survival/bedroll-grey.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 7,
+                "price": 1,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "damage": {
+                    "parts": []
+                },
+                "proficient": true,
+                "attuned": false,
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "bedroll_phb"
+                }
+            }
+        },
+        {
+            "_id": "U0tFsEG6qxKIEX4N",
+            "name": "Mess Kit",
+            "type": "loot",
+            "img": "icons/tools/cooking/fork-steel-tan.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"><p>This tin box contains a cup and simple cutlery. The box clamps together, and one side can be used as a cooking pan and the other as a plate or shallow bowl.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 1,
+                "price": 0.2,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "damage": {
+                    "parts": []
+                },
+                "proficient": true,
+                "attuned": false,
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "mess%20kit_phb"
+                }
+            }
+        },
+        {
+            "_id": "upkIuwLIHW7A79oq",
+            "name": "Tinderbox",
+            "type": "loot",
+            "img": "icons/sundries/lights/torch-black.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"><p>This small container holds flint, fire steel, and tinder (usually dry cloth soaked in light oil) used to kindle a fire. Using it to light a torch—or anything else with abundant, exposed fuel—takes an action. Lighting any other fire takes 1 minute.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 1,
+                "price": 0.5,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "damage": {
+                    "parts": []
+                },
+                "proficient": true,
+                "attuned": false,
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "tinderbox_phb"
+                }
+            }
+        },
+        {
+            "_id": "SkD9ruAhH5wYtU3m",
+            "name": "Torch",
+            "type": "consumable",
+            "img": "icons/sundries/lights/torch-black.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"><p>A <i>torch</i> burns for 1 hour, providing bright light in a 20-foot radius and dim light for an additional 20 feet. If you make a melee attack with a burning <i>torch</i> and hit, it deals 1 fire damage.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 10,
+                "weight": 1,
+                "price": 0.01,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "activation": {
+                    "type": "action",
+                    "cost": 1,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": 1,
+                    "units": "hour"
+                },
+                "target": {
+                    "value": 40,
+                    "width": null,
+                    "units": "ft",
+                    "type": "radius"
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                },
+                "uses": {
+                    "value": 1,
+                    "max": 1,
+                    "per": "charges",
+                    "autoDestroy": false,
+                    "autoUse": true
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "str",
+                "actionType": "mwak",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [
+                        [
+                            "1",
+                            "fire"
+                        ]
+                    ],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "consumableType": "trinket",
+                "proficient": true,
+                "attuned": false
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "torch_phb"
+                }
+            }
+        },
+        {
+            "_id": "R3fgH0RZ7Y7vYVVZ",
+            "name": "Rations (1 day)",
+            "type": "consumable",
+            "img": "icons/consumables/meat/hock-leg-pink-brown.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"><p><i>Rations</i> consist of dry foods suitable for extended travel, including jerky, dried fruit, hardtack, and nuts.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 10,
+                "weight": 2,
+                "price": 0.5,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "activation": {
+                    "type": "action",
+                    "cost": 1,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": 0,
+                    "units": ""
+                },
+                "target": {
+                    "value": 1,
+                    "width": null,
+                    "units": "",
+                    "type": "creature"
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                },
+                "uses": {
+                    "value": 1,
+                    "max": 1,
+                    "per": "charges",
+                    "autoDestroy": true,
+                    "autoUse": true
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "util",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "consumableType": "food",
+                "proficient": true,
+                "attuned": false
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "rations%20(1%20day)_phb"
+                }
+            }
+        },
+        {
+            "_id": "6R3toxeIamoLu76j",
+            "name": "Waterskin",
+            "type": "consumable",
+            "img": "icons/sundries/survival/wetskin-leather-purple.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"><p>A <i>waterskin</i> can hold up to 4 pints of liquid.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 5,
+                "price": 0.2,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "activation": {
+                    "type": "action",
+                    "cost": 1,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": 0,
+                    "units": ""
+                },
+                "target": {
+                    "value": 0,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                },
+                "uses": {
+                    "value": 4,
+                    "max": 4,
+                    "per": "charges",
+                    "autoDestroy": false,
+                    "autoUse": true
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "util",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "consumableType": "food",
+                "proficient": true,
+                "attuned": false
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "waterskin_phb"
+                }
+            }
+        },
+        {
+            "_id": "WkYSpPkRZYVY1X3u",
+            "name": "Hempen Rope (50 feet)",
+            "type": "consumable",
+            "img": "icons/sundries/survival/rope-wrapped-brown.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"><p>Rope, whether made of hemp or silk, has 2 hit points and can be burst with a DC 17 Strength check.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 10,
+                "price": 1,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "activation": {
+                    "type": "action",
+                    "cost": 1,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                },
+                "uses": {
+                    "value": 1,
+                    "max": 1,
+                    "per": "charges",
+                    "autoDestroy": false,
+                    "autoUse": true
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": "",
+                "actionType": "abil",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "str",
+                    "dc": 17,
+                    "scaling": "flat"
+                },
+                "consumableType": "trinket",
+                "proficient": true,
+                "attuned": false
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "hempen%20rope%20(50%20feet)_phb"
+                }
+            }
+        },
+        {
+            "_id": "JGk8vM8VkyaeNIlZ",
+            "name": "Greataxe",
+            "type": "weapon",
+            "img": "icons/weapons/axes/axe-double.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 7,
+                "price": 30,
+                "attunement": 0,
+                "equipped": true,
+                "rarity": "",
+                "identified": false,
+                "activation": {
+                    "type": "action",
+                    "cost": 1,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": ""
+                },
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "ability": null,
+                "actionType": "mwak",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [
+                        [
+                            "1d12 + @mod",
+                            "slashing"
+                        ]
+                    ],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "armor": {
+                    "value": 10
+                },
+                "hp": {
+                    "value": 0,
+                    "max": 0,
+                    "dt": null,
+                    "conditions": ""
+                },
+                "weaponType": "martialM",
+                "baseItem": "greataxe",
+                "properties": {
+                    "hvy": true,
+                    "two": true,
+                    "amm": false,
+                    "fin": false,
+                    "fir": false,
+                    "foc": false,
+                    "lgt": false,
+                    "lod": false,
+                    "rch": false,
+                    "rel": false,
+                    "ret": false,
+                    "spc": false,
+                    "thr": false,
+                    "ver": false
+                },
+                "proficient": true,
+                "attributes": {
+                    "spelldc": 10
+                },
+                "attuned": false
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "greataxe_phb"
+                }
+            }
+        },
+        {
+            "_id": "YTZ2haIpngPeQS5k",
+            "name": "Handaxe",
+            "type": "weapon",
+            "img": "icons/weapons/axes/axe-broad-black.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 2,
+                "weight": 2,
+                "price": 5,
+                "attunement": 0,
+                "equipped": true,
+                "rarity": "",
+                "identified": false,
+                "activation": {
+                    "type": "action",
+                    "cost": 1,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": null,
+                    "units": ""
+                },
+                "target": {
+                    "value": null,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": 20,
+                    "long": 60,
+                    "units": "ft"
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": ""
+                },
+                "consume": {
+                    "type": "ammo",
+                    "target": "YTZ2haIpngPeQS5k",
+                    "amount": 1
+                },
+                "ability": null,
+                "actionType": "mwak",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [
+                        [
+                            "1d6 + @mod",
+                            "slashing"
+                        ]
+                    ],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "armor": {
+                    "value": 10
+                },
+                "hp": {
+                    "value": 0,
+                    "max": 0,
+                    "dt": null,
+                    "conditions": ""
+                },
+                "weaponType": "simpleM",
+                "baseItem": "handaxe",
+                "properties": {
+                    "lgt": true,
+                    "thr": true,
+                    "amm": false,
+                    "hvy": false,
+                    "fin": false,
+                    "fir": false,
+                    "foc": false,
+                    "lod": false,
+                    "rch": false,
+                    "rel": false,
+                    "ret": false,
+                    "spc": false,
+                    "two": false,
+                    "ver": false
+                },
+                "proficient": true,
+                "attributes": {
+                    "spelldc": 10
+                },
+                "attuned": false
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "handaxe_phb"
+                }
+            }
+        },
+        {
+            "_id": "YF03z73x5aePIptm",
+            "name": "Javelin",
+            "type": "weapon",
+            "img": "icons/weapons/ammunition/arrows-bodkin-yellow-red.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 4,
+                "weight": 2,
+                "price": 0.5,
+                "attunement": 0,
+                "equipped": true,
+                "rarity": "",
+                "identified": false,
+                "activation": {
+                    "type": "action",
+                    "cost": 1,
+                    "condition": ""
+                },
+                "duration": {
+                    "value": 0,
+                    "units": ""
+                },
+                "target": {
+                    "value": 0,
+                    "width": null,
+                    "units": "",
+                    "type": ""
+                },
+                "range": {
+                    "value": 30,
+                    "long": 120,
+                    "units": "ft"
+                },
+                "uses": {
+                    "value": null,
+                    "max": "",
+                    "per": ""
+                },
+                "consume": {
+                    "type": "ammo",
+                    "target": "YF03z73x5aePIptm",
+                    "amount": 1
+                },
+                "ability": null,
+                "actionType": "mwak",
+                "attackBonus": 0,
+                "chatFlavor": "",
+                "critical": {
+                    "threshold": null,
+                    "damage": ""
+                },
+                "damage": {
+                    "parts": [
+                        [
+                            "1d6 + @mod",
+                            "piercing"
+                        ]
+                    ],
+                    "versatile": ""
+                },
+                "formula": "",
+                "save": {
+                    "ability": "",
+                    "dc": null,
+                    "scaling": "spell"
+                },
+                "armor": {
+                    "value": 10
+                },
+                "hp": {
+                    "value": 0,
+                    "max": 0,
+                    "dt": null,
+                    "conditions": ""
+                },
+                "weaponType": "simpleM",
+                "baseItem": "javelin",
+                "properties": {
+                    "thr": true,
+                    "amm": false,
+                    "hvy": false,
+                    "fin": false,
+                    "fir": false,
+                    "foc": false,
+                    "lgt": false,
+                    "rch": false,
+                    "rel": false,
+                    "ret": false,
+                    "spc": false,
+                    "two": false,
+                    "ver": false,
+                    "lod": false
+                },
+                "proficient": true,
+                "attributes": {
+                    "spelldc": 10
+                },
+                "attuned": false
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "javelin_phb"
+                }
+            }
+        },
+        {
+            "_id": "VbmsjYTr3Kcm0mcF",
+            "name": "Pouch",
+            "type": "backpack",
+            "img": "icons/containers/bags/coinpouch-simple-tan.webp",
+            "data": {
+                "description": {
+                    "value": "\n\t\t<div class=\"rd__b  rd__b--2\"><p>A cloth or leather <i>pouch</i> can hold up to 20 @item[sling bullet|phb|sling bullets] or 50 @item[blowgun needle|phb|blowgun needles], among other things. A compartmentalized <i>pouch</i> for holding spell components is called a @item[component pouch|phb]. A <i>pouch</i> can hold up to ⅕ cubic foot or 6 pounds of gear.</p></div>",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 1,
+                "price": 0.5,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "capacity": {
+                    "type": "weight",
+                    "value": 6,
+                    "weightless": false
+                },
+                "currency": {
+                    "cp": 0,
+                    "sp": 0,
+                    "ep": 0,
+                    "gp": 0,
+                    "pp": 0
+                },
+                "damage": {
+                    "parts": []
+                },
+                "proficient": true,
+                "attuned": false,
+                "consume": {
+                    "type": "",
+                    "target": "",
+                    "amount": null
+                },
+                "range": {
+                    "value": 5,
+                    "long": 0,
+                    "units": "ft"
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "pouch_phb"
+                }
+            }
+        },
+        {
+            "_id": "Pw3UgF87Gdhvbr9e",
+            "name": "Insignia of Rank",
+            "type": "loot",
+            "img": "modules/plutonium/media/icon/battle-gear.svg",
+            "data": {
+                "description": {
+                    "value": "\n\t\t",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 0,
+                "price": null,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "attuned": false,
+                "damage": {
+                    "parts": []
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "insignia%20of%20rank_phb"
+                }
+            }
+        },
+        {
+            "_id": "fiNuFrtPjPSjz1Ke",
+            "name": "Trophy Taken from a Fallen Enemy (A Dagger, Broken Blade, or Piece of a Banner)",
+            "type": "loot",
+            "img": "modules/plutonium/media/icon/battle-gear.svg",
+            "data": {
+                "description": {
+                    "value": "\n\t\t",
+                    "chat": "",
+                    "unidentified": ""
+                },
+                "source": "PHB",
+                "quantity": 1,
+                "weight": 0,
+                "price": null,
+                "attunement": 0,
+                "equipped": false,
+                "rarity": "",
+                "identified": false,
+                "attuned": false,
+                "damage": {
+                    "parts": []
+                }
+            },
+            "effects": [],
+            "folder": null,
+            "sort": 0,
+            "permission": {
+                "default": 0,
+                "Njc2Y2E5ZjQzZTk0": 3
+            },
+            "flags": {
+                "srd5e": {
+                    "page": "items.html",
+                    "source": "PHB",
+                    "hash": "trophy%20taken%20from%20a%20fallen%20enemy%20(a%20dagger%2c%20broken%20blade%2c%20or%20piece%20of%20a%20banner)_phb"
+                }
+            }
+        }
+    ],
+    "effects": [
+        {
+            "_id": "AegS3A9UqbqtvK7g",
+            "changes": [
+                {
+                    "key": "data.bonuses.mwak.damage",
+                    "mode": 2,
+                    "value": "+@scale.barbarian.rage-damage"
+                },
+                {
+                    "key": "data.traits.dr.value",
+                    "mode": 2,
+                    "value": "slashing"
+                },
+                {
+                    "key": "data.traits.dr.value",
+                    "mode": 2,
+                    "value": "piercing"
+                },
+                {
+                    "key": "data.traits.dr.value",
+                    "mode": 2,
+                    "value": "bludgeoning"
+                }
+            ],
+            "disabled": true,
+            "duration": {
+                "startTime": 36644121768,
+                "rounds": 10
+            },
+            "icon": "icons/creatures/abilities/mouth-teeth-human.webp",
+            "label": "Rage",
+            "origin": "Actor.jWZWj1OJNQ6JffxD.Item.5EmtLtnrMRvxF4Mg",
+            "tint": null,
+            "transfer": false,
+            "flags": {}
+        },
+        {
+            "_id": "hinLwrIObFotKha0",
+            "changes": [
+                {
+                    "key": "data.attributes.ac.calc",
+                    "mode": 5,
+                    "value": "unarmoredBarb"
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": 36644121768
+            },
+            "icon": "icons/magic/control/silhouette-hold-change-blue.webp",
+            "label": "Unarmored Defense",
+            "origin": "Actor.jWZWj1OJNQ6JffxD.Item.yEcW2ucKbKn3KkUz",
+            "tint": null,
+            "transfer": false,
+            "flags": {}
+        },
+        {
+            "_id": "eY9dOKfIXxPqgJhW",
+            "changes": [
+                {
+                    "key": "data.attributes.ac.calc",
+                    "mode": 5,
+                    "value": "unarmoredBarb",
+                    "priority": 4
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": 36644121768
+            },
+            "icon": "icons/magic/control/silhouette-hold-change-blue.webp",
+            "label": "Unarmored Defense",
+            "origin": "Actor.jWZWj1OJNQ6JffxD.Item.yEcW2ucKbKn3KkUz",
+            "tint": null,
+            "transfer": false,
+            "flags": {}
+        },
+        {
+            "_id": "XBr5jP4cxIKRzo95",
+            "changes": [
+                {
+                    "key": "data.attributes.movement.walk",
+                    "mode": 2,
+                    "value": "10"
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": 36644121768
+            },
+            "icon": "icons/skills/movement/feet-winged-boots-brown.webp",
+            "label": "Fast Movement",
+            "origin": "Actor.jWZWj1OJNQ6JffxD.Item.jnsx0fKgfoOOhC2d",
+            "tint": null,
+            "transfer": false,
+            "flags": {}
+        },
+        {
+            "_id": "DX6HT3qIKaavVQZd",
+            "changes": [
+                {
+                    "key": "data.attributes.movement.walk",
+                    "mode": 2,
+                    "value": "10",
+                    "priority": 7
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": 36644121768
+            },
+            "icon": "icons/skills/movement/feet-winged-boots-brown.webp",
+            "label": "Fast Movement",
+            "origin": "Actor.jWZWj1OJNQ6JffxD.Item.jnsx0fKgfoOOhC2d",
+            "tint": null,
+            "transfer": false,
+            "flags": {}
+        },
+        {
+            "_id": "poKUxBpuJDsXTF62",
+            "changes": [
+                {
+                    "key": "flags.dnd5e.initiativeAdv",
+                    "mode": 5,
+                    "value": "true"
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": 36644121768
+            },
+            "icon": "icons/creatures/mammals/wolf-howl-moon-forest-blue.webp",
+            "label": "Feral Instinct",
+            "origin": "Actor.jWZWj1OJNQ6JffxD.Item.K6hBVyyZXGkKsgdM",
+            "tint": null,
+            "transfer": false,
+            "flags": {}
+        },
+        {
+            "_id": "WUj1GTq6Ob1lP8Yw",
+            "changes": [
+                {
+                    "key": "flags.dnd5e.meleeCriticalDamageDice",
+                    "mode": 4,
+                    "value": "1",
+                    "priority": 4
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": 36644121768
+            },
+            "icon": "icons/skills/melee/strike-axe-blood-red.webp",
+            "label": "Brutal Critical (1 die)",
+            "origin": "Actor.jWZWj1OJNQ6JffxD.Item.mh2uKYe0SFgbfaqY",
+            "tint": null,
+            "transfer": false,
+            "flags": {}
+        },
+        {
+            "_id": "X0vckWGo1b5tSr1z",
+            "changes": [
+                {
+                    "key": "flags.dnd5e.meleeCriticalDamageDice",
+                    "mode": 4,
+                    "value": "2",
+                    "priority": 4
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": 36644121768
+            },
+            "icon": "icons/skills/melee/strike-axe-blood-red.webp",
+            "label": "Brutal Critical (2 dice)",
+            "origin": "Actor.jWZWj1OJNQ6JffxD.Item.w8CEZEZMNFSUDvwN",
+            "tint": null,
+            "transfer": false,
+            "flags": {}
+        }
+    ],
+    "flags": {
+        "exportSource": {
+            "world": "strong-pyrates",
+            "system": "dnd5e",
+            "coreVersion": "9.269",
+            "systemVersion": "1.6.3"
+        }
+    }
+}
