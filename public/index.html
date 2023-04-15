@@ -19,10 +19,21 @@
       }
     }
   </script>
+  <script type="text/javascript" src="./js/socket.io/client-dist/socket.io.js"></script>
+
+  <script>
+    var socket = io();
+  </script>
 </head>
 
 <body>
 
+  <select class="login" id="login">
+    <option value="">Select One …</option>
+    <option value="GM">GM</option>
+    <option value="player1">playar1</option>
+    <option value="player2">player2</option>
+  </select>
   <script type="module" src="./js/main.js"></script>
   <button type="button" id="characters">Characters </button>
   <button type="button" id="scenes">Scenes </button>

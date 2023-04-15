@@ -1,27 +1,54 @@
 
-//const http = require("http");
-const fs = require('fs').promises;
+//const fs = require('fs').promises;
 const path = require('path');
-//const Mime = require('mime/lite');
-var express = require('express');
-var app = express();
-app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folde
-var server = app.listen(800);
+const express = require('express');
+const http = require('http');
+const sockets = require("socket.io");
 
 const host = 'localhost';
 const port = 8000;
 
-// app.set('views', path.join(__dirname, 'public', './views'));
-// app.set('view engine', 'ejs');
+const app = express();
+const http_io = http.Server(app);
+const io = sockets(http_io);
+app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folde
 
-// // Navigation
-// app.get('', (req, res) => {
-//     res.render('index', { text: 'Hey' })
-// })
 
-// app.get('/about', (req, res) => {
-//     res.sendFile(__dirname + '/views/about.html')
-// })
+
+// io
+io.on('connection', (socket) => {
+    console.log('a user connected ');
+    socket.on('join', function (login) {
+        console.log("Login:" + login);
+        socket.join('user:' + login); // We are using room of socket io for login
+        //console.log("Logins %o", io.sockets.adapter.rooms);
+        console.log("Room %o " + socket.rooms, socket.rooms);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+    socket.on('mousemove', (msg) => {
+        //    console.log("Mouse movee %o", msg);
+        //     console.log('socket %o ', socket.id);
+        let user = "";
+        console.log("%o" + socket.rooms, socket.rooms);
+        const entries = socket.rooms.values();
+
+        for (const entry of entries) {
+            if (entry.startsWith('user:')) {
+                user = entry;
+                break;
+            }
+        }
+        if (user != "") {
+            let a = socket.broadcast.emit('mousemove', msg);
+        }
+
+    });
+});
+
+// app
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
@@ -34,7 +61,8 @@ app.get("/testy", (req, res) => {
 
 });
 
-app.listen(port, () => console.info(`VTT listening on port ${port}`))
+
+http_io.listen(port, () => console.info(`VTT listening on port ${port}`))
 
 // requests required
 // send initial view

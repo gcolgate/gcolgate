@@ -1,14 +1,17 @@
 
 import * as THREE from 'three';
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+let width = window.innerWidth;
+let height = window.innerHeight;
+//const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.OrthographicCamera(width / - 2, width / 2, height / 2, height / - 2, -10, 1000);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 
-const geometry = new THREE.BoxGeometry(1, 1, 1);
+const geometry = new THREE.BoxGeometry(10, 10, 10);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
@@ -21,8 +24,72 @@ async function test() {
     console.log(jsonData);
 }
 
+// add windows which are lists for the different buttons, hooking up logic
+// each kind of window will make a request of the server, and have an endpoint
+// sheets will be descriptions of display of json
+// characters will be json
+// items will be json
+// add button for graphic sheets
+// scenes will be json, but deal with graphic sheets
+// data are things like sheet.data.strength
+// which could be a number, a string, an object, or a reference @url to another sheet which goes here as an object
+// the reference can be instance or true reference depeding
+// when items change, send message to server.
 
+// sheet will be html with items like
+//<b> ~name(sheet.data.strength) </b>  ~val(sheet.data.strength) where ~ is escape for evaluating the script.
+// a sheet can be ~all(sheets.data) <b> ~name(sheet.data.) </b>  ~val(sheet.data.)
+
+// a graphic sheet will have
+// width:n , height:n image:url fx:effect x:x y:y z:z z:order mode:
+// mode is top-down, uses zorder. draws image
+// mode is theatre, same drawing
+// mode is ortho45, uses 3d position and zorder
+// mode is threed, uses 3d position, zorder indicates flat, sprite, or model
+// dragging sends a message to tell route drag to and speed
+
+// mouse positions are also updated and sent each frame, need to develop PUSH socket.io
+
+addEventListener("mousemove", (event) => {
+    console.log(" emit %o", { x: event.clientX, y: event.clientY });
+    socket.emit('mousemove', { x: event.clientX, y: event.clientY });
+
+});
+socket.on('mousemove', function (msg) {
+    console.log(" got result %o", msg);
+    cube.position.x = msg.x - window.innerWidth / 2;
+    cube.position.y = -(msg.y - window.innerHeight / 2);
+
+});
 test();
+
+let joined = false;
+const login = document.getElementById("login");
+login.onchange = function (event) {
+    let login = event.target.value;
+
+    try {
+        if (joined) {
+            socket.leave(joined);
+        }
+    } catch (e) {
+        console.log('[error]', 'leave login :', e);
+        //  socket.emit('error', 'couldnt perform requested action');
+    }
+    try {
+        console.log('[socket]', 'join login :', login);
+        socket.emit('join', login);
+        // socket.to(login).emit('user joined', socket.id);
+        joined = login;
+    } catch (e) {
+        console.log('[error]', 'join login :', e);
+        //    socket.emit('error', 'couldnt perform requested action');
+    }
+
+};
+
+
+
 
 function animate() {
     requestAnimationFrame(animate);
