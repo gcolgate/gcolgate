@@ -1,4 +1,6 @@
 
+
+const debugfs = require('fs');
 const fs = require('fs').promises;
 const path = require('path');
 const express = require('express');
@@ -6,6 +8,44 @@ const http = require('http');
 const sockets = require("socket.io");
 const init = require('./init.js');
 
+///  TODO: Put this is a sub file
+//////////// hack to get line numbers on log statements like in the browser
+//////////// it makes a fake error to get the stack trace
+/////////// and formats it, in a way you can click on the stack trace to go to code in VS code
+let redTerminal = "\u001b[31m";
+let resetTerminal = "\u001b[39m";
+['log', 'warn', 'error', 'info'].forEach((methodName) => {
+    const originalMethod = console[methodName];
+    console[methodName] = (...args) => {
+        let initiator = 'unknown place';
+        try {
+            throw new Error();
+        } catch (e) {
+            if (typeof e.stack === 'string') {
+                let isFirst = true;
+                for (const line of e.stack.split('\n')) {
+                    const matches = line.match(/^\s+at\s+(.*)/);
+                    if (matches) {
+                        if (!isFirst) { // first line - current function
+                            // second line - caller (what we are looking for)
+                            initiator = matches[1];
+                            break;
+                        }
+                        isFirst = false;
+                    }
+                }
+            }
+        }
+        initiator.replace('\n', '');
+        let s = initiator.indexOf('(');
+        let e = initiator.indexOf(')');
+        if (s != -1 && e != -1 && e > s) {
+            initiator = initiator.slice(s + 1, e);
+        }
+        originalMethod.apply(console, [redTerminal, `${initiator}` + resetTerminal + '\t\t', ...args]);
+    };
+});
+//////////////////////////////////////////////
 
 
 const host = 'localhost';
@@ -16,37 +56,41 @@ const http_io = http.Server(app);
 const io = sockets(http_io);
 app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folde
 
-var passwords, players;
+var passwords, players, characters;
 
+/// TODO: put this in a sub file.
 function ParseJson(name, raw) {
     let json = null;
 
     try {
         json = JSON.parse(raw);
     } catch (err) {
-        console.log("error parsing json ( " + err + ") for " + name);
+        console.error("error parsing json ( " + err + ") for " + name);
     }
     return json;
 }
 
 
 
-async function load_passwords() {
+async function InitialDiskLoad() {
     let promises = [];
 
     promises.push(fs.readFile(path.join(__dirname, 'passwords.json'))); // TODO: use file cache
     promises.push(fs.readFile(path.join(__dirname, 'public', 'players/players.json'))); // TODO: use file cache
+    promises.push(fs.readdir(path.join(__dirname, 'public', 'characters'))); // TODO: use file cache
+
 
     let results = await Promise.all(promises);
     passwords = ParseJson('passwords.json', results[0]);
     players = ParseJson('players.json', results[1]);
+    characters = results[2];
 
     init.inited = true;
 
 }
 
 try {
-    load_passwords();
+    InitialDiskLoad();
 } catch (err) {
     console.log("Unable to initialize" + err);
     exit(-1);
@@ -82,7 +126,7 @@ io.on('connection', (socket) => {
             socket.leave(user);
         }
         login(socket, credentials);
-        console.log('a user connected %o', socket.rooms.values());
+        console.log('Login connection: %o', socket.rooms.values());
     });
 
     socket.on('disconnect', () => {
@@ -104,7 +148,7 @@ io.on('connection', (socket) => {
     });
 });
 
-// app
+// app TODO: This does not work in firefox correctly, only chromiumn browser
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
@@ -118,7 +162,7 @@ app.get("/", (req, res) => {
 // });
 
 
-http_io.listen(port, () => console.info(`VTT listening on port ${port}`))
+http_io.listen(port, () => console.log(`VTT listening on port ${port}`))
 
 // requests required
 // send initial view
