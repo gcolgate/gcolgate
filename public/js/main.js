@@ -18,16 +18,17 @@ scene.add(cube);
 
 camera.position.z = 5;
 
-// async function test() {
-//     let response = await fetch("./testy");
-//     const jsonData = await response.json();
-//     console.log(jsonData);
-// }
+async function GetDirectory(directory) {
+    let response = await fetch("./" + directory);
+    const jsonData = await response.json();
+    console.log(jsonData);
+    return jsonData;
+}
 
 // add windows which are lists for the different buttons, hooking up logic
 // each kind of window will make a request of the server, and have an endpoint
 // sheets will be descriptions of display of json
-// characters will be json
+// Compendium will be jsons
 // items will be json
 // add button for graphic sheets
 // scenes will be json, but deal with graphic sheets
@@ -48,18 +49,6 @@ camera.position.z = 5;
 // mode is threed, uses 3d position, zorder indicates flat, sprite, or model
 // dragging sends a message to tell route drag to and speed
 // utility functions.. move to utility file
-
-async function fetchJson(file) {
-
-    let raw = await fetch(file, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-        },
-    });
-    return await raw.json();
-
-}
 
 
 // mouse positions are also updated and sent each frame
@@ -88,8 +77,14 @@ socket.on('login_failure', function (msg) {
 });
 ////// login handling
 
+createWindow('Compendium');
+
 let joined = false;
-let players = {}
+let players = {};
+let Compendium = {};
+
+GetDirectory('Compendium').then((c) => { Compendium = c; });
+
 const login = document.getElementById("login");
 async function init() {
 
@@ -103,6 +98,8 @@ async function init() {
         let newOption = new Option(players.players[i].name, players.players[i].name);
         login.add(newOption, undefined);
     }
+
+
 }
 login.onchange = function (event) {
     // todo: nicer login than a orompt box, one that remembers your credentials
@@ -136,17 +133,24 @@ login.onchange = function (event) {
     joined = login;
 };
 // character hgndling
-let characters = {}
-const characterButton = document.getElementById("characters");
-characterButton.onclick = function () {
+
+const compendiumButton = document.getElementById("Compendium");
+compendiumButton.onclick = function () {
     if (!joined) {
         alert("Please log in");
     }
+    if (!Compendium) {
+        alert("Have not yet receieved Compendium from server");
+    } else {
+        showDirectoryWindow('Compendium', Compendium);
+    }
+
 };
 
 // main code falls through to here
 
 init();
+
 function animate() {
     requestAnimationFrame(animate);
     cube.rotation.x += 0.01;

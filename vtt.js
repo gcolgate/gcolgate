@@ -56,7 +56,7 @@ const http_io = http.Server(app);
 const io = sockets(http_io);
 app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folde
 
-var passwords, players, characters;
+var passwords, players, Compendium;
 
 /// TODO: put this in a sub file.
 function ParseJson(name, raw) {
@@ -77,13 +77,13 @@ async function InitialDiskLoad() {
 
     promises.push(fs.readFile(path.join(__dirname, 'passwords.json'))); // TODO: use file cache
     promises.push(fs.readFile(path.join(__dirname, 'public', 'players/players.json'))); // TODO: use file cache
-    promises.push(fs.readdir(path.join(__dirname, 'public', 'characters'))); // TODO: use file cache
+    promises.push(fs.readdir(path.join(__dirname, 'public', 'Compendium'))); // TODO: use file cache
 
 
     let results = await Promise.all(promises);
     passwords = ParseJson('passwords.json', results[0]);
     players = ParseJson('players.json', results[1]);
-    characters = results[2];
+    Compendium = results[2];
 
     init.inited = true;
 
@@ -153,13 +153,14 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
 
-// app.get("/testy", (req, res) => {
-//     let books = { hi: "HI", there: "there" };
-//     res.setHeader("Content-Type", "application/json");
-//     res.writeHead(200);
-//     res.end(JSON.stringify(books));
+app.get("/Compendium", (req, res) => {
+    console.log("OK");
+    // Error here need to bulletproof server not being ready?
+    res.setHeader("Content-Type", "application/json");
+    res.writeHead(200);
+    res.end(JSON.stringify(Compendium));
 
-// });
+});
 
 
 http_io.listen(port, () => console.log(`VTT listening on port ${port}`))
