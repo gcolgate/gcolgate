@@ -1,0 +1,3 @@
+node_modules/
+public/js/node_modules/
+public/js/socket.io/

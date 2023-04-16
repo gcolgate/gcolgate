@@ -1,9 +1,12 @@
 
-//const fs = require('fs').promises;
+const fs = require('fs').promises;
 const path = require('path');
 const express = require('express');
 const http = require('http');
 const sockets = require("socket.io");
+const init = require('./init.js');
+
+
 
 const host = 'localhost';
 const port = 8000;
@@ -13,28 +16,81 @@ const http_io = http.Server(app);
 const io = sockets(http_io);
 app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folde
 
+var passwords, players;
 
+function ParseJson(name, raw) {
+    let json = null;
+
+    try {
+        json = JSON.parse(raw);
+    } catch (err) {
+        console.log("error parsing json ( " + err + ") for " + name);
+    }
+    return json;
+}
+
+
+
+async function load_passwords() {
+    let promises = [];
+
+    promises.push(fs.readFile(path.join(__dirname, 'passwords.json'))); // TODO: use file cache
+    promises.push(fs.readFile(path.join(__dirname, 'public', 'players/players.json'))); // TODO: use file cache
+
+    let results = await Promise.all(promises);
+    passwords = ParseJson('passwords.json', results[0]);
+    players = ParseJson('players.json', results[1]);
+
+    init.inited = true;
+
+}
+
+try {
+    load_passwords();
+} catch (err) {
+    console.log("Unable to initialize" + err);
+    exit(-1);
+}
+async function login(socket, credentials) {
+    if (!init.inited) { await init.until(); }
+
+    if (passwords[credentials.player] != credentials.password) {
+        console.log("Error Invalid credentials " + credentials.player);
+        socket.emit("login_failure", "Invalid credentials " + credentials.player);
+        return;
+    }
+
+    socket.join('user:' + credentials.player); // We are using room of socket io for login
+    //console.log("Logins %o", io.sockets.adapter.rooms);
+    //console.log("Room %o " + socket.rooms, socket.rooms);
+}
 
 // io
 io.on('connection', (socket) => {
     console.log('a user connected ');
-    socket.on('join', function (login) {
-        console.log("Login:" + login);
-        socket.join('user:' + login); // We are using room of socket io for login
-        //console.log("Logins %o", io.sockets.adapter.rooms);
-        console.log("Room %o " + socket.rooms, socket.rooms);
+    socket.on('join', function (credentials) {
+        console.log("Login:" + credentials.player);
+        let user = null;
+        const entries = socket.rooms.values();
+        for (const entry of entries) {
+            if (entry.startsWith('user:')) {
+                user = entry;
+                break;
+            }
+        }
+        if (user) {
+            socket.leave(user);
+        }
+        login(socket, credentials);
+        console.log('a user connected %o', socket.rooms.values());
     });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
     socket.on('mousemove', (msg) => {
-        //    console.log("Mouse movee %o", msg);
-        //     console.log('socket %o ', socket.id);
         let user = "";
-        console.log("%o" + socket.rooms, socket.rooms);
         const entries = socket.rooms.values();
-
         for (const entry of entries) {
             if (entry.startsWith('user:')) {
                 user = entry;
@@ -53,13 +109,13 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
 
-app.get("/testy", (req, res) => {
-    let books = { hi: "HI", there: "there" };
-    res.setHeader("Content-Type", "application/json");
-    res.writeHead(200);
-    res.end(JSON.stringify(books));
+// app.get("/testy", (req, res) => {
+//     let books = { hi: "HI", there: "there" };
+//     res.setHeader("Content-Type", "application/json");
+//     res.writeHead(200);
+//     res.end(JSON.stringify(books));
 
-});
+// });
 
 
 http_io.listen(port, () => console.info(`VTT listening on port ${port}`))

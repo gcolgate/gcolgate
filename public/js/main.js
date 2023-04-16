@@ -18,11 +18,11 @@ scene.add(cube);
 
 camera.position.z = 5;
 
-async function test() {
-    let response = await fetch("./testy");
-    const jsonData = await response.json();
-    console.log(jsonData);
-}
+// async function test() {
+//     let response = await fetch("./testy");
+//     const jsonData = await response.json();
+//     console.log(jsonData);
+// }
 
 // add windows which are lists for the different buttons, hooking up logic
 // each kind of window will make a request of the server, and have an endpoint
@@ -47,11 +47,24 @@ async function test() {
 // mode is ortho45, uses 3d position and zorder
 // mode is threed, uses 3d position, zorder indicates flat, sprite, or model
 // dragging sends a message to tell route drag to and speed
+// utility functions.. move to utility file
 
-// mouse positions are also updated and sent each frame, need to develop PUSH socket.io
+async function fetchJson(file) {
 
+    let raw = await fetch(file, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+        },
+    });
+    return await raw.json();
+
+}
+
+
+// mouse positions are also updated and sent each frame
+// handle mouse movement reporting to other clients
 addEventListener("mousemove", (event) => {
-    console.log(" emit %o", { x: event.clientX, y: event.clientY });
     socket.emit('mousemove', { x: event.clientX, y: event.clientY });
 
 });
@@ -61,36 +74,79 @@ socket.on('mousemove', function (msg) {
     cube.position.y = -(msg.y - window.innerHeight / 2);
 
 });
-test();
+//
+// error handling, for now simple stupid alerts, todo: better UI
+socket.on('error_alert', function (msg) {
+    alert('error_alert ' + msg);
+
+});
+
+socket.on('login_failure', function (msg) {
+    alert('error_alert ' + msg);
+    login.value = "Login";
+
+});
+////// login handling
 
 let joined = false;
+let players = {}
 const login = document.getElementById("login");
+async function init() {
+
+    players.players = await fetchJson("./players/players.json");
+    login.options.length = 0;
+
+    let newOption = new Option("Login", "Login");
+    login.add(newOption, undefined);
+
+    for (let i = 0; i < players.players.length; i++) {
+        let newOption = new Option(players.players[i].name, players.players[i].name);
+        login.add(newOption, undefined);
+    }
+}
 login.onchange = function (event) {
+    // todo: nicer login than a orompt box, one that remembers your credentials
     let login = event.target.value;
 
-    try {
-        if (joined) {
-            socket.leave(joined);
-        }
-    } catch (e) {
-        console.log('[error]', 'leave login :', e);
-        //  socket.emit('error', 'couldnt perform requested action');
-    }
-    try {
-        console.log('[socket]', 'join login :', login);
-        socket.emit('join', login);
-        // socket.to(login).emit('user joined', socket.id);
-        joined = login;
-    } catch (e) {
-        console.log('[error]', 'join login :', e);
-        //    socket.emit('error', 'couldnt perform requested action');
-    }
+    if (login == "login") { joined = null; return; }
 
+    //try {
+    let password = prompt("Please enter your password", "");
+    if (!password) return;
+
+
+    console.log('[socket]', 'join login :', login);
+    socket.emit('join', { player: login, password: password });
+    joined = login;
 };
 
+login.onchange = function (event) {
+    // todo: nicer login than a orompt box, one that remembers your credentials
+    let login = event.target.value;
+
+    if (login == "login") { joined = null; return; }
+
+    //try {
+    let password = prompt("Please enter your password", "");
+    if (!password) return;
 
 
+    console.log('[socket]', 'join login :', login);
+    socket.emit('join', { player: login, password: password });
+    joined = login;
+};
+// character hgndling
+let characters = {}
+const characterButton = document.getElementById("characters");
+characterButton.onclick = function () {
+    if (!joined) {
+        alert("Please log in");
+    }
+};
 
+// main code falls through to here
+
+init();
 function animate() {
     requestAnimationFrame(animate);
     cube.rotation.x += 0.01;

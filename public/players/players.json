@@ -1,0 +1,10 @@
+[
+    {
+        "name": "GM",
+        "permissions": "GM"
+    },
+    {
+        "name": "Mike",
+        "permissions": "Player"
+    }
+]
