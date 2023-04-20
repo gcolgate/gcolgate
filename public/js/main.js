@@ -42,11 +42,6 @@ function details(s) {
 
 }
 
-
-var jsx_interpreter = new Interpreter()
-
-var jsx_renderer = new Renderer(new Interpreter("name"));
-const parser = new DOMParser();
 function commaString(array) {
     let text = "";
     let first = true;
