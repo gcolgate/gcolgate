@@ -1,12 +1,13 @@
 
 
-const debugfs = require('fs');
+//const debugfs = require('fs');
 const fs = require('fs').promises;
 const path = require('path');
 const express = require('express');
 const http = require('http');
 const sockets = require("socket.io");
 const init = require('./init.js');
+
 
 ///  TODO: Put this is a sub file
 //////////// hack to get line numbers on log statements like in the browser
@@ -57,6 +58,104 @@ const io = sockets(http_io);
 app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folde
 
 var passwords, players, Compendium;
+
+function dnd5eAttributeBonus(value) {
+    console.log(value);
+    let v = value - 10;
+    v /= 2;
+    console.log(v);
+    v = Math.trunc(v);
+    console.log(v);
+    return v;
+
+}
+
+function dnd5eAttributes(attrs) {
+    let answer = "";
+    let keys = Object.keys(attrs);
+
+    for (let i = 0; i < keys.length; i++) {
+
+        answer += '<div class="attr"><span>' + keys[i].toUpperCase() + "</span><br>" +
+            ' <div class="attr-num">' + attrs[keys[i]].value + ' (' + dnd5eAttributeBonus(attrs[keys[i]].value) + ')</div>  </div >'
+
+
+    }
+    return answer;
+}
+
+
+function span(title, value) {
+    return "<span>" + title + " /span>" + value;
+}
+
+function spanListItem(title, value) {
+    if (typeof value === 'object') {
+        let answer = "";
+        let keys = Object.keys(value);
+        for (i = 0; i < keys.length; i++) {
+            answer += "<li>" + span(keys[i], value[keys[i]]) + "</li>";
+        }
+        return answer;
+
+    } else {
+        return "<li>" + span(title, value) + "</li>";
+    }
+}
+
+
+
+function spanListItemNZ(value) {
+    if (value === 0) return "";
+    if (typeof value === 'object') {
+        let answer = "";
+        let keys = Object.keys(value);
+        for (i = 0; i < keys.length; i++) {
+            if (value[keys[i]] !== 0)
+                answer += "<li>" + span(keys[i], value[keys[i]]) + "</li>";
+        }
+        return answer;
+    } else {
+        return "<li>" + span(title.value) + "</li>";
+    }
+}
+
+
+
+async function test() {
+    let raw = await fs.readFile(path.join(__dirname, 'public', 'Compendium', 'fvtt-Actor-bandit.json'));
+    console.log(raw);
+    let sheet = ParseJson("test", raw);
+    console.log('sheet.name ' + sheet.name);
+    // console.log("sheet details %o", sheet.system.details);
+    console.log("sheet details %o", sheet.system.details.type);
+    console.log("sheet system " + sheet.system.traits.size);
+    let array = details(sheet.system.details.type);
+
+    if (sheet.system.details.alignment) array.push(sheet.system.details.alignment);
+    if (sheet.system.details.race) array.push(sheet.system.details.race);
+    console.log('sheet.system.details.type: ' + commaString(array));
+
+    console.log(spanListItem("Armor Class", sheet.system.attributes.ac.flat));
+    console.log(spanListItem("Hit Points", sheet.system.attributes.hp.max));
+    console.log(spanListItem("Cur Hit Points", sheet.system.attributes.hp.value));
+    console.log(spanListItemNZ(sheet.system.attributes.movement));
+    console.log(dnd5eAttributes(sheet.system.abilities));
+
+    // todo console.log(spanListItemNZ(sheet.system.attributes.senses));
+    // todo console.log(spanListItemNZ(sheet.system.attributes.languages));
+    // todo console.log(spanListItemNZ(sheet.system.attributes.languages));
+    // todo challenge rating
+
+
+    // "languages": {
+    //     "value": [
+    //         "custom"
+    //     ],
+    //         "custom": "any one language (usually Common)"
+    // }
+
+}
 
 /// TODO: put this in a sub file.
 function ParseJson(name, raw) {
@@ -258,3 +357,4 @@ http_io.listen(port, () => console.log(`VTT listening on port ${port}`))
 // }); 
 
 console.log(`Server is running on http://${host}:${port}`);
+//test();

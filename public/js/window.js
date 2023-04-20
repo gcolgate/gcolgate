@@ -120,20 +120,4 @@ function activeWindow(elmnt) {
 }
 
 
-function showDirectoryWindow(id, array) {
 
-
-    let window = document.getElementById("window_" + id);
-    let ul = document.getElementById("window_" + id + "_list");
-
-    while (ul.firstChild) {
-        ul.removeChild(ul.firstChild);
-    }
-    for (let i = 0; i < array.length; i++) {
-        var li = document.createElement("li");
-        li.appendChild(document.createTextNode(array[i]));
-        ul.appendChild(li);
-    }
-    fadeIn(window);
-
-}

@@ -25,6 +25,120 @@ async function GetDirectory(directory) {
     return jsonData;
 }
 
+
+function details(s) {
+
+    let array = [];
+    let keys = Object.keys(s);
+
+    keys.forEach((key, index) => {
+
+        if (s[key] && s[key] != "") {
+            array.push(s[key]);
+        }
+    });
+
+    return array;
+
+}
+
+
+var jsx_interpreter = new Interpreter()
+
+var jsx_renderer = new Renderer(new Interpreter("name"));
+const parser = new DOMParser();
+function commaString(array) {
+    let text = "";
+    let first = true;
+    for (let i = 0; i < array.length; i++) {
+        if (!first) text += ", ";
+        first = false;
+        text += array[i];
+    }
+    return text;
+}
+
+function get5eDetails(sheet) {
+    let array = details(sheet.system.details.type);
+
+    if (sheet.system.details.alignment) array.push(sheet.system.details.alignment);
+    if (sheet.system.details.race) array.push(sheet.system.details.race);
+    return commaString(array)
+}
+async function showNPC(name) {
+    console.log(name);
+    let response = await fetch("./Sheets/foundry_5e_npc_sheet.jsx")
+    const text = await response.text();
+    response = await fetch("./Compendium/" + name);
+    const sheet = await response.json();
+
+    // const html = parser.parseFromString(text, "application/xml");
+    let newText = "";
+    let state = 0;
+    let code = "";
+    for (let i = 0; i < text.length; i++) {
+
+        switch (state) {
+            case 0:
+                if (text[i] == '{') { state = 1; code = ""; }
+                else if (text[i] == '}') throw new Error("Mismatched '}");
+                else newText += text[i];
+                break;
+            default:
+                if (text[i] == '}') {
+                    state--;
+                    if (state == 0) {
+                        console.log("Eval " + code);
+                        newText += eval(code);
+                    }
+                    else {
+                        code += '}';
+                    }
+                } if (text[i] == '{') {
+                    state++; code += '}';
+                } else {
+                    code += text[i];
+                }
+        }
+    }
+
+
+    document.getElementById("stuff").innerHTML = newText;
+
+
+
+    console.log(html);
+}
+
+
+function clickOnNPC(event) {
+    // todo write to be in parallel
+    console.log("CLick");
+    const name = this.innerHTML;
+    showNPC(name);
+}
+
+
+function showDirectoryWindow(id, array) {
+
+
+    let window = document.getElementById("window_" + id);
+    let ul = document.getElementById("window_" + id + "_list");
+
+    while (ul.firstChild) {
+        ul.removeChild(ul.firstChild);
+    }
+    for (let i = 0; i < array.length; i++) {
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(array[i]));
+        li.addEventListener('click', clickOnNPC, false);
+        ul.appendChild(li);
+    }
+    fadeIn(window);
+
+}
+
+
 // add windows which are lists for the different buttons, hooking up logic
 // each kind of window will make a request of the server, and have an endpoint
 // sheets will be descriptions of display of json
