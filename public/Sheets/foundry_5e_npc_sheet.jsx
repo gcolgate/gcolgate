@@ -1,14 +1,34 @@
 
-<div class="list-hide inapp-hide single-view slide-down content-toggle">
-  <div class="gold"></div>
-  <div class="body">
-    <div class="name">
+<div class="gold">
+  <div ></div>
+  <div class="body" style="box-sizing: border-box;
+color: rgb(88, 23, 13);
+color-scheme: light dark;
+font-family: Mrs Eaves;
+font-size: 20px;
+font-variant-alternates: normal;
+font-variant-caps: small-caps;
+font-variant-east-asian: normal;
+font-variant-ligatures: normal;
+font-variant-numeric: normal;
+font-variant-position: normal;
+font-weight: 700;
+line-height: 22px;
+margin-bottom: -5px;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: -10px;
+ext-transform: capitalize;
+height:{contentHeight}px;
+overflow:auto;
+width:100%;">
+    <div >
       <a name="toc_3"></a>
       <h1>{sheet.name} </h1>
     </div>
-    <div class="subtitle">{sheet.system.traits.size}<span> {get5eDetails(sheet)} </span></div>
-    <div class="taper taper-top"></div>
-    <div class="single-list">
+    <div >{sheet.system.traits.size}<span> {get5eDetails(sheet)} </span></div>
+    <div  ></div>
+    <div  >
       <ul>
         <li><span>Armor CLass </span>{sheet.system.attributes.ac.flat}</li>
         <li><span>Hit Points </span>{sheet.system.attributes.hp.max}</li>
@@ -21,9 +41,9 @@
         {sheet.system.attributes.movement.hover ? "<li>Can Hover</li>" : ""}
       </ul>
     </div>
-    <div class="taper"></div>
-    <div class="attributes">
-      <div>
+    <div ></div>
+    <div >
+      <div style="display: inline-block">
         <div class="attr"><span>STR</span><br>
           <div class="attr-num">{sheet.system.abilities.str.value}</div>
         </div>
@@ -44,21 +64,21 @@
         </div>
       </div>
     </div>
-    <div class="taper"></div>
-    <div class="single-list">
+    <div ></div>
+    <div >
       <ul>
         <li><span>Senses </span> passive Perception 10</li>
         <li><span>Languages </span>Any One Language (Usually Common)</li>
         <li><span>Challenge </span> 1/8 (25 XP)</li>
       </ul>
     </div>
-    <div class="taper"></div>
-    <div class="traits">
+    <div  ></div>
+    <div  >
       <ul>
       </ul>
     </div>
-    <div class="actions">
-      <a name="toc_4"></a>
+    <div >
+      <a ></a>
       <h2>Actions</h2>
       <ul>
         <li><span>Scimitar.</span> <i>Melee Weapon Attack:</i>

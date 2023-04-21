@@ -96,13 +96,9 @@ async function showNPC(name) {
                 }
         }
     }
-
-
-    document.getElementById("stuff").innerHTML = newText;
-
-
-
-    console.log(html);
+    createWindow(name);
+    console.log(newText);
+    document.getElementById("window_" + name + "_body").innerHTML = newText;
 }
 
 
@@ -110,6 +106,7 @@ function clickOnNPC(event) {
     // todo write to be in parallel
     console.log("CLick");
     const name = this.innerHTML;
+
     showNPC(name);
 }
 
@@ -186,7 +183,6 @@ socket.on('login_failure', function (msg) {
 });
 ////// login handling
 
-createWindow('Compendium');
 
 let joined = false;
 let players = {};
@@ -251,6 +247,8 @@ compendiumButton.onclick = function () {
     if (!Compendium) {
         alert("Have not yet receieved Compendium from server");
     } else {
+
+        createWindow('Compendium');
         showDirectoryWindow('Compendium', Compendium);
     }
 
