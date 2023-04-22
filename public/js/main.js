@@ -75,6 +75,7 @@ async function showNPC(name) {
 
         switch (state) {
             case 0:
+                if (text[i] == '@') { newText = ""; break; };
                 if (text[i] == '{') { state = 1; code = ""; }
                 else if (text[i] == '}') throw new Error("Mismatched '}");
                 else newText += text[i];
@@ -89,8 +90,8 @@ async function showNPC(name) {
                     else {
                         code += '}';
                     }
-                } if (text[i] == '{') {
-                    state++; code += '}';
+                } else if (text[i] == '{') {
+                    state++; code += '{';
                 } else {
                     code += text[i];
                 }
