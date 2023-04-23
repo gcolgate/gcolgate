@@ -5,29 +5,35 @@
 
 var contentHeight = 600 - 80;
 
-function createWindow(id) {
+function createWindow(id, width, height, left, top) {
 
-    let name = "window_" + id;
-    let window = document.getElementById(name);
+    let windowName = "window_" + id;
+    let w = document.getElementById(name);
 
-    if (!window) {
+    if (!w) {
         let group = document.getElementById("windowGroup");
-        window = document.createElement("div");
-        window.style = "display: initial;"
+        w = document.createElement("div");
+        w.style = "display: initial;"
 
-        window.style.position = "absolute";
-        window.style.top = "80px";
-        window.style.zIndex = "9";
-        window.style.backgroundColor = "#ffffff";
-        window.style.width = "300px";
-        window.style.height = "600px";
-        window.style.borderRadius = "8p 8px 0 0x";
-        window.style.boxShadow = "8px 8px 6px -6px black";
-        window.style.opacity = "0.9";
-        window.style.display = "none";
+        w.style.position = "absolute";
+        if (top === undefined) top = (window.innerHeight - height) / 2;
+        if (left === undefined) left = (window.innerWidth - width) / 2;
 
-        window.id = name;
-        window.class = "window";
+        w.style.top = top + "px";
+        w.style.left = left + "px";
+        w.style.zIndex = "9";
+        w.style.backgroundColor = "#ffffff";
+        w.style.width = width + "px";
+        w.style.height = height + "px";
+        w.style.borderRadius = "8p 8px 0 0x";
+        w.style.boxShadow = "8px 8px 6px -6px black";
+        w.style.opacity = "0.9";
+        w.style.display = "none";
+
+        contentHeight = height - 80;
+
+        w.id = windowName;
+        w.class = "window";
         let title = document.createElement("div");
         title.class = "purple";
         title.innerHtml = id;
@@ -48,26 +54,26 @@ function createWindow(id) {
 
         let list = document.createElement("ul");
         list.class = "popup";
-        list.id = name + "_list";
-        window.appendChild(title);
-        window.appendChild(list);
-        group.appendChild(window);
+        list.id = windowName + "_list";
+        w.appendChild(title);
+        w.appendChild(list);
+        group.appendChild(w);
 
         let body = document.createElement("div");
-        body.id = name + "_body";
-        window.appendChild(body);
+        body.id = windowName + "_body";
+        w.appendChild(body);
 
 
         closeButton.onclick = function () {
-            fadeOut(window);
+            fadeOut(w);
             window.style.display = "none";
         };
-        dragElement(window, title);
+        dragElement(w, title);
 
     }
 
-    fadeIn(window);
-    lastWindow = window;
+    fadeIn(w);
+    lastWindow = w;
 
 }
 
