@@ -34,6 +34,7 @@ function showChatWindow(array) {
     body.appendChild(footer);
     chatInput.onchange = function (evt) {
         sendChat(evt.target.value);
+        interpretDiceRoll(evt.target.value);
         evt.target.value = "";
     };
 

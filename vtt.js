@@ -172,6 +172,17 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('roll', (msg) => {
+        let sender = getUser(socket);
+        if (sender) {
+            rollResult = interpretDiceRoll(msg.roll);
+            let msg = '<span class=chatUser>' + sender + '</span>' + rollresult;
+            chats.push(msg);
+            console.log(msg);
+            io.emit('chat', msg);
+        }
+    });
+
 });
 
 // app TODO: This does not work in firefox correctly, only chromiumn browser
