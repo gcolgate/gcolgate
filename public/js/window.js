@@ -3,6 +3,26 @@
 // metaTag.content = "user-scalable=0";
 // document.getElementsByTagName("head")[0].appendChild(metaTag);
 
+var windows = [];
+
+
+
+function resortWindows(evt) {
+    // this is not entirely up to code but it probably works
+    // well enough
+    // front window is zindex 9+number of windows.
+    // other windows are behind but in an uncertain arrangement
+    // I could sort the windows in the window variable and then
+    // assign them in the order, which would be correct
+    let w = evt.currentTarget;
+    if (w.style.zIndex == windows.length + 9) { return; }
+    for (let i = 0; i < windows.length; i++) {
+        if (windows[i].style.zIndex == windows.length + 9) {
+            windows[i].style.zIndex = window.length + 8;
+        }
+    }
+    w.style.zIndex = windows.length + 9;
+}
 
 function createWindow(id, width, height, left, top) {
 
@@ -63,7 +83,7 @@ function createWindow(id, width, height, left, top) {
         dragElement(w, title);
         w.style.top = top + "px";
         w.style.left = left + "px";
-        w.style.zIndex = "9";
+        w.style.zIndex = 9 + windows.length;
         w.style.backgroundColor = "#ffffff";
         w.style.width = width + "px";
         w.style.height = height + "px";
@@ -73,8 +93,11 @@ function createWindow(id, width, height, left, top) {
         w.style.display = "none";
     }
 
+    // Event listener for clicks
+    w.addEventListener('mousedown', resortWindows);
+
     fadeIn(w);
-    lastWindow = w;
+    windows.push(w);
     return w;
 
 }
