@@ -7,14 +7,14 @@ var windows = [];
 
 
 
-function resortWindows(evt) {
+function bringToFront(w) {
     // this is not entirely up to code but it probably works
     // well enough
     // front window is zindex 9+number of windows.
     // other windows are behind but in an uncertain arrangement
     // I could sort the windows in the window variable and then
     // assign them in the order, which would be correct
-    let w = evt.currentTarget;
+
     if (w.style.zIndex == windows.length + 9) { return; }
     for (let i = 0; i < windows.length; i++) {
         if (windows[i].style.zIndex == windows.length + 9) {
@@ -22,6 +22,11 @@ function resortWindows(evt) {
         }
     }
     w.style.zIndex = windows.length + 9;
+}
+
+
+function clickToBringWindowIntoFocus(evt) {
+    bringToFront(evt.currentTarget);
 }
 
 function createWindow(id, width, height, left, top) {
@@ -91,13 +96,15 @@ function createWindow(id, width, height, left, top) {
         w.style.boxShadow = "8px 8px 6px -6px black";
         w.style.opacity = "0.9";
         w.style.display = "none";
+
+
+        windows.push(w);
     }
 
     // Event listener for clicks
-    w.addEventListener('mousedown', resortWindows);
-
+    w.addEventListener('mousedown', clickToBringWindowIntoFocus);
+    bringToFront(w);
     fadeIn(w);
-    windows.push(w);
     return w;
 
 }
@@ -155,11 +162,11 @@ function fadeIn(elmnt) {
                 opacity = 0.9;
             }
             elmnt.style.opacity = opacity;
-            activeWindow(elmnt);
+
         }, 50);
     } else {
         elmnt.style.opacity = "0.9";
-        activeWindow(elmnt);
+
     }
 
 }
@@ -177,16 +184,18 @@ function fadeOut(elmnt) {
             elmnt.style.opacity = opacity;
         }, 50);
     } else {
-        elmnt.style.display = "none";
-        activeWindow(elmnt);
-    }
-}
+        //elmnt.style.display = "none";
+        elmnt.style.opacity = 100;
+        for (let i = 0; i < windows.length; i++) {
+            if (windows[i] === elmnt) {
+                elmnt.remove();
+                windows.splice(i, 1);
+                break;
+            }
+        }
 
-function activeWindow(elmnt) {
-    //     for (let i = active.length - 1; i > -1; i--) {
-    //         active[i].classList.remove("windowActive");
-    //         elmnt.className += " windowActive";
-    //     }
+
+    }
 }
 
 

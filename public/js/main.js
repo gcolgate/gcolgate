@@ -183,6 +183,17 @@ compendiumButton.onclick = function () {
 
 };
 
+
+const chatButton = document.getElementById("Chat");
+chatButton.onclick = function () {
+    if (!joined) {
+        alert("Please log in");
+    }
+    showChatWindow([]);
+
+
+};
+
 // main code falls through to here
 
 init();
