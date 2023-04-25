@@ -33,6 +33,8 @@ function get5eDetails(sheet) {
 
 async function showNPC(name) {
     console.log(name);
+    let w = createWindow(name, 0.4, 0.4, 0.3, 0.3); // todo better window placement
+
     let response = await fetch("./Sheets/foundry_5e_npc_sheet.html"); // TODO dont hardcode name
     const text = await response.text();
     response = await fetch("./Compendium/" + name);
@@ -67,7 +69,6 @@ async function showNPC(name) {
                 }
         }
     }
-    createWindow(name, 0.4, 0.4, 0.3, 0.3); // todo better window placement
     document.getElementById("window_" + name + "_body").innerHTML = newText;
 }
 

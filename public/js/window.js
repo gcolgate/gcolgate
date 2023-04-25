@@ -75,6 +75,7 @@ function createWindow(id, width, height, left, top) {
 
     fadeIn(w);
     lastWindow = w;
+    return w;
 
 }
 
