@@ -1,13 +1,13 @@
 
 import * as THREE from 'three';
 const scene = new THREE.Scene();
-let width = window.innerWidth;
-let height = window.innerHeight;
+let width = window.innerWidth - 32;
+let height = window.innerHeight - 32;
 //const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const camera = new THREE.OrthographicCamera(width / - 2, width / 2, height / 2, height / - 2, -10, 1000);
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(width, height, true);
 document.body.appendChild(renderer.domElement);
 
 
@@ -177,7 +177,7 @@ compendiumButton.onclick = function () {
         alert("Have not yet receieved Compendium from server");
     } else {
 
-        createWindow('Compendium', 300, 900);
+        createWindow('Compendium', .2, .6, .2, .2);
         showDirectoryWindow('Compendium', Compendium);
     }
 

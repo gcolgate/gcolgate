@@ -1,3 +1,4 @@
+'use strict'
 
 function RollOneDice(sides) {
     return Math.floor(Math.random() * sides) + 1;
@@ -20,6 +21,7 @@ function DiceTermRoll(num, sides) {
         dice.push(d);
         if (i > 0) result += ",";
         result += d;
+
     }
 
     //  if (dice.keepHighest) total = Math.max(...dice);
@@ -30,7 +32,7 @@ function DiceTermRoll(num, sides) {
 
     return {
         value: total,
-        string: result
+        text: result
     }
 
 }
@@ -54,6 +56,7 @@ function precedence(operator) {
 function infixToPostfix(expression) {
     let postfix = [];
     var infix = [];
+    let dices = "";
     // Helper function to get the precedence of the operator
 
 
@@ -74,7 +77,6 @@ function infixToPostfix(expression) {
         postfix.push(infix.pop());
     }
     let answer = [];
-    let dices = "";
     for (let i = 0; i < postfix.length; i++) {
         let node = postfix[i];
         let c = node.type;
@@ -85,6 +87,7 @@ function infixToPostfix(expression) {
                 let d = DiceTermRoll(numDice, sides);
                 answer.push(d.value);
                 dices += d.text;
+                console.log(dices);
                 break;
             }
             case "number":
@@ -121,7 +124,7 @@ function infixToPostfix(expression) {
     console.log("Answer " + answer[0]);
 
 
-    return answer[0];
+    return { val: answer[0], rolls: dices };
 }
 
 function isWhitespace(c) {
@@ -157,14 +160,13 @@ function isVariable(c) {
     return !isWhitespace(c) && !isOperator(c) && (c < '0' || c > '9');
 
 }
-
-function interpretDiceRoll(s) {
-
+// entry point
+function dice(s) {
+    console.log(s);
+    let original = s.split('').join('');
     let state = 'start';
     let token = "";
-
     let node = [];
-
     let string = s.toLowerCase() + " ";
     for (let i = 0; i < string.length; i++) {
         let c = string[i];
@@ -218,6 +220,12 @@ function interpretDiceRoll(s) {
 
     }
 
-    infixToPostfix(node);
-
+    let answer = infixToPostfix(node);
+    answer.expression = original
+    console.log("%o", answer);
+    return answer;
 }
+
+
+
+module.exports = dice;

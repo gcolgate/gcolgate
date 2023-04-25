@@ -12,7 +12,7 @@ function sendChat(msg) {
 
 function showChatWindow(array) {
 
-    createWindow("chat", 400, 900, window.innerWidth - 400, 80);
+    createWindow("chat", .2, .9, .8, 0);
     let w = document.getElementById(chat_window_name);
     let ul = document.getElementById(chat_window_name + "_list");
     let body = document.getElementById(chat_window_name + "_body");
@@ -33,8 +33,17 @@ function showChatWindow(array) {
     footer.appendChild(chatInput);
     body.appendChild(footer);
     chatInput.onchange = function (evt) {
-        sendChat(evt.target.value);
-        interpretDiceRoll(evt.target.value);
+        if (evt.target.value.trim().startsWith('/r ')) {
+            console.log(evt.target.value.substr(3));
+            socket.emit('roll', evt.target.value.substr(3));
+        } else if (evt.target.value.trim().startsWith('/roll ')) {
+            console.log(evt.target.value.substr(6));
+            socket.emit('roll', evt.target.value.substr(6));
+        }
+        else {
+            sendChat(evt.target.value);
+        }
+
         evt.target.value = "";
     };
 

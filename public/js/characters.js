@@ -67,7 +67,7 @@ async function showNPC(name) {
                 }
         }
     }
-    createWindow(name, 500, 700); // todo better window placement
+    createWindow(name, 0.4, 0.4, 0.3, 0.3); // todo better window placement
     document.getElementById("window_" + name + "_body").innerHTML = newText;
 }
 
