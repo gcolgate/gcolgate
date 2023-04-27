@@ -1,7 +1,57 @@
 {
 if (!window.DndAbility)
 window.DndAbility = function (ability) { return ability + " (" + (Math.trunc(ability - 10) / 2) + ")" };
+
+window.DndSpeed = function(name, ability, units) {
+if(!ability) return "";
+let value = Editable(sheet,ability,"npcNumInput");
+return '<li><span class="npcBold">' +name + '</span>' + value + units +'</li>';
+}
+
+
+
+
+createCSSSelector('.npcsetheader', "box-sizing: border-box; \
+color: rgb(88, 23, 13); \
+color-scheme: light dark; \
+font-family: Mrs Eaves; \
+font-size: 30px; \
+font-variant-alternates: normal; \
+font-variant-caps: small-caps; \
+font-variant-east-asian: normal; \
+font-variant-ligatures: normal; \
+font-variant-numeric: normal; \
+font-variant-position: normal; \
+font-weight: 700; \
+line-height: 42px; \
+margin-bottom: -5px; \
+margin-left: 0px; \
+margin-right: 0px; \
+margin-top: -10px; \
+text-transform: capitalize");
+
+
+
+createCSSSelector('.npcNumInput',' \
+background-color: rgb(255, 215, 170); \
+border-top-style: hidden;\
+border-right-style: hidden;\
+border-left-style: hidden;\
+border-bottom-style: hidden;\
+color-scheme: light dark; \
+font-family: Mrs Eaves; \
+font-variant-alternates: normal; \
+font-variant-caps: small-caps; \
+font-variant-east-asian: normal; \
+font-variant-ligatures: normal; \
+font-variant-numeric: normal; \
+font-variant-position: normal; \
+font-weight: 300;');
+
+createCSSSelector('.npcBold', "font-weight: 700;");
+
 } @
+
 
 <div>
   <div class="body" style="height:{w.contentHeight}px;
@@ -9,24 +59,7 @@ window.DndAbility = function (ability) { return ability + " (" + (Math.trunc(abi
         background-color: rgb(255, 215, 170);
         width:100%;">
     <div>
-      <h1 style="box-sizing: border-box;
-        color: rgb(88, 23, 13);
-        color-scheme: light dark;
-        font-family: Mrs Eaves;
-        font-size: 30px;
-        font-variant-alternates: normal;
-        font-variant-caps: small-caps;
-        font-variant-east-asian: normal;
-        font-variant-ligatures: normal;
-        font-variant-numeric: normal;
-        font-variant-position: normal;
-        font-weight: 700;
-        line-height: 42px;
-        margin-bottom: -5px;
-        margin-left: 0px;
-        margin-right: 0px;
-        margin-top: -10px;
-        text-transform: capitalize">
+      <h1 class="npcsetheader">
         {sheet.name} </h1>
     </div>
     <div style="box-sizing: border-box;
@@ -50,18 +83,25 @@ window.DndAbility = function (ability) { return ability + " (" + (Math.trunc(abi
           font-weight: 400;
           line-height: 21px;
           list-style-type: none">
-        <li><span style="font-weight: 700;">Armor Class </span>{sheet.system.attributes.ac.flat}</li>
-        <li><span style="font-weight: 700;">Hit Points </span>{sheet.system.attributes.hp.max}</li>
-        <li><span style="font-weight: 700;">Cur Hit Points </span>{sheet.system.attributes.hp.value}</li>
-        {sheet.system.attributes.movement.burrow ? '<li><span style="font-weight: 700;"> Burrow </span>' +
-          sheet.system.attributes.movement.burrow + " " + sheet.system.attributes.movement.units + '</li>' : ""}
-        {sheet.system.attributes.movement.climb ? '<li><span style="font-weight: 700;"> Climb </span>' +
-          sheet.system.attributes.movement.climb + " " + sheet.system.attributes.movement.units + '</li>' : ""}
-        {sheet.system.attributes.movement.swim ? '<li><span style="font-weight: 700;"> Swim </span>' +
-          sheet.system.attributes.movement.swim + " " + sheet.system.attributes.movement.units + '</li>' : ""}
-        {sheet.system.attributes.movement.walk ? '<li><span style="font-weight: 700;"> Walk </span>' +
-          sheet.system.attributes.movement.walk + " " + sheet.system.attributes.movement.units + '</li>' : ""}
-        {sheet.system.attributes.movement.hover ? "<li>Can Hover</li>" : ""}
+        <li><span class="npcBold">Armor Class
+          </span>{
+          Editable(sheet,
+          "sheet.system.attributes.ac.flat",
+          "npcNumInput")}
+        </li>
+        <li><span class="npcBold">Hit Points </span>{Editable(sheet,
+          "sheet.system.attributes.hp.max",
+          "npcNumInput")}</li>
+        <li><span class="npcBold">Cur Hit Points </span>{Editable(sheet,
+          "sheet.system.attributes.hp.value",
+          "npcNumInput")}
+
+          { window.DndSpeed( "burrow", sheet.system.attributes.movement.burrow, sheet.system.attributes.movement.units)
+          }
+          { window.DndSpeed( "climb", sheet.system.attributes.movement.climb, sheet.system.attributes.movement.units) }
+          { window.DndSpeed( "Swim", sheet.system.attributes.movement.swim, sheet.system.attributes.movement.units) }
+          { window.DndSpeed( "Walk", sheet.system.attributes.movement.walk, sheet.system.attributes.movement.units) }
+        <li> {sheet.system.attributes.movement.hover ? 'Can Hover' : ""} </li>
       </ul>
     </div>
     <div></div>
@@ -89,7 +129,7 @@ window.DndAbility = function (ability) { return ability + " (" + (Math.trunc(abi
         <div style="font-weight: 700;display: inline-block"><span>WIS</span><br>
           <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.wis.value)}</div>
         </div>
-        <div style="display: inline-block; font-weight: 700;"><span>CHA</span><br>
+        <div style=" font-weight: 700;"><span>CHA</span><br>
           <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.cha.value)}</div>
         </div>
       </div>

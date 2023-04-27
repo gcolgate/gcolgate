@@ -31,6 +31,12 @@ function get5eDetails(sheet) {
     return commaString(array)
 }
 
+function Editable(sheet, s, className) {
+
+    return '<input class="' + className + ' type="text" id="' + s + '" value="' + eval(s) + '">';
+
+}
+
 async function showNPC(name) {
     console.log(name);
     let w = createWindow(name, 0.4, 0.4, 0.3, 0.3); // todo better window placement
@@ -49,15 +55,19 @@ async function showNPC(name) {
             case 0:
                 if (text[i] == '@') { newText = ""; break; };
                 if (text[i] == '{') { state = 1; code = ""; }
-                else if (text[i] == '}') throw new Error("Mismatched '}");
+                else if (text[i] == '}') throw new Error("Mismatched '} fileSOFar: " + newText + "\ncodeBeingEvaluated " + code);
                 else newText += text[i];
                 break;
             default:
                 if (text[i] == '}') {
                     state--;
                     if (state == 0) {
-                        console.log("Eval " + code);
-                        newText += eval(code);
+                        try {
+                            console.log("Eval " + code);
+                            newText += eval(code);
+                        } catch (error) {
+                            throw new Error(error + "  fileSOFar: " + newText + "\ncodeBeingEvaluated " + code);
+                        }
                     }
                     else {
                         code += '}';
