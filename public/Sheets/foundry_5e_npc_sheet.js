@@ -4,7 +4,7 @@
 
 // support functions, store globally in window... maybe later elsewhere
 
-window.DndAbility = function (ability) { return ability + " (" + (Math.trunc(ability - 10) / 2) + ")" };
+window.DndAbility = function (ability) { return ability + " (" + Math.trunc((ability - 10) / 2) + ")" };
 
 window.DndSpeed = function (name, ability, units) {
     if (!ability) return "";
@@ -18,6 +18,7 @@ window.DndSpeed = function (name, ability, units) {
 
 createCSSSelector('.npcsetheader', "box-sizing: border-box; \
     color: rgb(88, 23, 13); \
+    background-color: rgb(255, 215, 170); \
     color-scheme: light dark; \
     font-family: Mrs Eaves; \
     font-size: 30px; \

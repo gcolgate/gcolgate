@@ -5,7 +5,9 @@
         width:100%;">
     <div>
       <h1 class="npcsetheader">
-        {sheet.name} </h1>
+        { Editable(sheet,
+        "sheet.name",
+        "npcsetheader npcTitleInput")} </h1>
     </div>
     <div style="box-sizing: border-box;
           color: rgb(0, 0, 0);
@@ -74,7 +76,7 @@
         <div style="font-weight: 700;display: inline-block"><span>WIS</span><br>
           <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.wis.value)}</div>
         </div>
-        <div style=" font-weight: 700;"><span>CHA</span><br>
+        <div style=" font-weight: 700;display: inline-block"><span>CHA</span><br>
           <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.cha.value)}</div>
         </div>
       </div>
