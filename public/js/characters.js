@@ -37,12 +37,26 @@ function Editable(sheet, s, className) {
 
 }
 
+registeredSheets = {};
+
+
 async function showNPC(name) {
     console.log(name);
     let w = createWindow(name, 0.4, 0.4, 0.3, 0.3); // todo better window placement
+    let sheetName = "foundry_5e_npc_sheet";
 
-    let response = await fetch("./Sheets/foundry_5e_npc_sheet.html"); // TODO dont hardcode name
-    const text = await response.text();
+    if (!registeredSheets[sheetName]) {
+        // load sheet and js (change to promise all) for speed) for this sheet
+        let response = await fetch("./Sheets/" + sheetName + ".html"); // TODO dont hardcode name
+        const text = await response.text();
+        response = await fetch("./Sheets/" + sheetName + ".js"); // TODO dont hardcode name
+        const js = await response.text();
+        eval(js);
+        registeredSheets[sheetName] = text;
+    }
+
+    let text = `${registeredSheets[sheetName]}`;
+    //  then get the sheet
     response = await fetch("./Compendium/" + name);
     const sheet = await response.json();
 
