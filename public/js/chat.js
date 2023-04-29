@@ -12,8 +12,8 @@ function sendChat(msg) {
 
 function showChatWindow(array) {
 
-    createWindow("chat", .2, .9, .8, 0);
-    let w = document.getElementById(chat_window_name);
+    let w = createOrGetWindow("chat", .2, .9, .8, 0);
+    bringToFront(w);
     let ul = document.getElementById(chat_window_name + "_list");
     let body = document.getElementById(chat_window_name + "_body");
     while (ul.firstChild) {

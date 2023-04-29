@@ -23,28 +23,72 @@ function commaString(array) {
     return text;
 }
 
-function get5eDetails(sheet) {
-    let array = details(sheet.system.details.type);
+function get5eDetails(thing) {
+    let array = details(thing.system.details.type);
 
-    if (sheet.system.details.alignment) array.push(sheet.system.details.alignment);
-    if (sheet.system.details.race) array.push(sheet.system.details.race);
+    if (thing.system.details.alignment) array.push(thing.system.details.alignment);
+    if (thing.system.details.race) array.push(thing.system.details.race);
     return commaString(array)
 }
 
-function Editable(sheet, s, className) {
+function changeSheet(button) {
+    let id = getWindowId(button).substr(7); // the window id is window_fullthingname
+    // need to add network step
+    let thing = registeredThings[id];
+    console.log(button.id + ' = ' + button.value);
+    eval(button.id + ' = ' + button.value);  // the button id is code like thing.strength.value
+    // do do this redisplayNPC should be called after network round trip
+    // server should not do eval so server update has to be different, or it could evaluate the incoming thing
+    // to be only characters and dots
 
-    return '<input class="' + className + ' type="text" id="' + s + '" value="' + eval(s) + '">';
+    socket.emit('change', {
+        change: button.id + ' = ' + button.value,
+        thing: id
+    }
+    );
+
 
 }
 
-registeredSheets = {};
+function Editable(thing, s, className) { // thing must be here because the eval might use it
+    return '<input class="' + className + ' type="text" id="' + s + '" value="' + eval(s) +
+        '" onchange="changeSheet(this)">';
+}
+/// todo: need to clean these out as you close windows
+var registeredThings = {};
+var registeredSheets = {};
+
+async function showNPC(name, instance) {
+    //  then get the sheet
+    if (!registeredThings[name + instance]) {
+        response = await fetch("./Compendium/" + name);
+        const thing = await response.json();
+        registeredThings[name + instance] = thing;
+    }
+    redisplayNPC(name + instance, true);
+}
+
+async function UpdateNPC(change) {
+
+    if (!registeredThings[change.thing]) {
+        return; //  NPC has never been opened
+    }
+    let thing = registeredThings[change.thing];
+    eval(change.change);
+    if (windowShowing(change.thing)) {
+
+        redisplayNPC(change.thing);
+    }
+
+}
 
 
-async function showNPC(name) {
-    console.log(name);
-    let w = createWindow(name, 0.4, 0.4, 0.3, 0.3); // todo better window placement
-    let sheetName = "foundry_5e_npc_sheet";
+async function redisplayNPC(fullthingname) {
 
+    /// TODO: needs to save and restore any scrolling or window resizing
+    console.log(fullthingname);
+    let w = createOrGetWindow(fullthingname, 0.4, 0.4, 0.3, 0.3); // todo better window placement
+    let sheetName = "foundry_5e_npc_sheet"; // to do choose which sheet somehow
     if (!registeredSheets[sheetName]) {
         // load sheet and js (change to promise all) for speed) for this sheet
         let response = await fetch("./Sheets/" + sheetName + ".html"); // TODO dont hardcode name
@@ -54,12 +98,8 @@ async function showNPC(name) {
         eval(js);
         registeredSheets[sheetName] = text;
     }
-
+    let thing = registeredThings[fullthingname]
     let text = `${registeredSheets[sheetName]}`;
-    //  then get the sheet
-    response = await fetch("./Compendium/" + name);
-    const sheet = await response.json();
-
     let newText = "";
     let state = 0;
     let code = "";
@@ -93,6 +133,6 @@ async function showNPC(name) {
                 }
         }
     }
-    document.getElementById("window_" + name + "_body").innerHTML = newText;
+    document.getElementById("window_" + fullthingname + "_body").innerHTML = newText;
 }
 

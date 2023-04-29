@@ -29,7 +29,24 @@ function clickToBringWindowIntoFocus(evt) {
     bringToFront(evt.currentTarget);
 }
 
-function createWindow(id, width, height, left, top) {
+function getWindowId(element) {
+
+    do {
+        if (element.class === "window") {
+            return element.id;
+        }
+        element = element.parentElement;
+    } while (element);
+    return null;
+}
+
+function windowShowing(name) {
+    let windowName = "window_" + name;
+    let w = document.getElementById(windowName);
+    return w;
+}
+
+function createOrGetWindow(id, width, height, left, top) {
 
     let windowName = "window_" + id;
     let w = document.getElementById(windowName);
@@ -96,14 +113,14 @@ function createWindow(id, width, height, left, top) {
         w.style.boxShadow = "8px 8px 6px -6px black";
         w.style.opacity = "0.9";
         w.style.display = "none";
+        // Event listener for clicks
+        w.addEventListener('mousedown', clickToBringWindowIntoFocus);
 
 
         windows.push(w);
     }
 
-    // Event listener for clicks
-    w.addEventListener('mousedown', clickToBringWindowIntoFocus);
-    bringToFront(w);
+
     fadeIn(w);
     return w;
 

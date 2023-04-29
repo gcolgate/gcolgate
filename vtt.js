@@ -8,6 +8,7 @@ const http = require('http');
 const sockets = require("socket.io");
 const init = require('./init.js');
 const dice = require('./roller.js')
+const ChangeThing = require('./sheeter.js')
 
 
 
@@ -25,7 +26,6 @@ var chats = []; // chats so far
 
 
 
-
 /// TODO: put this in a module
 function ParseJson(name, raw) {
     let json = null;
@@ -38,7 +38,9 @@ function ParseJson(name, raw) {
     return json;
 }
 
-
+var test = 4;
+eval("test = 3");
+console.log(test);
 
 async function InitialDiskLoad() {
     let promises = [];
@@ -133,6 +135,9 @@ io.on('connection', (socket) => {
             ReBroadCast(socket, 'chat', '<span class=chatUser">' + sender + '</span><p> ' + msg + '</p>');
         }
     });
+    socket.on('change', (msg) => {
+        ChangeThing(msg.thing, msg.change, io, msg);
+    })
 
     socket.on('roll', (msg) => {
         let m = msg;

@@ -27,11 +27,11 @@ async function GetDirectory(directory) {
 
 
 function clickOnNPC(event) {
-    // todo write to be in parallel
+
     console.log("CLick");
     const name = this.innerHTML;
 
-    showNPC(name);
+    showNPC(name, "");
 }
 
 
@@ -97,7 +97,9 @@ socket.on('chat', function (msg) {
     addChat(msg);
 });
 
-
+socket.on('change', function (msg) {
+    UpdateNPC(msg);
+});
 //
 // error handling, for now simple stupid alerts, todo: better UI
 socket.on('error_alert', function (msg) {
@@ -177,7 +179,8 @@ compendiumButton.onclick = function () {
         alert("Have not yet receieved Compendium from server");
     } else {
 
-        createWindow('Compendium', .2, .6, .2, .2);
+        let w = createOrGetWindow('Compendium', .2, .6, .2, .2);
+        bringToFront(w);
         showDirectoryWindow('Compendium', Compendium);
     }
 

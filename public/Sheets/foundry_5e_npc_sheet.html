@@ -5,8 +5,8 @@
         width:100%;">
     <div>
       <h1 class="npcsetheader">
-        { Editable(sheet,
-        "sheet.name",
+        { Editable(thing,
+        "thing.name",
         "npcsetheader npcTitleInput")} </h1>
     </div>
     <div style="box-sizing: border-box;
@@ -19,7 +19,7 @@
           margin:8px;
           line-height: 26.1333px;
           text-transform: lowercase">
-      {sheet.system.traits.size}<span> {get5eDetails(sheet)} </span></div>
+      {thing.system.traits.size}<span> {get5eDetails(thing)} </span></div>
     <div></div>
     <div>
       <ul style="box-sizing: border-box;
@@ -32,23 +32,27 @@
           list-style-type: none">
         <li><span class="npcBold">Armor Class
           </span>{
-          Editable(sheet,
-          "sheet.system.attributes.ac.flat",
+          Editable(thing,
+          "thing.system.attributes.ac.flat",
           "npcNumInput")}
         </li>
-        <li><span class="npcBold">Hit Points </span>{Editable(sheet,
-          "sheet.system.attributes.hp.max",
+        <li><span class="npcBold">Hit Points </span>{Editable(thing,
+          "thing.system.attributes.hp.max",
           "npcNumInput")}</li>
-        <li><span class="npcBold">Cur Hit Points </span>{Editable(sheet,
-          "sheet.system.attributes.hp.value",
+        <li><span class="npcBold">Cur Hit Points </span>{Editable(thing,
+          "thing.system.attributes.hp.value",
           "npcNumInput")}
 
-          { window.DndSpeed( "burrow", sheet.system.attributes.movement.burrow, sheet.system.attributes.movement.units)
+          { window.DndSpeed( "burrow", thing, thing.system.attributes.movement.burrow,
+          thing.system.attributes.movement.units)
           }
-          { window.DndSpeed( "climb", sheet.system.attributes.movement.climb, sheet.system.attributes.movement.units) }
-          { window.DndSpeed( "Swim", sheet.system.attributes.movement.swim, sheet.system.attributes.movement.units) }
-          { window.DndSpeed( "Walk", sheet.system.attributes.movement.walk, sheet.system.attributes.movement.units) }
-        <li> {sheet.system.attributes.movement.hover ? 'Can Hover' : ""} </li>
+          { window.DndSpeed( "climb", thing, thing.system.attributes.movement.climb,
+          thing.system.attributes.movement.units) }
+          { window.DndSpeed( "Swim", thing, thing.system.attributes.movement.swim,
+          thing.system.attributes.movement.units) }
+          { window.DndSpeed( "Walk", thing, thing.system.attributes.movement.walk,
+          thing.system.attributes.movement.units) }
+        <li> {thing.system.attributes.movement.hover ? 'Can Hover' : ""} </li>
       </ul>
     </div>
     <div></div>
@@ -62,22 +66,28 @@
             font-size: 20px;
             font-weight: 400">
         <div style="font-weight: 700;display: inline-block"><span>STR</span><br>
-          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.str.value)}</div>
+          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(thing,"thing.system.abilities.str.value")}
+          </div>
         </div>
         <div style="font-weight: 700;display: inline-block"><span>DEX</span><br>
-          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.dex.value)}</div>
+          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(thing,"thing.system.abilities.dex.value")}
+          </div>
         </div>
         <div style="font-weight: 700;display: inline-block"><span>CON</span><br>
-          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.con.value)}</div>
+          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(thing,"thing.system.abilities.con.value")}
+          </div>
         </div>
         <div style="font-weight: 700;display: inline-block"><span>INT</span><br>
-          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.int.value)}</div>
+          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(thing,"thing.system.abilities.int.value")}
+          </div>
         </div>
         <div style="font-weight: 700;display: inline-block"><span>WIS</span><br>
-          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.wis.value)}</div>
+          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(thing,"thing.system.abilities.wis.value")}
+          </div>
         </div>
         <div style=" font-weight: 700;display: inline-block"><span>CHA</span><br>
-          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(sheet.system.abilities.cha.value)}</div>
+          <div style="font-weight: 400; font-size: 15px;">{window.DndAbility(thing,"thing.system.abilities.cha.value")}
+          </div>
         </div>
       </div>
     </div>

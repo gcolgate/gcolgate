@@ -4,12 +4,15 @@
 
 // support functions, store globally in window... maybe later elsewhere
 
-window.DndAbility = function (ability) { return ability + " (" + Math.trunc((ability - 10) / 2) + ")" };
+window.DndAbility = function (thing, ability) {
+    return Editable(thing, ability, "npcNum") +
+        " (" + Math.trunc((eval(ability) - 10) / 2) + ")"
+};
 
-window.DndSpeed = function (name, ability, units) {
+window.DndSpeed = function (title, thing, ability, units) {
     if (!ability) return "";
-    let value = Editable(sheet, ability, "npcNumInput");
-    return '<li><span class="npcBold">' + name + '</span>' + value + units + '</li>';
+    let value = Editable(thing, ability, "npcNumInput");
+    return '<li><span class="npcBold">' + title + '</span>' + value + units + '</li>';
 }
 
 
