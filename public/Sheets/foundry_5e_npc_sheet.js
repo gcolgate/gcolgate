@@ -16,6 +16,25 @@ window.DndSpeed = function (title, thing, ability, units) {
 }
 
 
+window.get5eDetails = function (thing) {
+    // founddry 5e is poor, maybe write foudry cleaner and ahve cleaner sheets
+    if (thing.system) {
+        let array = thing.system.details.type ? details(thing.system.details.type) :
+            [thing.system.details.background,]
+            ;
+
+        if (thing.system.details.alignment) { array.push(thing.system.details.alignment); }
+        if (thing.system.details.race) { array.push(thing.system.details.race); }
+        return commaString(array);
+    } else {
+
+
+
+    }
+    return "";
+};
+
+
 // support styles (class=XXX), store globally in styles, maybe later elsewhere
 
 

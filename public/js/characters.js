@@ -23,13 +23,6 @@ function commaString(array) {
     return text;
 }
 
-function get5eDetails(thing) {
-    let array = details(thing.system.details.type);
-
-    if (thing.system.details.alignment) array.push(thing.system.details.alignment);
-    if (thing.system.details.race) array.push(thing.system.details.race);
-    return commaString(array)
-}
 
 function changeSheet(button) {
     let id = getWindowId(button).substr(7); // the window id is window_fullthingname
@@ -61,7 +54,7 @@ var registeredSheets = {};
 async function showNPC(name, instance) {
     //  then get the sheet
     if (!registeredThings[name + instance]) {
-        response = await fetch("./Compendium/" + name);
+        response = await fetch("./CompendiumFiles/" + name);
         const thing = await response.json();
         registeredThings[name + instance] = thing;
     }

@@ -53,7 +53,17 @@ async function InitialDiskLoad() {
     let results = await Promise.all(promises);
     passwords = ParseJson('passwords.json', results[0]);
     players = ParseJson('players.json', results[1]);
-    Compendium = results[2];
+    let rawCompendium = results[2];
+    Compendium = [];
+    // todo reorganize
+    for (let i = 0; i < rawCompendium.length; i++) {
+
+        if (rawCompendium[i].startsWith('tag_')) {
+            let file = (await (fs.readFile(path.join(__dirname, 'public', 'Compendium', rawCompendium[i])))).toString();
+            Compendium.push(file);
+        }
+
+    }
 
     init.inited = true;
 
@@ -187,6 +197,14 @@ http_io.listen(port, () => console.log(`VTT listening on port ${port}`))
 
 // requests required
 // send initial view
+// Items:
+//      unique      .... these items always are not instanced
+//      instances   .... these are instances in the current scene
+//                          may not be a list that is seen like unique ones,
+//                          but are created when templates dragged into the scene.
+//                          these are written with the scene (maybe just diffs? Advanced). 
+//      templates   .... these are not instanced, but when added to a scene are instanced.
+//                       need 'edit' checkbox to prevent accidental editing.
 // show sheets
 //      classify sheets, so npc,pc, item, etc
 //        classify sheet templates

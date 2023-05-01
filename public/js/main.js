@@ -22,14 +22,17 @@ async function GetDirectory(directory) {
     let response = await fetch("./" + directory);
     const jsonData = await response.json();
     console.log(jsonData);
+
+    for (let i = 0; i < jsonData.length; i++) {
+        jsonData[i] = JSON.parse(jsonData[i]);
+    }
     return jsonData;
 }
 
 
 function clickOnNPC(event) {
 
-    console.log("CLick");
-    const name = this.innerHTML;
+    const name = this.references.file;
 
     showNPC(name, "");
 }
@@ -41,12 +44,16 @@ function showDirectoryWindow(id, array) {
     let window = document.getElementById("window_" + id);
     let ul = document.getElementById("window_" + id + "_list");
 
+    ul.style.height = "100%";
+    ul.style.overflow = "auto";
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
     }
     for (let i = 0; i < array.length; i++) {
         var li = document.createElement("li");
-        li.appendChild(document.createTextNode(array[i]));
+        let text = document.createTextNode(array[i].name);
+        li.appendChild(text);
+        li.references = array[i];
         li.addEventListener('click', clickOnNPC, false);
         ul.appendChild(li);
     }

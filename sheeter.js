@@ -30,7 +30,7 @@ async function ChangeThing(thingName, replacement, io, msg) {
     if (replacement) {
         // Need to put these in a cache and write them out over time for speed
         // this should go through a cache
-        let filePath = path.join(__dirname, 'public', 'Compendium', thingName);
+        let filePath = path.join(__dirname, 'public', 'CompendiumFiles', thingName);
         let result = await fs.readFile(filePath);
         let thing = ParseJson(filePath, result); // for eval to work we need a thing
 

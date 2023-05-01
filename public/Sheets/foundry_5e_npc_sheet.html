@@ -1,3 +1,8 @@
+{
+if(!thing.system && thing.data) {
+thing.system = thing.data;
+}
+} @
 <div>
   <div class="body" style="height:{w.contentHeight}px;
         overflow:auto;
@@ -19,7 +24,7 @@
           margin:8px;
           line-height: 26.1333px;
           text-transform: lowercase">
-      {thing.system.traits.size}<span> {get5eDetails(thing)} </span></div>
+      {thing.system.traits ? thing.system.traits.size : "medium" }<span> {window.get5eDetails(thing)} </span></div>
     <div></div>
     <div>
       <ul style="box-sizing: border-box;
