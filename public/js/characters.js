@@ -51,14 +51,24 @@ function Editable(thing, s, className) { // thing must be here because the eval 
 var registeredThings = {};
 var registeredSheets = {};
 
-async function showNPC(name, instance) {
+async function showThing(name, instance, sheet) {
     //  then get the sheet
     if (!registeredThings[name + instance]) {
-        response = await fetch("./CompendiumFiles/" + name);
+
+        let f = "CompendiumFiles/characters.js";
+
+
+        response = await fetch(f);
+        const t = await response.text();
+
+
+        let file = "CompendiumFiles/" + name;
+        console.log(file);
+        response = await fetch(file);
         const thing = await response.json();
         registeredThings[name + instance] = thing;
     }
-    redisplayNPC(name + instance, true);
+    redisplayNPC(name + instance, sheet);
 }
 
 async function UpdateNPC(change) {
@@ -68,28 +78,39 @@ async function UpdateNPC(change) {
     }
     let thing = registeredThings[change.thing];
     eval(change.change);
-    if (windowShowing(change.thing)) {
+    w = windowShowing(change.thing);
+    if (w) {
 
-        redisplayNPC(change.thing);
+        redisplayNPC(change.thing, w.sheet);
     }
 
 }
 
 
-async function redisplayNPC(fullthingname) {
+async function redisplayNPC(fullthingname, sheetName) {
 
     /// TODO: needs to save and restore any scrolling or window resizing
     console.log(fullthingname);
     let w = createOrGetWindow(fullthingname, 0.4, 0.4, 0.3, 0.3); // todo better window placement
-    let sheetName = "foundry_5e_npc_sheet"; // to do choose which sheet somehow
+    if (sheetName.endsWith(".html")) {
+        sheetName = sheetName.slice(0, sheetName.length - 5);
+    }
+    w.sheet = sheetName;
+
+
     if (!registeredSheets[sheetName]) {
-        // load sheet and js (change to promise all) for speed) for this sheet
-        let response = await fetch("./Sheets/" + sheetName + ".html"); // TODO dont hardcode name
-        const text = await response.text();
-        response = await fetch("./Sheets/" + sheetName + ".js"); // TODO dont hardcode name
-        const js = await response.text();
-        eval(js);
-        registeredSheets[sheetName] = text;
+        try {
+            // load sheet and js (change to promise all) for speed) for this sheet
+            let response = await fetch("./Sheets/" + sheetName + ".html"); // TODO dont hardcode name
+            const text = await response.text();
+            response = await fetch("./Sheets/" + sheetName + ".js"); // TODO dont hardcode name
+            const js = await response.text();
+            eval(js);
+            registeredSheets[sheetName] = text;
+        } catch (error) {
+            console.error("Could not load " + sheetName + " " + error);
+            alert("Could not load " + sheetName + " " + error);
+        }
     }
     let thing = registeredThings[fullthingname]
     let text = `${registeredSheets[sheetName]}`;

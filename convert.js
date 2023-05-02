@@ -108,10 +108,12 @@ async function doit() {
 
                 json = JSON.parse(subfiles[i]);
 
+                json.flags.MAGICSYMBOL.hash = json.flags.MAGICSYMBOL.hash.replace(/[`~!@#$%^*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
 
-                if (json.flags.MAGICWORD.hash) {
+                if (json.flags.MAGICSYMBOL.hash) {
 
-                    let outfile = path.join(__dirname, 'public', 'CompendiumFiles', json.flags.plutonium.hash + ".json");
+
+                    let outfile = path.join(__dirname, 'public', 'CompendiumFiles', json.flags.MAGICSYMBOL.hash + ".json");
 
                     await fs.writeFile(outfile, subfiles[i], (err) => {
                         if (err)
@@ -123,7 +125,7 @@ async function doit() {
                         }
                     });
 
-                    let tagsSource = json.flags.MAGICWORD;
+                    let tagsSource = json.flags.MAGICSYMBOL;
                     let tags = {
                         file: tagsSource.hash + '.json',
                         page: tagsSource.page,
@@ -133,7 +135,7 @@ async function doit() {
                         name: json.name,
                         img: json.img,
                     };
-                    let outfile2 = path.join(path.join(__dirname, 'public', 'Compendium', "tag_" + json.flags.plutonium.hash + ".json"));
+                    let outfile2 = path.join(path.join(__dirname, 'public', 'Compendium', "tag_" + json.flags.MAGICSYMBOL.hash + ".json"));
 
 
                     fs.writeFile(outfile2, JSON.stringify(tags), (err) => {
@@ -148,7 +150,7 @@ async function doit() {
                 }
             }
             catch (err) {
-                console.error("error parsing json ( " + err + "+)" + json.flags.plutonium.hash);
+                console.error("error parsing json ( " + err + "+)" + json.flags.MAGICSYMBOL.hash);
             }
 
 

@@ -18,7 +18,7 @@ const port = 8000;
 const app = express();
 const http_io = http.Server(app);
 const io = sockets(http_io);
-app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folde
+app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folder
 
 var passwords, players, Compendium;
 var chats = []; // chats so far
@@ -37,10 +37,6 @@ function ParseJson(name, raw) {
     }
     return json;
 }
-
-var test = 4;
-eval("test = 3");
-console.log(test);
 
 async function InitialDiskLoad() {
     let promises = [];

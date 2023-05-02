@@ -30,11 +30,11 @@ async function GetDirectory(directory) {
 }
 
 
-function clickOnNPC(event) {
+function clickOnThing(event) {
 
     const name = this.references.file;
 
-    showNPC(name, "");
+    showThing(name, "", this.references.page);
 }
 
 
@@ -54,7 +54,7 @@ function showDirectoryWindow(id, array) {
         let text = document.createTextNode(array[i].name);
         li.appendChild(text);
         li.references = array[i];
-        li.addEventListener('click', clickOnNPC, false);
+        li.addEventListener('click', clickOnThing, false);
         ul.appendChild(li);
     }
     fadeIn(window);

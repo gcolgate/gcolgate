@@ -25,7 +25,7 @@ function showChatWindow(array) {
     for (let i = 0; i < array.length; i++) {
         var li = document.createElement("li");
         li.appendChild(document.createTextNode(array[i]));
-        // li.addEventListener('click', clickOnNPC, false);
+
         ul.appendChild(li);
     }
     var footer = document.createElement("footer");
