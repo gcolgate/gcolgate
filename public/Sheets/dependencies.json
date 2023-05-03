@@ -1,0 +1,16 @@
+{
+    "bestiary": [
+        "bestiary.js",
+        "itemSummary.html",
+        "items.js"
+    ],
+    "items": [
+        "items.js"
+    ],
+    "itemsSummary": [
+        "items.js"
+    ],
+    "spells": [
+        "spells.js"
+    ]
+}

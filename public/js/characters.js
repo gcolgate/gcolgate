@@ -45,7 +45,7 @@ function changeSheet(button) {
     let thing = registeredThings[id];
     console.log(button.id + ' = ' + button.value);
     eval(button.id + ' = ' + button.value);  // the button id is code like thing.strength.value
-    // do do this redisplayNPC should be called after network round trip
+    // do do this displayThing should be called after network round trip
     // server should not do eval so server update has to be different, or it could evaluate the incoming thing
     // to be only characters and dots
 
@@ -65,6 +65,7 @@ function Editable(thing, s, className) { // thing must be here because the eval 
 /// todo: need to clean these out as you close windows
 var registeredThings = {};
 var registeredSheets = {};
+var sheetDependencies = null;
 
 async function showThing(name, instance, sheet) {
     //  then get the sheet
@@ -78,7 +79,7 @@ async function showThing(name, instance, sheet) {
         const thing = await response.json();
         registeredThings[name + instance] = thing;
     }
-    redisplayNPC(name + instance, sheet);
+    displayThing(name + instance, sheet);
 }
 
 async function UpdateNPC(change) {
@@ -91,7 +92,7 @@ async function UpdateNPC(change) {
     w = windowShowing(change.thing);
     if (w) {
 
-        redisplayNPC(change.thing, w.sheet);
+        displayThing(change.thing, w.sheet);
     }
 
 }
@@ -134,8 +135,20 @@ function parseSheet(thing, sheetName, w) { // thing and w are  required by evals
     return newText;
 }
 
+/// TODO: put this in a module
+function ParseJson(name, raw) {
+    let json = null;
 
-async function redisplayNPC(fullthingname, sheetName) {
+    try {
+        json = JSON.parse(raw);
+    } catch (err) {
+        console.error("error parsing json ( " + err + ") for " + name);
+    }
+    return json;
+}
+
+
+async function displayThing(fullthingname, sheetName) {
 
     /// TODO: needs to save and restore any scrolling or window resizing
     console.log(fullthingname);
@@ -148,35 +161,33 @@ async function redisplayNPC(fullthingname, sheetName) {
 
     if (!registeredSheets[sheetName]) {
         try {
+            if (sheetDependencies == null);
             // load sheet and js (change to promise all) for speed) for this sheet
-            let response = await fetch("./Sheets/" + sheetName + ".html"); // TODO dont hardcode name
+            let response = await fetch("./Sheets/dependencies.json"); // TODO dont hardcode name
+            let dependencies = await response.json();
+            if (dependencies[sheetName]) {
+                let depends = dependencies[sheetName];
+                for (let d = 0; d < depends.length; d++) {
+                    let response = await fetch("./Sheets/" + depends[d]);
+                    if (depends[d].endsWith('.js')) {
+                        const js = await response.text();
+                        eval(js);
+                    }
+                    else if (depends[d].endsWith('.html')) {
+                        const text = await response.text();
+                        registeredSheets[depends[d].slice(0, depends[d].length - 5)] = text;
+                    }
+                }
+            }
+            response = await fetch("./Sheets/" + sheetName + ".html");
             const text = await response.text();
-            response = await fetch("./Sheets/" + sheetName + ".js"); // TODO dont hardcode name
-            const js = await response.text();
-            eval(js);
+
             registeredSheets[sheetName] = text;
         } catch (error) {
             console.error("Could not load " + sheetName + " " + error);
             alert("Could not load " + sheetName + " " + error);
         }
-        // to do do this better by including dependencies
-        if (sheetName === "bestiary") {
-            let dependentSheet = "itemSummary"
-            if (!registeredSheets[dependentSheet]) {
-                try {
-                    // load sheet and js (change to promise all) for speed) for this sheet
-                    let response = await fetch("./Sheets/" + dependentSheet + ".html"); // TODO dont hardcode name
-                    const text = await response.text();
-                    response = await fetch("./Sheets/" + dependentSheet + ".js"); // TODO dont hardcode name
-                    const js = await response.text();
-                    eval(js);
-                    registeredSheets[dependentSheet] = text;
-                } catch (error) {
-                    console.error("Could not load " + dependentSheet + " " + error);
-                    alert("Could not load " + dependentSheet + " " + error);
-                }
-            }
-        }
+
     }
     let thing = registeredThings[fullthingname]
 
