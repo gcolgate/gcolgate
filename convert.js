@@ -103,17 +103,20 @@ async function doit() {
         }
 
         console.log("Num SubFiles " + subfiles.length);
+
+        let artGeneratorFile = [];
         for (let i = 0; i < subfiles.length; i++) {
             try {
 
                 json = JSON.parse(subfiles[i]);
+                let tagsSource = json.flags.MAGICFLAG;
 
-                json.flags.MAGICSYMBOL.hash = json.flags.MAGICSYMBOL.hash.replace(/[`~!@#$%^*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+                if (tagsSource) {
 
-                if (json.flags.MAGICSYMBOL.hash) {
+                    tagsSource.hash = tagsSource.hash.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
 
 
-                    let outfile = path.join(__dirname, 'public', 'CompendiumFiles', json.flags.MAGICSYMBOL.hash + ".json");
+                    let outfile = path.join(__dirname, 'public', 'CompendiumFiles', tagsSource.hash + ".json");
 
                     await fs.writeFile(outfile, subfiles[i], (err) => {
                         if (err)
@@ -125,7 +128,6 @@ async function doit() {
                         }
                     });
 
-                    let tagsSource = json.flags.MAGICSYMBOL;
                     let tags = {
                         file: tagsSource.hash + '.json',
                         page: tagsSource.page,
@@ -135,7 +137,7 @@ async function doit() {
                         name: json.name,
                         img: json.img,
                     };
-                    let outfile2 = path.join(path.join(__dirname, 'public', 'Compendium', "tag_" + json.flags.MAGICSYMBOL.hash + ".json"));
+                    let outfile2 = path.join(path.join(__dirname, 'public', 'Compendium', "tag_" + tagsSource.hash + ".json"));
 
 
                     fs.writeFile(outfile2, JSON.stringify(tags), (err) => {
@@ -147,13 +149,20 @@ async function doit() {
                             //  console.log(fs.readFileSync("books.txt", "utf8"));
                         }
                     });
-                }
+
+                    artGeneratorFile.push({ id: tagsSource.hash, name: json.name, type: tagsSource.type });
+
+                };
+
+
+
             }
             catch (err) {
-                console.error("error parsing json ( " + err + "+)" + json.flags.MAGICSYMBOL.hash);
+                console.error("error parsing json ( " + err + "+)");
             }
 
-
+            let outfile3 = path.join(path.join(__dirname, 'public', "artgenerator.json"));
+            fs.writeFile(outfile3, JSON.stringify(artGeneratorFile));
         }
 
 

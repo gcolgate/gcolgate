@@ -1,0 +1,35 @@
+{
+if(!thing.system && thing.data) {
+thing.system = thing.data;
+}
+} @
+<div>
+  <div class="body" style="height:{w.contentHeight}px;
+        overflow:auto;
+        background-color: rgb(255, 215, 170);
+        width:100%;">
+    <div>
+      <h1 class="itemsetheader">
+        { Editable(thing,
+        "thing.name",
+        "itemsetheader itemTitleInput")} </h1>
+    </div>
+    <div style="box-sizing: border-box;
+          color: rgb(0, 0, 0);
+          color-scheme: light dark;
+          font-family: Georgia, serif;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 400;
+          margin:8px;
+          line-height: 26.1333px;
+          text-transform: lowercase">
+      {thing.type +" "+ maybe(thing.system.consumableType) +" "+
+      maybe(thing.system.attunement, "Requires Attunement ") +
+      maybe(thing.system.rarity)
+      } </div>
+    <div>{thing.system.description.value}</div>
+    <div> { ( window.Spell(thing) )}</div>
+
+  </div>
+</div>

@@ -100,7 +100,6 @@ function createOrGetWindow(id, width, height, left, top) {
 
         closeButton.onclick = function () {
             fadeOut(w);
-            window.style.display = "none";
         };
         dragElement(w, title);
         w.style.top = top + "px";

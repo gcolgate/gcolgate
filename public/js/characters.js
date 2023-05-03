@@ -16,12 +16,25 @@ function commaString(array) {
     let text = "";
     let first = true;
     for (let i = 0; i < array.length; i++) {
+        if (array[i] === null) continue;
         if (!first) text += ", ";
         first = false;
         text += array[i];
     }
     return text;
 }
+function span(title, contents, classname) {
+    if (!classname)
+        return "<span>" + title + "</span>" + contents;
+    return "<span class=" + classname + "> " + a + "</span > " + b;
+
+}
+// returns x or stringo or ""
+function maybe(x, stringo) {
+    if (x) return (stringo ? stringo : x);
+    else return "";
+};
+
 
 
 function changeSheet(button) {

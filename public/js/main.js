@@ -52,6 +52,16 @@ function showDirectoryWindow(id, array) {
     for (let i = 0; i < array.length; i++) {
         var li = document.createElement("li");
         let text = document.createTextNode(array[i].name);
+        // need better images
+        // if (array[i].img) {
+        //     let img = document.createElement('img');
+        //     img.src = array[i].img;
+        //     img.width = "32"
+        //     img.height = "32"
+        //     li.appendChild(img);
+
+        // }
+
         li.appendChild(text);
         li.references = array[i];
         li.addEventListener('click', clickOnThing, false);
