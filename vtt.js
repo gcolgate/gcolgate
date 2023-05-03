@@ -147,12 +147,15 @@ io.on('connection', (socket) => {
 
     socket.on('roll', (msg) => {
         let m = msg;
-        console.log(m);
+        console.log("%o", m);
         let sender = getUser(socket);
+        if (m.title) {
+            sender += " " + m.title;
+        }
         if (sender) {
             console.log(m);
             console.log(sender);
-            let r = dice(m);
+            let r = dice(m.roll);
             console.log("%o", r);
             let msg = '<span class=chatUser>' + sender + '</span>' + r.expression + "<br> <strong> " + r.val + ' </strong> (' + r.rolls + ')';
             chats.push(msg);

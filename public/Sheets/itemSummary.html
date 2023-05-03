@@ -1,0 +1,23 @@
+{
+if(!thing.system && thing.data) {
+thing.system = thing.data;
+}
+} @
+<div>
+  <div>
+    <div class=" itemSsetheader">
+      { Editable(thing,
+      "thing.name",
+      "itemsetheader itemTitleInput")}
+    </div>
+
+    {thing.type +" "+ maybe(thing.system.consumableType) +" "+
+    maybe(thing.system.attunement, "Requires Attunement ") +
+    maybe(thing.system.rarity)
+    }
+  </div>
+  <div>{thing.system.description.value}</div>
+  <div> { ( thing.type == "weapon" ? window.ItemWeapon(thing) : "")}</div>
+  <div> { window.ItemArmor(thing) } </div>
+
+</div>

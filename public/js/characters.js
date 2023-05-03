@@ -31,8 +31,10 @@ function span(title, contents, classname) {
 }
 // returns x or stringo or ""
 function maybe(x, stringo) {
+
     if (x) return (stringo ? stringo : x);
     else return "";
+
 };
 
 
@@ -68,11 +70,6 @@ async function showThing(name, instance, sheet) {
     //  then get the sheet
     if (!registeredThings[name + instance]) {
 
-        let f = "CompendiumFiles/characters.js";
-
-
-        response = await fetch(f);
-        const t = await response.text();
 
 
         let file = "CompendiumFiles/" + name;
@@ -99,34 +96,8 @@ async function UpdateNPC(change) {
 
 }
 
-
-async function redisplayNPC(fullthingname, sheetName) {
-
-    /// TODO: needs to save and restore any scrolling or window resizing
-    console.log(fullthingname);
-    let w = createOrGetWindow(fullthingname, 0.4, 0.4, 0.3, 0.3); // todo better window placement
-    if (sheetName.endsWith(".html")) {
-        sheetName = sheetName.slice(0, sheetName.length - 5);
-    }
-    w.sheet = sheetName;
-
-
-    if (!registeredSheets[sheetName]) {
-        try {
-            // load sheet and js (change to promise all) for speed) for this sheet
-            let response = await fetch("./Sheets/" + sheetName + ".html"); // TODO dont hardcode name
-            const text = await response.text();
-            response = await fetch("./Sheets/" + sheetName + ".js"); // TODO dont hardcode name
-            const js = await response.text();
-            eval(js);
-            registeredSheets[sheetName] = text;
-        } catch (error) {
-            console.error("Could not load " + sheetName + " " + error);
-            alert("Could not load " + sheetName + " " + error);
-        }
-    }
-    let thing = registeredThings[fullthingname]
-    let text = `${registeredSheets[sheetName]}`;
+function parseSheet(thing, sheetName, w) { // thing and w are  required by evals, w can be undefined
+    let text = `${registeredSheets[sheetName]}`; // makes a copy to destroy the copy
     let newText = "";
     let state = 0;
     let code = "";
@@ -160,6 +131,55 @@ async function redisplayNPC(fullthingname, sheetName) {
                 }
         }
     }
-    document.getElementById("window_" + fullthingname + "_body").innerHTML = newText;
+    return newText;
+}
+
+
+async function redisplayNPC(fullthingname, sheetName) {
+
+    /// TODO: needs to save and restore any scrolling or window resizing
+    console.log(fullthingname);
+    let w = createOrGetWindow(fullthingname, 0.4, 0.4, 0.3, 0.3); // todo better window placement
+    if (sheetName.endsWith(".html")) {
+        sheetName = sheetName.slice(0, sheetName.length - 5);
+    }
+    w.sheet = sheetName;
+
+
+    if (!registeredSheets[sheetName]) {
+        try {
+            // load sheet and js (change to promise all) for speed) for this sheet
+            let response = await fetch("./Sheets/" + sheetName + ".html"); // TODO dont hardcode name
+            const text = await response.text();
+            response = await fetch("./Sheets/" + sheetName + ".js"); // TODO dont hardcode name
+            const js = await response.text();
+            eval(js);
+            registeredSheets[sheetName] = text;
+        } catch (error) {
+            console.error("Could not load " + sheetName + " " + error);
+            alert("Could not load " + sheetName + " " + error);
+        }
+        // to do do this better by including dependencies
+        if (sheetName === "bestiary") {
+            let dependentSheet = "itemSummary"
+            if (!registeredSheets[dependentSheet]) {
+                try {
+                    // load sheet and js (change to promise all) for speed) for this sheet
+                    let response = await fetch("./Sheets/" + dependentSheet + ".html"); // TODO dont hardcode name
+                    const text = await response.text();
+                    response = await fetch("./Sheets/" + dependentSheet + ".js"); // TODO dont hardcode name
+                    const js = await response.text();
+                    eval(js);
+                    registeredSheets[dependentSheet] = text;
+                } catch (error) {
+                    console.error("Could not load " + dependentSheet + " " + error);
+                    alert("Could not load " + dependentSheet + " " + error);
+                }
+            }
+        }
+    }
+    let thing = registeredThings[fullthingname]
+
+    document.getElementById("window_" + fullthingname + "_body").innerHTML = parseSheet(thing, sheetName, w);
 }
 

@@ -35,10 +35,11 @@ function showChatWindow(array) {
     chatInput.onchange = function (evt) {
         if (evt.target.value.trim().startsWith('/r ')) {
             console.log(evt.target.value.substr(3));
-            socket.emit('roll', evt.target.value.substr(3));
+            socket.emit('roll', { roll: evt.target.value.substr(3) })
+
         } else if (evt.target.value.trim().startsWith('/roll ')) {
             console.log(evt.target.value.substr(6));
-            socket.emit('roll', evt.target.value.substr(6));
+            socket.emit('roll', { roll: evt.target.value.substr(6) });
         }
         else {
             sendChat(evt.target.value);

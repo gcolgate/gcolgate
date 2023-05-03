@@ -4,10 +4,18 @@
 
 // support functions, store globally in window... maybe later elsewhere
 
+window.DndAbilityBonus = function (ability) {
+    return Math.trunc((eval(ability) - 10) / 2);
+}
+
+
+
+
 window.DndAbility = function (thing, ability) {
     return Editable(thing, ability, "npcNum") +
-        " (" + Math.trunc((eval(ability) - 10) / 2) + ")"
-};
+        " (" + window.DndAbilityBonus(ability)
+        + ")";
+}
 
 window.DndSpeed = function (title, thing, ability, units) {
     if (!ability) return "";
@@ -15,6 +23,29 @@ window.DndSpeed = function (title, thing, ability, units) {
     return '<li><span class="npcBold">' + title + '</span>' + value + units + '</li>';
 }
 
+window.rollWeapon = function (owner, weapon) {
+
+    let bonus = window.DndAbilityBonus(thing, owner.system.abilities.str.value);
+    if (weapon.properties.fin) {
+        let dex = window.DndAbilityBonus(thing, owner.system.abilities.dex.value);
+        if (dex > bonus) {
+            bonus = dex;
+        }
+    }
+    let atk = weapon.attackBonus;
+    let damage = weapon.damage.parts[0];
+    socket.emit('roll', {
+        roll: "1d20+" + owner.system.abilities.prof + "+" + bonus + atk,
+        title: owner.name + "'s '" + weapon.name
+    });
+    socket.emit('roll',
+        {
+            roll: "1d20+" + owner.system.abilities.prof + "+" + bonus + atk
+        });
+    socket.emit('roll',
+        { roll: damage + "+" + bonus }
+    );
+}
 
 window.get5eDetails = function (thing) {
     // founddry 5e is poor, maybe write foudry cleaner and ahve cleaner sheets
@@ -27,12 +58,20 @@ window.get5eDetails = function (thing) {
         if (thing.system.details.race) { array.push(thing.system.details.race); }
         return commaString(array);
     } else {
-
-
-
     }
     return "";
 };
+
+window.drawItems = function (thing, node) {
+    let text = "";
+    for (let i = 0; i < thing.items.length; i++) {
+
+        text += "<li>";
+        text += parseSheet(thing.items[i], "itemSummary"); // no w
+        text += "</li>";
+    }
+    return text;
+}
 
 
 // support styles (class=XXX), store globally in styles, maybe later elsewhere
