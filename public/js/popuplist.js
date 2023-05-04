@@ -1,12 +1,12 @@
 
 var selectedElement = null;
 
-function showPopup() {
-    document.getElementById('popupContainer').style.visibility = 'visible';
+function showcompendiumSyle() {
+    document.getElementById('compendiumSyleContainer').style.visibility = 'visible';
 }
 
-function hidePopup() {
-    document.getElementById('popupContainer').style.visibility = 'hidden';
+function hidecompendiumSyle() {
+    document.getElementById('compendiumSyleContainer').style.visibility = 'hidden';
 }
 
 function selectItem(element) {

@@ -69,7 +69,7 @@ function createOrGetWindow(id, width, height, left, top) {
         w.id = windowName;
         w.class = "window";
         let title = document.createElement("div");
-        title.class = "purple";
+        title.id = windowName + "_title";
         title.innerHtml = id;
         let closeButton = document.createElement("b");
         closeButton.innerHTML = "×";
@@ -77,7 +77,7 @@ function createOrGetWindow(id, width, height, left, top) {
 
         title.style.padding = "10px";
         title.style.zIndex = "10";
-        title.style.backgroundColor = "black";
+        title.style.backgroundColor = "grey";
         title.style.color = "#fff";
         title.style.borderRadius = "4px 4px 0 0";
         title.style.height = "40px";
@@ -87,7 +87,7 @@ function createOrGetWindow(id, width, height, left, top) {
 
 
         let list = document.createElement("ul");
-        list.class = "popup";
+        list.class = "compendiumSyle";
         list.id = windowName + "_list";
         w.appendChild(title);
         w.appendChild(list);

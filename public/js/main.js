@@ -37,11 +37,30 @@ function clickOnThing(event) {
     showThing(name, "", this.references.page);
 }
 
+function searchChanged() {
+    console.log(this.value);
+    refreshDirectoryWindow(this.windowId, this.array, this.value);
+}
+function normalMouseDown(e) {
+    e.stopPropagation();
+    // e.preventDefault();
+}
+function escapeRegExp(stringToGoIntoTheRegex) {
+    return stringToGoIntoTheRegex.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+function refreshDirectoryWindow(id, whole, search) {
+    let array = [];
+    if (search === "") {
+        array = whole;
+    } else {
+        let s = escapeRegExp(search);
+        for (let i = 0; i < whole.length; i++) {
+            if (whole[i].name.search(s) >= 0) {
+                array.push(whole[i]);
+            }
+        }
+    }
 
-function showDirectoryWindow(id, array) {
-
-
-    let window = document.getElementById("window_" + id);
     let ul = document.getElementById("window_" + id + "_list");
 
     ul.style.height = "100%";
@@ -50,8 +69,8 @@ function showDirectoryWindow(id, array) {
         ul.removeChild(ul.firstChild);
     }
     for (let i = 0; i < array.length; i++) {
-        var li = document.createElement("li");
-        let text = document.createTextNode(array[i].name);
+        let li = document.createElement("li");
+        let text = document.createTextNode(array[i].name + "  (" + array[i].type + ") ");
         // need better images
         // if (array[i].img) {
         //     let img = document.createElement('img');
@@ -67,6 +86,59 @@ function showDirectoryWindow(id, array) {
         li.addEventListener('click', clickOnThing, false);
         ul.appendChild(li);
     }
+}
+
+
+function showDirectoryWindow(id, array) {
+
+
+    let window = document.getElementById("window_" + id);
+
+    let title = document.getElementById("window_" + id + "_title");
+
+    let search = document.createElement("input");
+    title.appendChild(search);
+    search.oninput = searchChanged;
+    title.onmousedown = normalMouseDown;
+    search.windowId = id;
+    search.array = array;
+
+    let allTypes = new Set();
+
+    for (let i = 0; i < array.length; i++) {
+        allTypes.add(array[i].type);
+    }
+
+
+    for (const item of allTypes.keys()) {
+        console.log(item);
+
+
+
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = 'chk' + item;
+        checkbox.name = item;
+        checkbox.value = true;;
+
+        let label = document.createElement('label')
+        label.htmlFor = 'chk' + item;
+        label.appendChild(document.createTextNode(item));
+
+        let br = document.createElement('br');
+
+
+        title.appendChild(checkbox);
+        title.appendChild(label);
+        title.appendChild(br);
+
+    }
+
+
+
+    refreshDirectoryWindow(id, array, search.value);
+
+
     fadeIn(window);
 
 }
