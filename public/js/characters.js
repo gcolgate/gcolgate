@@ -1,3 +1,8 @@
+/// todo: need to clean these out as you close windows
+var registeredThings = {};
+var registeredSheets = {};
+var sheetDependencies = null;
+
 
 function details(s) {
     let array = [];
@@ -37,6 +42,75 @@ function maybe(x, stringo) {
 
 };
 
+async function ensureThingLoaded(thingName, instance) {
+
+
+    if (!registeredThings[thingName + instance]) {
+        let file = "CompendiumFiles/" + thingName + '.json';
+
+
+        console.log(file);
+        response = await fetch(file);
+        const thing = await response.json();
+        registeredThings[thingName + instance] = thing;
+        thing.id = thingName + instance;
+
+        if (thing.items) {
+            let promises = [];
+            for (let i = 0; i < thing.items.length; i++) {
+                if (thing.items[i].file) {
+                    promises.push(EnsureLoaded(thing.items[i].page, thing.items[i].file, instance));
+                }
+            }
+            await Promise.all(promises);
+        }
+    }
+
+
+}
+async function ensureSheetLoaded(sheetName) {
+    if (!registeredSheets[sheetName]) {
+        try {
+            if (sheetDependencies == null);
+            // load sheet and js (change to promise all) for speed) for this sheet
+            let response = await fetch("./Sheets/dependencies.json"); // TODO dont hardcode name
+            let dependencies = await response.json();
+            if (dependencies[sheetName]) {
+                let depends = dependencies[sheetName];
+                for (let d = 0; d < depends.length; d++) {
+                    let response = await fetch("./Sheets/" + depends[d]);
+                    if (depends[d].endsWith('.js')) {
+                        const js = await response.text();
+                        eval(js);
+                    }
+                    else if (depends[d].endsWith('.html')) {
+                        const text = await response.text();
+                        registeredSheets[depends[d].slice(0, depends[d].length - 5)] = text;
+                    }
+                }
+            }
+            response = await fetch("./Sheets/" + sheetName + ".html");
+            const text = await response.text();
+
+            registeredSheets[sheetName] = text;
+        } catch (error) {
+            console.error("Could not load " + sheetName + " " + error);
+            alert("Could not load " + sheetName + " " + error);
+        }
+
+    }
+}
+
+async function EnsureLoaded(sheetName, thingName, instance) {
+
+
+    let promise = ensureThingLoaded(thingName, instance);
+    let promise2 = ensureSheetLoaded(sheetName);
+    await Promise.all([promise, promise2]);
+
+
+}
+
 
 
 function changeSheet(button) {
@@ -62,23 +136,14 @@ function Editable(thing, s, className) { // thing must be here because the eval 
     return '<input class="' + className + ' type="text" id="' + s + '" value="' + eval(s) +
         '" onchange="changeSheet(this)">';
 }
-/// todo: need to clean these out as you close windows
-var registeredThings = {};
-var registeredSheets = {};
-var sheetDependencies = null;
+
 
 async function showThing(name, instance, sheet) {
     //  then get the sheet
-    if (!registeredThings[name + instance]) {
+
+    await EnsureLoaded(sheet, name + instance, instance);
 
 
-
-        let file = "CompendiumFiles/" + name;
-        console.log(file);
-        response = await fetch(file);
-        const thing = await response.json();
-        registeredThings[name + instance] = thing;
-    }
     displayThing(name + instance, sheet);
 }
 
@@ -97,8 +162,8 @@ async function UpdateNPC(change) {
 
 }
 
-function parseSheet(thing, sheetName, w) { // thing and w are  required by evals, w can be undefined
-    let text = `${registeredSheets[sheetName]}`; // makes a copy to destroy the copy
+function parseSheet(thing, sheetName, w, owner) { // thing and w and owner are  required by evals, w or owner can be undefined
+    let text = `${registeredSheets[sheetName]}`; // makes a copy to destroy the copy,  TODO: maybe should make structure context
     let newText = "";
     let state = 0;
     let code = "";
@@ -153,44 +218,13 @@ async function displayThing(fullthingname, sheetName) {
     /// TODO: needs to save and restore any scrolling or window resizing
     console.log(fullthingname);
     let w = createOrGetWindow(fullthingname, 0.4, 0.4, 0.3, 0.3); // todo better window placement
-    if (sheetName.endsWith(".html")) {
-        sheetName = sheetName.slice(0, sheetName.length - 5);
-    }
+
     w.sheet = sheetName;
 
 
-    if (!registeredSheets[sheetName]) {
-        try {
-            if (sheetDependencies == null);
-            // load sheet and js (change to promise all) for speed) for this sheet
-            let response = await fetch("./Sheets/dependencies.json"); // TODO dont hardcode name
-            let dependencies = await response.json();
-            if (dependencies[sheetName]) {
-                let depends = dependencies[sheetName];
-                for (let d = 0; d < depends.length; d++) {
-                    let response = await fetch("./Sheets/" + depends[d]);
-                    if (depends[d].endsWith('.js')) {
-                        const js = await response.text();
-                        eval(js);
-                    }
-                    else if (depends[d].endsWith('.html')) {
-                        const text = await response.text();
-                        registeredSheets[depends[d].slice(0, depends[d].length - 5)] = text;
-                    }
-                }
-            }
-            response = await fetch("./Sheets/" + sheetName + ".html");
-            const text = await response.text();
 
-            registeredSheets[sheetName] = text;
-        } catch (error) {
-            console.error("Could not load " + sheetName + " " + error);
-            alert("Could not load " + sheetName + " " + error);
-        }
-
-    }
     let thing = registeredThings[fullthingname]
 
-    document.getElementById("window_" + fullthingname + "_body").innerHTML = parseSheet(thing, sheetName, w);
+    document.getElementById("window_" + fullthingname + "_body").innerHTML = parseSheet(thing, sheetName, w, undefined);
 }
 

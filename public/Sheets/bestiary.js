@@ -4,7 +4,7 @@
 
 // support functions, store globally in window... maybe later elsewhere
 
-window.DndAbilityBonus = function (ability) {
+window.DndAbilityBonus = function (thing, ability) {
     return Math.trunc((eval(ability) - 10) / 2);
 }
 
@@ -13,7 +13,7 @@ window.DndAbilityBonus = function (ability) {
 
 window.DndAbility = function (thing, ability) {
     return Editable(thing, ability, "npcNum") +
-        " (" + window.DndAbilityBonus(ability)
+        " (" + window.DndAbilityBonus(thing, ability)
         + ")";
 }
 
@@ -23,7 +23,10 @@ window.DndSpeed = function (title, thing, ability, units) {
     return '<li><span class="npcBold">' + title + '</span>' + value + units + '</li>';
 }
 
-window.rollWeapon = function (owner, weapon) {
+window.rollWeapon = function (ownerId, weaponId) {
+
+    let owner = registeredThings[ownerId];
+    let weapon = registeredThings[weaponId];
 
     let bonus = window.DndAbilityBonus(thing, owner.system.abilities.str.value);
     if (weapon.properties.fin) {
@@ -64,10 +67,14 @@ window.get5eDetails = function (thing) {
 
 window.drawItems = function (thing, node) {
     let text = "";
+    console.log("THing %o", thing);
     for (let i = 0; i < thing.items.length; i++) {
-
+        let item = thing.items[i];
         text += "<li>";
-        text += parseSheet(thing.items[i], "itemSummary"); // no w
+        console.log("re " + item.file + " %o", registeredThings[item.file]);
+        console.log("rs " + item.page + " %o", registeredThings[item.page]);
+
+        text += parseSheet(registeredThings[item.file], item.page, undefined, thing); // no w
         text += "</li>";
     }
     return text;

@@ -28,7 +28,7 @@ thing.system = thing.data;
       maybe(thing.system.rarity)
       } </div>
     <div>{thing.system.description.value}</div>
-    <div> { ( thing.type == "weapon" ? window.ItemWeapon(thing) : "")}</div>
+    <div> { ( thing.type == "weapon" ? window.ItemWeapon(thing. owner) : "")}</div>
     <div> { window.ItemArmor(thing) } </div>
 
   </div>

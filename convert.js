@@ -2,7 +2,10 @@
 
 //const debugfs = require('fs');
 const fs = require('fs').promises;
+const rawfs = require('fs');
 const path = require('path');
+
+const sanitize = require('sanitize-filename');
 
 
 //  TODO: Put this section is a module, it is for formatting console log output
@@ -43,11 +46,23 @@ let resetTerminal = "\u001b[39m";
     };
 });
 
+function writeJsonFileInPublic(dir, fileName, json) {
+
+    try {
+        let pathName = path.join(__dirname, 'public', dir, fileName + '.json');
+
+        rawfs.writeFileSync(pathName, JSON.stringify(json));
+
+
+    } catch (err) {
+        console.log(err + " Error with " + dir + " " + fileName);
+    }
+}
+
+
 async function doit() {
-
-
-    // promises.push(fs.readFile(path.join(__dirname, 'passwords.json'))); // TODO: use file cache
-    // promises.push(fs.readFile(path.join(__dirname, 'public', 'players/players.json'))); // TODO: use file cache
+    // await fs.emptyDir(path.join(__dirname, 'public', 'Compendium'));
+    //  await fs.emptyDir(path.join(__dirname, 'public', 'CompendiumFiles'));
     let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert')); // 
 
     console.log("%o", dir);
@@ -105,31 +120,56 @@ async function doit() {
         console.log("Num SubFiles " + subfiles.length);
 
         let artGeneratorFile = [];
-        for (let i = 0; i < subfiles.length; i++) {
+        for (let fileIndex = 0; fileIndex < subfiles.length; fileIndex++) {
             try {
 
-                json = JSON.parse(subfiles[i]);
-                let tagsSource = json.flags.MAGICFLAG;
+                json = JSON.parse(subfiles[fileIndex]);
+                let tagsSource = json.flags.MAGIC_NUMBER;
 
                 if (tagsSource) {
 
                     tagsSource.hash = tagsSource.hash.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+                    tagsSource.page = path.parse(tagsSource.page).name;
+                    let name = json.name;
+                    if (json.system.requirements) {
+                        name += " : " + json.system.requirements;
+                    } else {
+                        name += " (" + tagsSource.page + ")";
+                    }
+                    /// change to split items off, change to have sheets load items, so that items are not embedded
+
+                    if (json.items) {
+                        for (let i = 0; i < json.items.length; i++) {
+                            let item = json.items[i];
+                            let subFile = tagsSource.hash + '_MITEM_' + (item.name);
+                            subFile = subFile.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
 
 
-                    let outfile = path.join(__dirname, 'public', 'CompendiumFiles', tagsSource.hash + ".json");
+                            let tags = {
+                                file: subFile,
+                                page: "itemSummary",
+                                source: item.source,
+                                droppable: item.propDroppable,
+                                type: item.type,
+                                name: item.name,
+                                img: item.img,
+                            };
+                            if (subFile == "adult20amethyst20dragon_ftd_MITEM_Claw") {
 
-                    await fs.writeFile(outfile, subfiles[i], (err) => {
-                        if (err)
-                            console.log(err);
-                        else {
-                            console.log("File written successfully\n");
-                            console.log("The written has the following contents:");
-                            //  console.log(fs.readFileSync("books.txt", "utf8"));
+                                console.log(tags);
+                                console.log(item);
+                            }
+                            writeJsonFileInPublic('Compendium', "tag_" + subFile, tags);
+                            writeJsonFileInPublic('CompendiumFiles', subFile, item);
+
+                            json.items[i] = tags;
+
                         }
-                    });
+                    }
+
 
                     let tags = {
-                        file: tagsSource.hash + '.json',
+                        file: tagsSource.hash,
                         page: tagsSource.page,
                         source: tagsSource.source,
                         droppable: tagsSource.propDroppable,
@@ -137,18 +177,11 @@ async function doit() {
                         name: json.name,
                         img: json.img,
                     };
-                    let outfile2 = path.join(path.join(__dirname, 'public', 'Compendium', "tag_" + tagsSource.hash + ".json"));
+
+                    writeJsonFileInPublic('Compendium', "tag_" + tagsSource.hash, tags);
+                    writeJsonFileInPublic('CompendiumFiles', tagsSource.hash, json);
 
 
-                    fs.writeFile(outfile2, JSON.stringify(tags), (err) => {
-                        if (err)
-                            console.log(err);
-                        else {
-                            console.log("File written successfully\n");
-                            console.log("The written has the following contents: %o", tags);
-                            //  console.log(fs.readFileSync("books.txt", "utf8"));
-                        }
-                    });
 
                     artGeneratorFile.push({ id: tagsSource.hash, name: json.name, type: tagsSource.type });
 
@@ -161,8 +194,8 @@ async function doit() {
                 console.error("error parsing json ( " + err + "+)");
             }
 
-            let outfile3 = path.join(path.join(__dirname, 'public', "artgenerator.json"));
-            fs.writeFile(outfile3, JSON.stringify(artGeneratorFile));
+            // let outfile3 = path.join(path.join(__dirname, 'public', "artgenerator.json"));
+            //  fs.writeFile(outfile3, JSON.stringify(artGeneratorFile));
         }
 
 

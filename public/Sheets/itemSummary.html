@@ -17,7 +17,7 @@ thing.system = thing.data;
     }
   </div>
   <div>{thing.system.description.value}</div>
-  <div> { ( thing.type == "weapon" ? window.ItemWeapon(thing) : "")}</div>
+  <div> { ( thing.type == "weapon" ? window.ItemWeapon(thing,owner) : "")}</div>
   <div> { window.ItemArmor(thing) } </div>
 
 </div>

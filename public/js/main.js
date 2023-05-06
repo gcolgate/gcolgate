@@ -23,8 +23,14 @@ async function GetDirectory(directory) {
     const jsonData = await response.json();
     console.log(jsonData);
 
+
     for (let i = 0; i < jsonData.length; i++) {
-        jsonData[i] = JSON.parse(jsonData[i]);
+        try {
+            jsonData[i] = JSON.parse(jsonData[i]);
+        } catch (err) {
+
+            console.log("Error in parsing " + i + " " + jsonData[i]);
+        }
     }
     return jsonData;
 }
@@ -39,7 +45,7 @@ function clickOnThing(event) {
 
 function searchChanged() {
     console.log(this.value);
-    refreshDirectoryWindow(this.windowId, this.array, this.value);
+    refreshDirectoryWindow(this.windowId, this.array);
 }
 function normalMouseDown(e) {
     e.stopPropagation();
@@ -48,30 +54,81 @@ function normalMouseDown(e) {
 function escapeRegExp(stringToGoIntoTheRegex) {
     return stringToGoIntoTheRegex.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
-function refreshDirectoryWindow(id, whole, search) {
-    let array = [];
+
+function search(whole, search) {
     if (search === "") {
-        array = whole;
+        return whole;
     } else {
-        let s = escapeRegExp(search);
+        let searched = [];
+        let s = escapeRegExp(search.toLowerCase()); // i couldn't figure out the incantations to make this ignore case
         for (let i = 0; i < whole.length; i++) {
-            if (whole[i].name.search(s) >= 0) {
-                array.push(whole[i]);
+            if (whole[i].name.toLowerCase().search(s) >= 0) {
+                searched.push(whole[i]);
             }
+        }
+        return searched;
+    }
+}
+
+function filter(whole, buttons) {
+    if (buttons.length === 0) { // none selected same as all selected
+        return whole;
+    } else {
+        let filtered = [];
+        for (let i = 0; i < whole.length; i++) {
+            if (buttons.some(element => element === whole[i].page))
+                filtered.push(whole[i]);
+        }
+        return filtered;
+    }
+}
+
+function collectSearchandFilter(id) {
+    let title = document.getElementById("window_" + id + "_title");
+
+    let filter = [];
+
+    for (let i = 0; i < title.filterButtons.length; i++) {
+
+        if (title.filterButtons[i].checked) {
+            filter.push(title.filterTitles[i]);
         }
     }
 
+    let search = document.getElementById("window_" + id + "_search").value;
+
+    return {
+        filter: filter,
+        search: search
+    };
+
+}
+
+
+function refreshDirectoryWindow(id, whole) {
+
+    let params = collectSearchandFilter(id);
+    let window = document.getElementById("window_" + id);
+
+    let searched = search(whole, params.search);
+
+
+    let array = filter(searched, params.filter);
+
+    let title = document.getElementById("window_" + id + "_title");
+
+
     let ul = document.getElementById("window_" + id + "_list");
 
-    ul.style.height = "100%";
+    ul.style.height = (window.clientHeight - ul.offsetTop) + "px";
     ul.style.overflow = "auto";
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
     }
     for (let i = 0; i < array.length; i++) {
         let li = document.createElement("li");
-        let text = document.createTextNode(array[i].name + "  (" + array[i].type + ") ");
-        // need better images
+        let text = document.createTextNode(array[i].name);
+        // need better images 
         // if (array[i].img) {
         //     let img = document.createElement('img');
         //     img.src = array[i].img;
@@ -96,47 +153,60 @@ function showDirectoryWindow(id, array) {
 
     let title = document.getElementById("window_" + id + "_title");
 
+    let ul = document.getElementById("window_" + id + "_list");
+    //   ul.style.height = "100%"
+
     let search = document.createElement("input");
+    search.id = "window_" + id + "_search";
     title.appendChild(search);
     search.oninput = searchChanged;
-    title.onmousedown = normalMouseDown;
+    search.onmousedown = normalMouseDown;
     search.windowId = id;
     search.array = array;
 
     let allTypes = new Set();
 
     for (let i = 0; i < array.length; i++) {
-        allTypes.add(array[i].type);
+        allTypes.add(array[i].page);
     }
 
+    // title.whiteSpace = "normal";
+    title.style.height = "90px";
+    title.style.display = "block";
 
+    title.filterButtons = [];
+    title.filterTitles = [];
     for (const item of allTypes.keys()) {
-        console.log(item);
-
-
 
         let checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.id = 'chk' + item;
         checkbox.name = item;
-        checkbox.value = true;;
+        //  checkbox.checked = true;
+        checkbox.windowId = id;
+        checkbox.array = array;
+
+
+        checkbox.onchange = function () {
+            refreshDirectoryWindow(this.windowId, this.array);
+        }
+
+        title.filterButtons.push(checkbox);
+        title.filterTitles.push(item);
 
         let label = document.createElement('label')
         label.htmlFor = 'chk' + item;
-        label.appendChild(document.createTextNode(item));
-
-        let br = document.createElement('br');
-
+        label.appendChild(document.createTextNode(item + "      ")); // todo: use style, margin isnt working
 
         title.appendChild(checkbox);
         title.appendChild(label);
-        title.appendChild(br);
+
 
     }
 
 
 
-    refreshDirectoryWindow(id, array, search.value);
+    refreshDirectoryWindow(id, array);
 
 
     fadeIn(window);
@@ -268,7 +338,7 @@ compendiumButton.onclick = function () {
         alert("Have not yet receieved Compendium from server");
     } else {
 
-        let w = createOrGetWindow('Compendium', .2, .6, .2, .2);
+        let w = createOrGetDirWindow('Compendium', .2, .6, .2, .2);
         bringToFront(w);
         showDirectoryWindow('Compendium', Compendium);
     }

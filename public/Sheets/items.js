@@ -11,13 +11,18 @@ window.ItemArmor = function (thing) {
     return "";
 };
 
-window.ItemWeapon = function (thing) {
+window.ItemWeapon = function (thing, owner) {
 
     let s = thing.system;
     let atk = s.attackBonus;
     let damage = s.damage.parts;
     if (!atk) { atk = 0; }
-    let answer = "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
+    let answer = ""
+    if (owner != undefined) {
+        answer += '<button  onclick= window.rollWeapon("' + owner.id + '",' + thing.id + ")>Roll</button>";
+
+    }
+    answer += "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
     if (s.damage.versatile && s.damage.versatile != "")
         answer += "<div><span>Versatile</span>" + s.damage.versatile + "</div>";
     let props = [];
@@ -34,7 +39,9 @@ window.ItemWeapon = function (thing) {
 
         answer += "<div><span>Range</span>" + s.range.value + longString
             + " " + s.range.units + "</div>"
+
     }
+
     return answer;
 };
 

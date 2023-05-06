@@ -112,6 +112,92 @@ function createOrGetWindow(id, width, height, left, top) {
         w.style.boxShadow = "8px 8px 6px -6px black";
         w.style.opacity = "0.9";
         w.style.display = "none";
+        w.style.resize = "both";
+
+        // Event listener for clicks
+        w.addEventListener('mousedown', clickToBringWindowIntoFocus);
+
+
+        windows.push(w);
+    }
+
+
+    fadeIn(w);
+    return w;
+
+}
+
+
+
+function createOrGetDirWindow(id, width, height, left, top) {
+
+    let windowName = "window_" + id;
+    let w = document.getElementById(windowName);
+
+    if (!w) {
+        let group = document.getElementById("windowGroup");
+        w = document.createElement("div");
+        w.style = "display: initial;"
+
+        w.style.position = "absolute";
+        width *= window.innerWidth;
+        height *= window.innerHeight;
+        left *= window.innerWidth;
+        top *= window.innerHeight;
+
+
+
+        w.contentHeight = height;
+
+        w.id = windowName;
+        w.class = "window";
+        let title = document.createElement("div");
+        title.id = windowName + "_title";
+        title.innerHtml = id;
+        let closeButton = document.createElement("b");
+        closeButton.innerHTML = "×";
+        title.appendChild(closeButton);
+
+        title.style.padding = "10px";
+        title.style.zIndex = "10";
+        title.style.backgroundColor = "grey";
+        title.style.color = "#fff";
+        title.style.borderRadius = "4px 4px 0 0";
+        title.style.height = "40px";
+        title.style.justifyContent = "space - between";
+        title.style.display = "flex";
+        title.style.touchAction = "none";
+
+
+        let list = document.createElement("ul");
+        list.class = "compendiumSyle";
+        list.id = windowName + "_list";
+        list.style.marginTop = "0px";
+        w.appendChild(title);
+        w.appendChild(list);
+        group.appendChild(w);
+
+        let body = document.createElement("div");
+        body.id = windowName + "_body";
+        w.appendChild(body);
+
+
+        closeButton.onclick = function () {
+            fadeOut(w);
+        };
+        dragElement(w, title);
+        w.style.top = top + "px";
+        w.style.left = left + "px";
+        w.style.zIndex = 9 + windows.length;
+        w.style.backgroundColor = "#ffffff";
+        w.style.width = width + "px";
+        w.style.height = height + "px";
+        w.style.borderRadius = "8p 8px 0 0x";
+        w.style.boxShadow = "8px 8px 6px -6px black";
+        w.style.opacity = "0.9";
+        w.style.display = "none";
+        w.style.resize = "both";
+
         // Event listener for clicks
         w.addEventListener('mousedown', clickToBringWindowIntoFocus);
 
