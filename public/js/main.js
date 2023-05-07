@@ -140,7 +140,7 @@ function refreshDirectoryWindow(id, whole) {
 
         li.appendChild(text);
         li.references = array[i];
-        li.addEventListener('click', clickOnThing, false);
+        li.addEventListener('dblclick', clickOnThing, false);
         ul.appendChild(li);
     }
 }
@@ -271,15 +271,45 @@ socket.on('login_failure', function (msg) {
     login.value = "Login";
 
 });
-////// login handling
 
+////// folder windows  put in sub file?
+function createDirWindow(buttonName) {
+    if (!joined) {
+        alert("Please log in");
+    }
+    if (!Compendium) {
+        alert("Have not yet receieved " + buttonName + "from server");
+    } else {
+        let w = createOrGetDirWindow(buttonName, .2, .6, .2, .2);
+        bringToFront(w);
+        showDirectoryWindow(buttonName, eval(buttonName));
+    }
+}
 
+function setUpDirButton(buttonName) {
+    const compendiumButton = document.getElementById(buttonName);
+    compendiumButton.onclick = function () {
+        createDirWindow(buttonName)
+    }
+}
 let joined = false;
 let players = {};
 let Compendium = {};
+let Party = {};
+let Favorites = {};
+let Uniques = {};
 
 GetDirectory('Compendium').then((c) => { Compendium = c; });
+GetDirectory('Party').then((c) => { Party = c; });
+GetDirectory('Favorites').then((c) => { Favorites = c; });
+GetDirectory('Uniques').then((c) => { Uniques = c; });
 
+
+setUpDirButton('Compendium')
+setUpDirButton('Party')
+setUpDirButton('Favorites')
+setUpDirButton('Uniques')
+////// login handling
 const login = document.getElementById("login");
 async function init() {
 
@@ -329,21 +359,6 @@ login.onchange = function (event) {
 };
 // character hgndling
 
-const compendiumButton = document.getElementById("Compendium");
-compendiumButton.onclick = function () {
-    if (!joined) {
-        alert("Please log in");
-    }
-    if (!Compendium) {
-        alert("Have not yet receieved Compendium from server");
-    } else {
-
-        let w = createOrGetDirWindow('Compendium', .2, .6, .2, .2);
-        bringToFront(w);
-        showDirectoryWindow('Compendium', Compendium);
-    }
-
-};
 
 
 const chatButton = document.getElementById("Chat");

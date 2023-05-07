@@ -38,28 +38,42 @@ function ParseJson(name, raw) {
     return json;
 }
 
+async function fillDirectoryTable(directory, name, raw) {
+    try {
+        for (let i = 0; i < raw.length; i++) {
+            if (raw[i].startsWith('tag_')) {
+                let file = (await (fs.readFile(path.join(__dirname, 'public', name, raw[i])))).toString();
+                directory.push(file);
+            }
+        }
+    } catch (err) {
+        console.error("Unable to fill " + name + ": " + err);
+    }
+}
+
 async function InitialDiskLoad() {
     let promises = [];
 
     promises.push(fs.readFile(path.join(__dirname, 'passwords.json'))); // TODO: use file cache
     promises.push(fs.readFile(path.join(__dirname, 'public', 'players/players.json'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Compendium'))); // TODO: use file cache
+    promises.push(fs.readdir(path.join(__dirname, 'public', 'Favorites'))); // TODO: use file cache
+    promises.push(fs.readdir(path.join(__dirname, 'public', 'Party'))); // TODO: use file cache
+    promises.push(fs.readdir(path.join(__dirname, 'public', 'Uniques'))); // TODO: use file cache
 
 
     let results = await Promise.all(promises);
     passwords = ParseJson('passwords.json', results[0]);
     players = ParseJson('players.json', results[1]);
-    let rawCompendium = results[2];
     Compendium = [];
-    // todo reorganize
-    for (let i = 0; i < rawCompendium.length; i++) {
+    Favorites = [];
+    Party = [];
+    Uniques = [];
+    fillDirectoryTable(Compendium, "Compendium", results[2]);
+    fillDirectoryTable(Favorites, "Favorites", results[3]);
+    fillDirectoryTable(Party, "Party", results[4]);
+    fillDirectoryTable(Uniques, "Uniques", results[5]);
 
-        if (rawCompendium[i].startsWith('tag_')) {
-            let file = (await (fs.readFile(path.join(__dirname, 'public', 'Compendium', rawCompendium[i])))).toString();
-            Compendium.push(file);
-        }
-
-    }
 
     init.inited = true;
 
@@ -209,12 +223,15 @@ http_io.listen(port, () => console.log(`VTT listening on port ${port}`))
 // requests required
 // send initial view
 // Items:
-//      unique      .... these items always are not instanced
+//      Unique      .... these items always are not instanced
+//      Party
+//      Favorites
 //      instances   .... these are instances in the current scene
 //                          may not be a list that is seen like unique ones,
 //                          but are created when templates dragged into the scene.
 //                          these are written with the scene (maybe just diffs? Advanced). 
-//      templates   .... these are not instanced, but when added to a scene are instanced.
+//
+//      Compendium   .... these are not instanced, but when added to a scene are instanced.
 //                       need 'edit' checkbox to prevent accidental editing.
 // show sheets
 //      classify sheets, so npc,pc, item, etc

@@ -1,8 +1,7 @@
 
-
-//const debugfs = require('fs');
 const fs = require('fs').promises;
 const rawfs = require('fs');
+//const fsExtra = require('fs-extra');
 const path = require('path');
 
 const sanitize = require('sanitize-filename');
@@ -53,7 +52,6 @@ function writeJsonFileInPublic(dir, fileName, json) {
 
         rawfs.writeFileSync(pathName, JSON.stringify(json));
 
-
     } catch (err) {
         console.log(err + " Error with " + dir + " " + fileName);
     }
@@ -61,8 +59,8 @@ function writeJsonFileInPublic(dir, fileName, json) {
 
 
 async function doit() {
-    // await fs.emptyDir(path.join(__dirname, 'public', 'Compendium'));
-    //  await fs.emptyDir(path.join(__dirname, 'public', 'CompendiumFiles'));
+    //await fsExtra.emptyDir(path.join(__dirname, 'public', 'Compendium'));
+    //await fsExtra.emptyDir(path.join(__dirname, 'public', 'CompendiumFiles'));
     let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert')); // 
 
     console.log("%o", dir);
@@ -124,7 +122,7 @@ async function doit() {
             try {
 
                 json = JSON.parse(subfiles[fileIndex]);
-                let tagsSource = json.flags.MAGIC_NUMBER;
+                let tagsSource = json.flags.MAGIC KEY;
 
                 if (tagsSource) {
 
@@ -146,7 +144,7 @@ async function doit() {
 
 
                             let tags = {
-                                file: subFile,
+                                file: "CompendiumFiles\ + subFile,
                                 page: "itemSummary",
                                 source: item.source,
                                 droppable: item.propDroppable,
@@ -167,9 +165,8 @@ async function doit() {
                         }
                     }
 
-
                     let tags = {
-                        file: tagsSource.hash,
+                        file: "CompendiumFiles/" + tagsSource.hash,
                         page: tagsSource.page,
                         source: tagsSource.source,
                         droppable: tagsSource.propDroppable,

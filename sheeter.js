@@ -25,17 +25,18 @@ function ParseJson(name, raw) {
 async function ChangeThing(thingName, replacement, io, msg) {
     console.log(thingName);
     console.log(replacement);
-    replacement = SanitizeThing(replacement);
+    replacement = SanitizeThing(replacement); // protect vs hacks, todo: see if screws up string assignments
     console.log('sanitized ' + replacement);
     if (replacement) {
         // Need to put these in a cache and write them out over time for speed
-        // this should go through a cache
-        let filePath = path.join(__dirname, 'public', 'CompendiumFiles', thingName);
+        // this should go through a cache 
+
+        let filePath = path.normalize(path.join(__dirname, 'public', thingName));
         let result = await fs.readFile(filePath);
         let thing = ParseJson(filePath, result); // for eval to work we need a thing
 
 
-        eval(replacement);
+        eval(replacement); // actually change the thing
         console.log("thing " + thing.name);
         await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
             if (err)

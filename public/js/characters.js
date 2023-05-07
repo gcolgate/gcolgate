@@ -46,7 +46,7 @@ async function ensureThingLoaded(thingName, instance) {
 
 
     if (!registeredThings[thingName + instance]) {
-        let file = "CompendiumFiles/" + thingName + '.json';
+        let file = thingName + '.json';
 
 
         console.log(file);

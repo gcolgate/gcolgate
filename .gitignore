@@ -3,6 +3,9 @@ node_modules/*
 public/js/node_modules/*      
 public/Compendium/*
 public/CompendiumFiles/*
+public/Party/*
+public/Uniques/*
+public/Favorites/*
 public/CompendiumOld/* 
 public/assets/*  
 public/modules/*     
