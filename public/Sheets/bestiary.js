@@ -28,26 +28,40 @@ window.rollWeapon = function (ownerId, weaponId) {
     let owner = registeredThings[ownerId];
     let weapon = registeredThings[weaponId];
 
-    let bonus = window.DndAbilityBonus(thing, owner.system.abilities.str.value);
-    if (weapon.properties.fin) {
-        let dex = window.DndAbilityBonus(thing, owner.system.abilities.dex.value);
+    console.log('Weapon %o', weapon);
+
+    let bonus = window.DndAbilityBonus(owner, owner.system.abilities[weapon.system.ability].value);
+    if (weapon?.properties?.fin) {
+        let dex = window.DndAbilityBonus(owner, owner.system.abilities.dex.value);
         if (dex > bonus) {
             bonus = dex;
         }
     }
-    let atk = weapon.attackBonus;
-    let damage = weapon.damage.parts[0];
+    // should check if proficient here
+    let prof = owner.system.attributes.prof;
+    let atk = weapon.system.attackBonus;
+
     socket.emit('roll', {
-        roll: "1d20+" + owner.system.abilities.prof + "+" + bonus + atk,
-        title: owner.name + "'s '" + weapon.name
+        title: owner.name + "'s " + weapon.name,
+        style: "dual",
+        roll: "1d20+" + prof + "+" + bonus + "+" + atk,
+
     });
-    socket.emit('roll',
-        {
-            roll: "1d20+" + owner.system.abilities.prof + "+" + bonus + atk
-        });
-    socket.emit('roll',
-        { roll: damage + "+" + bonus }
-    );
+
+    for (let i = 0; i < weapon.system.damage.parts.length; i++) {
+        let damage = [...weapon.system.damage.parts[i]];
+        let damageDice = damage[0].replace('@mod', bonus);
+        damage.shift();
+        let t = commaString(damage);
+
+        socket.emit('roll',
+            {
+                title: "Damage",
+                roll: damageDice,
+                post: t
+            }
+        );
+    }
 }
 
 window.get5eDetails = function (thing) {

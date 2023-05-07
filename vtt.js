@@ -156,11 +156,23 @@ io.on('connection', (socket) => {
             console.log(m);
             console.log(sender);
             let r = dice(m.roll);
-            console.log("%o", r);
-            let msg = '<span class=chatUser>' + sender + '</span>' + r.expression + "<br> <strong> " + r.val + ' </strong> (' + r.rolls + ')';
-            chats.push(msg);
-            console.log(msg);
-            io.emit('chat', msg);
+            let outmsg = ""
+            if (msg.style == "dual") {
+                r2 = dice(m.roll);
+                outmsg = '<span class=chatUser>' + sender + '</span>' + r.expression
+                    + "<br> <strong> " + r.val + ' </strong> (' + r.rolls + ')'
+                    + "<br> <strong> " + r2.val + ' </strong> (' + r2.rolls + ')';
+            } else {
+                outmsg = '<span class=chatUser>' + sender + '</span>' + r.expression
+                    + "<br> <strong> " + r.val + ' </strong> (' + r.rolls + ')';
+            }
+            chats.push(outmsg);
+            if (msg.post) outmsg += " " + msg.post;
+            chats.push(outmsg);
+            console.log(outmsg);
+            io.emit('chat', outmsg);
+            console.log(outmsg);
+
         }
     });
 

@@ -19,7 +19,7 @@ window.ItemWeapon = function (thing, owner) {
     if (!atk) { atk = 0; }
     let answer = ""
     if (owner != undefined) {
-        answer += '<button  onclick= window.rollWeapon("' + owner.id + '",' + thing.id + ")>Roll</button>";
+        answer += "<button  onclick=\"window.rollWeapon('" + owner.id + "','" + thing.id + "')\">Roll</button>";
 
     }
     answer += "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
