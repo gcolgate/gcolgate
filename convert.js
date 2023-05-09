@@ -122,7 +122,7 @@ async function doit() {
             try {
 
                 json = JSON.parse(subfiles[fileIndex]);
-                let tagsSource = json.flags.MAGIC KEY;
+                let tagsSource = json.flags.special tag;
 
                 if (tagsSource) {
 

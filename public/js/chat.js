@@ -16,11 +16,13 @@ function showChatWindow(array) {
     bringToFront(w);
     let ul = document.getElementById(chat_window_name + "_list");
     let body = document.getElementById(chat_window_name + "_body");
+    ul.style.height = (window.clientHeight - ul.offsetTop - 60) + "px";
+    ul.style.overflow = "auto";
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
     }
-    ul.style.minHeight = "100%";
-    ul.style.marginBottom = "-50px";
+    //  ul.style.minHeight = "100%";
+    //  ul.style.marginBottom = "-50px";
 
     for (let i = 0; i < array.length; i++) {
         var li = document.createElement("li");
@@ -28,6 +30,7 @@ function showChatWindow(array) {
 
         ul.appendChild(li);
     }
+    footer.style.position = ""
     var footer = document.createElement("footer");
     var chatInput = document.createElement("input");
     footer.appendChild(chatInput);

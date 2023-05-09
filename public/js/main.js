@@ -140,7 +140,9 @@ function refreshDirectoryWindow(id, whole) {
 
         li.appendChild(text);
         li.references = array[i];
+        li.draggable = true;
         li.addEventListener('dblclick', clickOnThing, false);
+       
         ul.appendChild(li);
     }
 }
@@ -154,11 +156,33 @@ function showDirectoryWindow(id, array) {
     let title = document.getElementById("window_" + id + "_title");
 
     let ul = document.getElementById("window_" + id + "_list");
+
+    dragDrop(ul, {
+        onDrop: (files, pos, fileList, directories) => {
+            console.log('Here are the dropped files', files)
+            console.log('Dropped at coordinates', pos.x, pos.y)
+            console.log('Here is the raw FileList object if you need it:', fileList)
+            console.log('Here is the list of directories:', directories)
+        },
+        onDropText: (text, pos) => {
+            console.log('Here is the dropped text:', text)
+            console.log('Dropped at coordinates', pos.x, pos.y)
+        },
+        onDragEnter: (event) => { },
+        onDragOver: (event) => { },
+        onDragLeave: (event) => { }
+    });
     //   ul.style.height = "100%"
 
     let search = document.createElement("input");
     search.id = "window_" + id + "_search";
-    title.appendChild(search);
+    title.appendChild(document.createTextNode(id));
+    let searchArea = document.createElement("div");
+
+    title.insertAdjacentElement('afterend', searchArea);
+    searchArea.appendChild(document.createTextNode("Search"));
+    searchArea.appendChild(search);
+    searchArea.style.backgroundColor = "burlywood";
     search.oninput = searchChanged;
     search.onmousedown = normalMouseDown;
     search.windowId = id;
@@ -171,8 +195,8 @@ function showDirectoryWindow(id, array) {
     }
 
     // title.whiteSpace = "normal";
-    title.style.height = "90px";
-    title.style.display = "block";
+    title.style.height = "35px";
+    //title.style.display = "block";
 
     title.filterButtons = [];
     title.filterTitles = [];
@@ -198,8 +222,8 @@ function showDirectoryWindow(id, array) {
         label.htmlFor = 'chk' + item;
         label.appendChild(document.createTextNode(item + "      ")); // todo: use style, margin isnt working
 
-        title.appendChild(checkbox);
-        title.appendChild(label);
+        searchArea.appendChild(checkbox);
+        searchArea.appendChild(label);
 
 
     }
