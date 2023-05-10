@@ -30,7 +30,6 @@ function showChatWindow(array) {
 
         ul.appendChild(li);
     }
-    footer.style.position = ""
     var footer = document.createElement("footer");
     var chatInput = document.createElement("input");
     footer.appendChild(chatInput);

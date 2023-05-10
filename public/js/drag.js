@@ -1,3 +1,6 @@
+
+var thingDragged = null;
+
 function dragDrop(elem, listeners) {
     if (typeof elem === 'string') {
         const selector = elem
@@ -146,12 +149,15 @@ function dragDrop(elem, listeners) {
         if (text && listeners.onDropText) {
             listeners.onDropText(text, pos)
         }
+        console.log("Text " + text);
+        console.log("items %o ", event.dataTransfer.items);
+
 
         // File drop support. The `dataTransfer.items` API supports directories, so we
         // use it instead of `dataTransfer.files`, even though it's much more
         // complicated to use.
         // See: https://github.com/feross/drag-drop/issues/39
-        if (listeners.onDrop && event.dataTransfer.items) {
+        if (listeners.onDrop && event.dataTransfer.items && event.dataTransfer.items.length > 0) {
             processItems(event.dataTransfer.items, (err, files, directories) => {
                 if (err) {
                     // TODO: A future version of this library might expose this somehow
@@ -167,6 +173,16 @@ function dragDrop(elem, listeners) {
                 // arbitrary. In next major version, it should be cleaned up.
                 listeners.onDrop(files, pos, fileList, directories)
             })
+        }
+        else {
+            if (thingDragged) {
+                console.log(thingDragged);
+                if (elem.acceptDrag) {
+                    elem.acceptDrag(thingDragged);
+                }
+                thingDragged = null;
+            }
+
         }
 
         return false
@@ -222,6 +238,7 @@ function processEntry(entry, cb) {
     if (entry.isFile) {
         entry.file(file => {
             file.fullPath = entry.fullPath // preserve path for consumer
+            console.log(file.fullPath);
             file.isFile = true
             file.isDirectory = false
             cb(null, file)
