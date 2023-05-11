@@ -27,7 +27,7 @@ function clickOnThing(event) {
 
 
 function dragstart(event) {
-    thingDragged = this.references.file;
+    thingDragged = this.references;
 
 
 }
@@ -137,6 +137,7 @@ function refreshDirectoryWindow(id, whole) {
 
         ul.appendChild(li);
     }
+
 }
 
 
@@ -164,6 +165,19 @@ function showDirectoryWindow(id, array) {
         onDragOver: (event) => { },
         onDragLeave: (event) => { }
     });
+
+    ul.acceptDrag = function (thingDragged) {
+
+        for (let i = 0; i < array.length; i++) {
+            if (array[i].file == thingDragged.file) {
+                console.log("Dupe");
+                return;
+            }
+        }
+
+        socket.emit("copy_file", { to: id, from: thingDragged });
+
+    }
     //   ul.style.height = "100%"
 
     let search = document.createElement("input");

@@ -121,6 +121,30 @@ async function login(socket, credentials) {
     //console.log("Room %o " + socket.rooms, socket.rooms);
 }
 
+async function CopyFiles(msg) {
+
+    console.log("%o", msg);
+    let p = path.parse(path.normalize(msg.from.file));
+
+    let srcName = p.name;
+    let srcDir = p.dir;
+    let src = path.join(__dirname, "public", p.dir, p.name + '.json');
+    let dest = path.join(__dirname, "public", msg.to + "Files", p.name + '.json');
+
+    let src2 = path.join(__dirname, "public", p.dir.substring(0, p.dir.length - 5), "tag_" + p.name + '.json');
+    let dest2 = path.join(__dirname, "public", msg.to, "tag_" + p.name + '.json');
+
+    console.log(src + " to " + dest);
+    console.log(src2 + " to " + dest2);
+
+    await Promise.all([
+        fs.copyFile(src, dest),
+        fs.copyFile(src2, dest2)
+    ]);
+
+
+
+}
 // io
 io.on('connection', (socket) => {
     console.log('a user connected ');
@@ -190,9 +214,16 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('copy_file', (msg) => {
+        console.log("To" + msg.to);
+        console.log("From" + msg.from);
+        CopyFiles(msg);
+
+        //   ChangeThing(msg.thing, msg.change, io, msg);
+    })
+
 });
 
-// app TODO: This does not work in firefox correctly, only chromiumn browser
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
@@ -203,7 +234,14 @@ app.get("/Compendium", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
     res.end(JSON.stringify(Compendium));
+});
 
+app.get("/Favorites", (req, res) => {
+    console.log("OK");
+    // Error here need to bulletproof server not being ready?
+    res.setHeader("Content-Type", "application/json");
+    res.writeHead(200);
+    res.end(JSON.stringify(Favorites));
 });
 
 // TO DO: could stringify chats once for multiple players loading at the same time
