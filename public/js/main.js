@@ -89,9 +89,24 @@ socket.on('error_alert', function (msg) {
 });
 
 socket.on('login_failure', function (msg) {
+    Login.innerText = "";
+    createOrGetLoginWindow(0.9, 0.9, 0.05, 0.05, players);
     alert('error_alert ' + msg);
-    login.value = "Login";
+});
 
+socket.on('login_success', function (msg) {
+    joined = msg;
+    Login.innerText = msg;
+    GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
+    GetDirectory('Party').then((c) => { folders.Party = c; });
+    GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
+    GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
+
+
+    setUpDirButton('Compendium')
+    setUpDirButton('Party')
+    setUpDirButton('Favorites')
+    setUpDirButton('Uniques')
 });
 
 ////// folder windows  put in sub file?
@@ -115,66 +130,20 @@ function setUpDirButton(buttonName) {
     }
 }
 
-
-GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
-GetDirectory('Party').then((c) => { folders.Party = c; });
-GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
-GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
-
-
-setUpDirButton('Compendium')
-setUpDirButton('Party')
-setUpDirButton('Favorites')
-setUpDirButton('Uniques')
 ////// login handling
-const login = document.getElementById("login");
+const Login = document.getElementById("Login");
 async function init() {
 
     players.players = await fetchJson("./players/players.json");
-    login.options.length = 0;
-
-    let newOption = new Option("Login", "Login");
-    login.add(newOption, undefined);
-
-    for (let i = 0; i < players.players.length; i++) {
-        let newOption = new Option(players.players[i].name, players.players[i].name);
-        login.add(newOption, undefined);
-    }
-
+    createOrGetLoginWindow(0.9, 0.9, 0.05, 0.05, players);
 
 }
-login.onchange = function (event) {
+
+Login.onClick = function (event) {
     // todo: nicer login than a orompt box, one that remembers your credentials
-    let login = event.target.value;
-
-    if (login == "login") { joined = null; return; }
-
-    //try {
-    let password = prompt("Please enter your password", "");
-    if (!password) return;
-
-
-    console.log('[socket]', 'join login :', login);
-    socket.emit('join', { player: login, password: password });
-    joined = login;
+    createOrGetLoginWindow(0.9, 0.9, 0.05, 0.05, players);
 };
 
-login.onchange = function (event) {
-    // todo: nicer login than a orompt box, one that remembers your credentials
-    let login = event.target.value;
-
-    if (login == "login") { joined = null; return; }
-
-    //try {
-    let password = prompt("Please enter your password", "");
-    if (!password) return;
-
-
-    console.log('[socket]', 'join login :', login);
-    socket.emit('join', { player: login, password: password });
-    joined = login;
-};
-// character hgndling
 
 
 

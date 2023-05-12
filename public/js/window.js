@@ -177,9 +177,9 @@ function createOrGetDirWindow(id, width, height, left, top) {
         w.appendChild(list);
         group.appendChild(w);
 
-        let body = document.createElement("div");
-        body.id = windowName + "_body";
-        w.appendChild(body);
+        // let body = document.createElement("div");
+        // body.id = windowName + "_body";
+        // w.appendChild(body);
 
 
         closeButton.onclick = function () {
@@ -211,8 +211,143 @@ function createOrGetDirWindow(id, width, height, left, top) {
 
 }
 
+function clickOne(selected) {
+
+    let ul = selected.parentElement;
+    const listArray = [...ul.children];
+    for (let i = 0; i < listArray.length; i++) {
+        // TODO: use styles
+        listArray[i].style.backgroundColor = "white";
+    }
+
+    selected.style.backgroundColor = "cyan";
+
+}
+
+function createOrGetLoginWindow(width, height, left, top, players) {
+
+    let id = "Login";
+
+    let windowName = "window_" + id;
+    let w = document.getElementById(windowName);
+
+    if (!w) {
+        let group = document.getElementById("windowGroup");
+        w = document.createElement("div");
+        w.style = "display: initial;"
+
+        w.style.position = "absolute";
+        width *= window.innerWidth;
+        height *= window.innerHeight;
+        left *= window.innerWidth;
+        top *= window.innerHeight;
+
+
+
+        w.contentHeight = height;
+
+        w.id = windowName;
+        w.class = "window";
+        let title = document.createElement("div");
+        title.id = windowName + "_title";
+        title.appendChild(document.createTextNode(id));;
+        // let closeButton = document.createElement("b");
+        // closeButton.innerHTML = "×";
+        // title.appendChild(closeButton);
+
+        title.style.padding = "10px";
+        title.style.zIndex = "10";
+        title.style.backgroundColor = "grey";
+        title.style.color = "#fff";
+        title.style.borderRadius = "4px 4px 0 0";
+        title.style.height = "40px";
+        title.style.justifyContent = "space - between";
+        title.style.display = "flex";
+        title.style.touchAction = "none";
+
+
+        let ul = document.createElement("ul");
+        ul.class = "compendiumSyle";
+        ul.style.marginTop = "0px";
+        w.appendChild(title);
+        w.appendChild(ul);
+        group.appendChild(w);
+
+        // let body = document.createElement("div");
+        // body.id = windowName + "_body";
+        // w.appendChild(body);
+
+
+        // closeButton.onclick = function () {
+        //     fadeOut(w);
+        // };
+        dragElement(w, title);
+        w.style.top = top + "px";
+        w.style.left = left + "px";
+        w.style.zIndex = 9 + windows.length;
+        w.style.backgroundColor = "#ffffff";
+        w.style.width = width + "px";
+        w.style.height = height + "px";
+        w.style.borderRadius = "8p 8px 0 0x";
+        w.style.boxShadow = "8px 8px 6px -6px black";
+        w.style.opacity = "0.9";
+        w.style.display = "none";
+        w.style.resize = "both";
+
+        // Event listener for clicks
+        w.addEventListener('mousedown', clickToBringWindowIntoFocus);
+
+        const okButton = document.createElement('button')
+
+        for (let i = 0; i < players.players.length; i++) {
+            let li = document.createElement("li");
+
+            li.onclick = () => {
+                clickOne(li);
+                okButton.selected = li;
+            };
+
+            li.appendChild(document.createTextNode(players.players[i].name));
+            ul.appendChild(li);
+
+        }
+
+
+
+        // Set the button text to 'Can you click me?'
+        okButton.innerText = 'OK'
+        okButton.password = ''
+
+
+
+        let footer = document.createElement("footer");
+        let passwordInput = document.createElement("input");
+        passwordInput.onchange = function (evt) {
+            okButton.password = evt.target.value;
+        }
+        passwordInput.type = "password";
+        footer.appendChild(document.createTextNode("Password:"));
+        footer.appendChild(passwordInput);
+        footer.appendChild(okButton);
+        ul.insertAdjacentElement('afterend', footer);
+        okButton.onclick = function (evt) {
+            if (okButton.selected) {
+                socket.emit('join', { player: okButton.selected.innerText, password: okButton.password });
+                fadeOut(w);
+
+            }
+        }
+
+        windows.push(w);
+    }
+
+
+    fadeIn(w);
+    return w;
+
+}
 function dragElement(elmnt, header) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     if (header) {
         // if present, the header is where you move the DIV from:
         header.onmousedown = dragMouseDown;

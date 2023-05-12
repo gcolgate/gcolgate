@@ -133,6 +133,7 @@ async function login(socket, credentials) {
     }
 
     socket.join('user:' + credentials.player); // We are using room of socket io for login
+    socket.emit('login_success', credentials.player);
     //console.log("Logins %o", io.sockets.adapter.rooms);
     //console.log("Room %o " + socket.rooms, socket.rooms);
 }
