@@ -1,10 +1,15 @@
 
 
 async function GetDirectory(directory) {
-    let response = await fetch("./" + directory);
-    const jsonData = await response.json();
-    console.log(jsonData);
 
+    try {
+        let response = await fetch("./" + directory);
+        console.log("Fetch " + directory);
+        const jsonData = await response.json();
+    } catch (err) {
+        console.log("Failed to fetch" + err + " " + directory);
+        return [];
+    }
 
     for (let i = 0; i < jsonData.length; i++) {
         try {
@@ -140,6 +145,31 @@ function refreshDirectoryWindow(id, whole) {
 
 }
 
+async function updateDirectoryWindow(folders, id) {
+
+    folders[id] = await GetDirectory(id);
+    let w = createOrGetDirWindow(id, .2, .6, .2, .2);
+    bringToFront(w);
+    showDirectoryWindow(id, folders[id]);
+}
+
+async function GetDirectory(directory) {
+    let response = await fetch("./" + directory);
+    const jsonData = await response.json();
+    console.log(jsonData);
+
+
+    for (let i = 0; i < jsonData.length; i++) {
+        try {
+            jsonData[i] = JSON.parse(jsonData[i]);
+        } catch (err) {
+
+            console.log("Error in parsing " + i + " " + jsonData[i]);
+        }
+    }
+    return jsonData;
+}
+
 
 function showDirectoryWindow(id, array) {
 
@@ -150,48 +180,75 @@ function showDirectoryWindow(id, array) {
 
     let ul = document.getElementById("window_" + id + "_list");
 
-    dragDrop(ul, {
-        onDrop: (files, pos, fileList, directories) => {
-            console.log('Here are the dropped files', files)
-            console.log('Dropped at coordinates', pos.x, pos.y)
-            console.log('Here is the raw FileList object if you need it:', fileList)
-            console.log('Here is the list of directories:', directories)
-        },
-        onDropText: (text, pos) => {
-            console.log('Here is the dropped text:', text)
-            console.log('Dropped at coordinates', pos.x, pos.y)
-        },
-        onDragEnter: (event) => { },
-        onDragOver: (event) => { },
-        onDragLeave: (event) => { }
-    });
+    let search = null;
 
-    ul.acceptDrag = function (thingDragged) {
+    if (!window.inited) {
 
-        for (let i = 0; i < array.length; i++) {
-            if (array[i].file == thingDragged.file) {
-                console.log("Dupe");
-                return;
+        window.inited = true;
+        dragDrop(ul, {
+            onDrop: (files, pos, fileList, directories) => {
+                console.log('Here are the dropped files', files)
+                console.log('Dropped at coordinates', pos.x, pos.y)
+                console.log('Here is the raw FileList object if you need it:', fileList)
+                console.log('Here is the list of directories:', directories)
+            },
+            onDropText: (text, pos) => {
+                console.log('Here is the dropped text:', text)
+                console.log('Dropped at coordinates', pos.x, pos.y)
+            },
+            onDragEnter: (event) => { },
+            onDragOver: (event) => { },
+            onDragLeave: (event) => { }
+        });
+
+        ul.acceptDrag = function (thingDragged) {
+
+            for (let i = 0; i < array.length; i++) {
+                if (array[i].file == thingDragged.file) {
+                    console.log("Dupe");
+                    return;
+                }
             }
-        }
 
-        socket.emit("copy_file", { to: id, from: thingDragged });
+            socket.emit("copy_file", { to: id, from: thingDragged });
+
+        }
+        search = document.createElement("input");
+        search.id = "window_" + id + "_search";
+        title.appendChild(document.createTextNode(id));
+        searchArea = document.createElement("div");
+
+        title.insertAdjacentElement('afterend', searchArea);
+        searchArea.id = "window_" + id + "_searchArea";
+
+        searchArea.appendChild(document.createTextNode("Search"));
+        searchArea.appendChild(search);
+        searchArea.style.backgroundColor = "burlywood";
+        search.oninput = searchChanged;
+        search.onmousedown = normalMouseDown;
+        search.windowId = id;
+        title.style.height = "35px";
+    }
+    else {
+
+
+
+        search = document.getElementById("window_" + id + "_search");
+
+        searchArea = document.getElementById("window_" + id + "_searchArea");
+
+        const children = searchArea.children;
+        // or
+        const listArray = [...children];
+        listArray.forEach((item) => {
+            if (item.removable == true) {
+                item.remove();
+            }
+
+        });
 
     }
-    //   ul.style.height = "100%"
 
-    let search = document.createElement("input");
-    search.id = "window_" + id + "_search";
-    title.appendChild(document.createTextNode(id));
-    let searchArea = document.createElement("div");
-
-    title.insertAdjacentElement('afterend', searchArea);
-    searchArea.appendChild(document.createTextNode("Search"));
-    searchArea.appendChild(search);
-    searchArea.style.backgroundColor = "burlywood";
-    search.oninput = searchChanged;
-    search.onmousedown = normalMouseDown;
-    search.windowId = id;
     search.array = array;
 
     let allTypes = new Set();
@@ -201,8 +258,8 @@ function showDirectoryWindow(id, array) {
     }
 
     // title.whiteSpace = "normal";
-    title.style.height = "35px";
     //title.style.display = "block";
+
 
     title.filterButtons = [];
     title.filterTitles = [];
@@ -215,6 +272,7 @@ function showDirectoryWindow(id, array) {
         //  checkbox.checked = true;
         checkbox.windowId = id;
         checkbox.array = array;
+        checkbox.removable = true;
 
 
         checkbox.onchange = function () {
@@ -227,6 +285,7 @@ function showDirectoryWindow(id, array) {
         let label = document.createElement('label')
         label.htmlFor = 'chk' + item;
         label.appendChild(document.createTextNode(item + "      ")); // todo: use style, margin isnt working
+        label.removable = true;
 
         searchArea.appendChild(checkbox);
         searchArea.appendChild(label);

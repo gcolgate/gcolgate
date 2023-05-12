@@ -18,6 +18,17 @@ scene.add(cube);
 
 camera.position.z = 5;
 
+/////////
+let joined = false;
+let players = {};
+
+var folders = {
+    Compendium: {},
+    Party: {},
+    Favorites: {},
+    Uniques: {},
+};
+////////
 
 // add windows which are lists for the different buttons, hooking up logic
 // each kind of window will make a request of the server, and have an endpoint
@@ -64,6 +75,12 @@ socket.on('chat', function (msg) {
 socket.on('change', function (msg) {
     UpdateNPC(msg);
 });
+
+socket.on('updateDir', function (msg) {
+
+    updateDirectoryWindow(folders, msg);
+
+});
 //
 // error handling, for now simple stupid alerts, todo: better UI
 socket.on('error_alert', function (msg) {
@@ -82,12 +99,12 @@ function createDirWindow(buttonName) {
     if (!joined) {
         alert("Please log in");
     }
-    if (!Compendium) {
+    if (!folders[buttonName]) {
         alert("Have not yet receieved " + buttonName + "from server");
     } else {
         let w = createOrGetDirWindow(buttonName, .2, .6, .2, .2);
         bringToFront(w);
-        showDirectoryWindow(buttonName, eval(buttonName));
+        showDirectoryWindow(buttonName, folders[buttonName]);
     }
 }
 
@@ -97,17 +114,12 @@ function setUpDirButton(buttonName) {
         createDirWindow(buttonName)
     }
 }
-let joined = false;
-let players = {};
-let Compendium = {};
-let Party = {};
-let Favorites = {};
-let Uniques = {};
 
-GetDirectory('Compendium').then((c) => { Compendium = c; });
-GetDirectory('Party').then((c) => { Party = c; });
-GetDirectory('Favorites').then((c) => { Favorites = c; });
-GetDirectory('Uniques').then((c) => { Uniques = c; });
+
+GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
+GetDirectory('Party').then((c) => { folders.Party = c; });
+GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
+GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
 
 
 setUpDirButton('Compendium')

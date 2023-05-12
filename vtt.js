@@ -20,7 +20,8 @@ const http_io = http.Server(app);
 const io = sockets(http_io);
 app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folder
 
-var passwords, players, Compendium;
+var passwords, players;
+var folders = { Compendium: [], Favorites: [], Uniques: [], Party: [] };
 var chats = []; // chats so far
 
 
@@ -38,7 +39,9 @@ function ParseJson(name, raw) {
     return json;
 }
 
-async function fillDirectoryTable(directory, name, raw) {
+async function fillDirectoryTable(name, raw) {
+    let directory = [];
+
     try {
         for (let i = 0; i < raw.length; i++) {
             if (raw[i].startsWith('tag_')) {
@@ -49,6 +52,11 @@ async function fillDirectoryTable(directory, name, raw) {
     } catch (err) {
         console.error("Unable to fill " + name + ": " + err);
     }
+    return directory;
+}
+
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
 }
 
 async function InitialDiskLoad() {
@@ -65,17 +73,25 @@ async function InitialDiskLoad() {
     let results = await Promise.all(promises);
     passwords = ParseJson('passwords.json', results[0]);
     players = ParseJson('players.json', results[1]);
-    Compendium = [];
-    Favorites = [];
-    Party = [];
-    Uniques = [];
-    fillDirectoryTable(Compendium, "Compendium", results[2]);
-    fillDirectoryTable(Favorites, "Favorites", results[3]);
-    fillDirectoryTable(Party, "Party", results[4]);
-    fillDirectoryTable(Uniques, "Uniques", results[5]);
 
+    promises = [];
+
+    promises.push(fillDirectoryTable("Compendium", results[2]));
+    promises.push(fillDirectoryTable("Favorites", results[3]));
+    promises.push(fillDirectoryTable("Party", results[4]));
+    promises.push(fillDirectoryTable("Uniques", results[5]));
+
+    results = await Promise.all(promises);
+
+    folders.Compendium = results[0];
+    folders.Favorites = results[1];
+    folders.Party = results[2];
+    folders.Uniques = results[3];
+
+    //  await delay(5000);
 
     init.inited = true;
+    console.log("Ready to go");
 
 }
 
@@ -121,17 +137,18 @@ async function login(socket, credentials) {
     //console.log("Room %o " + socket.rooms, socket.rooms);
 }
 
-async function CopyFiles(msg) {
+async function CopyThingFIles(socket, msg) {
 
-    console.log("%o", msg);
+
     let p = path.parse(path.normalize(msg.from.file));
+    let indexFolderDir = p.dir.substring(0, p.dir.length - 5);
 
     let srcName = p.name;
     let srcDir = p.dir;
     let src = path.join(__dirname, "public", p.dir, p.name + '.json');
     let dest = path.join(__dirname, "public", msg.to + "Files", p.name + '.json');
 
-    let src2 = path.join(__dirname, "public", p.dir.substring(0, p.dir.length - 5), "tag_" + p.name + '.json');
+    let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + p.name + '.json');
     let dest2 = path.join(__dirname, "public", msg.to, "tag_" + p.name + '.json');
 
     console.log(src + " to " + dest);
@@ -141,7 +158,11 @@ async function CopyFiles(msg) {
         fs.copyFile(src, dest),
         fs.copyFile(src2, dest2)
     ]);
+    console.log(path.join(__dirname, 'public', msg.to + '.json'));
+    let file = (await (fs.readFile(path.join(__dirname, 'public', msg.to, "tag_" + p.name + '.json')))).toString();
+    folders[msg.to].push(file);
 
+    socket.emit('updateDir', msg.to);
 
 
 }
@@ -216,8 +237,8 @@ io.on('connection', (socket) => {
 
     socket.on('copy_file', (msg) => {
         console.log("To" + msg.to);
-        console.log("From" + msg.from);
-        CopyFiles(msg);
+        console.log("From", msg.from);
+        CopyThingFIles(socket, msg);
 
         //   ChangeThing(msg.thing, msg.change, io, msg);
     })
@@ -228,12 +249,12 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
 
+// todo make shorter
 app.get("/Compendium", (req, res) => {
-    console.log("OK");
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    res.end(JSON.stringify(Compendium));
+    res.end(JSON.stringify(folders.Compendium));
 });
 
 app.get("/Favorites", (req, res) => {
@@ -241,7 +262,25 @@ app.get("/Favorites", (req, res) => {
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    res.end(JSON.stringify(Favorites));
+    res.end(JSON.stringify(folders.Favorites));
+});
+
+
+app.get("/Uniques", (req, res) => {
+    console.log("OK");
+    // Error here need to bulletproof server not being ready?
+    res.setHeader("Content-Type", "application/json");
+    res.writeHead(200);
+    res.end(JSON.stringify(folders.Uniques));
+});
+
+
+app.get("/Party", (req, res) => {
+    console.log("OK");
+    // Error here need to bulletproof server not being ready?
+    res.setHeader("Content-Type", "application/json");
+    res.writeHead(200);
+    res.end(JSON.stringify(folders.Party));
 });
 
 // TO DO: could stringify chats once for multiple players loading at the same time
