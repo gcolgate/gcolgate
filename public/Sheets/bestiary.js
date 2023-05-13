@@ -123,6 +123,42 @@ window.rollSpell = function (ownerId, spellId) {
     }
 };
 
+window.GetArmorClass = function (thing) {
+
+    let ac = 0;
+
+    if (thing.system.attributes.ac.flat) { ac = thing.system.attributes.ac.flat; }
+    // assumes default calculation
+    let startingAc = 10;
+    let adds = 0;
+    let dexMax = 100000;
+
+    for (let i = 0; i < thing.items.length; i++) {
+        let item = registeredThings[thing.items[i].file];
+        if (item.system.equipped && item.system.armor && item.system.armor.value) {
+
+            switch (item.system.armor.type) {
+                case "light": case "medium": case "heavy":
+                    startingAc = item.system.armor.value;
+                    break;
+                case "shield":
+                default:
+                    adds += item.system.armor.value;
+                    break;
+            }
+            if (item.system.armor.dex) {
+                if (item.system.armor.dex < dexMax) {
+                    dexMax = item.system.dex;
+                }
+            }
+        }
+    }
+    let dexBonus = window.DndAbilityBonus(thing, thing.system.abilities.dex.value);
+    if (dexBonus > dexMax) dexBonus = dexMax;
+    let ac2 = startingAc + adds + dexBonus;
+    return Math.max(ac, ac2);
+
+};
 
 
 window.rollSpellSaveAsWeaponAsAttackHomebrew = function (ownerId, spellId) {
@@ -177,12 +213,12 @@ window.drawItems = function (thing, node) {
     let text = "";
     for (let i = 0; i < thing.items.length; i++) {
         let item = thing.items[i];
-        text += "<li>";
+        text += "<div>";
         console.log("re " + item.file + " %o", registeredThings[item.file]);
         console.log("rs " + item.page + " %o", registeredThings[item.page]);
 
         text += parseSheet(registeredThings[item.file], item.page, undefined, thing); // no w
-        text += "</li>";
+        text += "</div>";
     }
     return text;
 }
