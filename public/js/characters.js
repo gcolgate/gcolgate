@@ -70,6 +70,7 @@ async function ensureThingLoaded(thingName, instance) {
 }
 async function ensureSheetLoaded(sheetName) {
     if (!registeredSheets[sheetName]) {
+        let js, curfile;
         try {
             if (sheetDependencies == null);
             // load sheet and js (change to promise all) for speed) for this sheet
@@ -78,13 +79,15 @@ async function ensureSheetLoaded(sheetName) {
             if (dependencies[sheetName]) {
                 let depends = dependencies[sheetName];
                 for (let d = 0; d < depends.length; d++) {
+                    curfile = depends[d];
                     let response = await fetch("./Sheets/" + depends[d]);
                     if (depends[d].endsWith('.js')) {
-                        const js = await response.text();
+                        js = await response.text();
                         eval(js);
                     }
                     else if (depends[d].endsWith('.html')) {
                         const text = await response.text();
+                        js = "";
                         registeredSheets[depends[d].slice(0, depends[d].length - 5)] = text;
                     }
                 }
@@ -94,8 +97,8 @@ async function ensureSheetLoaded(sheetName) {
 
             registeredSheets[sheetName] = text;
         } catch (error) {
-            console.error("Could not load " + sheetName + " " + error);
-            alert("Could not load " + sheetName + " " + error);
+            console.error("Could not load " + sheetName + " " + error + "\n" + error.stack);
+            alert("Could not load " + curfile + " " + error);
         }
 
     }
@@ -184,7 +187,7 @@ function parseSheet(thing, sheetName, w, owner) { // thing and w and owner are  
                             console.log("Eval " + code);
                             newText += eval(code);
                         } catch (error) {
-                            throw new Error(error + "  fileSOFar: " + newText + "\ncodeBeingEvaluated " + code);
+                            throw new Error(error + "  fileSOFar: " + newText + "\ncodeBeingEvaluated " + error.stack + "\n" + code);
                         }
                     }
                     else {
@@ -227,4 +230,8 @@ async function displayThing(fullthingname, sheetName) {
 
     document.getElementById("window_" + fullthingname + "_body").innerHTML = parseSheet(thing, sheetName, w, undefined);
 }
+
+
+
+////////////// TEST
 

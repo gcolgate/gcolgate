@@ -2,11 +2,29 @@
 // create support for sheet
 
 
-// support functions, store globally in window... maybe later elsewhere
 
 window.DndAbilityBonus = function (thing, ability) {
     return Math.trunc((eval(ability) - 10) / 2);
 }
+
+window.GetStatSpellPowerBonus = function (owner) {
+    let stat = owner.system.attributes.spellcasting;
+    if (stat) {
+        return window.DndAbilityBonus(owner, owner.system.abilities[stat].value);
+    }
+    return -4;
+}
+
+window.GetProficiency = function (owner) {
+    if (owner.system.attributes.prof) {
+        return owner.system.attributes.prof;
+    }
+    return 0;
+}
+
+
+// support functions, store globally in window maybe later elsewhere
+
 
 
 
@@ -64,6 +82,82 @@ window.rollWeapon = function (ownerId, weaponId) {
     }
 }
 
+
+window.rollSpell = function (ownerId, spellId) {
+
+    let owner = registeredThings[ownerId];
+    let spell = registeredThings[spellId];
+
+
+    let bonus = window.DndAbilityBonus(owner, owner.system.abilities[spell.system.ability].value);
+    if (weapon?.properties?.fin) {
+        let dex = window.DndAbilityBonus(owner, owner.system.abilities.dex.value);
+        if (dex > bonus) {
+            bonus = dex;
+        }
+    }
+    // should check if proficient here
+    let prof = owner.system.attributes.prof;
+    let atk = weapon.system.attackBonus;
+
+    socket.emit('roll', {
+        title: owner.name + "'s " + weapon.name,
+        style: "dual",
+        roll: "1d20+" + prof + "+" + bonus + "+" + atk,
+
+    });
+
+    for (let i = 0; i < weapon.system.damage.parts.length; i++) {
+        let damage = [...weapon.system.damage.parts[i]];
+        let damageDice = damage[0].replace('@mod', bonus);
+        damage.shift();
+        let t = commaString(damage);
+
+        socket.emit('roll',
+            {
+                title: "Damage",
+                roll: damageDice,
+                post: t
+            }
+        );
+    }
+};
+
+
+
+window.rollSpellSaveAsWeaponAsAttackHomebrew = function (ownerId, spellId) {
+
+    let owner = registeredThings[ownerId];
+    let spell = registeredThings[spellId];
+
+    let bonus = window.SpellSaveDC(spell, owner) - 10;
+
+    let stat = window.GetStatSpellPowerBonus(owner);
+
+    socket.emit('roll', {
+        title: owner.name + "'s " + spell.name + " roll or constant " + (bonus + 10),
+        style: "dual",
+        roll: "1d20+" + bonus + " vs " + spell.system.save.ability
+
+    });
+
+    for (let i = 0; i < spell.system.damage.parts.length; i++) {
+        let damage = [...spell.system.damage.parts[i]];
+        let damageDice = damage[0].replace('@mod', stat);
+        damage.shift();
+        let t = commaString(damage);
+
+        socket.emit('roll',
+            {
+                title: "Damage",
+                roll: damageDice,
+                post: t
+            }
+        );
+    }
+};
+
+
 window.get5eDetails = function (thing) {
     // founddry 5e is poor, maybe write foudry cleaner and ahve cleaner sheets
     if (thing.system) {
@@ -81,7 +175,6 @@ window.get5eDetails = function (thing) {
 
 window.drawItems = function (thing, node) {
     let text = "";
-    console.log("THing %o", thing);
     for (let i = 0; i < thing.items.length; i++) {
         let item = thing.items[i];
         text += "<li>";
