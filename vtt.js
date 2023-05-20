@@ -9,7 +9,7 @@ const sockets = require("socket.io");
 const init = require('./init.js');
 const dice = require('./roller.js')
 const ChangeThing = require('./sheeter.js')
-
+const fileUpload = require('express-fileupload');
 
 
 const host = 'localhost';
@@ -23,8 +23,25 @@ app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from
 var passwords, players;
 var folders = { Compendium: [], Favorites: [], Uniques: [], Party: [] };
 var chats = []; // chats so far
+app.use(fileUpload());
+
+app.post('/upload', (req, res) => {
+    // Log the files to the console
+    console.log("Upload ", req);
+    const { image } = req.files;
+
+    // If no image submitted, exit
+    if (!image) return res.sendStatus(400);
+
+    // If does not have image mime type prevent from uploading
+    // if (/^image/.test(image.mimetype)) return res.sendStatus(400);
 
 
+    // Move the uploaded image to our upload folder
+    image.mv(__dirname + '/images/' + image.name);
+
+    res.sendStatus(200);
+});
 
 
 /// TODO: put this in a module
@@ -244,6 +261,7 @@ io.on('connection', (socket) => {
         return outmsg;
 
     }
+
 
     socket.on('roll', (msg) => {
 
