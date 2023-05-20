@@ -24,15 +24,51 @@ window.GetProficiency = function (owner) {
 
 
 // support functions, store globally in window maybe later elsewhere
+window.dndNiceStatNames = {
+    str: "Strength", int: "Intelligence", con: "Constitution",
+    dex: "Dexterity", cha: "Charisma", wis: "Wisdom"
+}
 
 
+window.rollStat = function (ownerId, stat, isSave) {
+
+    let owner = registeredThings[ownerId];
 
 
+    let bonus = window.DndAbilityBonus(owner, owner.system.abilities[stat].value);
 
-window.DndAbility = function (thing, ability) {
-    return Editable(thing, ability, "npcNum") +
-        " (" + window.DndAbilityBonus(thing, ability)
-        + ")";
+    // should check if proficient here
+    let prof = 0;
+
+    if (isSave) {
+        if (owner.system.abilities[stat].proficient)
+            prof = owner.system.attributes.prof;
+        socket.emit('roll', {
+            title: owner.name + ' ' + window.dndNiceStatNames[stat] + " Save ",
+            style: "dual",
+            roll: "1d20+" + prof + "+" + bonus
+        });
+
+    } else {
+        prof = owner.system.attributes.prof;
+        socket.emit('roll', {
+            title: owner.name + ' ' + window.dndNiceStatNames[stat] + " Check ",
+            style: "dual",
+            roll: "1d20+" + bonus
+        });
+    }
+}
+
+
+window.DndAbility = function (thing, stat) {
+    let answer = Editable(thing, thing.system.abilities[stat].value, "npcNum") +
+        " (" + window.DndAbilityBonus(thing, thing.system.abilities[stat].value)
+        + ')<input type ="checkbox"' + (thing.system.abilities[stat].proficient != 0 ? " checked " : "") + " > Prof</input > "; // todo use label not text word prof
+
+    answer += "<button  onclick=\"window.rollStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
+    answer += "<button  onclick=\"window.rollStat('" + thing.id + "','" + stat + "', true)\">Save</button>";
+    return answer;
+
 }
 
 window.DndSpeed = function (title, thing, ability, units) {
@@ -59,7 +95,10 @@ window.rollWeapon = function (ownerId, weaponId) {
     let prof = owner.system.attributes.prof;
     let atk = weapon.system.attackBonus;
 
-    socket.emit('roll', {
+
+    let rolls = [];
+
+    rolls.push({
         title: owner.name + "'s " + weapon.name,
         style: "dual",
         roll: "1d20+" + prof + "+" + bonus + "+" + atk,
@@ -72,14 +111,17 @@ window.rollWeapon = function (ownerId, weaponId) {
         damage.shift();
         let t = commaString(damage);
 
-        socket.emit('roll',
+        rolls.push(
             {
-                title: "Damage",
+                title: weapon.name + " " + t + " damage",
                 roll: damageDice,
-                post: t
+
             }
         );
+
     }
+
+    socket.emit('rolls', rolls);
 }
 
 
@@ -100,7 +142,9 @@ window.rollSpell = function (ownerId, spellId) {
     let prof = owner.system.attributes.prof;
     let atk = weapon.system.attackBonus;
 
-    socket.emit('roll', {
+    let rolls = [];
+
+    rolls.push({
         title: owner.name + "'s " + weapon.name,
         style: "dual",
         roll: "1d20+" + prof + "+" + bonus + "+" + atk,
@@ -113,14 +157,16 @@ window.rollSpell = function (ownerId, spellId) {
         damage.shift();
         let t = commaString(damage);
 
-        socket.emit('roll',
+
+        rolls.push(
             {
-                title: "Damage",
-                roll: damageDice,
-                post: t
+                title: weapon.name + " " + t + " damage",
+                roll: damageDice
             }
         );
     }
+    socket.emit('rolls', rolls);
+
 };
 
 window.GetArmorClass = function (thing) {
@@ -169,8 +215,9 @@ window.rollSpellSaveAsWeaponAsAttackHomebrew = function (ownerId, spellId) {
     let bonus = window.SpellSaveDC(spell, owner) - 10;
 
     let stat = window.GetStatSpellPowerBonus(owner);
+    let rolls = [];
 
-    socket.emit('roll', {
+    rolls.push({
         title: owner.name + "'s " + spell.name + " roll or constant " + (bonus + 10),
         style: "dual",
         roll: "1d20+" + bonus + " vs " + spell.system.save.ability
@@ -183,14 +230,16 @@ window.rollSpellSaveAsWeaponAsAttackHomebrew = function (ownerId, spellId) {
         damage.shift();
         let t = commaString(damage);
 
-        socket.emit('roll',
+        rolls.push(
             {
-                title: "Damage",
+                title: t + " damage",
                 roll: damageDice,
-                post: t
+
             }
         );
     }
+    socket.emit('rolls', rolls);
+
 };
 
 

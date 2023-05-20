@@ -1,13 +1,17 @@
 const chat_window_name = "window_chat";
 
+var login;
 
 function sendChat(msg) {
     socket.emit('chat', msg);
-    let formatted = '<span class=chatUser">' + 'user:' + joined + '</span> <p>' + msg + '</p>';
+    let formatted = '<div class="chatsender">' + 'user:' + login + '</div> <div class="chattext">' + msg + '</div>';
 
     addChat(formatted);
 }
 
+function setLogin(name) {
+    login = name;
+}
 
 
 function showChatWindow(array) {
@@ -24,10 +28,8 @@ function showChatWindow(array) {
     //  ul.style.marginBottom = "-50px";
 
     for (let i = 0; i < array.length; i++) {
-        let li = document.createElement("li");
-        li.appendChild(document.createTextNode(array[i]));
+        addChat(array[i]);
 
-        ul.appendChild(li);
     }
     var footer = document.createElement("footer");
     var chatInput = document.createElement("input");
@@ -56,10 +58,12 @@ function showChatWindow(array) {
 function addChat(text) {
     let ul = document.getElementById(chat_window_name + "_list");
 
-    var li = document.createElement("li");
-    var msg = document.createElement('div');
-    msg.innerHTML = text;
-    li.appendChild(msg);
+    var li = document.createElement("div");
+
+    console.log(text);
+    li.insertAdjacentHTML('beforeend', text);
+
+
     ul.appendChild(li);
     li.scrollIntoView();
 

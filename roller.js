@@ -11,6 +11,10 @@ function sum(arr) {
     }
     return res;
 }
+
+function emphasis(classname, text) {
+    return '<span class="' + classname + '">' + text + '</span>';
+}
 function DiceTermRoll(num, sides) {
 
     let dice = [];
@@ -20,6 +24,11 @@ function DiceTermRoll(num, sides) {
         let d = RollOneDice(sides)
         dice.push(d);
         if (i > 0) result += ",";
+        if (d == sides) {
+            d = emphasis('crit', d);
+        } else if (d == 1) {
+            d = emphasis('fumble', d);
+        }
         result += d;
 
     }

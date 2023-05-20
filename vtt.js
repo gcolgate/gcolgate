@@ -107,7 +107,7 @@ function getUser(socket) {
     const entries = socket.rooms.values();
     for (const entry of entries) {
         if (entry.startsWith('user:')) {
-            user = entry.sub(5);
+            user = entry.substr(5);
             return user;
         }
     }
@@ -196,43 +196,75 @@ io.on('connection', (socket) => {
     socket.on('chat', (msg) => {
         let sender = getUser(socket);
         if (sender) {
-            chats.push('<span class=chatUser>' + sender + '</span>' + msg);
-            console.log('chat', '<span class=chatUser">' + sender + '</span> <p>' + msg + '</p>');
-            ReBroadCast(socket, 'chat', '<span class=chatUser">' + sender + '</span><p> ' + msg + '</p>');
+            let formatted = '<div class=chatsender>' + sender + '</div><div classname="chattext">' + msg + '</div';
+            chats.push(formatted);
+            ReBroadCast(socket, formatted);
         }
     });
     socket.on('change', (msg) => {
         ChangeThing(msg.thing, msg.change, io, msg);
     })
+    // to do in utilities class
+    function div(className, text) {
+        return '<div class="' + className + '">' + text + "</div>";
+    }
+    function strong(text) {
+        return '<strong>' + text + '</strong>';
+    }
+    function parens(text) {
+        return '(' + text + ')';
+    }
+
+    function processRoll(m) {
+
+        let outmsg = ""
+        if (m.title.length > 15)
+            outmsg += div("rolltitle", m.title);
+        else
+            outmsg += div("centeredtext rolltitle", m.title);
+
+        let r = dice(m.roll);
+
+        if (m.style == "dual") {
+            let r2 = dice(m.roll);
+            outmsg += div("diceexpression", r.expression) +
+                div("twocolumns",
+                    div("oneroll", strong(r.val) + ' ' + parens(r.rolls)) +
+                    div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls)));
+
+
+        } else {
+            outmsg +=
+                div("twocolumns",
+                    div("diceexpression", r.expression) +
+                    div("oneroll", strong(r.val) + ' ' + parens(r.rolls)));
+        }
+        if (m.post) outmsg += div("msgpost", m.post);
+
+        return outmsg;
+
+    }
 
     socket.on('roll', (msg) => {
-        let m = msg;
-        console.log("%o", m);
-        let sender = getUser(socket);
-        if (m.title) {
-            sender += " " + m.title;
-        }
-        if (sender) {
-            console.log(m);
-            console.log(sender);
-            let r = dice(m.roll);
-            let outmsg = ""
-            if (msg.style == "dual") {
-                r2 = dice(m.roll);
-                outmsg = '<span class=chatUser>' + sender + '</span>' + r.expression
-                    + "<br> <strong> " + r.val + ' </strong> (' + r.rolls + ')'
-                    + "<br> <strong> " + r2.val + ' </strong> (' + r2.rolls + ')';
-            } else {
-                outmsg = '<span class=chatUser>' + sender + '</span>' + r.expression
-                    + "<br> <strong> " + r.val + ' </strong> (' + r.rolls + ')';
-            }
-            chats.push(outmsg);
-            if (msg.post) outmsg += " " + msg.post;
-            chats.push(outmsg);
-            console.log(outmsg);
-            io.emit('chat', outmsg);
-            console.log(outmsg);
 
+        let sender = getUser(socket);
+
+
+        if (sender) {
+            let outmsg = div('chatsender', sender);
+            outmsg += processRoll(msg);
+            io.emit('chat', div("chatmsg", outmsg));
+        }
+    });
+
+    socket.on('rolls', (msg) => {
+        let sender = getUser(socket);
+        if (sender) {
+            let outmsg = div('chatsender', sender);
+            for (let i = 0; i < msg.length; i++) {
+                outmsg += processRoll(msg[i]);
+            }
+            io.emit('chat', div("chatmsg", outmsg));
         }
     });
 

@@ -16,7 +16,34 @@
       gap: 10px;
     }
 
-    .compendiumSyle {
+
+    .window {
+      position: absolute;
+      top: 4%;
+      z-index: 9;
+      background-color: #f1f1f1;
+      width: 20%;
+      height: 20%;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 8px 8px 6px -6px black;
+      opacity: 0.9;
+      display: initial;
+      resize: both;
+    }
+
+    .windowtitle {
+      padding: 10px;
+      z-index: 10;
+      background-color: grey;
+      color: #fff;
+      border-radius: 4px 4px 0 0;
+      height: 40px;
+      justify-content: space-between;
+      display: flex;
+      touch-action: none;
+    }
+
+    ul {
       background-color: #fff;
       padding: 20px;
       max-height: 80%;
@@ -29,6 +56,14 @@
     .compendiumSyle ul {
       list-style: none;
       padding: 0;
+      margin: 0;
+    }
+
+    block {
+      width: 18px;
+      height: 72px;
+      padding: 10px;
+      border: 5px solid black;
       margin: 0;
     }
 
@@ -51,6 +86,17 @@
       color: #fff;
     }
 
+    .twocolumns {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      background-color: beige;
+    }
+
+    .diceexpression {
+      text-align: center;
+      font-style: italic;
+    }
+
     .compendiumSyle-buttons {
 
       text-align: right;
@@ -60,18 +106,28 @@
       margin-left: 10px;
     }
 
-    .window {
-      position: absolute;
-      top: 4%;
-      z-index: 9;
-      background-color: #f1f1f1;
-      width: 20%;
-      height: 20%;
-      border-radius: 8px 8px 0 0;
-      box-shadow: 8px 8px 6px -6px black;
-      opacity: 0.9;
-      display: none;
+    .chatmsg {
+      border: groove black;
     }
+
+    .crit {
+      color: red;
+      font-weight: bold;
+    }
+
+    .fumble {
+      color: red;
+      font-weight: bold;
+    }
+
+    .oneroll {
+      text-align: center;
+    }
+
+    .centeredtext {
+      text-align: center;
+    }
+
 
     [id$="header"] {
 
@@ -160,7 +216,14 @@
       margin-bottom: 1rem;
     }
 
-    .chatUser {
+    .chatsender {
+      color: #3d0dad;
+      background-color: burlywood;
+      font-style: italic;
+      border-bottom: #3d0dad groove
+    }
+
+    .chattext {
       color: #3d0dad;
     }
   </style>
@@ -193,7 +256,7 @@
 
 <body>
 
-  <button class="login" id="Login">Login
+  <button class="module" id="Login">Login
   </button>
   <script type="module" src="./js/main.js"></script>
   <button type="button" id="Scenes">Scenes </button>

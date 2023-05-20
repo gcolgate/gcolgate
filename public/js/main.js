@@ -19,7 +19,8 @@ scene.add(cube);
 camera.position.z = 5;
 
 /////////
-let joined = false;
+let player = { name: "" }
+
 let players = {};
 
 var folders = {
@@ -95,7 +96,8 @@ socket.on('login_failure', function (msg) {
 });
 
 socket.on('login_success', function (msg) {
-    joined = msg;
+    player.name = msg;
+    setLogin(msg);
     Login.innerText = msg;
     GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
     GetDirectory('Party').then((c) => { folders.Party = c; });
@@ -111,7 +113,7 @@ socket.on('login_success', function (msg) {
 
 ////// folder windows  put in sub file?
 function createDirWindow(buttonName) {
-    if (!joined) {
+    if (!player.name) {
         alert("Please log in");
     }
     if (!folders[buttonName]) {
@@ -149,7 +151,7 @@ Login.onClick = function (event) {
 
 const chatButton = document.getElementById("Chat");
 chatButton.onclick = function () {
-    if (!joined) {
+    if (!player.name) {
         alert("Please log in");
     }
     showChatWindow([]);

@@ -64,38 +64,39 @@ thing.system = thing.data;
               color: rgb(88, 23, 13);
               justify-content: space-around;
               color-scheme: light dark;
-              display: inline-block;
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
               font-family: Georgia, serif;
               font-size: 20px;
               font-weight: 400">
           <div style="font-weight: 700;display: inline-block"><span>STR</span><br>
             <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing,"thing.system.abilities.str.value")}
+              {window.DndAbility(thing, 'str')}
             </div>
           </div>
           <div style="font-weight: 700;display: inline-block"><span>DEX</span><br>
             <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing,"thing.system.abilities.dex.value")}
+              {window.DndAbility(thing, 'dex')}
             </div>
           </div>
           <div style="font-weight: 700;display: inline-block"><span>CON</span><br>
             <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing,"thing.system.abilities.con.value")}
+              {window.DndAbility(thing, 'con')}
             </div>
           </div>
           <div style="font-weight: 700;display: inline-block"><span>INT</span><br>
             <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing,"thing.system.abilities.int.value")}
+              {window.DndAbility(thing, 'int')}
             </div>
           </div>
           <div style="font-weight: 700;display: inline-block"><span>WIS</span><br>
             <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing,"thing.system.abilities.wis.value")}
+              {window.DndAbility(thing, 'wis')}
             </div>
           </div>
           <div style=" font-weight: 700;display: inline-block"><span>CHA</span><br>
             <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing,"thing.system.abilities.cha.value")}
+              {window.DndAbility(thing, 'cha')}
             </div>
           </div>
         </div>

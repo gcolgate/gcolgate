@@ -11,12 +11,19 @@ HTML formatting use colums/grid
     Title
     Small title
     Sub title
+    Need to make edit box resize to text entered (no dangling ft in movement)
+Need to support resizing sub windows
+Need to support resizing entire window
+Need to be able to POP OUT sub windows
+
+
+Better roll formatting in chat
  
 
 1. Complete bestiary, add in 2 panels, actions, stats and skills
-    Add roll to spells
-    Add roll to stats
-    Add save roll to stats
+    Add roll to spells -- only half done
+    Add rolls to feats --
+    Make proficiency in saves checkbox work
     Add skills (only pick skills that are not default to show here)
 
 2. For items, classify them more so they can be searched with more buttons
@@ -47,7 +54,7 @@ HTML formatting use colums/grid
 
 3.
 
-    for players
+    for player sheet 
         allow selecting the various proficiencies (expertise, half expertise, etc) on skills
         allow equiping parts of bodies, showing relevant lists, capped by player coin 
         allow credit and gold currencies
