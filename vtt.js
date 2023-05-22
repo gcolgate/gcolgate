@@ -10,7 +10,7 @@ const init = require('./init.js');
 const dice = require('./roller.js')
 const ChangeThing = require('./sheeter.js')
 const fileUpload = require('express-fileupload');
-
+const Scene = require('./scene.js');
 
 const host = 'localhost';
 const port = 8000;
@@ -25,22 +25,53 @@ var folders = { Compendium: [], Favorites: [], Uniques: [], Party: [] };
 var chats = []; // chats so far
 app.use(fileUpload());
 
+currentScene = new Scene(); // for now, later multiple
+
+async function doTheUpload(res, req) {
+
+    let file = req.files.file;
+    // Log the files to the console
+    // Upload expects a file, an x, a y, and a z
+    // and it will create a new image
+    // If does not have image mime type prevent from uploading
+    if (!file.mimetype.startsWith('image')) {
+        console.log("Must be image not " + file.mimetype);
+        return res.sendStatus(400);
+    }
+    // Move the uploaded image to our upload folder
+    try {
+        console.log("Writing to " + __dirname + '/images/' + file.name);
+        let t = Date.now();
+        console.log("start time " + t);
+
+        await file.mv(path.normalize(__dirname + '/public/images/' + file.name));
+        res.sendStatus(200);
+        console.log("done time ", file);
+
+        let tile = { x: req.body.x, y: req.body.y, z: req.body.z, name: file.name };
+        let fixedTile = currentScene.addTile(tile);
+
+        io.emit('newTile', fixedTile);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+
 app.post('/upload', (req, res) => {
     // Log the files to the console
-    console.log("Upload ", req);
-    const { image } = req.files;
+    // Upload expects a file, an x, a y, and a z
+    // and it will create a new image
+
+    console.log(" req ", req);
 
     // If no image submitted, exit
-    if (!image) return res.sendStatus(400);
+    if (!req.files || !req.files.file) {
+        console.log("Cant find image");
+        return res.sendStatus(400);
+    }
+    doTheUpload(res, req);
 
-    // If does not have image mime type prevent from uploading
-    // if (/^image/.test(image.mimetype)) return res.sendStatus(400);
-
-
-    // Move the uploaded image to our upload folder
-    image.mv(__dirname + '/images/' + image.name);
-
-    res.sendStatus(200);
 });
 
 
@@ -292,7 +323,9 @@ io.on('connection', (socket) => {
         CopyThingFIles(socket, msg);
 
         //   ChangeThing(msg.thing, msg.change, io, msg);
-    })
+    });
+
+
 
 });
 
@@ -452,4 +485,3 @@ http_io.listen(port, () => console.log(`VTT listening on port ${port}`))
 // }); 
 
 console.log(`Server is running on http://${host}:${port}`);
-//test();

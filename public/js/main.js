@@ -1,23 +1,10 @@
 
-import * as THREE from 'three';
-const three_scene = new THREE.Scene();
-let width = window.innerWidth - 32;
-let height = window.innerHeight - 32;
-//const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const three_camera = new THREE.OrthographicCamera(width / - 2, width / 2, height / 2, height / - 2, -10, 1000);
 
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(width, height, true);
-document.body.appendChild(renderer.domElement);
 
-renderer.domElement.acceptsDropFile = true;
+import { three_camera, three_renderer, three_animate, three_addTile, three_findMouseShapes } from "./three_support.js";
 
-three_camera.position.z = 5;
-
-/////////
-let player = { name: "" }
-
-let players = {};
+///////// 
+let players = { hero: "" };
 
 var folders = {
     Compendium: {},
@@ -53,39 +40,32 @@ var folders = {
 // utility functions.. move to utility file
 
 
+
 // mouse positions are also updated and sent each frame
 // handle mouse movement reporting to other clients
 addEventListener("mousemove", (event) => {
-    socket.emit('mousemove', {
-        who: players.name,
-        x: event.clientX + currentScene.scrollX,
-        y: event.clientY + currentScene.scrollY
-    });
+    if (players.hero != undefined) {
+        socket.emit('mousemove', {
+            who: players.hero,
+            x: event.clientX + currentScene.scrollX,
+            y: event.clientY + currentScene.scrollY
+        });
+    }
 
 });
 
-let miceFor = {}
-
-const mouse_geometry = new THREE.BoxGeometry(10, 10, 10);
-const mouse_material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-function findMiceFor(who) {
-    if (miceFor.who === undefined) {
-        // todo: use different matierals for each player
-        // todo: show player name on mouse
-        const cube = new THREE.Mesh(mouse_geometry, mouse_material);
-        miceFor.who = cube;
-        three_scene.add(cube);
-        // TODO: kill cube on disconnect
-    }
-    return miceFor.who;
-}
-
 
 socket.on('mousemove', function (msg) {
-    let cube = findMiceFor(msg.who);
+    let cube = three_findMouseShapes(msg.who);
     cube.position.x = msg.x - window.innerWidth / 2 - currentScene.scrollX;
     cube.position.y = -(msg.y - window.innerHeight / 2 - currentScene.scrollY);
 
+});
+
+socket.on('newTile', function (msg) {
+    msg.x = msg.x - window.innerWidth / 2 - currentScene.scrollX; // bad form fix
+    msg.y = -(msg.y - window.innerHeight / 2 - currentScene.scrollY);
+    three_addTile(msg);
 });
 
 socket.on('chat', function (msg) {
@@ -116,7 +96,7 @@ socket.on('login_failure', function (msg) {
 });
 
 socket.on('login_success', function (msg) {
-    player.name = msg;
+    players.hero = msg;
     setLogin(msg);
     Login.innerText = msg;
     GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
@@ -133,7 +113,7 @@ socket.on('login_success', function (msg) {
 
 ////// folder windows  put in sub file?
 function createDirWindow(buttonName) {
-    if (!player.name) {
+    if (!players.hero) {
         alert("Please log in");
     }
     if (!folders[buttonName]) {
@@ -171,7 +151,7 @@ Login.onClick = function (event) {
 
 const chatButton = document.getElementById("Chat");
 chatButton.onclick = function () {
-    if (!player.name) {
+    if (!players.hero) {
         alert("Please log in");
     }
     showChatWindow([]);
@@ -235,10 +215,56 @@ function noDragging(e) {
 
 }
 
+// input is drag and drop file
+async function dropOneFile(file, additional) {
+    try {
+        let url = new URL(window.location.href).origin + '/upload';
+        let formData = new FormData()
+        formData.append('file', file);
+        for (const [key, value] of Object.entries(additional)) {
+            formData.append(key, value);
+        }
+
+        let response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.text();
+        console.log("Success:", result);
+        return true;
+
+
+    } catch (error) {
+        console.error("Error:  file %o" + error, file);
+        return false;
+    }
+}
+// TODO: check if already on server, if
+// control held, ask user if he wants to replace
+// existing if it is there already
+// if control held, just make new tile but
+// don't upload
+function uploadDroppedImages(e) {
+    let fd = new FormData();
+    let files = e.dataTransfer.files;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if (!file.type.startsWith("image/")) {
+            continue;
+        }
+        let additional = {
+            x: e.clientX + currentScene.scrollX,
+            y: e.clientY + currentScene.scrollY,
+            z: null,
+        }
+        dropOneFile(file, additional);
+    }
+}
+
 function noDropping(e) {
     // TODO:unhighliht
 
-    console.log("Drop %o", e.target);
     if (!e.target.acceptsDropFile) {
 
         e.preventDefault();
@@ -249,45 +275,11 @@ function noDropping(e) {
         console.log("Not canvas")
         return;
     }
-    console.log("CANVAS");
-
 
     e.stopPropagation();
     e.preventDefault();
-    let fd = new FormData();
-    let files = e.dataTransfer.files;
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+    uploadDroppedImages(e);
 
-        if (!file.type.startsWith("image/")) {
-            continue;
-        }
-        //   const img = document.getElementById("avatar");
-        fd.append(files[i].name, files[i], files[i].name);
-    }
-    let x = new XMLHttpRequest();
-    x.onreadystatechange = function () {
-        console.log("%o", x);
-        if (x.readyState == 4) {
-            //  progress.innerText = progress.style.width = "";
-            // form.filesfld.value = "";
-            //   dragLeave(label); // this will reset the text and styling of the drop zone
-            // if (x.status == 200) {
-            //     var images = JSON.parse(x.responseText);
-            //     for (var i = 0; i < images.length; i++) {
-            //         var img = document.createElement("img");
-            //         img.src = images[i];
-            //         document.body.appendChild(img);
-            //     }
-            console.log("%o", x);
-        }
-        else {
-            // failed - TODO: Add code to handle server errors
-            alert("Failed to upload");
-        }
-    }
-    x.open("post", "/upload", true);
-    x.send(fd);
 
     e.dataTransfer.effectAllowed = 'none'
     e.dataTransfer.dropEffect = 'none'
@@ -301,20 +293,10 @@ window.ondragEnter = function (e) { };
 window.ondragLeave = function (e) { };
 window.ondrop = function (e) { console.log("onDrop"); noDropping(e); };
 
-renderer.domElement.ondrop = function (e) { console.log("onDrop2"); noDropping(e); };
+three_renderer.domElement.ondrop = function (e) { console.log("onDrop2"); noDropping(e); };
 
 
 
-function animate() {
-    requestAnimationFrame(animate);
-
-    for (const [key, cube] of Object.entries(miceFor)) {
-
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
-    }
-    renderer.render(three_scene, three_camera);
-}
-animate();
+three_animate();
 
 
