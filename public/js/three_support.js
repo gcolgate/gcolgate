@@ -29,8 +29,9 @@ const plane_geometry = new THREE.PlaneGeometry(1, 1);
 
 var materials = {};
 
+var selectables = [];
 
-
+var selection = [];
 
 export function three_findMouseShapes(who) {
     if (three_mouseShapes.who === undefined) {
@@ -62,8 +63,11 @@ export async function three_addTile(msg) {
     plane.position.x = msg.x;
     plane.position.y = msg.y;
     plane.position.z = msg.z;
-    plane.scale.set(64, 64, 1);
+    let textureScaleX = texture.image.width * msg.scale.x;
+    let textureScaleY = texture.image.height * msg.scale.y;
+    plane.scale.set(textureScaleX, textureScaleY, 1);
     three_scene.add(plane);
+    selectables.push(plane);
 
 
 }
@@ -79,4 +83,83 @@ export function three_animate() {
         cube.rotation.y += 0.01;
     }
     three_renderer.render(three_scene, three_camera);
+}
+
+let three_rayCaster = new THREE.Raycaster();
+let three_lastMouse = null;
+
+
+// change these when window size changes, for mouse calculations
+let multiplier = new THREE.Vector2(2 / window.innerWidth, 2 / window.innerHeight);
+let adder = new THREE.Vector2(-1, 1);
+
+
+
+// the math here isn't right but it works but that's what you get not
+// working in the morning on this project when I can do math
+// TODO: quit job and only do hobbies
+
+export function three_mouseMove(event) {
+    event.preventDefault();
+    let rawMouse = new THREE.Vector2(event.clientX, event.clientY);
+
+
+    let pointer = multiplier.clone().multiply(rawMouse).add(adder);
+
+
+    three_rayCaster.setFromCamera(pointer, three_camera);
+    // const intersects = three_rayCaster.intersectObjects(selectables);
+
+    for (let i = 0; i < selection.length; i++) {
+        console.log("Diff " + (rawMouse.x - three_lastMouse.x) + " " + (rawMouse.y - three_lastMouse.y));
+        selection[i].position.x += rawMouse.x - three_lastMouse.x;
+        selection[i].position.y -= rawMouse.y - three_lastMouse.y;
+    }
+    three_lastMouse = rawMouse;
+}
+
+three_renderer.domElement.onmousedown = function (event) {
+    event.preventDefault();
+    let rawMouse = new THREE.Vector2(event.clientX, event.clientY);
+    let pointer = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1,
+        -(event.clientY / window.innerHeight) * 2 + 1);
+
+    three_rayCaster.setFromCamera(pointer, three_camera);
+    const intersects = three_rayCaster.intersectObjects(selectables);
+
+    for (let i = 0; i < intersects.length; i++) {
+
+        intersects[i].object.material.color.set(0xff0000);
+
+
+        selection.push(intersects[i].object);
+        break;
+    }
+    three_lastMouse = rawMouse;
+}
+
+
+three_renderer.domElement.onmouseup = function (event) {
+
+    for (let i = 0; i < selection.length; i++) {
+
+        selection[i].material.color.set(0xffffff);
+
+    }
+    selection = [];
+    // event.preventDefault();
+    // let pointer = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1,
+    //     -(event.clientY / window.innerHeight) * 2 + 1);
+
+    // three_rayCaster.setFromCamera(pointer, three_camera);
+    // const intersects = three_rayCaster.intersectObjects(selectables);
+
+    // for (let i = 0; i < intersects.length; i++) {
+
+    //     intersects[i].object.material.color.set(0xff0000);
+
+    //     selection.push( intersects[i].object);
+    //     break;
+    // }
+    // three_lastMouse = pointer;
 }

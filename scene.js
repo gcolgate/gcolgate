@@ -27,6 +27,7 @@ class Scene {
             tile.z = this.currentScene.nextZ;
             this.currentScene.nextZ += 0.00001;
         }
+        tile.scale = { x: 1, y: 1, z: 1 };
         console.log("now Tile Z " + tile.z);
         this.currentScene.tiles.push(tile);
         return tile;

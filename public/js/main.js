@@ -1,7 +1,7 @@
 
 
 
-import { three_camera, three_renderer, three_animate, three_addTile, three_findMouseShapes } from "./three_support.js";
+import { three_camera, three_mouseMove, three_renderer, three_animate, three_addTile, three_findMouseShapes } from "./three_support.js";
 
 ///////// 
 let players = { hero: "" };
@@ -50,6 +50,7 @@ addEventListener("mousemove", (event) => {
             x: event.clientX + currentScene.scrollX,
             y: event.clientY + currentScene.scrollY
         });
+        three_mouseMove(event);
     }
 
 });
