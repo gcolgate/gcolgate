@@ -2,6 +2,7 @@
 const debugfs = require('fs');
 const fs = require('fs').promises;
 const path = require('path');
+const jsonHandling = require('./json_handling.js');
 
 function SanitizeThing(text) {
     text.replace(/\s|\"|\'|\(|\)/g, '');
@@ -9,17 +10,7 @@ function SanitizeThing(text) {
     return text;
 }
 
-/// TODO: put this in a module
-function ParseJson(name, raw) {
-    let json = null;
 
-    try {
-        json = JSON.parse(raw);
-    } catch (err) {
-        console.error("error parsing json ( " + err + ") for " + name);
-    }
-    return json;
-}
 
 
 async function ChangeThing(thingName, replacement, io, msg) {
@@ -33,7 +24,7 @@ async function ChangeThing(thingName, replacement, io, msg) {
 
         let filePath = path.normalize(path.join(__dirname, 'public', thingName));
         let result = await fs.readFile(filePath);
-        let thing = ParseJson(filePath, result); // for eval to work we need a thing
+        let thing = jsonHandling.ParseJson(filePath, result); // for eval to work we need a thing
 
 
         eval(replacement); // actually change the thing

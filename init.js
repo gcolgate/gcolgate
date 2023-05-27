@@ -3,7 +3,7 @@
 
 var init = { inited: false }
 
-init.until = function (conditionFunction) {
+init.until = function () {
     const poll = resolve => {
         if (init.inited == true) resolve();
         else setTimeout(_ => poll(resolve), 400);

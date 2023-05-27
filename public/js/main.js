@@ -1,7 +1,7 @@
 
 
 
-import { three_camera, three_mouseMove, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket } from "./three_support.js";
+import { three_camera, three_mouseMove, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
 
 ///////// 
 let players = { hero: "" };
@@ -110,7 +110,7 @@ socket.on('login_success', function (msg) {
     GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
     GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
 
-
+    GetDirectory('CurrentOpenScene').then((c) => { three_replaceScene(c); });
     setUpDirButton('Compendium')
     setUpDirButton('Party')
     setUpDirButton('Favorites')

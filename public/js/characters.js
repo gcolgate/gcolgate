@@ -203,18 +203,6 @@ function parseSheet(thing, sheetName, w, owner) { // thing and w and owner are  
     return newText;
 }
 
-/// TODO: put this in a module
-function ParseJson(name, raw) {
-    let json = null;
-
-    try {
-        json = JSON.parse(raw);
-    } catch (err) {
-        console.error("error parsing json ( " + err + ") for " + name);
-    }
-    return json;
-}
-
 
 async function displayThing(fullthingname, sheetName) {
 

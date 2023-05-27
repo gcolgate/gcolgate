@@ -81,11 +81,19 @@ export async function three_addTile(msg) {
 
 }
 
+export function three_replaceScene(c) {
+    // TODO: delete old scene
+    let keys = Object.keys(c);
+    for (let i = 0; i < keys.length; i++) {
+        three_addTile(c[keys[i]]);
+    }
+}
+
 
 export async function three_updateTile(msg) {
 
     for (let i = 0; i < selectables.length; i++) {
-
+        // todo: use map not array
         if (selectables[i].tile.tile_id == msg.tile_id) {
 
             if (selectables[i].tile.texture != msg.texture) {
@@ -153,7 +161,9 @@ let adder = new THREE.Vector2(-1, 1);
 // TODO: quit job and only do hobbies
 
 
-var mouseMode;
+var mouseMode = 'dragging';
+var scalingX = false;
+var scalingY = false;
 
 export function three_mouseMove(event) {
     event.preventDefault();
@@ -168,7 +178,7 @@ export function three_mouseMove(event) {
     switch (mouseMode) {
         default:
             for (let i = 0; i < selection.length; i++) {
-                console.log("Diff " + (rawMouse.x - three_lastMouse.x) + " " + (rawMouse.y - three_lastMouse.y));
+                console.log("drag " + (rawMouse.x - three_lastMouse.x) + " " + (rawMouse.y - three_lastMouse.y));
                 selection[i].tile.x += rawMouse.x - three_lastMouse.x;
                 selection[i].tile.y -= rawMouse.y - three_lastMouse.y;
                 socket.emit('updateTile', selection[i].tile);
@@ -176,9 +186,17 @@ export function three_mouseMove(event) {
             break;
         case "scaling":
             for (let i = 0; i < selection.length; i++) {
-                console.log("Diff " + (rawMouse.x - three_lastMouse.x) + " " + (rawMouse.y - three_lastMouse.y));
-                selection[i].position.x += rawMouse.x - three_lastMouse.x;
-                selection[i].position.y -= rawMouse.y - three_lastMouse.y;
+                let scale = selection[i].scale;
+                console.log("scale " + (rawMouse.x - three_lastMouse.x) + " " + (rawMouse.y - three_lastMouse.y));
+
+                let x = scalingX ? (rawMouse.x - three_lastMouse.x) / 2 + scale.x : scale.x;
+                let y = scalingY ? (rawMouse.y - three_lastMouse.y) / 2 + scale.y : scale.y;
+                selection[i].tile.x += (rawMouse.x - three_lastMouse.x) / 2;
+                selection[i].tile.y -= (rawMouse.y - three_lastMouse.y) / 2;
+
+                console.log("Diff " + x + " " + y);
+                scale.set(x, y, 1);
+
                 socket.emit('updateTile', selection[i].tile);
             }
             break;
@@ -199,6 +217,21 @@ three_renderer.domElement.onmousedown = function (event) {
     for (let i = 0; i < intersects.length; i++) {
 
         intersects[i].object.material.color.set(0xff0000);
+
+        const minim = 0.2;
+
+        // this works only for tiles. To do make it a function added to each kind of thing
+        console.log(intersects[i].uv);
+        console.log(intersects[i].uv.x + " and " + intersects[i].uv.y);
+        scalingX = scalingX = intersects[i].uv.x < minim || intersects[i].uv.x > 1 - minim;
+        scalingY = scalingY = intersects[i].uv.y < minim || intersects[i].uv.y > 1 - minim;
+        if (scalingX ||
+            scalingY) {
+            mouseMode = 'scaling';
+
+        } else {
+            mouseMode = 'dragging';
+        }
 
 
         selection.push(intersects[i].object);

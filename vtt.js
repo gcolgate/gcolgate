@@ -11,6 +11,7 @@ const dice = require('./roller.js')
 const ChangeThing = require('./sheeter.js')
 const fileUpload = require('express-fileupload');
 const Scene = require('./scene.js');
+const jsonHandling = require('./json_handling.js');
 
 const host = 'localhost';
 const port = 8000;
@@ -25,7 +26,7 @@ var folders = { Compendium: [], Favorites: [], Uniques: [], Party: [] };
 var chats = []; // chats so far
 app.use(fileUpload());
 
-currentScene = new Scene(); // for now, later multiple
+currentScene = new Scene('currentscene'); // for now, later multiple
 
 async function doTheUpload(res, req) {
 
@@ -75,33 +76,6 @@ app.post('/upload', (req, res) => {
 });
 
 
-/// TODO: put this in a module
-function ParseJson(name, raw) {
-    let json = null;
-
-    try {
-        json = JSON.parse(raw);
-    } catch (err) {
-        console.error("error parsing json ( " + err + ") for " + name);
-    }
-    return json;
-}
-
-async function fillDirectoryTable(name, raw) {
-    let directory = [];
-
-    try {
-        for (let i = 0; i < raw.length; i++) {
-            if (raw[i].startsWith('tag_')) {
-                let file = (await (fs.readFile(path.join(__dirname, 'public', name, raw[i])))).toString();
-                directory.push(file);
-            }
-        }
-    } catch (err) {
-        console.error("Unable to fill " + name + ": " + err);
-    }
-    return directory;
-}
 
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
@@ -119,15 +93,15 @@ async function InitialDiskLoad() {
 
 
     let results = await Promise.all(promises);
-    passwords = ParseJson('passwords.json', results[0]);
-    players = ParseJson('players.json', results[1]);
+    passwords = jsonHandling.ParseJson('passwords.json', results[0]);
+    players = jsonHandling.ParseJson('players.json', results[1]);
 
     promises = [];
 
-    promises.push(fillDirectoryTable("Compendium", results[2]));
-    promises.push(fillDirectoryTable("Favorites", results[3]));
-    promises.push(fillDirectoryTable("Party", results[4]));
-    promises.push(fillDirectoryTable("Uniques", results[5]));
+    promises.push(jsonHandling.fillDirectoryTable("Compendium", results[2]));
+    promises.push(jsonHandling.fillDirectoryTable("Favorites", results[3]));
+    promises.push(jsonHandling.fillDirectoryTable("Party", results[4]));
+    promises.push(jsonHandling.fillDirectoryTable("Uniques", results[5]));
 
     results = await Promise.all(promises);
 
@@ -172,6 +146,7 @@ function ReBroadCast(socket, msgType, msg) {
 
 
 async function login(socket, credentials) {
+    console.log(init);
     if (!init.inited) { await init.until(); }
 
     if (passwords[credentials.player] != credentials.password) {
@@ -182,6 +157,8 @@ async function login(socket, credentials) {
 
     socket.join('user:' + credentials.player); // We are using room of socket io for login
     socket.emit('login_success', credentials.player);
+    Scene.setSocket(socket);
+
     //console.log("Logins %o", io.sockets.adapter.rooms);
     //console.log("Room %o " + socket.rooms, socket.rooms);
 }
@@ -343,12 +320,32 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
 
+
 // todo make shorter
 app.get("/Compendium", (req, res) => {
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
     res.end(JSON.stringify(folders.Compendium));
+});
+
+
+async function finishLoadingSene(res) {
+    await currentScene.waitForLoaded();
+    res.setHeader("Content-Type", "application/json");
+    res.writeHead(200);
+    let array = [];
+    let keys = Object.keys(currentScene.info.tiles);
+    for (let i = 0; i < keys.length; i++) {
+        array.push(currentScene.info.tiles[keys[i]]);
+    }
+    res.end(JSON.stringify(array));
+
+}
+
+
+app.get("/CurrentOpenScene", (req, res) => {
+    finishLoadingSene(res);
 });
 
 app.get("/Favorites", (req, res) => {
