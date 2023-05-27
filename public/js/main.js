@@ -1,7 +1,7 @@
 
 
 
-import { three_camera, three_mouseMove, three_renderer, three_animate, three_addTile, three_findMouseShapes } from "./three_support.js";
+import { three_camera, three_mouseMove, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket } from "./three_support.js";
 
 ///////// 
 let players = { hero: "" };
@@ -67,6 +67,11 @@ socket.on('newTile', function (msg) {
     msg.x = msg.x - window.innerWidth / 2 - currentScene.scrollX; // bad form fix
     msg.y = -(msg.y - window.innerHeight / 2 - currentScene.scrollY);
     three_addTile(msg);
+});
+
+
+socket.on('updatedTile', function (msg) {
+    three_updateTile(msg);
 });
 
 socket.on('chat', function (msg) {
@@ -296,7 +301,7 @@ window.ondrop = function (e) { console.log("onDrop"); noDropping(e); };
 
 three_renderer.domElement.ondrop = function (e) { console.log("onDrop2"); noDropping(e); };
 
-
+setSocket(socket);
 
 three_animate();
 

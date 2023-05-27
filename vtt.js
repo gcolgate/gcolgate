@@ -40,15 +40,15 @@ async function doTheUpload(res, req) {
     }
     // Move the uploaded image to our upload folder
     try {
-        console.log("Writing to " + __dirname + '/images/' + file.name);
+        let tile = { x: req.body.x, y: req.body.y, z: req.body.z, texture: file.name };
+        console.log("Writing to " + __dirname + '/images/' + tile.texture);
         let t = Date.now();
         console.log("start time " + t);
 
-        await file.mv(path.normalize(__dirname + '/public/images/' + file.name));
+        await file.mv(path.normalize(__dirname + '/public/images/' + tile.texture));
         res.sendStatus(200);
         console.log("done time ", file);
 
-        let tile = { x: req.body.x, y: req.body.y, z: req.body.z, name: file.name };
         let fixedTile = currentScene.addTile(tile);
 
         io.emit('newTile', fixedTile);
@@ -249,6 +249,16 @@ io.on('connection', (socket) => {
             ReBroadCast(socket, formatted);
         }
     });
+    socket.on('updateTile', (msg) => {
+        console.log("Update tile");
+        let sender = getUser(socket);
+        if (sender) {
+            console.log(msg);
+            currentScene.updateTile(msg);   // change to in place and update
+            io.emit('updatedTile', msg);
+        }
+    });
+
     socket.on('change', (msg) => {
         ChangeThing(msg.thing, msg.change, io, msg);
     })

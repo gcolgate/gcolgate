@@ -4,6 +4,7 @@ import * as THREE from 'three';
 const three_scene = new THREE.Scene();
 
 
+
 let width = window.innerWidth - 32;
 let height = window.innerHeight - 32;
 //const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -33,6 +34,11 @@ var selectables = [];
 
 var selection = [];
 
+var socket;
+export function setSocket(s) {
+    socket = s;
+}
+
 export function three_findMouseShapes(who) {
     if (three_mouseShapes.who === undefined) {
         // todo: use different matierals for each player
@@ -47,7 +53,7 @@ export function three_findMouseShapes(who) {
 
 export async function three_addTile(msg) {
 
-    let tname = "./images/" + msg.name;
+    let tname = "./images/" + msg.texture;
     let materialName = tname + "_simple";
     // if (!materials[materialName]) {
     console.log("loaded texture " + Date.now());
@@ -69,6 +75,53 @@ export async function three_addTile(msg) {
     three_scene.add(plane);
     selectables.push(plane);
 
+    plane.tile = msg;
+
+
+
+}
+
+
+export async function three_updateTile(msg) {
+
+    for (let i = 0; i < selectables.length; i++) {
+
+        if (selectables[i].tile.tile_id == msg.tile_id) {
+
+            if (selectables[i].tile.texture != msg.texture) {
+                // update texture
+                let tname = "./images/" + msg.texture;
+                let materialName = tname + "_simple";
+                // if (!materials[materialName]) {
+                console.log("loaded texture " + Date.now());
+
+                let texture = await new THREE.TextureLoader().loadAsync(tname);
+
+                console.log("loaded texture " + tname);
+                console.log(texture);
+
+
+
+                let material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff });
+            }
+            let plane = selectables[i];
+
+            plane.position.x = msg.x;
+            plane.position.y = msg.y;
+            plane.position.z = msg.z;
+            // let textureScaleX = texture.image.width * msg.scale.x;
+            // let textureScaleY = texture.image.height * msg.scale.y;
+            // plane.scale.set(textureScaleX, textureScaleY, 1);
+            // three_scene.add(plane);
+            // selectables.push(plane);
+            // // double link
+            // plane.tile = msg;
+            // plane.tile.visual = plane; // maybe we don't need this
+
+
+        }
+
+    }
 
 }
 
@@ -99,6 +152,9 @@ let adder = new THREE.Vector2(-1, 1);
 // working in the morning on this project when I can do math
 // TODO: quit job and only do hobbies
 
+
+var mouseMode;
+
 export function three_mouseMove(event) {
     event.preventDefault();
     let rawMouse = new THREE.Vector2(event.clientX, event.clientY);
@@ -109,12 +165,25 @@ export function three_mouseMove(event) {
 
     three_rayCaster.setFromCamera(pointer, three_camera);
     // const intersects = three_rayCaster.intersectObjects(selectables);
-
-    for (let i = 0; i < selection.length; i++) {
-        console.log("Diff " + (rawMouse.x - three_lastMouse.x) + " " + (rawMouse.y - three_lastMouse.y));
-        selection[i].position.x += rawMouse.x - three_lastMouse.x;
-        selection[i].position.y -= rawMouse.y - three_lastMouse.y;
+    switch (mouseMode) {
+        default:
+            for (let i = 0; i < selection.length; i++) {
+                console.log("Diff " + (rawMouse.x - three_lastMouse.x) + " " + (rawMouse.y - three_lastMouse.y));
+                selection[i].tile.x += rawMouse.x - three_lastMouse.x;
+                selection[i].tile.y -= rawMouse.y - three_lastMouse.y;
+                socket.emit('updateTile', selection[i].tile);
+            }
+            break;
+        case "scaling":
+            for (let i = 0; i < selection.length; i++) {
+                console.log("Diff " + (rawMouse.x - three_lastMouse.x) + " " + (rawMouse.y - three_lastMouse.y));
+                selection[i].position.x += rawMouse.x - three_lastMouse.x;
+                selection[i].position.y -= rawMouse.y - three_lastMouse.y;
+                socket.emit('updateTile', selection[i].tile);
+            }
+            break;
     }
+
     three_lastMouse = rawMouse;
 }
 
