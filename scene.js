@@ -46,7 +46,7 @@ function isLoaded(scene) {
 
 async function waitForLoaded(scene) {
     if (scene.loaded === "NotStarted") {
-        \// this case might not work
+        // this case might not work
         await loadScene(scene);
 
     }

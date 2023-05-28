@@ -67,9 +67,9 @@ socket.on('mousemove', function (msg) {
 
 
 socket.on('newTile', function (msg) {
-    msg.x = msg.x;
-    msg.y = msg.y;
-    three_addTile(msg);
+    if (msg.scene.name == scene_name) {
+        three_addTile(msg.tile);
+    }
 });
 
 

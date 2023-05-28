@@ -77,7 +77,7 @@ export async function three_addTile(msg) {
 
 
 
-    let material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff });
+    let material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff, transparent: true });
     const plane = new THREE.Mesh(plane_geometry, material);
     plane.position.x = msg.x;
     plane.position.y = msg.y;
