@@ -1,0 +1,30 @@
+<div>
+    <div class="body" style="height:{w.contentHeight}px;
+            overflow:auto;
+            background-color: rgb(255, 215, 170);
+            width:100%;">
+        <div>
+            <h1 class="itemsetheader">
+                { thing.directory }
+                <button onclick="LoadScene('{ thing.name }')">LOAD</button>
+            </h1>
+        </div>
+        <div style="box-sizing: border-box;
+              color: rgb(0, 0, 0);
+              color-scheme: light dark;
+              font-family: Georgia, serif;
+              font-size: 15px;
+              font-style: italic;
+              font-weight: 400;
+              margin:8px;
+              line-height: 26.1333px;
+              text-transform: lowercase">
+        </div>
+        <div> topDown : {thing.topDown}</div>
+        <div> cameraStartX : {thing.cameraStartX}</div>
+        <div> cameraStartY : {thing.cameraStartY}</div>
+        <div> #tiles : {thing.tiles.length}</div>
+        <div>nextZ: {thing.nextZ}</div>
+        <div>next_tile_id: {thing.next_tile_id}</div>
+    </div>
+</div>

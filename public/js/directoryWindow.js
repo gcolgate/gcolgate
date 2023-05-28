@@ -25,7 +25,12 @@ async function GetDirectory(directory) {
 
 function clickOnThing(event) {
 
-    const name = this.references.file;
+    let name = this.references.file;
+    // hack to handle scenes, which don't have a seperate file. TODO: make more readable
+    if (name === undefined) {
+        registeredThings["SCENE" + this.references] = this.references;
+        name = "SCENE" + this.references;
+    }
 
     showThing(name, "", this.references.page);
 }

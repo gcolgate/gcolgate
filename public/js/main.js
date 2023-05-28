@@ -1,7 +1,7 @@
 
 
 
-import { three_camera, three_mouseMove, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
+import { scene_name, setSceneName, three_camera, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
 
 ///////// 
 let players = { hero: "" };
@@ -11,6 +11,7 @@ var folders = {
     Party: {},
     Favorites: {},
     Uniques: {},
+    Scenes: {},
 };
 ////////
 
@@ -40,15 +41,16 @@ var folders = {
 // utility functions.. move to utility file
 
 
-
 // mouse positions are also updated and sent each frame
 // handle mouse movement reporting to other clients
 addEventListener("mousemove", (event) => {
     if (players.hero != undefined) {
+        let worldPos = three_mousePositionToWorldPosition(event);
+        // this is for top down and ortho fixed maps only, todo when supporting others
         socket.emit('mousemove', {
             who: players.hero,
-            x: event.clientX + currentScene.scrollX,
-            y: event.clientY + currentScene.scrollY
+            x: worldPos.x,
+            y: worldPos.y
         });
         three_mouseMove(event);
     }
@@ -58,20 +60,31 @@ addEventListener("mousemove", (event) => {
 
 socket.on('mousemove', function (msg) {
     let cube = three_findMouseShapes(msg.who);
-    cube.position.x = msg.x - window.innerWidth / 2 - currentScene.scrollX;
-    cube.position.y = -(msg.y - window.innerHeight / 2 - currentScene.scrollY);
+    cube.position.x = msg.x;
+    cube.position.y = msg.y;;
 
 });
 
+
 socket.on('newTile', function (msg) {
-    msg.x = msg.x - window.innerWidth / 2 - currentScene.scrollX; // bad form fix
-    msg.y = -(msg.y - window.innerHeight / 2 - currentScene.scrollY);
+    msg.x = msg.x;
+    msg.y = msg.y;
     three_addTile(msg);
 });
 
 
+window.LoadScene = function (name) {
+    socket.emit("loadScene", name);
+}
+
+socket.on('displayScene', function (msg) {
+    setSceneName(msg.name);
+    three_replaceScene(msg.array);
+});
+
 socket.on('updatedTile', function (msg) {
-    three_updateTile(msg);
+    if (msg.scene === scene_name)
+        three_updateTile(msg.tile);
 });
 
 socket.on('chat', function (msg) {
@@ -109,12 +122,14 @@ socket.on('login_success', function (msg) {
     GetDirectory('Party').then((c) => { folders.Party = c; });
     GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
     GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
+    GetDirectory('Scenes').then((c) => { folders.Scenes = c; });
 
-    GetDirectory('CurrentOpenScene').then((c) => { three_replaceScene(c); });
+    // GetDirectory('CurrentOpenScene').then((c) => { three_replaceScene(c); });
     setUpDirButton('Compendium')
     setUpDirButton('Party')
     setUpDirButton('Favorites')
     setUpDirButton('Uniques')
+    setUpDirButton('Scenes')
 });
 
 ////// folder windows  put in sub file?
@@ -159,12 +174,22 @@ const chatButton = document.getElementById("Chat");
 chatButton.onclick = function () {
     if (!players.hero) {
         alert("Please log in");
+    } else {
+        showChatWindow([]);
     }
-    showChatWindow([]);
 
 
 };
 
+
+const editMap = document.getElementById("EditMap");
+editMap.onclick = function () {
+    if (!players.hero) {
+        alert("Please log in");
+    } else {
+        three_setEditMode(editMap.checked);
+    };
+}
 // main code falls through to here
 
 init();
@@ -179,31 +204,24 @@ class Scene {
         this.gridScaleInPixels = options.gridScaleInPixels;
         this.gridScaleInUnits = options.gridScaleInPixels;
         this.typeOfGrid = options.gridScaleInUnits;
-        this.centerX = options.centerX;
-        this.centerY = options.centerY;
-        this.scrollX = options.cameraStartX;
-        this.scrollY = options.cameraStartY;
         this.tiles = options.tiles;
         this.things = options.things;
 
-        three_camera.position.x = this.scrollX;
-        three_camera.position.y = this.scrollY;
+        three_camera.position.x = options.cameraStartX;
+        three_camera.position.y = options.cameraStartY;
+
     }
-
 };
-let currentScene = new Scene({
-    topDown: true,
-    gridScaleInPixels: 100,
-    gridScaleInUnits: "5ft",
-    typeOfGrid: "square",
-    centerX: 0,
-    centerY: 0,
-    cameraStartX: 0,
-    cameraStartY: 0,
-    tiles: [],
-    things: [],
-
-});
+// let currentScene = new Scene({
+//     topDown: true,
+//     gridScaleInPixels: 100,
+//     gridScaleInUnits: "5ft",
+//     typeOfGrid: "square",
+//     cameraStartX: 0,
+//     cameraStartY: 0,
+//     tiles: [],
+//     things: [],
+// });
 
 function noDragging(e) {
     console.log(e.target.id);
@@ -259,10 +277,12 @@ function uploadDroppedImages(e) {
         if (!file.type.startsWith("image/")) {
             continue;
         }
+        let vec = three_mousePositionToWorldPosition(e);
         let additional = {
-            x: e.clientX + currentScene.scrollX,
-            y: e.clientY + currentScene.scrollY,
-            z: null,
+            x: vec.x,
+            y: vec.y,
+            z: null, // todo fix
+            scene_name: scene_name
         }
         dropOneFile(file, additional);
     }

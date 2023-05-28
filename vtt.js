@@ -6,7 +6,7 @@ const path = require('path');
 const express = require('express');
 const http = require('http');
 const sockets = require("socket.io");
-const init = require('./init.js');
+require('./init.js');
 const dice = require('./roller.js')
 const ChangeThing = require('./sheeter.js')
 const fileUpload = require('express-fileupload');
@@ -22,11 +22,20 @@ const io = sockets(http_io);
 app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folder
 
 var passwords, players;
-var folders = { Compendium: [], Favorites: [], Uniques: [], Party: [] };
+var folders = { Compendium: [], Favorites: [], Uniques: [], Party: [], Scenes: [], ScenesParsed: [] };
 var chats = []; // chats so far
 app.use(fileUpload());
 
-currentScene = new Scene('currentscene'); // for now, later multiple
+var init = { inited: false }
+
+function waitInit() {
+    const poll = resolve => {
+        if (init.inited == true) resolve();
+        else setTimeout(_ => poll(resolve), 400);
+    }
+    return new Promise(poll);
+}
+
 
 async function doTheUpload(res, req) {
 
@@ -42,6 +51,7 @@ async function doTheUpload(res, req) {
     // Move the uploaded image to our upload folder
     try {
         let tile = { x: req.body.x, y: req.body.y, z: req.body.z, texture: file.name };
+        let scene_name = req.body.scene_name;
         console.log("Writing to " + __dirname + '/images/' + tile.texture);
         let t = Date.now();
         console.log("start time " + t);
@@ -50,9 +60,10 @@ async function doTheUpload(res, req) {
         res.sendStatus(200);
         console.log("done time ", file);
 
-        let fixedTile = currentScene.addTile(tile);
+        let scene = folders.ScenesParsed[scene_name];
+        let fixedTile = Scene.addTile(scene, tile);
 
-        io.emit('newTile', fixedTile);
+        io.emit('newTile', { scene: scene, tile: fixedTile });
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
@@ -86,10 +97,12 @@ async function InitialDiskLoad() {
 
     promises.push(fs.readFile(path.join(__dirname, 'passwords.json'))); // TODO: use file cache
     promises.push(fs.readFile(path.join(__dirname, 'public', 'players/players.json'))); // TODO: use file cache
+
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Compendium'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Favorites'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Party'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Uniques'))); // TODO: use file cache
+    promises.push(fs.readdir(path.join(__dirname, 'public', 'Scenes'))); // TODO: use file cache
 
 
     let results = await Promise.all(promises);
@@ -102,6 +115,10 @@ async function InitialDiskLoad() {
     promises.push(jsonHandling.fillDirectoryTable("Favorites", results[3]));
     promises.push(jsonHandling.fillDirectoryTable("Party", results[4]));
     promises.push(jsonHandling.fillDirectoryTable("Uniques", results[5]));
+    promises.push(jsonHandling.fillDirectoryTable("Scenes", results[6]));
+
+    console.log(results[3]);
+    console.log(results[6]);
 
     results = await Promise.all(promises);
 
@@ -109,6 +126,10 @@ async function InitialDiskLoad() {
     folders.Favorites = results[1];
     folders.Party = results[2];
     folders.Uniques = results[3];
+    folders.Scenes = results[4];
+    console.log(results[1]);
+    console.log('ddddddddddddddd');
+    console.log(results[4]);
 
     //  await delay(5000);
 
@@ -146,8 +167,7 @@ function ReBroadCast(socket, msgType, msg) {
 
 
 async function login(socket, credentials) {
-    console.log(init);
-    if (!init.inited) { await init.until(); }
+    await waitInit();
 
     if (passwords[credentials.player] != credentials.password) {
         console.log("Error Invalid credentials " + credentials.player);
@@ -157,7 +177,9 @@ async function login(socket, credentials) {
 
     socket.join('user:' + credentials.player); // We are using room of socket io for login
     socket.emit('login_success', credentials.player);
-    Scene.setSocket(socket);
+    Scene.sceneSetSocket(socket);
+
+    sendScene("default_scene", socket); // TODO: it's supposed to be saved
 
     //console.log("Logins %o", io.sockets.adapter.rooms);
     //console.log("Room %o " + socket.rooms, socket.rooms);
@@ -191,6 +213,36 @@ async function CopyThingFIles(socket, msg) {
     socket.emit('updateDir', msg.to);
 
 
+}
+
+async function sendScene(name, socket) {
+    console.log(folders.Scenes);
+    console.log(name);
+    let found = 0;/// todo fix bad form
+    for (i = 0; i < folders.Scenes.length; i++) {
+        //      console.log(folders.Scenes[i], name);
+        if (folders.Scenes[i].name == name) {
+            found = i;
+            break;
+        }
+    }
+    let unparsed = folders.Scenes[found];
+    console.log(typeof unparsed);
+    console.log(unparsed);
+    folders.ScenesParsed[name] = jsonHandling.ParseJson(name, unparsed);
+
+    let scene = folders.ScenesParsed[name];
+    console.log(typeof scene);
+    console.log(scene);
+    Scene.loadScene(scene);
+    await Scene.waitForLoaded(scene);
+    let array = [];
+    let keys = Object.keys(scene.tiles);
+    for (let i = 0; i < keys.length; i++) {
+        console.log(scene.tiles[keys[i]]);
+        array.push(scene.tiles[keys[i]]);
+    }
+    socket.emit('displayScene', { name: name, array: array });
 }
 // io
 io.on('connection', (socket) => {
@@ -227,14 +279,25 @@ io.on('connection', (socket) => {
         }
     });
     socket.on('updateTile', (msg) => {
-        console.log("Update tile");
+        console.log("Update tile" + msg);
         let sender = getUser(socket);
         if (sender) {
             console.log(msg);
-            currentScene.updateTile(msg);   // change to in place and update
+            let scene = folders.ScenesParsed[msg.scene];
+            console.log(msg.scene);
+            console.log(folders.ScenesParsed[msg.scene]);
+            console.log(folders.ScenesParsed);
+
+            Scene.updateSceneTile(scene, msg.tile);   // change to in place and update
             io.emit('updatedTile', msg);
         }
     });
+
+    socket.on('loadScene', (msg) => {
+        sendScene(msg, socket);
+    }
+    );
+
 
     socket.on('change', (msg) => {
         ChangeThing(msg.thing, msg.change, io, msg);
@@ -329,24 +392,15 @@ app.get("/Compendium", (req, res) => {
     res.end(JSON.stringify(folders.Compendium));
 });
 
-
-async function finishLoadingSene(res) {
-    await currentScene.waitForLoaded();
+app.get("/Scenes", (req, res) => {
+    // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    let array = [];
-    let keys = Object.keys(currentScene.info.tiles);
-    for (let i = 0; i < keys.length; i++) {
-        array.push(currentScene.info.tiles[keys[i]]);
-    }
-    res.end(JSON.stringify(array));
-
-}
-
-
-app.get("/CurrentOpenScene", (req, res) => {
-    finishLoadingSene(res);
+    res.end(JSON.stringify(folders.Scenes));
 });
+
+
+
 
 app.get("/Favorites", (req, res) => {
     console.log("OK");

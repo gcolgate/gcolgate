@@ -3,22 +3,24 @@ const rawfs = require('fs');
 const path = require('path');
 const sanitize = require('sanitize-filename');
 
-function writeJsonFileInPublic(dir, fileName, json) {
-    let fname = sanitize(fileName);
+
+function writeJsonFile(fileName, json) {
 
     try {
-        let pathName = path.join(__dirname, 'public', dir, fname + '.json');
-
-        rawfs.writeFileSync(pathName, JSON.stringify(json));
-
+        rawfs.writeFileSync(fileName, JSON.stringify(json));
     } catch (err) {
         console.log(err + " Error with " + dir + " " + fname);
     }
 }
-/// TODO: put this in a module
+
+function writeJsonFileInPublic(dir, fileName, json) {
+    let fname = sanitize(fileName);
+    let pathName = path.join(__dirname, 'public', dir, fname + '.json');
+    writeJsonFile(pathName, json);
+}
+
 function ParseJson(name, raw) {
     let json = null;
-
     try {
         json = JSON.parse(raw);
     } catch (err) {
@@ -43,4 +45,5 @@ async function fillDirectoryTable(name, raw) {
     }
     return directory;
 }
-module.exports = { ParseJson, fillDirectoryTable, writeJsonFileInPublic };
+
+module.exports = { ParseJson, fillDirectoryTable, writeJsonFileInPublic, writeJsonFile };

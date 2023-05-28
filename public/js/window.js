@@ -131,8 +131,6 @@ function createOrGetDirWindow(id, width, height, left, top) {
         left *= window.innerWidth;
         top *= window.innerHeight;
 
-
-
         w.contentHeight = height;
 
         w.id = windowName;
