@@ -22,7 +22,7 @@ async function ChangeThing(thingName, replacement, io, msg) {
         // Need to put these in a cache and write them out over time for speed
         // this should go through a cache 
 
-        let filePath = path.normalize(path.join(__dirname, 'public', thingName));
+        let filePath = path.normalize(path.join(__dirname, 'public', thingName + ".json"));
         let result = await fs.readFile(filePath);
         let thing = jsonHandling.ParseJson(filePath, result); // for eval to work we need a thing
 

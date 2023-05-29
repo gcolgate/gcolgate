@@ -26,6 +26,7 @@ async function GetDirectory(directory) {
 function clickOnThing(event) {
 
     let name = this.references.file;
+
     // hack to handle scenes, which don't have a seperate file. TODO: make more readable
     if (name === undefined) {
         registeredThings["SCENE" + this.references] = this.references;
@@ -142,6 +143,7 @@ function refreshDirectoryWindow(id, whole) {
         li.appendChild(text);
         li.references = array[i];
         li.draggable = true;
+        li.onmousedown = function (event) { clickOne(this); };
         li.ondblclick = clickOnThing;
         li.ondragstart = dragstart;
 
@@ -220,7 +222,6 @@ function showDirectoryWindow(id, array) {
         }
         search = document.createElement("input");
         search.id = "window_" + id + "_search";
-        title.appendChild(document.createTextNode(id));
         searchArea = document.createElement("div");
 
         title.insertAdjacentElement('afterend', searchArea);

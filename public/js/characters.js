@@ -121,16 +121,30 @@ function changeSheet(button) {
     // need to add network step
     let thing = registeredThings[id];
     console.log(button.id + ' = ' + button.value);
-    eval(button.id + ' = ' + button.value);  // the button id is code like thing.strength.value
+
+    // Big bug editing these. Armor class and movement speeds to not work
+    // Changing name does not change name in compendium
+    // TODO: when converting from plutonium, make organization better. Include types?
+
+    if (!typeof button.value === "string") { // no should be if button.value evaluates to number
+        eval(button.id + ' = ' + button.value);  // the button id is code like thing.strength.value
+        socket.emit('change', {
+            change: button.id + ' = ' + button.value,
+            thing: id
+        })
+    } else {
+        let t = button.value.replace(/\"/g, '\'');
+        eval(button.id + ' = "' + t + '"');  // the button id is code like thing.strength.value
+        socket.emit('change', {
+            change: button.id + ' = "' + t + '"',
+            thing: id
+        })
+    };
+
     // do do this displayThing should be called after network round trip
     // server should not do eval so server update has to be different, or it could evaluate the incoming thing
     // to be only characters and dots
 
-    socket.emit('change', {
-        change: button.id + ' = ' + button.value,
-        thing: id
-    }
-    );
 
 
 }

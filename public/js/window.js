@@ -32,7 +32,7 @@ function clickToBringWindowIntoFocus(evt) {
 function getWindowId(element) {
 
     do {
-        if (element.class === "window") {
+        if (element.className === "window") {
             return element.id;
         }
         element = element.parentElement;
@@ -44,6 +44,26 @@ function windowShowing(name) {
     let windowName = "window_" + name;
     let w = document.getElementById(windowName);
     return w;
+}
+function CreateWindowTitle(w, windowName, Title, closes = true) {
+    w.id = windowName;
+    w.className = "window";
+    let title = document.createElement("div");
+    title.className = "windowtitle";
+    title.id = windowName + "_title";
+    let text = document.createTextNode(Title);
+    title.appendChild(text);
+    if (closes) {
+        let closeButton = document.createElement("div");
+        closeButton.innerHTML = "×";
+        title.appendChild(closeButton);
+        closeButton.onclick = function () {
+            fadeOut(w);
+        };
+    }
+    w.appendChild(title);
+    dragElement(w, title);
+
 }
 
 function createOrGetWindow(id, width, height, left, top) {
@@ -63,22 +83,13 @@ function createOrGetWindow(id, width, height, left, top) {
 
         w.contentHeight = height - 80;
 
-        w.id = windowName;
-        w.className = "window";
-        let title = document.createElement("div");
-        title.id = windowName + "_title";
-        title.innerHtml = id;
-        let closeButton = document.createElement("b");
-        closeButton.innerHTML = "×";
-        title.appendChild(closeButton);
-        title.class = "windowtitle";
+        CreateWindowTitle(w, windowName, id, true);
 
 
 
         let list = document.createElement("ul");
         list.className = "compendiumSyle";
         list.id = windowName + "_list";
-        w.appendChild(title);
         w.appendChild(list);
         group.appendChild(w);
 
@@ -87,10 +98,8 @@ function createOrGetWindow(id, width, height, left, top) {
         w.appendChild(body);
 
 
-        closeButton.onclick = function () {
-            fadeOut(w);
-        };
-        dragElement(w, title);
+
+
         // variable styles
         w.style.top = top + "px";
         w.style.left = left + "px";
@@ -133,23 +142,16 @@ function createOrGetDirWindow(id, width, height, left, top) {
 
         w.contentHeight = height;
 
-        w.id = windowName;
-        w.class = "window";
-        let title = document.createElement("div");
-        title.id = windowName + "_title";
-        title.innerHtml = id;
-        let closeButton = document.createElement("b");
-        closeButton.innerHTML = "×";
-        title.appendChild(closeButton);
-        title.className = "windowtitle";
 
+
+        CreateWindowTitle(w, windowName, id, true);
 
 
         let list = document.createElement("ul");
-        list.class = "compendiumSyle";
+        list.className = "compendiumSyle";
         list.id = windowName + "_list";
         list.style.marginTop = "0px";
-        w.appendChild(title);
+
         w.appendChild(list);
         group.appendChild(w);
 
@@ -158,10 +160,8 @@ function createOrGetDirWindow(id, width, height, left, top) {
         // w.appendChild(body);
 
 
-        closeButton.onclick = function () {
-            fadeOut(w);
-        };
-        dragElement(w, title);
+
+
         // some variable parameters
         w.style.top = top + "px";
         w.style.left = left + "px";
@@ -186,11 +186,10 @@ function clickOne(selected) {
     let ul = selected.parentElement;
     const listArray = [...ul.children];
     for (let i = 0; i < listArray.length; i++) {
-        // TODO: use styles
-        listArray[i].style.backgroundColor = "white";
+        listArray[i].classList.remove('selected');
     }
+    selected.classList.add('selected');
 
-    selected.style.backgroundColor = "cyan";
 
 }
 
@@ -215,35 +214,16 @@ function createOrGetLoginWindow(width, height, left, top, players) {
 
 
         w.contentHeight = height;
-
-        w.id = windowName;
-        w.className = "window";
-        let title = document.createElement("div");
-        title.id = windowName + "_title";
-        title.appendChild(document.createTextNode(id));;
-        // let closeButton = document.createElement("b");
-        // closeButton.innerHTML = "×";
-        // title.appendChild(closeButton);
-        title.className = "windowtitle";
-
+        CreateWindowTitle(w, windowName, id, false);
 
 
         let ul = document.createElement("ul");
         ul.className = "compendiumSyle";
         ul.style.marginTop = "0px";
-        w.appendChild(title);
         w.appendChild(ul);
         group.appendChild(w);
 
-        // let body = document.createElement("div");
-        // body.id = windowName + "_body";
-        // w.appendChild(body);
 
-
-        // closeButton.onclick = function () {
-        //     fadeOut(w);
-        // };
-        dragElement(w, title);
         w.style.top = top + "px";
         w.style.left = left + "px";
         w.style.zIndex = 9 + windows.length;
@@ -260,6 +240,7 @@ function createOrGetLoginWindow(width, height, left, top, players) {
         w.addEventListener('mousedown', clickToBringWindowIntoFocus);
 
         const okButton = document.createElement('button')
+        okButton.type = "submit"; // not sure I need this
 
         for (let i = 0; i < players.players.length; i++) {
             let li = document.createElement("li");
@@ -280,10 +261,17 @@ function createOrGetLoginWindow(width, height, left, top, players) {
         okButton.innerText = 'OK'
         okButton.password = ''
 
-
+        window.onkeydown = function (event) {
+            if (event.key == "Enter") {
+                okButton.click();
+            }
+        }
 
         let footer = document.createElement("footer");
         let passwordInput = document.createElement("input");
+        passwordInput.title = "password";
+        passwordInput.id = "password";
+
         passwordInput.onchange = function (evt) {
             okButton.password = evt.target.value;
         }
@@ -296,7 +284,10 @@ function createOrGetLoginWindow(width, height, left, top, players) {
             if (okButton.selected) {
                 socket.emit('join', { player: okButton.selected.innerText, password: okButton.password });
                 fadeOut(w);
-            } else { alert("Please select a player"); }
+                window.onkeydown = function (event) {
+                };
+            }
+            else { alert("Please select a player"); }
         }
 
         windows.push(w);
