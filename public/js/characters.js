@@ -150,7 +150,8 @@ function changeSheet(button) {
 }
 
 function Editable(thing, s, className) { // thing must be here because the eval might use it
-    return '<input class="' + className + ' type="text" id="' + s + '" value="' + eval(s) +
+    let t = eval(s);
+    return '<input class="' + className + '" type="text" id="' + s + '" value="' + t +
         '" onchange="changeSheet(this)">';
 }
 

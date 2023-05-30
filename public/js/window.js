@@ -75,6 +75,63 @@ function createOrGetWindow(id, width, height, left, top) {
         let group = document.getElementById("windowGroup");
         w = document.createElement("div");
 
+
+        width *= window.innerWidth;
+        height *= window.innerHeight;
+        left *= window.innerWidth;
+        top *= window.innerHeight;
+
+
+        w.contentHeight = height;
+
+        CreateWindowTitle(w, windowName, id, true);
+
+
+
+        // let list = document.createElement("ul");
+        // list.className = "compendiumSyle";
+        // list.id = windowName + "_list";
+        // w.appendChild(list);
+        group.appendChild(w);
+
+        let body = document.createElement("div");
+        body.id = windowName + "_body";
+        w.appendChild(body);
+
+
+
+
+        // variable styles
+        // w.style.top = top + "px";
+        // w.style.left = left + "px";
+        w.style.zIndex = 9 + windows.length;
+        w.style.backgroundColor = "#ffffff";
+        // w.style.width = width + "px";
+        // w.style.height = height + "px";
+
+
+        // Event listener for clicks
+        w.addEventListener('mousedown', clickToBringWindowIntoFocus);
+
+
+        windows.push(w);
+    }
+
+
+    fadeIn(w);
+    return w;
+
+}
+
+function createOrGetChatWindow(id, width, height, left, top) {
+
+    let windowName = "window_" + id;
+    let w = document.getElementById(windowName);
+
+    if (!w) {
+        let group = document.getElementById("windowGroup");
+        w = document.createElement("div");
+
         width *= window.innerWidth;
         height *= window.innerHeight;
         left *= window.innerWidth;
@@ -121,6 +178,7 @@ function createOrGetWindow(id, width, height, left, top) {
     return w;
 
 }
+
 
 
 

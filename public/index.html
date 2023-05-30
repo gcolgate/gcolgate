@@ -5,8 +5,10 @@
   <meta charset="utf-8">
   <title>GilVTT</title>
   <style>
-    body {
+    .body {
       margin: 0;
+      overflow: auto;
+      background-color: rgb(255, 215, 170);
     }
 
     .container {
@@ -16,19 +18,22 @@
       gap: 10px;
     }
 
+    * {
+      box-sizing: border-box;
+    }
 
     .window {
       position: absolute;
       top: 4%;
       z-index: 9;
-      background-color: #f1f1f1;
-      width: 20%;
-      height: 20%;
-      border-radius: 8px 8px 0 0;
-      box-shadow: 8px 8px 6px -6px black;
+      background-color: rgb(255, 215, 170);
+      width: 800px;
+      height: 600px;
       opacity: 0.9;
       display: initial;
       resize: both;
+      overflow: auto;
+      box-sizing: border-box;
     }
 
     .windowtitle {
@@ -64,6 +69,12 @@
       height: 72px;
       padding: 10px;
       border: 5px solid black;
+      margin: 0;
+    }
+
+    .outlined {
+      padding: 3px;
+      border: 2px solid black;
       margin: 0;
     }
 
@@ -127,6 +138,95 @@
       text-align: center;
     }
 
+    .numberinput {
+      background-color: rgb(255, 215, 170);
+      color: #3d0dad;
+      border-top-style: hidden;
+      border-right-style: hidden;
+      border-left-style: hidden;
+      border-bottom-style: hidden;
+      color-scheme: light dark;
+      font-family: Mrs Eaves;
+      font-variant-alternates: normal;
+      font-variant-caps: small-caps;
+      font-variant-east-asian: normal;
+      font-variant-ligatures: normal;
+      font-variant-numeric: normal;
+      font-variant-position: normal;
+      font-weight: 300;
+      width: 40px;
+      flex: 0;
+      text-align: center;
+    }
+
+    .speedline {
+      display: inline;
+
+    }
+
+    .statline {
+      display: flex;
+      justify-content: space-around
+    }
+
+
+    .npcheader {
+      box-sizing: border-box;
+      color: rgb(88, 23, 13);
+      background-color: rgb(255, 215, 170);
+      color-scheme: light dark;
+      font-family: Mrs Eaves;
+      font-size: 30px;
+      font-variant-alternates: normal;
+      font-variant-caps: small-caps;
+      font-variant-east-asian: normal;
+      font-variant-ligatures: normal;
+      font-variant-numeric: normal;
+      font-variant-position: normal;
+      font-weight: 700;
+      line-height: 42px;
+      margin-left: 0px;
+      margin-right: 0px;
+      margin-top: -10px;
+      width: 600px;
+      text-transform: capitalize;
+    }
+
+    .itemsetheader {
+      box-sizing: border-box;
+      color: rgb(88, 23, 13);
+      background-color: rgb(255, 215, 170);
+      color-scheme: light dark;
+      font-family: Mrs Eaves;
+      font-size: 20px;
+      font-variant-alternates: normal;
+      font-variant-caps: small-caps;
+      font-variant-east-asian: normal;
+      font-variant-ligatures: normal;
+      font-variant-numeric: normal;
+      font-variant-position: normal;
+      font-weight: 700;
+      margin-left: 0px;
+      margin-right: 0px;
+      width: 600px;
+      text-transform: capitalize;
+    }
+
+    .itemtext {
+      color: rgb(52, 25, 21);
+      background-color: rgb(255, 215, 170);
+      color-scheme: light dark;
+      font-family: Mrs Eaves;
+      font-size: 12px;
+      font-variant-alternates: normal;
+      font-variant-east-asian: normal;
+      font-variant-ligatures: normal;
+      font-variant-numeric: normal;
+      font-variant-position: normal;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
 
     [id$="header"] {
 
@@ -148,6 +248,8 @@
       position: relative;
 
     }
+
+
 
     .drag {
       border: dashed 3px red;
@@ -245,6 +347,7 @@
   <script type="text/javascript" src="./js/style.js"></script>
   <script type="text/javascript" src="./js/drag.js"></script>
   <script type="text/javascript" src="./js/directoryWindow.js"></script>
+  <script type="text/javascript" src="./js/dnd5e.js"></script>
   <script type="module" src="./js/three_support.js"></script>
 
 

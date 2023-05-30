@@ -4,15 +4,12 @@ thing.system = thing.data;
 }
 } @
 <div>
-  <div class="body" style="height:{w.contentHeight}px;
-        overflow:auto;
-        background-color: rgb(255, 215, 170);
-        width:100%;">
+  <div class="body">
     <div>
-      <h1 class="npcsetheader">
+      <h1 class="npcheader">
         { Editable(thing,
         "thing.name",
-        "npcsetheader npcTitleInput")} </h1>
+        "itemsetheader npcTitleInput")} </h1>
     </div>
     <div style="box-sizing: border-box;
           color: rgb(0, 0, 0);
@@ -24,41 +21,42 @@ thing.system = thing.data;
           margin:8px;
           line-height: 26.1333px;
           text-transform: lowercase">
-      {thing.system.traits ? thing.system.traits.size : "medium" }<span> {window.get5eDetails(thing)} </span></div>
+      {thing.system.traits ? thing.system.traits.size : "medium" }<span> {get5eDetails(thing)} </span></div>
     <div class="grid-container">
 
       <div><span class="npcBold">Armor Class
-        </span>{
-        Editable(thing,
-        window.GetArmorClass(thing),
-        "npcNumInput")}
+        </span>
+        {GetArmorClass(thing) +
+        (thing.system.attributes.ac.flat ? " " +thing.system.attributes.ac.calc +" "+ Editable(thing,
+        "thing.system.attributes.ac.flat",
+        "numberinput"): "")}
       </div>
 
       <div><span class="npcBold">Hit Points </span>{Editable(thing,
         "thing.system.attributes.hp.max",
-        "npcNumInput")}</div>
+        "numberinput")}</div>
 
       <div><span class="npcBold">Cur Hit Points </span>{Editable(thing,
         "thing.system.attributes.hp.value",
-        "npcNumInput")}
+        "numberinput")}
       </div>
       <div class="grid-container">
         <div>
-          { window.DndSpeed( "burrow", thing, thing.system.attributes.movement.burrow,
+          { DndSpeed( "burrow", thing, "thing.system.attributes.movement.burrow",
           thing.system.attributes.movement.units)
           }</div>
-        <div>{ window.DndSpeed( "Climb", thing, thing.system.attributes.movement.climb,
+        <div>{ DndSpeed( "Climb", thing, "thing.system.attributes.movement.climb",
           thing.system.attributes.movement.units) }
         </div>
-        <div>{ window.DndSpeed( "Swim", thing, thing.system.attributes.movement.swim,
+        <div>{ DndSpeed( "Swim", thing, "thing.system.attributes.movement.swim",
           thing.system.attributes.movement.units) }
         </div>
-        <div>{ window.DndSpeed( "Walk", thing, thing.system.attributes.movement.walk,
+        <div>{ DndSpeed( "Walk", thing, "thing.system.attributes.movement.walk",
           thing.system.attributes.movement.units) }
         </div>
         {thing.system.attributes.movement.hover ? '<div>Can Hover</div>' : ""}
       </div>
-      { window.drawItems(thing) }
+      { drawItems(thing) }
       <div>
         <div style="display: flex;
               color: rgb(88, 23, 13);
@@ -69,36 +67,18 @@ thing.system = thing.data;
               font-family: Georgia, serif;
               font-size: 20px;
               font-weight: 400">
-          <div style="font-weight: 700;display: inline-block"><span>STR</span><br>
-            <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing, 'str')}
-            </div>
-          </div>
-          <div style="font-weight: 700;display: inline-block"><span>DEX</span><br>
-            <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing, 'dex')}
-            </div>
-          </div>
-          <div style="font-weight: 700;display: inline-block"><span>CON</span><br>
-            <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing, 'con')}
-            </div>
-          </div>
-          <div style="font-weight: 700;display: inline-block"><span>INT</span><br>
-            <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing, 'int')}
-            </div>
-          </div>
-          <div style="font-weight: 700;display: inline-block"><span>WIS</span><br>
-            <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing, 'wis')}
-            </div>
-          </div>
-          <div style=" font-weight: 700;display: inline-block"><span>CHA</span><br>
-            <div style="font-weight: 400; font-size: 15px;">
-              {window.DndAbility(thing, 'cha')}
-            </div>
-          </div>
+          { DnDAbilities(thing); }
+        </div>
+        <div style="display: flex;
+              color: rgb(88, 23, 13);
+              justify-content: space-around;
+              color-scheme: light dark;
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+              font-family: Georgia, serif;
+              font-size: 12px;
+              font-weight: 400">
+          { DnDSkills(thing, false); }
         </div>
       </div>
     </div>

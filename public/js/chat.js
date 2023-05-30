@@ -16,7 +16,7 @@ function setLogin(name) {
 
 function showChatWindow(array) {
 
-    let w = createOrGetWindow("chat", .2, .9, .8, 0);
+    let w = createOrGetChatWindow("chat", .2, .9, .8, 0);
     bringToFront(w);
     let ul = document.getElementById(chat_window_name + "_list");
     ul.style.height = (w.clientHeight - ul.offsetTop - 60) + "px";
