@@ -3,7 +3,6 @@ const fs = require('fs').promises;
 const rawfs = require('fs');
 //const fsExtra = require('fs-extra');
 const path = require('path');
-
 const sanitize = require('sanitize-filename');
 
 
@@ -57,6 +56,100 @@ function writeJsonFileInPublic(dir, fileName, json) {
     }
 }
 
+const EnsureDestinationExists = async (fullFilePath) => {
+
+    let dir = path.dirname(path.normalize(fullFilePath));
+    if (rawfs.existsSync(dir)) return;
+    try {
+        await fs.mkdir(dir, { recursive: true });
+    } catch (error) {
+        console.error("Error making directory " + dir, error);
+    }
+
+}
+
+function cleanFileName(destString) {
+    // just path a name, not a path
+    destString = destString.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+    destString = destString.replaceAll("20", "_");
+    destString = destString.replaceAll("2b", "_plus_");
+    return destString;
+}
+
+async function processImage(imagePath, tagsSource) {
+    if (imagePath.startsWith("http")) {
+
+        const fileType = path.extname(imagePath);
+        if (!tagsSource) tagsSource = {};
+        if (!tagsSource?.hash) {
+            tagsSource.hash = path.normalize(imagePath.substring(6));
+        }
+        let destFile = tagsSource?.hash;
+        destFile = cleanFileName(destFile);
+        destFile = path.normalize(path.join(__dirname, 'public', 'images', 'fetched', tagsSource.hash + fileType));
+        let relativeName = path.normalize(path.join('images', 'fetched', tagsSource.hash + fileType));
+        if (!rawfs.existsSync(destFile)) {
+
+            try {
+                let response = await fetch(imagePath);
+                //  console.log(imagePath);
+                const arrayBuffer = await response.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                //  console.log(fileType);
+
+
+                await EnsureDestinationExists(destFile);
+                //  console.log("Would copy " + imagePath + " to " + destFile);
+
+                await rawfs.createWriteStream(destFile).write(buffer);
+                return FixSlashes(relativeName);
+
+            }
+
+            catch (error) {
+                console.log(error, "Cannot fetch " + imagePath);
+                return "";
+            }
+        } else {
+            return FixSlashes(relativeName);
+        }
+    } else {
+        let a = path.normalize(imagePath);
+
+
+        let relativeName = path.normalize(path.join('images', a));
+        let destFile = path.normalize(path.join(__dirname, 'public', 'images', a));
+        if (!rawfs.existsSync(destFile)) {
+            let sourceFile = (path.join(path.normalize("C:/Users/gcolg/AppData/Local/FoundryVTT/Data"), a));
+            if (!rawfs.existsSync(sourceFile)) {
+
+                sourceFile = path.normalize(path.join(path.normalize("C:/Program Files/FoundryVTT/resources/app/public"), a));
+            }
+            await EnsureDestinationExists(destFile);
+
+            try {
+                await fs.copyFile('"' + sourceFile + '"', '"' + destFile + '"');
+                //console.log("Would copy " + sourceFile + " to " + destFile);
+            } catch (error) { console.log("Error Could not copy\m ", sourceFile, " tot ", destFile); }
+            return FixSlashes(relativeName);
+
+        } else {
+            return FixSlashes(relativeName);
+        }
+    }
+}
+
+function uuidv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
+function FixSlashes(a) {
+    a = a.replaceAll("\\", "/"); // replaces \ with /
+    a = a.replaceAll("//", "/"); // replaces // with /
+    return a;
+}
 
 async function doit() {
     //await fsExtra.emptyDir(path.join(__dirname, 'public', 'Compendium'));
@@ -118,16 +211,37 @@ async function doit() {
         console.log("Num SubFiles " + subfiles.length);
 
         let artGeneratorFile = [];
+        let last = 0;
         for (let fileIndex = 0; fileIndex < subfiles.length; fileIndex++) {
+            if (fileIndex > last + 50) { console.log(fileIndex + " of " + subfiles.length); last = fileIndex; }
             try {
-
                 json = JSON.parse(subfiles[fileIndex]);
-                let tagsSource = json.flags.special tag;
+                let tagsSource = json?.flags?.magic key;
 
                 if (tagsSource) {
+                    if (!tagsSource.hash)
+                        tagsSource.hash = uuidv4();
 
-                    tagsSource.hash = tagsSource.hash.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+                    if (json.img) {
+                        json.img = await processImage(json.img, tagsSource);
+                    }
+
+                    if (json?.prototypeToken) {
+
+                        let t = json.prototypeToken;
+
+
+                        let token = {};
+                        if (t.texture.src) {
+                            t.texture.src = processImage(t.texture.src);
+                        }
+                        // todo, design tokens
+
+                    }
+
+                    tagsSource.hash = cleanFileName(tagsSource.hash);
                     tagsSource.page = path.parse(tagsSource.page).name;
+                    tagsSource.image = json.img;
                     let name = json.name;
                     if (json.system.requirements) {
                         name += " : " + json.system.requirements;
@@ -140,11 +254,11 @@ async function doit() {
                         for (let i = 0; i < json.items.length; i++) {
                             let item = json.items[i];
                             let subFile = tagsSource.hash + '_MITEM_' + (item.name);
-                            subFile = subFile.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-
+                            subFile = cleanFileName(subFile);
+                            item.img = processImage(item.img);
 
                             let tags = {
-                                file: "CompendiumFiles\ + subFile,
+                                file: "CompendiumFiles/" + subFile,
                                 page: "itemSummary",
                                 source: item.source,
                                 droppable: item.propDroppable,
@@ -152,11 +266,7 @@ async function doit() {
                                 name: item.name,
                                 img: item.img,
                             };
-                            if (subFile == "adult20amethyst20dragon_ftd_MITEM_Claw") {
 
-                                console.log(tags);
-                                console.log(item);
-                            }
                             writeJsonFileInPublic('Compendium', "tag_" + subFile, tags);
                             writeJsonFileInPublic('CompendiumFiles', subFile, item);
 
@@ -194,7 +304,6 @@ async function doit() {
             // let outfile3 = path.join(path.join(__dirname, 'public', "artgenerator.json"));
             //  fs.writeFile(outfile3, JSON.stringify(artGeneratorFile));
         }
-
 
     }
 }

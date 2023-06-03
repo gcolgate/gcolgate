@@ -74,7 +74,12 @@ function search(whole, search) {
 
 function filter(whole, buttons) {
     if (buttons.length === 0) { // none selected same as all selected
-        return whole;
+        let filtered = [];
+        for (let i = 0; i < whole.length; i++) {
+            if ("itemSummary" != whole[i].page)
+                filtered.push(whole[i]);
+        }
+        return filtered;
     } else {
         let filtered = [];
         for (let i = 0; i < whole.length; i++) {
@@ -107,10 +112,13 @@ function collectSearchandFilter(id) {
 }
 
 
+
 function refreshDirectoryWindow(id, whole) {
 
     let params = collectSearchandFilter(id);
-    let window = document.getElementById("window_" + id);
+    let win = document.getElementById("window_" + id);
+
+
 
     let searched = search(whole, params.search);
 
@@ -122,23 +130,40 @@ function refreshDirectoryWindow(id, whole) {
 
     let ul = document.getElementById("window_" + id + "_list");
 
-    ul.style.height = (window.clientHeight - ul.offsetTop) + "px";
+    ul.style.height = (win.clientHeight - ul.offsetTop) + "px";
     ul.style.overflow = "auto";
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
     }
+
+
+    win.resizeObserver = new ResizeObserver(entries => {
+        entries.forEach(entry => {
+            console.log("%o", entry);
+            console.log('width', entry.contentRect.width);
+            console.log('height', entry.contentRect.height);
+            let ul = document.getElementById("window_" + id + "_list");
+            ul.style.height = (win.clientHeight - ul.offsetTop) + "px";
+
+        });
+
+    });
+
+    win.resizeObserver.observe(win);
+    win.resizeObserver.observe(ul);
+
     for (let i = 0; i < array.length; i++) {
         let li = document.createElement("li");
         let text = document.createTextNode(array[i].name);
         // need better images 
-        // if (array[i].img) {
-        //     let img = document.createElement('img');
-        //     img.src = array[i].img;
-        //     img.width = "32"
-        //     img.height = "32"
-        //     li.appendChild(img);
+        if (array[i].img) {
+            let img = document.createElement('img');
+            img.src = array[i].img;
+            img.width = "32"
+            img.height = "32"
+            li.appendChild(img);
 
-        // }
+        }
 
         li.appendChild(text);
         li.references = array[i];

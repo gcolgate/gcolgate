@@ -124,7 +124,7 @@ function changeSheet(button) {
 
     // Big bug editing these. Armor class and movement speeds to not work
     // Changing name does not change name in compendium
-    // TODO: when converting from plutonium, make organization better. Include types?
+    // TODO: when converting    , make organization better. Include types?
 
     if (!typeof button.value === "string") { // no should be if button.value evaluates to number
         eval(button.id + ' = ' + button.value);  // the button id is code like thing.strength.value
