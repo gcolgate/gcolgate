@@ -224,6 +224,7 @@ class Scene {
 // });
 
 function noDragging(e) {
+    if (thingDragged) return;
     console.log(e.target.id);
     if (!e.target.acceptsDropFile) {
 
@@ -290,10 +291,11 @@ function uploadDroppedImages(e) {
 
 function noDropping(e) {
     // TODO:unhighliht
+    if (thingDragged) return;
 
     if (!e.target.acceptsDropFile) {
 
-        e.preventDefault();
+        // e.preventDefault();
         if (e.dataTransfer) {
             e.dataTransfer.effectAllowed = 'none'
             e.dataTransfer.dropEffect = 'none'
@@ -317,9 +319,9 @@ window.ondragenter = function (e) { noDragging(e); };
 window.ondragover = function (e) { noDragging(e); };
 window.ondragEnter = function (e) { };
 window.ondragLeave = function (e) { };
-window.ondrop = function (e) { console.log("onDrop"); noDropping(e); };
+window.ondrop = function (e) { noDropping(e); };
 
-three_renderer.domElement.ondrop = function (e) { console.log("onDrop2"); noDropping(e); };
+three_renderer.domElement.ondrop = function (e) { noDropping(e); };
 
 setSocket(socket);
 

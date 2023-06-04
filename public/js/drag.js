@@ -149,8 +149,7 @@ function dragDrop(elem, listeners) {
         if (text && listeners.onDropText) {
             listeners.onDropText(text, pos)
         }
-        console.log("Text " + text);
-        console.log("items %o ", event.dataTransfer.items);
+
 
 
         // File drop support. The `dataTransfer.items` API supports directories, so we
@@ -176,15 +175,13 @@ function dragDrop(elem, listeners) {
         }
         else {
             if (thingDragged) {
-                console.log(thingDragged);
                 if (elem.acceptDrag) {
                     elem.acceptDrag(thingDragged);
                 }
-                thingDragged = null;
             }
 
         }
-
+        thingDragged = null;
         return false
     }
 
@@ -238,7 +235,7 @@ function processEntry(entry, cb) {
     if (entry.isFile) {
         entry.file(file => {
             file.fullPath = entry.fullPath // preserve path for consumer
-            console.log(file.fullPath);
+
             file.isFile = true
             file.isDirectory = false
             cb(null, file)

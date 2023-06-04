@@ -240,7 +240,7 @@ export function three_setEditMode(on) {
 }
 
 export function three_mouseMove(event) {
-    event.preventDefault();
+    //  event.preventDefault();
     let rawMouse = three_mousePositionToWorldPosition(event);
 
     if (mouseButtonsDown[mainButton]) {

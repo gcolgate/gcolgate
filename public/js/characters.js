@@ -49,7 +49,7 @@ async function ensureThingLoaded(thingName, instance) {
         let file = thingName + '.json';
 
 
-        console.log(file);
+
         response = await fetch(file);
         const thing = await response.json();
         registeredThings[thingName + instance] = thing;
