@@ -233,7 +233,7 @@ function showDirectoryWindow(id, array) {
             onDragLeave: (event) => { }
         });
 
-        ul.acceptDrag = function (thingDragged) {
+        ul.acceptDrag = function (thingDragged, event) {
 
             for (let i = 0; i < array.length; i++) {
                 if (array[i].file == thingDragged.file) {

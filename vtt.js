@@ -292,6 +292,22 @@ io.on('connection', (socket) => {
             io.emit('updatedTile', msg);
         }
     });
+    socket.on("add_token", (msg) => {
+        console.log("add_token tile" + msg);
+        let sender = getUser(socket);
+        if (sender) {
+            console.log(msg);
+            let scene = folders.ScenesParsed[msg.scene];
+            console.log(msg.scene);
+            console.log(folders.ScenesParsed[msg.scene]);
+            console.log(folders.ScenesParsed);
+
+
+            Scene.updateSceneTile(scene, msg.tile);   // change to in place and update
+            io.emit('newTile', msg);
+        }
+
+    });
 
     socket.on('loadScene', (msg) => {
         sendScene(msg, socket);

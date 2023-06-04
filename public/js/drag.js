@@ -176,7 +176,7 @@ function dragDrop(elem, listeners) {
         else {
             if (thingDragged) {
                 if (elem.acceptDrag) {
-                    elem.acceptDrag(thingDragged);
+                    elem.acceptDrag(thingDragged, event);
                 }
             }
 

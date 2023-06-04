@@ -1,9 +1,16 @@
 
 import * as THREE from 'three';
 
-const three_scene = new THREE.Scene();
 
 
+
+const backgroundLayer = new THREE.Scene();
+const tileLayer = new THREE.Scene();
+const guiLayer = new THREE.Scene();
+const tokenLayer = new THREE.Scene();
+
+
+const three_scenes = [backgroundLayer, tileLayer, tokenLayer, guiLayer];
 
 let width = window.innerWidth - 32;
 let height = window.innerHeight - 32;
@@ -21,6 +28,7 @@ three_camera.position.z = 5;
 
 
 export var scene_name = "";
+export var scene_type = "2d";
 export function setSceneName(s) {
     scene_name = s;
 }
@@ -61,7 +69,7 @@ export function three_findMouseShapes(who) {
         // todo: show player name on mouse
         const cube = new THREE.Mesh(mouse_geometry, mouse_material);
         three_mouseShapes.who = cube;
-        three_scene.add(cube);
+        guiLayer.add(cube);
         // TODO: kill cube on disconnect
     }
     return three_mouseShapes.who;
@@ -86,7 +94,14 @@ export async function three_addTile(msg) {
     let textureScaleY = texture.image.height * msg.scale.y;
     plane.baseScale = new THREE.Vector2(texture.image.width, texture.image.height);
     plane.scale.set(textureScaleX, textureScaleY, 1);
-    three_scene.add(plane);
+    switch (msg.guiLayer) {
+        default:
+            tileLayer.add(plane); break;
+        case "token":
+            tokenLayer.add(plane); break;
+
+    }
+
     selectables.push(plane);
     selectablesMap[msg.tile_id] = plane;
 
@@ -121,15 +136,16 @@ export function three_replaceScene(c) {
 
     selectables = [];
     selectablesMap = {}
-    clearThree(three_scene);
-    let keys = Object.keys(c);
-    for (let i = 0; i < keys.length; i++) {
-        fixTile(c[keys[i]]);
-        three_addTile(c[keys[i]]);
+    for (let i = 0; i < three_scenes.length; i++) {
+        clearThree(three_scenes[i]);
+        let keys = Object.keys(c);
+        for (let i = 0; i < keys.length; i++) {
+            fixTile(c[keys[i]]);
+            three_addTile(c[keys[i]]);
+        }
     }
+
 }
-
-
 export async function three_updateTile(msg) {
 
 
@@ -167,7 +183,16 @@ export function three_animate() {
         cube.rotation.x += 0.01;
         cube.rotation.y += 0.01;
     }
-    three_renderer.render(three_scene, three_camera);
+    three_renderer.autoClear = true;
+
+    for (let i = 0; i < three_scenes.length; i++) {
+
+        three_renderer.render(three_scenes[i], three_camera);
+        three_renderer.autoClear = false;
+        if (scene_type == "2d") {
+            three_renderer.clearDepth()
+        }
+    }
 }
 
 let three_rayCaster = new THREE.Raycaster();
@@ -324,6 +349,51 @@ three_renderer.domElement.onmousedown = function (event) {
 
 }
 
+function uuidv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
+function GetImageFor(thing) {
+    // based on scene we may want to do something different
+
+    return thing.img;
+    // {"file":"CompendiumFiles/_plus_1_allpurpose_tool_tce","page":"items","source":"TCE","droppable":"item","type":"equipment","name":"+1 All-Purpose Tool","img":"images/modules/plutonium/media/icon/crossed-swords.svg"}
+
+
+}
+
+function GetId(thing) {
+    let s = thing.file;
+    let result = s.lastIndexOf('/');
+    if (result > 0) {
+        s = thing.file.substring(result + 1);
+    }
+    return s + '_' + uuidv4();
+}
+
+three_renderer.domElement.acceptDrag = function (thingDragged, event) {
+
+    // for (let i = 0; i < array.length; i++) {
+    //     if (array[i].file == thingDragged.file) {
+    //         console.log("Dupe");
+
+    //     }
+    // }
+    let mouse = three_mousePositionToWorldPosition(event);
+
+    let texture = GetImageFor(thingDragged);
+    let id = GetId(thingDragged);
+
+
+    let newTile = { "x": mouse.x, "y": mouse.y, "z": 0, guiLayer: "token", texture: texture, "tile_id": id, "scale": { "x": 1, "y": 1, "z": 1 } }
+
+
+    socket.emit("add_token", { scene: scene_name, tile: newTile });
+
+}
+
 
 three_renderer.domElement.onmouseup = function (event) {
 
@@ -355,3 +425,19 @@ three_renderer.domElement.onmouseup = function (event) {
     // }
     // three_lastMouse = pointer;
 }
+
+dragDrop(three_renderer.domElement, {
+    onDrop: (files, pos, fileList, directories) => {
+        console.log('Here are the dropped files', files)
+        console.log('Dropped at coordinates', pos.x, pos.y)
+        console.log('Here is the raw FileList object if you need it:', fileList)
+        console.log('Here is the list of directories:', directories)
+    },
+    onDropText: (text, pos) => {
+        console.log('Here is the dropped text:', text)
+        console.log('Dropped at coordinates', pos.x, pos.y)
+    },
+    onDragEnter: (event) => { },
+    onDragOver: (event) => { },
+    onDragLeave: (event) => { }
+});
