@@ -37,9 +37,12 @@ function waitInit() {
 }
 
 
+
 async function doTheUpload(res, req) {
 
     let file = req.files.file;
+    console.log(req.files);
+
     // Log the files to the console
     // Upload expects a file, an x, a y, and a z
     // and it will create a new image
@@ -49,25 +52,26 @@ async function doTheUpload(res, req) {
         return res.sendStatus(400);
     }
     // Move the uploaded image to our upload folder
-    try {
-        let tile = { x: req.body.x, y: req.body.y, z: req.body.z, texture: file.name };
-        let scene_name = req.body.scene_name;
-        console.log("Writing to " + __dirname + '/images/' + tile.texture);
-        let t = Date.now();
-        console.log("start time " + t);
+    //   try {
+    let tile = { x: req.body.x, y: req.body.y, z: req.body.z, texture: file.name };
+    let scene_name = req.body.current_scene;
+    console.log("Writing to " + __dirname + '/images/' + tile.texture);
+    let t = Date.now();
+    console.log("start time " + t);
 
-        await file.mv(path.normalize(__dirname + '/public/images/' + tile.texture));
-        res.sendStatus(200);
-        console.log("done time ", file);
+    await file.mv(path.normalize(__dirname + '/public/images/' + tile.texture));
+    res.sendStatus(200);
+    console.log("done time ", file);
 
-        let scene = folders.ScenesParsed[scene_name];
-        let fixedTile = Scene.addTile(scene, tile);
+    console.log(scene_name);
+    let scene = folders.ScenesParsed[scene_name];
+    let fixedTile = Scene.addTile(scene, tile);
 
-        io.emit('newTile', { scene: scene, tile: fixedTile });
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    }
+    io.emit('newTile', { scene: scene, tile: fixedTile });
+    // } catch (error) {
+    //     console.log(error);
+    //     res.sendStatus(500);
+    // }
 }
 
 app.post('/upload', (req, res) => {
@@ -232,17 +236,16 @@ async function sendScene(name, socket) {
     folders.ScenesParsed[name] = jsonHandling.ParseJson(name, unparsed);
 
     let scene = folders.ScenesParsed[name];
-    console.log(typeof scene);
-    console.log(scene);
+
+
     Scene.loadScene(scene);
     await Scene.waitForLoaded(scene);
     let array = [];
     let keys = Object.keys(scene.tiles);
     for (let i = 0; i < keys.length; i++) {
-        console.log(scene.tiles[keys[i]]);
         array.push(scene.tiles[keys[i]]);
     }
-    socket.emit('displayScene', { name: name, array: array });
+    socket.emit('displayScene', { name: name, sceneType: "2d", array: array });
 }
 // io
 io.on('connection', (socket) => {
@@ -293,17 +296,19 @@ io.on('connection', (socket) => {
         }
     });
     socket.on("add_token", (msg) => {
+        console.log("add_token");
         console.log("add_token tile" + msg);
         let sender = getUser(socket);
         if (sender) {
-            console.log(msg);
             let scene = folders.ScenesParsed[msg.scene];
-            console.log(msg.scene);
-            console.log(folders.ScenesParsed[msg.scene]);
-            console.log(folders.ScenesParsed);
 
 
-            Scene.updateSceneTile(scene, msg.tile);   // change to in place and update
+
+
+
+            msg.scene = { name: msg.scene };
+            Scene.updateSceneTile(scene, msg.tile);   // change to in place and update 
+
             io.emit('newTile', msg);
         }
 

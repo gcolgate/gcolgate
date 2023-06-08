@@ -84,10 +84,16 @@ async function loadScene(scene) {
 
 }
 
+function uuidv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
 function generateNewTileId(scene, tile) {
     // for now this is somewhat human readable, but it could be pure guid
     // it will have the name of the first texture used
-    tile.tile_id = tile.texture + "_" + scene.next_tile_id; scene.next_tile_id++;
+    tile.tile_id = tile.texture + "_" + uuidv4();
 }
 
 function getTileFileName(scene, tile) {
@@ -97,12 +103,13 @@ function getTileFileName(scene, tile) {
 function addTile(scene, tile) {
 
 
-    if (isNaN(tile.z) || tile.z === null || tile.z === undefined) {
+    if (tile.z === undefined || tile.z === null || isNaN(tile.z)) {
+        console.log("Scene " + scene);
         tile.z = scene.nextZ;
         scene.nextZ += 0.00001;
     }
-    generateNewTileId(scene, tile);
-    tile.scale = { x: 1, y: 1, z: 1 };
+    if (!tile.tile_id) generateNewTileId(scene, tile);
+    if (!tile.scale) tile.scale = { x: 1, y: 1, z: 1 };
     scene.tiles[tile.tile_id] = tile;
     let name = getTileFileName(scene, tile);
 
@@ -112,11 +119,9 @@ function addTile(scene, tile) {
 }
 
 function updateSceneTile(scene, tile) {
-    console.log("Scene", scene);
-    console.log("Tile", tile);
+
     if (!scene.tiles[tile.tile_id]) {
-        console.log("Cannot find tile for ", tile);
-        addTile(tile);
+        addTile(scene, tile);
     }
     else {
         scene.tiles[tile.tile_id] = tile;
@@ -125,6 +130,7 @@ function updateSceneTile(scene, tile) {
     }
 
 }
+
 
 
 module.exports = { loadScene, addTile, waitForLoaded, updateSceneTile, sceneSetSocket };

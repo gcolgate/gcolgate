@@ -27,10 +27,10 @@ three_renderer.domElement.acceptsDropFile = true;
 three_camera.position.z = 5;
 
 
-export var scene_name = "";
-export var scene_type = "2d";
-export function setSceneName(s) {
-    scene_name = s;
+export var current_scene =
+{
+    name: "",
+    type: "2d", // types are 2d, theatre_of_the_mind, 3d
 }
 
 export var three_mouseShapes = {}
@@ -77,7 +77,9 @@ export function three_findMouseShapes(who) {
 
 export async function three_addTile(msg) {
     fixTile(msg);
-    let tname = "./images/" + msg.texture;
+    let tname = msg.texture;
+    if (!tname.startsWith("images/"))
+        tname = "./images/" + msg.texture; // todo fix this so we are not adding paths in random places
     let materialName = tname + "_simple";
     // if (!materials[materialName]) {
 
@@ -132,7 +134,9 @@ function clearThree(obj) {
 
 
 
-export function three_replaceScene(c) {
+export function three_replaceScene(sceneName, sceneType, c) {
+    current_scene.name = sceneName;
+    current_scene.type = sceneType;
 
     selectables = [];
     selectablesMap = {}
@@ -189,7 +193,7 @@ export function three_animate() {
 
         three_renderer.render(three_scenes[i], three_camera);
         three_renderer.autoClear = false;
-        if (scene_type == "2d") {
+        if (current_scene.type != "3d") {
             three_renderer.clearDepth()
         }
     }
@@ -274,7 +278,7 @@ export function three_mouseMove(event) {
                 for (let i = 0; i < selection.length; i++) {
                     selection[i].tile.x += (rawMouse.x - three_lastMouse.x);
                     selection[i].tile.y += (rawMouse.y - three_lastMouse.y);
-                    socket.emit('updateTile', { tile: selection[i].tile, scene: scene_name });
+                    socket.emit('updateTile', { tile: selection[i].tile, scene: current_scene.name });
                     fixTile(selection[i].tile);
                 }
                 break;
@@ -290,7 +294,7 @@ export function three_mouseMove(event) {
                     scale.y = scalingY ? (rawMouse.y - three_lastMouse.y) / (2 * plane.baseScale.y) + scale.y : scale.y;
 
                     fixTile(selection[i].tile);
-                    socket.emit('updateTile', { tile: plane.tile, scene: scene_name });
+                    socket.emit('updateTile', { tile: plane.tile, scene: current_scene.name });
                 }
                 break;
         }
@@ -355,42 +359,42 @@ function uuidv4() {
     );
 }
 
-function GetImageFor(thing) {
+async function GetImageFor(thing) {
     // based on scene we may want to do something different
+    let name = thing.file;
 
-    return thing.img;
+    console.log("Current scene", current_scene);
+    console.log("Current scene t" + current_scene.type);
+
+    switch (current_scene.type) {
+
+        case "2d": {
+            let t = await ensureThingLoaded(name, "");
+            if (t.prototypeToken?.texture?.src)
+
+                return {
+                    img: t.prototypeToken.texture.src,
+                    scaleX: t.prototypeToken.texture.scaleX,
+                    scaleY: t.prototypeToken.texture.scaleY
+                };
+            return {
+                img: thing.img,
+                scaleX: 1,
+                scaleY: 1
+            };
+        }
+        default:
+        case "theatreOfTheMind":
+        case "3d":
+            return {
+                img: thing.img,
+                scaleX: 1,
+                scaleY: 1
+            };
+
+    }
     // {"file":"CompendiumFiles/_plus_1_allpurpose_tool_tce","page":"items","source":"TCE","droppable":"item","type":"equipment","name":"+1 All-Purpose Tool","img":"images/modules/plutonium/media/icon/crossed-swords.svg"}
 
-
-}
-
-function GetId(thing) {
-    let s = thing.file;
-    let result = s.lastIndexOf('/');
-    if (result > 0) {
-        s = thing.file.substring(result + 1);
-    }
-    return s + '_' + uuidv4();
-}
-
-three_renderer.domElement.acceptDrag = function (thingDragged, event) {
-
-    // for (let i = 0; i < array.length; i++) {
-    //     if (array[i].file == thingDragged.file) {
-    //         console.log("Dupe");
-
-    //     }
-    // }
-    let mouse = three_mousePositionToWorldPosition(event);
-
-    let texture = GetImageFor(thingDragged);
-    let id = GetId(thingDragged);
-
-
-    let newTile = { "x": mouse.x, "y": mouse.y, "z": 0, guiLayer: "token", texture: texture, "tile_id": id, "scale": { "x": 1, "y": 1, "z": 1 } }
-
-
-    socket.emit("add_token", { scene: scene_name, tile: newTile });
 
 }
 
@@ -424,7 +428,7 @@ three_renderer.domElement.onmouseup = function (event) {
     //     break;
     // }
     // three_lastMouse = pointer;
-}
+};
 
 dragDrop(three_renderer.domElement, {
     onDrop: (files, pos, fileList, directories) => {
@@ -441,3 +445,30 @@ dragDrop(three_renderer.domElement, {
     onDragOver: (event) => { },
     onDragLeave: (event) => { }
 });
+
+
+
+
+async function CreateToken(thingDragged, event) {
+    let mouse = three_mousePositionToWorldPosition(event);
+    let newTile = { "x": mouse.x, "y": mouse.y, "z": 0, guiLayer: "token", };
+
+
+    let img = await GetImageFor(thingDragged);
+    newTile.texture = img;
+    socket.emit("add_token", { scene: current_scene.name, thingDragged: thingDragged, tile: newTile });
+
+}
+
+three_renderer.domElement.acceptDrag = function (thingDragged, event) {
+
+    // for (let i = 0; i < array.length; i++) {
+    //     if (array[i].file == thingDragged.file) {
+    //         console.log("Dupe");
+
+    //     }
+    // }
+    CreateToken(thingDragged, event);
+
+
+}

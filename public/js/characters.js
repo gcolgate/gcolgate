@@ -65,7 +65,7 @@ async function ensureThingLoaded(thingName, instance) {
             await Promise.all(promises);
         }
     }
-
+    return registeredThings[thingName + instance];
 
 }
 async function ensureSheetLoaded(sheetName) {

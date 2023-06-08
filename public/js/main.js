@@ -1,7 +1,7 @@
 
 
 
-import { scene_name, setSceneName, three_camera, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
+import { current_scene, three_camera, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
 
 ///////// 
 let players = { hero: "" };
@@ -67,7 +67,7 @@ socket.on('mousemove', function (msg) {
 
 
 socket.on('newTile', function (msg) {
-    if (msg.scene.name == scene_name) {
+    if (msg.scene.name == current_scene.name) {
         three_addTile(msg.tile);
     }
 });
@@ -78,12 +78,11 @@ window.LoadScene = function (name) {
 }
 
 socket.on('displayScene', function (msg) {
-    setSceneName(msg.name);
-    three_replaceScene(msg.array);
+    three_replaceScene(msg.name, msg.sceneType, msg.array);
 });
 
 socket.on('updatedTile', function (msg) {
-    if (msg.scene === scene_name)
+    if (msg.scene === current_scene.name)
         three_updateTile(msg.tile);
 });
 
@@ -270,6 +269,7 @@ async function dropOneFile(file, additional) {
 // if control held, just make new tile but
 // don't upload
 function uploadDroppedImages(e) {
+
     let fd = new FormData();
     let files = e.dataTransfer.files;
     for (let i = 0; i < files.length; i++) {
@@ -283,7 +283,7 @@ function uploadDroppedImages(e) {
             x: vec.x,
             y: vec.y,
             z: null, // todo fix
-            scene_name: scene_name
+            current_scene: current_scene.name
         }
         dropOneFile(file, additional);
     }
@@ -321,7 +321,18 @@ window.ondragEnter = function (e) { };
 window.ondragLeave = function (e) { };
 window.ondrop = function (e) { noDropping(e); };
 
-three_renderer.domElement.ondrop = function (e) { noDropping(e); };
+three_renderer.domElement.ondrop = function (e) {
+    if (thingDragged) {
+        three_renderer.acceptDrag(thingDragged, e);
+    } else {
+        e.stopPropagation();
+        e.preventDefault();
+        uploadDroppedImages(e);
+        e.dataTransfer.effectAllowed = 'none'
+        e.dataTransfer.dropEffect = 'none'
+        return false;
+    }
+};
 
 setSocket(socket);
 

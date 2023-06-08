@@ -156,7 +156,7 @@ function dragDrop(elem, listeners) {
         // use it instead of `dataTransfer.files`, even though it's much more
         // complicated to use.
         // See: https://github.com/feross/drag-drop/issues/39
-        if (listeners.onDrop && event.dataTransfer.items && event.dataTransfer.items.length > 0) {
+        if (listeners.onDrop && !thingDragged && event.dataTransfer.items && event.dataTransfer.items.length > 0) {
             processItems(event.dataTransfer.items, (err, files, directories) => {
                 if (err) {
                     // TODO: A future version of this library might expose this somehow
