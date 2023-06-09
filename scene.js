@@ -90,10 +90,19 @@ function uuidv4() {
     );
 }
 
+function cleanFileName(destString) {
+    // just path a name, not a path
+    destString = destString.replaceAll(" ", "_");
+    destString = destString.replaceAll("%20%", "_");
+    destString = destString.replaceAll("%2b%", "_plus_");
+    destString = destString.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+    return destString;
+}
+
 function generateNewTileId(scene, tile) {
     // for now this is somewhat human readable, but it could be pure guid
     // it will have the name of the first texture used
-    tile.tile_id = tile.texture + "_" + uuidv4();
+    tile.tile_id = cleanFileName(tile.texture + "_" + uuidv4());
 }
 
 function getTileFileName(scene, tile) {

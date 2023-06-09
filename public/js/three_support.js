@@ -77,7 +77,11 @@ export function three_findMouseShapes(who) {
 
 export async function three_addTile(msg) {
     fixTile(msg);
-    let tname = msg.texture;
+    // TODO: Fix calling this with two kinds of parameters
+    if (typeof msg.texture == "string") console.log("WTF", msg);
+
+    let tname = (typeof msg.texture == "string" ? msg.texture : msg.texture.img);
+
     if (!tname.startsWith("images/"))
         tname = "./images/" + msg.texture; // todo fix this so we are not adding paths in random places
     let materialName = tname + "_simple";
@@ -142,14 +146,14 @@ export function three_replaceScene(sceneName, sceneType, c) {
     selectablesMap = {}
     for (let i = 0; i < three_scenes.length; i++) {
         clearThree(three_scenes[i]);
-        let keys = Object.keys(c);
-        for (let i = 0; i < keys.length; i++) {
-            fixTile(c[keys[i]]);
-            three_addTile(c[keys[i]]);
-        }
     }
-
+    let keys = Object.keys(c);
+    for (let i = 0; i < keys.length; i++) {
+        fixTile(c[keys[i]]);
+        three_addTile(c[keys[i]]);
+    }
 }
+
 export async function three_updateTile(msg) {
 
 
@@ -455,7 +459,12 @@ async function CreateToken(thingDragged, event) {
 
 
     let img = await GetImageFor(thingDragged);
-    newTile.texture = img;
+    newTile.texture = img.img;
+    newTile.scale = {
+        x: img.scaleX,
+        y: img.scaleY,
+        z: 1
+    };
     socket.emit("add_token", { scene: current_scene.name, thingDragged: thingDragged, tile: newTile });
 
 }

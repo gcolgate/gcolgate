@@ -49,20 +49,24 @@ async function ensureThingLoaded(thingName, instance) {
         let file = thingName + '.json';
 
 
+        try {
+            response = await fetch(file);
+            const thing = await response.json();
+            registeredThings[thingName + instance] = thing;
+            thing.id = thingName + instance;
 
-        response = await fetch(file);
-        const thing = await response.json();
-        registeredThings[thingName + instance] = thing;
-        thing.id = thingName + instance;
-
-        if (thing.items) {
-            let promises = [];
-            for (let i = 0; i < thing.items.length; i++) {
-                if (thing.items[i].file) {
-                    promises.push(EnsureLoaded(thing.items[i].page, thing.items[i].file, instance));
+            if (thing.items) {
+                let promises = [];
+                for (let i = 0; i < thing.items.length; i++) {
+                    if (thing.items[i].file) {
+                        promises.push(EnsureLoaded(thing.items[i].page, thing.items[i].file, instance));
+                    }
                 }
+                await Promise.all(promises);
             }
-            await Promise.all(promises);
+
+        } catch (err) {
+            console.log(err + ". Unable to fetch " + thingName + 'json');
         }
     }
     return registeredThings[thingName + instance];

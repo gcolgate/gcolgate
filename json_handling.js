@@ -9,7 +9,9 @@ function writeJsonFile(fileName, json) {
     try {
         rawfs.writeFileSync(fileName, JSON.stringify(json));
     } catch (err) {
-        console.log(err + " Error with " + dir + " " + fname);
+        console.log(json);
+
+        console.log(err + " Error with " + fileName);
     }
 }
 
