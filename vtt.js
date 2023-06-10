@@ -12,6 +12,7 @@ const ChangeThing = require('./sheeter.js')
 const fileUpload = require('express-fileupload');
 const Scene = require('./scene.js');
 const jsonHandling = require('./json_handling.js');
+const probeImage = require('probe-image-size');
 
 const host = 'localhost';
 const port = 8000;
@@ -52,26 +53,30 @@ async function doTheUpload(res, req) {
         return res.sendStatus(400);
     }
     // Move the uploaded image to our upload folder
-    //   try {
-    let tile = { x: req.body.x, y: req.body.y, z: req.body.z, texture: file.name };
-    let scene_name = req.body.current_scene;
-    console.log("Writing to " + __dirname + '/images/' + tile.texture);
-    let t = Date.now();
-    console.log("start time " + t);
+    try {
 
-    await file.mv(path.normalize(__dirname + '/public/images/' + tile.texture));
-    res.sendStatus(200);
-    console.log("done time ", file);
+        let probed = probeImage.sync(req.files.file.data);
 
-    console.log(scene_name);
-    let scene = folders.ScenesParsed[scene_name];
-    let fixedTile = Scene.addTile(scene, tile);
 
-    io.emit('newTile', { scene: scene, tile: fixedTile });
-    // } catch (error) {
-    //     console.log(error);
-    //     res.sendStatus(500);
-    // }
+        let tile = { x: req.body.x, y: req.body.y, z: req.body.z, texture: file.name, scale: { x: probed.width, y: probed.height, z: 1 } };
+        let scene_name = req.body.current_scene;
+        console.log("Writing to " + __dirname + '/images/' + tile.texture);
+        let t = Date.now();
+        console.log("start time " + t);
+
+        await file.mv(path.normalize(__dirname + '/public/images/' + tile.texture));
+        res.sendStatus(200);
+        console.log("done time ", file);
+
+        console.log(scene_name);
+        let scene = folders.ScenesParsed[scene_name];
+        let fixedTile = Scene.addTile(scene, tile);
+
+        io.emit('newTile', { scene: scene, tile: fixedTile });
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
 }
 
 app.post('/upload', (req, res) => {
@@ -285,11 +290,7 @@ io.on('connection', (socket) => {
         console.log("Update tile" + msg);
         let sender = getUser(socket);
         if (sender) {
-            console.log(msg);
             let scene = folders.ScenesParsed[msg.scene];
-            console.log(msg.scene);
-            console.log(folders.ScenesParsed[msg.scene]);
-            console.log(folders.ScenesParsed);
 
             Scene.updateSceneTile(scene, msg.tile);   // change to in place and update
             io.emit('updatedTile', msg);
