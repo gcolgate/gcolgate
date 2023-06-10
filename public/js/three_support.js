@@ -4,6 +4,54 @@ import * as THREE from 'three';
 
 
 
+function three_renderer_dimensions() {
+    let width = window.innerWidth - 32;
+    let height = window.innerHeight - 32;
+    return {
+        width: width,
+        height: height,
+        aspect: (width / height)
+    }
+}
+
+function three_setDimension() {
+
+    // fetch target renderer size
+    var rendererSize = three_renderer_dimensions();
+    // notify the renderer of the size change
+    three_renderer.setSize(rendererSize.width, rendererSize.height, true)
+    // update the camera
+    if (three_camera.isOrthographicCamera) {
+        //const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        three_camera.left = rendererSize.width / - 2; three_camera.right = rendererSize.width / 2;
+        three_camera.top = rendererSize.height / 2; three_camera.bottom = rendererSize.height / - 2;
+
+    } else {
+        three_camera.aspect = rendererSize.width / rendererSize.height
+        three_camera.updateProjectionMatrix()
+    }
+
+}
+
+function three_window_sizer_watcher(renderer, camera, dimension) {
+
+    // bind the resize event
+    window.addEventListener('resize', three_setDimension, false)
+    // return .stop() the function to stop watching window resize
+    return {
+        trigger: function () {
+            three_setDimension()
+        },
+        /**
+         * Stop watching window resize */
+
+        destroy: function () {
+            window.removeEventListener('resize', three_setDimension)
+        }
+    }
+}
+
+
 const backgroundLayer = new THREE.Scene();
 const tileLayer = new THREE.Scene();
 const guiLayer = new THREE.Scene();
@@ -12,20 +60,25 @@ const tokenLayer = new THREE.Scene();
 
 const three_scenes = [backgroundLayer, tileLayer, tokenLayer, guiLayer];
 
-let width = window.innerWidth - 32;
-let height = window.innerHeight - 32;
-//const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-export const three_camera = new THREE.OrthographicCamera(width / - 2, width / 2, height / 2, height / - 2, -10, 1000);
+var rendererSize = three_renderer_dimensions();
 
+
+export const three_camera = new THREE.OrthographicCamera(rendererSize.width / - 2, rendererSize.width / 2,
+    rendererSize.height / 2, rendererSize.height / - 2,
+    -10, 1000);
 
 export const three_renderer = new THREE.WebGLRenderer();
-three_renderer.setSize(width, height, true);
+three_renderer.setSize(rendererSize.width, rendererSize.height, true);
 document.body.appendChild(three_renderer.domElement);
+three_renderer.domElement.style.resize = "both";
+
+
 
 three_renderer.domElement.acceptsDropFile = true;
 
 three_camera.position.z = 5;
 
+three_window_sizer_watcher(three_renderer, three_camera);
 
 export var current_scene =
 {
@@ -205,7 +258,7 @@ export function three_animate() {
 
 let three_rayCaster = new THREE.Raycaster();
 let three_lastMouse = null;
-
+let three_lastRawMouse = null;
 
 // change these when window size changes, for mouse calculations
 let multiplier = new THREE.Vector2(2 / window.innerWidth, 2 / window.innerHeight);
@@ -274,14 +327,14 @@ export function three_setEditMode(on) {
 
 export function three_mouseMove(event) {
     //  event.preventDefault();
-    let rawMouse = three_mousePositionToWorldPosition(event);
+    let newMouse = three_mousePositionToWorldPosition(event);
 
     if (mouseButtonsDown[mainButton]) {
         switch (mouseMode) {
             case "dragging":
                 for (let i = 0; i < selection.length; i++) {
-                    selection[i].tile.x += (rawMouse.x - three_lastMouse.x);
-                    selection[i].tile.y += (rawMouse.y - three_lastMouse.y);
+                    selection[i].tile.x += (newMouse.x - three_lastMouse.x);
+                    selection[i].tile.y += (newMouse.y - three_lastMouse.y);
                     socket.emit('updateTile', { tile: selection[i].tile, scene: current_scene.name });
                     fixTile(selection[i].tile);
                 }
@@ -291,11 +344,11 @@ export function three_mouseMove(event) {
                     let plane = selection[i];
                     let scale = selection[i].tile.scale;
 
-                    plane.tile.x += (rawMouse.x - three_lastMouse.x) / 2;
-                    plane.tile.y += (rawMouse.y - three_lastMouse.y) / 2;
+                    plane.tile.x += (newMouse.x - three_lastMouse.x) / 2;
+                    plane.tile.y += (newMouse.y - three_lastMouse.y) / 2;
 
-                    scale.x = scalingX ? (rawMouse.x - three_lastMouse.x) + scale.x : scale.x;
-                    scale.y = scalingY ? (rawMouse.y - three_lastMouse.y) + scale.y : scale.y;
+                    scale.x = scalingX ? (newMouse.x - three_lastMouse.x) + scale.x : scale.x;
+                    scale.y = scalingY ? (newMouse.y - three_lastMouse.y) + scale.y : scale.y;
 
                     fixTile(selection[i].tile);
                     socket.emit('updateTile', { tile: plane.tile, scene: current_scene.name });
@@ -304,12 +357,29 @@ export function three_mouseMove(event) {
         }
     }
     if (mouseButtonsDown[scrollButton]) {
-        three_camera.position.x -= rawMouse.x - three_lastMouse.x;
-        three_camera.position.y -= rawMouse.y - three_lastMouse.y;
-    }
+        // if (three_camera.isOrthographicCamera) {
+        let dim = three_renderer_dimensions()
 
-    three_lastMouse = rawMouse;
+        let zoomMulipleX = three_camera.right / (dim.width / 2);
+        //     let zoomMulipleY = three_camera.top / (dim.width/2);
+        three_camera.position.x -= (event.clientX - three_lastRawMouse.x) * zoomMulipleX;
+        three_camera.position.y += (event.clientY - three_lastRawMouse.y) * zoomMulipleX;
+
+        //    console.log(event.timeStamp, "x " + (newMouse.x - three_lastMouse.x) + " y " + (newMouse.y - three_lastMouse.y));
+    }
+    three_lastRawMouse = { x: event.clientX, y: event.clientY };
+    three_lastMouse = newMouse;
 }
+three_renderer.domElement.onwheel = (event) => {
+    console.log(event.delta);
+    let d = event.wheelDelta * 0.6;
+    let wd = d * three_renderer_dimensions().aspect
+
+    three_camera.left += wd; three_camera.right -= wd;
+    three_camera.top -= d; three_camera.bottom += d
+    three_camera.updateProjectionMatrix()
+
+};
 
 three_renderer.domElement.oncontextmenu = function (event) {
     event.preventDefault();
@@ -324,6 +394,7 @@ three_renderer.domElement.onmousedown = function (event) {
 
     mouseButtonsDown[event.button] = true;
     three_lastMouse = three_mousePositionToWorldPosition(event);
+    three_lastRawMouse = { x: event.clientX, y: event.clientY };
 
     three_rayCaster.setFromCamera(pointer, three_camera);
 
