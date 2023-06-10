@@ -181,7 +181,6 @@ function dragDrop(elem, listeners) {
             }
 
         }
-        thingDragged = null;
         return false
     }
 

@@ -96,8 +96,8 @@ export async function three_addTile(msg) {
     plane.position.x = msg.x;
     plane.position.y = msg.y;
     plane.position.z = msg.z;
-    let textureScaleX = texture.image.width * msg.scale.x;
-    let textureScaleY = texture.image.height * msg.scale.y;
+    let textureScaleX = msg.scale.x;
+    let textureScaleY = msg.scale.y;
     plane.baseScale = new THREE.Vector2(texture.image.width, texture.image.height);
     plane.scale.set(textureScaleX, textureScaleY, 1);
     switch (msg.guiLayer) {
@@ -172,8 +172,8 @@ export async function three_updateTile(msg) {
         plane.position.x = msg.x;
         plane.position.y = msg.y;
         plane.position.z = msg.z;
-        let textureScaleX = plane.baseScale.x * msg.scale.x;
-        let textureScaleY = plane.baseScale.y * msg.scale.y;
+        let textureScaleX = msg.scale.x;
+        let textureScaleY = msg.scale.y;
         plane.scale.set(textureScaleX, textureScaleY, 1);
 
     }
@@ -294,8 +294,8 @@ export function three_mouseMove(event) {
                     plane.tile.x += (rawMouse.x - three_lastMouse.x) / 2;
                     plane.tile.y += (rawMouse.y - three_lastMouse.y) / 2;
 
-                    scale.x = scalingX ? (rawMouse.x - three_lastMouse.x) / (2 * plane.baseScale.x) + scale.x : scale.x;
-                    scale.y = scalingY ? (rawMouse.y - three_lastMouse.y) / (2 * plane.baseScale.y) + scale.y : scale.y;
+                    scale.x = scalingX ? (rawMouse.x - three_lastMouse.x) + scale.x : scale.x;
+                    scale.y = scalingY ? (rawMouse.y - three_lastMouse.y) + scale.y : scale.y;
 
                     fixTile(selection[i].tile);
                     socket.emit('updateTile', { tile: plane.tile, scene: current_scene.name });
@@ -432,6 +432,8 @@ three_renderer.domElement.onmouseup = function (event) {
     //     break;
     // }
     // three_lastMouse = pointer;
+    thingDragged = null;
+
 };
 
 dragDrop(three_renderer.domElement, {
@@ -451,7 +453,7 @@ dragDrop(three_renderer.domElement, {
 });
 
 
-
+let kTileSIze = 100;
 
 async function CreateToken(thingDragged, event) {
     let mouse = three_mousePositionToWorldPosition(event);
@@ -461,8 +463,8 @@ async function CreateToken(thingDragged, event) {
     let img = await GetImageFor(thingDragged);
     newTile.texture = img.img;
     newTile.scale = {
-        x: img.scaleX,
-        y: img.scaleY,
+        x: img.scaleX * kTileSIze, // todo should be tile size
+        y: img.scaleY * kTileSIze,
         z: 1
     };
     socket.emit("add_token", { scene: current_scene.name, thingDragged: thingDragged, tile: newTile });

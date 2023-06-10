@@ -394,6 +394,7 @@ function dragElement(elmnt, header) {
         // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
+        thingDragged = null;
     }
 }
 
