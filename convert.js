@@ -375,11 +375,13 @@ async function doit() {
 
         let artGeneratorFile = [];
         let last = 0;
+        let audit = false;
         for (let fileIndex = 0; fileIndex < subfiles.length; fileIndex++) {
-            if (fileIndex > last + 50) { console.log(fileIndex + " of " + subfiles.length); last = fileIndex; }
+            if (fileIndex > last + 50) { console.log(fileIndex + " of " + subfiles.length); last = fileIndex; audit = true; }
             try {
                 json = JSON.parse(subfiles[fileIndex]);
-                let tagsSource = json?.flags?.magic;
+                let tagsSource = json?.flags?.plutonium;
+                if (audit) console.log(tagsSource.page);
 
                 if (tagsSource) {
                     if (!tagsSource.hash)
@@ -403,66 +405,68 @@ async function doit() {
                             // todo, design tokens
 
                         }
+                    }
 
-                        tagsSource.hash = cleanFileName(tagsSource.hash);
-                        tagsSource.page = path.parse(tagsSource.page).name;
-                        tagsSource.image = json.img;
-                        tagsSource.prototypeToken = json.protoTypeToken;
-                        json.protoTypeToken = undefined;
-                        let name = json.name;
-                        if (json.system.requirements) {
-                            name += " : " + json.system.requirements;
-                        } else {
-                            name += " (" + tagsSource.page + ")";
+                    if (audit) console.log(tagsSource.page);
+                    tagsSource.hash = cleanFileName(tagsSource.hash);
+                    if (audit) console.log(tagsSource.page);
+                    tagsSource.page = path.parse(tagsSource.page).name;
+                    if (audit) console.log(tagsSource.page);
+                    tagsSource.image = json.img;
+                    tagsSource.prototypeToken = json.protoTypeToken;
+                    json.protoTypeToken = undefined;
+                    let name = json.name;
+                    if (json.system.requirements) {
+                        name += " : " + json.system.requirements;
+                    } else {
+                        name += " (" + tagsSource.page + ")";
+                    }
+                    /// change to split items off, change to have sheets load items, so that items are not embedded
+                    audit = false;
+                    if (json.items) {
+                        for (let i = 0; i < json.items.length; i++) {
+                            let item = json.items[i];
+                            let subFile = tagsSource.hash + '_MITEM_' + (item.name);
+                            subFile = cleanFileName(subFile);
+                            item.img = processImage(item.img);
+
+                            let tags = {
+                                file: "CompendiumFiles/" + subFile,
+                                page: "itemSummary",
+                                source: item.source,
+                                droppable: item.propDroppable,
+                                type: item.type,
+                                name: item.name,
+                                img: item.img,
+                            };
+
+                            writeJsonFileInPublic('Compendium', "tag_" + subFile, tags);
+                            writeJsonFileInPublic('CompendiumFiles', subFile, item);
+
+                            json.items[i] = tags;
+
                         }
-                        /// change to split items off, change to have sheets load items, so that items are not embedded
+                    }
 
-                        if (json.items) {
-                            for (let i = 0; i < json.items.length; i++) {
-                                let item = json.items[i];
-                                let subFile = tagsSource.hash + '_MITEM_' + (item.name);
-                                subFile = cleanFileName(subFile);
-                                item.img = processImage(item.img);
-
-                                let tags = {
-                                    file: "CompendiumFiles/" + subFile,
-                                    page: "itemSummary",
-                                    source: item.source,
-                                    droppable: item.propDroppable,
-                                    type: item.type,
-                                    name: item.name,
-                                    img: item.img,
-                                };
-
-                                writeJsonFileInPublic('Compendium', "tag_" + subFile, tags);
-                                writeJsonFileInPublic('CompendiumFiles', subFile, item);
-
-                                json.items[i] = tags;
-
-                            }
-                        }
-
-                        let tags = {
-                            file: "CompendiumFiles/" + tagsSource.hash,
-                            page: tagsSource.page,
-                            source: tagsSource.source,
-                            //droppable: tagsSource.propDroppable,
-                            type: json.type,
-                            name: json.name,
-                            img: json.img,
-                            prototypeToken: tagsSource.prototypeToken
-                        };
-                        //     console.log("ptype1 " + tagsSource.prototypeToken);
-
-                        writeJsonFileInPublic('Compendium', "tag_" + tagsSource.hash, tags);
-                        writeJsonFileInPublic('CompendiumFiles', tagsSource.hash, json);
-                        artGeneratorFile.push({ id: tagsSource.hash, name: json.name, type: tagsSource.type });
-
+                    let tags = {
+                        file: "CompendiumFiles/" + tagsSource.hash,
+                        page: tagsSource.page,
+                        source: tagsSource.source,
+                        //droppable: tagsSource.propDroppable,
+                        type: json.type,
+                        name: json.name,
+                        img: json.img,
+                        prototypeToken: tagsSource.prototypeToken
                     };
+                    //     console.log("ptype1 " + tagsSource.prototypeToken);
 
-                }
+                    writeJsonFileInPublic('Compendium', "tag_" + tagsSource.hash, tags);
+                    writeJsonFileInPublic('CompendiumFiles', tagsSource.hash, json);
+                    artGeneratorFile.push({ id: tagsSource.hash, name: json.name, type: tagsSource.type });
+
+                };
+
             }
-
             catch (err) {
                 console.error("error parsing json ( " + err + "+)");
             }

@@ -1,7 +1,102 @@
 
 import * as THREE from 'three';
 
+/////// TODO put in seperate file
 
+let kGridSize = 100;
+class InfiniteGrid extends THREE.Mesh {
+
+    constructor(size1, size2, color, distance, axes = 'xyz') {
+
+
+        color = color || new THREE.Color('white');
+        size1 = size1 || 10;
+        size2 = size2 || 100;
+
+        distance = distance || 8000;
+
+
+
+        const planeAxes = axes.substring(0, 2);
+
+        const geometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1);
+
+        const material = new THREE.ShaderMaterial({
+
+            side: THREE.DoubleSide,
+
+            uniforms: {
+                uSize1: {
+                    value: size1
+                },
+                uSize2: {
+                    value: size2
+                },
+                uColor: {
+                    value: color
+                },
+                uDistance: {
+                    value: distance
+                }
+            },
+            transparent: true,
+            vertexShader: `
+       
+       varying vec3 worldPosition;
+
+       uniform float uDistance;
+
+       void main() {
+            vec3 pos = position.${axes} * uDistance;
+            pos.${planeAxes} += cameraPosition.${planeAxes};
+            worldPosition = pos;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+       
+       }
+       `,
+
+            fragmentShader: `
+       varying vec3 worldPosition;
+
+       uniform float uSize1;
+       uniform float uSize2;
+       uniform vec3 uColor;
+       uniform float uDistance;
+        
+       float getGrid(float size) {
+            vec2 r = worldPosition.${planeAxes} / size;
+            vec2 grid = abs(fract(r - 0.5) - 0.5) / fwidth(r);
+            float line = min(grid.x, grid.y);
+            return 1.0 - min(line, 1.0);
+        }
+        
+       void main() {
+              float d = 1.0 - min(distance(cameraPosition.${planeAxes}, worldPosition.${planeAxes}) / uDistance, 1.0);
+              float g1 = getGrid(uSize1);
+              float g2 = getGrid(uSize2);
+              gl_FragColor = vec4(uColor.rgb, mix(g2, g1, g1) * pow(d, 3.0));
+              gl_FragColor.a = mix(0.5 * gl_FragColor.a, gl_FragColor.a, g2);
+            
+              if ( gl_FragColor.a <= 0.0 ) discard;
+       }
+       
+       `,
+
+            extensions: {
+                derivatives: true
+            }
+
+        });
+
+        super(geometry, material);
+
+        this.frustumCulled = false;
+
+    }
+
+}
+
+/////////////////////////////////
 
 
 function three_renderer_dimensions() {
@@ -56,9 +151,10 @@ const backgroundLayer = new THREE.Scene();
 const tileLayer = new THREE.Scene();
 const guiLayer = new THREE.Scene();
 const tokenLayer = new THREE.Scene();
+const gridLayer = new THREE.Scene();
 
 
-const three_scenes = [backgroundLayer, tileLayer, tokenLayer, guiLayer];
+const three_scenes = [backgroundLayer, tileLayer, gridLayer, tokenLayer, guiLayer];
 
 var rendererSize = three_renderer_dimensions();
 
@@ -200,6 +296,9 @@ export function three_replaceScene(sceneName, sceneType, c) {
     for (let i = 0; i < three_scenes.length; i++) {
         clearThree(three_scenes[i]);
     }
+
+    let grid = new InfiniteGrid(kGridSize, kGridSize);
+    gridLayer.add(grid);
     let keys = Object.keys(c);
     for (let i = 0; i < keys.length; i++) {
         fixTile(c[keys[i]]);
@@ -523,19 +622,29 @@ dragDrop(three_renderer.domElement, {
     onDragLeave: (event) => { }
 });
 
-
-let kTileSIze = 100;
+function GridIfy(x) {
+    let answer = Math.abs(x);
+    answer = answer - (answer % kGridSize) + kGridSize / 2;
+    if (x < 0) answer = - answer;
+    return answer;
+}
+function toGrid(point) {
+    // need to put exceptio for holding alt
+    return {
+        x: GridIfy(point.x),
+        y: GridIfy(point.y),
+    }
+}
 
 async function CreateToken(thingDragged, event) {
-    let mouse = three_mousePositionToWorldPosition(event);
+    let mouse = toGrid(three_mousePositionToWorldPosition(event));
     let newTile = { "x": mouse.x, "y": mouse.y, "z": 0, guiLayer: "token", };
-
 
     let img = await GetImageFor(thingDragged);
     newTile.texture = img.img;
     newTile.scale = {
-        x: img.scaleX * kTileSIze, // todo should be tile size
-        y: img.scaleY * kTileSIze,
+        x: img.scaleX * kGridSize, // todo should be tile size
+        y: img.scaleY * kGridSize,
         z: 1
     };
     socket.emit("add_token", { scene: current_scene.name, thingDragged: thingDragged, tile: newTile });

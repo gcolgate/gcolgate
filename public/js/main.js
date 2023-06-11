@@ -323,7 +323,7 @@ window.ondrop = function (e) { noDropping(e); };
 
 three_renderer.domElement.ondrop = function (e) {
     if (thingDragged) {
-        three_renderer.acceptDrag(thingDragged, e);
+        three_renderer.domElement.acceptDrag(thingDragged, e);
     } else {
         e.stopPropagation();
         e.preventDefault();
