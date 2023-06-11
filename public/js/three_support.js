@@ -191,8 +191,29 @@ const plane_geometry = new THREE.PlaneGeometry(1, 1);
 
 var materials = {};
 
-var selectables = [];
-var selectablesMap = {}
+var layers = {
+    tile: {
+        selectables: [],
+        selectablesMap: {},
+        layer: tileLayer,
+    },
+    token: {
+        selectables: [],
+        selectablesMap: {},
+        layer: tokenLayer,
+    },
+};
+
+// gets the layer associated with a key, logic here only needed because
+// default is tile
+function three_getLayer(n) {
+    switch (n) {
+        default:
+            return layers.tile;
+        case "token":
+            return layers.token;
+    }
+}
 
 var selection = [];
 
@@ -224,41 +245,43 @@ export function three_findMouseShapes(who) {
     return three_mouseShapes.who;
 }
 
+let baseMaterial = new THREE.MeshBasicMaterial({ color: 0x0, transparent: false });
+
 export async function three_addTile(msg) {
     fixTile(msg);
     // TODO: Fix calling this with two kinds of parameters
-    if (typeof msg.texture == "string") console.log("WTF", msg);
+    //if (typeof msg.texture == "string") console.log("WTF", msg);
 
     let tname = (typeof msg.texture == "string" ? msg.texture : msg.texture.img);
 
     if (!tname.startsWith("images/"))
         tname = "./images/" + msg.texture; // todo fix this so we are not adding paths in random places
     let materialName = tname + "_simple";
-    // if (!materials[materialName]) {
-
-    let texture = await new THREE.TextureLoader().loadAsync(tname);
 
 
 
-    let material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff, transparent: true });
-    const plane = new THREE.Mesh(plane_geometry, material);
+    const plane = new THREE.Mesh(plane_geometry, baseMaterial);
     plane.position.x = msg.x;
     plane.position.y = msg.y;
     plane.position.z = msg.z;
-    let textureScaleX = msg.scale.x;
-    let textureScaleY = msg.scale.y;
-    plane.baseScale = new THREE.Vector2(texture.image.width, texture.image.height);
-    plane.scale.set(textureScaleX, textureScaleY, 1);
-    switch (msg.guiLayer) {
-        default:
-            tileLayer.add(plane); break;
-        case "token":
-            tokenLayer.add(plane); break;
+    plane.reference = msg;
 
-    }
 
-    selectables.push(plane);
-    selectablesMap[msg.tile_id] = plane;
+
+    new THREE.TextureLoader().loadAsync(tname).then(texture => {
+
+        let material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff, transparent: true });
+        let textureScaleX = msg.scale.x;
+        let textureScaleY = msg.scale.y;
+        plane.baseScale = new THREE.Vector2(texture.image.width, texture.image.height);
+        plane.material = material;
+        plane.scale.set(textureScaleX, textureScaleY, 1);
+
+    });
+    let layer = three_getLayer(msg.guiLayer);
+    layer.layer.add(plane);
+    layer.selectables.push(plane);
+    layer.selectablesMap[msg.tile_id] = plane;
 
     plane.tile = msg;
 
@@ -291,8 +314,11 @@ export function three_replaceScene(sceneName, sceneType, c) {
     current_scene.name = sceneName;
     current_scene.type = sceneType;
 
-    selectables = [];
-    selectablesMap = {}
+    Object.keys(layers).forEach((item) => {
+        layers[item].selectables = [];
+        layers[item].selectablesMap = {};
+    });
+
     for (let i = 0; i < three_scenes.length; i++) {
         clearThree(three_scenes[i]);
     }
@@ -311,10 +337,13 @@ export async function three_updateTile(msg) {
 
     let i = 0;
     fixTile(msg);
-    let plane = selectablesMap[msg.tile_id];
+
+    let layer = three_getLayer(msg.guiLayer);
+
+    let plane = layer.selectablesMap[msg.tile_id];
 
     if (plane) {
-        if (selectables[i].tile.texture != msg.texture) {
+        if (layer.selectables[i].tile.texture != msg.texture) {
             // update texture
             // TODO Make texture change work
 
@@ -435,7 +464,6 @@ export function three_mouseMove(event) {
                     selection[i].tile.x += (newMouse.x - three_lastMouse.x);
                     selection[i].tile.y += (newMouse.y - three_lastMouse.y);
                     socket.emit('updateTile', { tile: selection[i].tile, scene: current_scene.name });
-                    fixTile(selection[i].tile);
                 }
                 break;
             case "scaling":
@@ -480,6 +508,39 @@ three_renderer.domElement.onwheel = (event) => {
 
 };
 
+function three_intersect(ev) {
+    let pointer = new THREE.Vector2((ev.clientX / window.innerWidth) * 2 - 1,
+        -(ev.clientY / window.innerHeight) * 2 + 1);
+    let intersects = three_rayCaster.intersectObjects(layers.token.selectables);
+    if (intersects.length > 0) {
+        return intersects[0];
+    }
+
+    intersects = three_rayCaster.intersectObjects(layers.tile.selectables);
+    if (intersects.length > 0) {
+        return intersects[0];
+    }
+
+    return undefined;
+}
+
+three_renderer.domElement.ondblclick = (ev) => {
+    event.preventDefault();
+    console.log("Double click");
+    three_lastMouse = three_mousePositionToWorldPosition(ev);
+    let pointer = new THREE.Vector2((ev.clientX / window.innerWidth) * 2 - 1,
+        -(ev.clientY / window.innerHeight) * 2 + 1);
+    three_rayCaster.setFromCamera(pointer, three_camera);
+
+    let intersect = three_intersect(ev);
+    if (intersect?.object) {
+        let o = intersect.object?.tile?.reference;
+        if (o) {
+            showThing(o.file, "", o.page);
+        }
+    }
+}
+
 three_renderer.domElement.oncontextmenu = function (event) {
     event.preventDefault();
     event.stopPropagation();
@@ -498,34 +559,41 @@ three_renderer.domElement.onmousedown = function (event) {
     three_rayCaster.setFromCamera(pointer, three_camera);
 
 
-    if (editMode && mouseButtonsDown[0]) { // only select tiles in edit mode
-        const intersects = three_rayCaster.intersectObjects(selectables);
 
-        for (let i = 0; i < intersects.length; i++) {
+    if (mouseButtonsDown[0]) {
+        let intersect = three_intersect(event);
 
-            intersects[i].object.material.color.set(0xff0000);
 
-            const minim = 0.2;
+        if (intersect?.object) {
+            let obj = intersect.object;
+            if (editMode && obj.tile.guiLayer == "tile") {
+                const minim = 0.2;
+                // this works only for tiles. To do make it a function added to each kind of thing
+                scalingX = scalingX = intersect.uv.x < minim || intersect.uv.x > 1 - minim;
+                scalingY = scalingY = intersect.uv.y < minim || intersect.uv.y > 1 - minim;
+                if (scalingX ||
+                    scalingY) {
+                    mouseMode = 'scaling';
+                    obj.material.color.set(0xff0000);
 
-            // this works only for tiles. To do make it a function added to each kind of thing
-            scalingX = scalingX = intersects[i].uv.x < minim || intersects[i].uv.x > 1 - minim;
-            scalingY = scalingY = intersects[i].uv.y < minim || intersects[i].uv.y > 1 - minim;
-            if (scalingX ||
-                scalingY) {
-                mouseMode = 'scaling';
+                } else {
+                    mouseMode = 'dragging';
+                    obj.material.color.set(0x0000ff);
+                }
+                selection.push(obj);
 
-            } else {
+            } else if (!editMode && obj.tile.guiLayer == "token") {
+                obj.material.color.set(0x0000ff);
+                const minim = 0.2;
                 mouseMode = 'dragging';
+                selection.push(obj);
+
             }
-
-
-            selection.push(intersects[i].object);
-            break;
         }
     }
-
-
 }
+
+
 
 function uuidv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -583,6 +651,14 @@ three_renderer.domElement.onmouseup = function (event) {
 
             selection[i].material.color.set(0xffffff);
 
+            if (!event.altKey) {
+                if (selection[i].tile.guiLayer == "token") {
+                    ForceToGrid6(selection[i].tile)
+                    socket.emit('updateTile', { tile: selection[i].tile, scene: current_scene.name });
+
+                }
+
+            }
         }
         selection = [];
     }
@@ -636,9 +712,15 @@ function toGrid(point) {
     }
 }
 
+function ForceToGrid6(point) {
+    point.x = GridIfy(point.x);
+    point.y = GridIfy(point.y);
+}
+
 async function CreateToken(thingDragged, event) {
     let mouse = toGrid(three_mousePositionToWorldPosition(event));
-    let newTile = { "x": mouse.x, "y": mouse.y, "z": 0, guiLayer: "token", };
+    // todo handle non-instanced
+    let newTile = { "x": mouse.x, "y": mouse.y, "z": 0, guiLayer: "token", sheet: thingDragged };
 
     let img = await GetImageFor(thingDragged);
     newTile.texture = img.img;
@@ -647,7 +729,9 @@ async function CreateToken(thingDragged, event) {
         y: img.scaleY * kGridSize,
         z: 1
     };
-    socket.emit("add_token", { scene: current_scene.name, thingDragged: thingDragged, tile: newTile });
+    newTile.reference = thingDragged;
+    console.log("Create Token New Tile ", newTile);
+    socket.emit("add_token", { scene: current_scene.name, tile: newTile });
 
 }
 

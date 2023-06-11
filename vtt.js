@@ -287,7 +287,7 @@ io.on('connection', (socket) => {
         }
     });
     socket.on('updateTile', (msg) => {
-        console.log("Update tile" + msg);
+
         let sender = getUser(socket);
         if (sender) {
             let scene = folders.ScenesParsed[msg.scene];
@@ -297,8 +297,6 @@ io.on('connection', (socket) => {
         }
     });
     socket.on("add_token", (msg) => {
-        console.log("add_token");
-        console.log("add_token tile" + msg);
         let sender = getUser(socket);
         if (sender) {
             let scene = folders.ScenesParsed[msg.scene];

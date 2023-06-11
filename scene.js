@@ -119,6 +119,7 @@ function addTile(scene, tile) {
     }
     if (!tile.tile_id) generateNewTileId(scene, tile);
     if (!tile.scale) tile.scale = { x: 1, y: 1, z: 1 };
+    if (!tile.guiLayer) tile.guiLayer = "tile";
     scene.tiles[tile.tile_id] = tile;
     let name = getTileFileName(scene, tile);
 
