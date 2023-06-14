@@ -141,6 +141,20 @@ function updateSceneTile(scene, tile) {
 
 }
 
+function removeSceneTile(scene, tile) {
+
+    if (!scene.tiles[tile.tile_id]) {
+        console.log("Trying to delete empty tile");
+    }
+    else {
+        let name = getTileFileName(scene, tile);
+        console.log("Deleting " + name);
+        fs.unlink(name);
+        delete scene.tiles[tile.tile_id];
+
+    }
+
+}
 
 
-module.exports = { loadScene, addTile, waitForLoaded, updateSceneTile, sceneSetSocket };
+module.exports = { loadScene, addTile, waitForLoaded, updateSceneTile, removeSceneTile, sceneSetSocket };

@@ -247,49 +247,50 @@ export function three_findMouseShapes(who) {
 
 let baseMaterial = new THREE.MeshBasicMaterial({ color: 0x0, transparent: false });
 
-export async function three_addTile(msg) {
-    fixTile(msg);
-    // TODO: Fix calling this with two kinds of parameters
-    //if (typeof msg.texture == "string") console.log("WTF", msg);
-
-    let tname = (typeof msg.texture == "string" ? msg.texture : msg.texture.img);
+export async function three_addTile(tile) {
+    fixTile(tile);
+    // TODO: Fix calling this with two kinds of parameters and get rid of this line   
+    let tname = (typeof tile.texture == "string" ? tile.texture : tile.texture.img);
 
     if (!tname.startsWith("images/"))
-        tname = "./images/" + msg.texture; // todo fix this so we are not adding paths in random places
+        tname = "./images/" + tile.texture; // todo fix this so we are not adding paths in random places
     let materialName = tname + "_simple";
 
 
 
     const plane = new THREE.Mesh(plane_geometry, baseMaterial);
-    plane.position.x = msg.x;
-    plane.position.y = msg.y;
-    plane.position.z = msg.z;
-    plane.reference = msg;
+    plane.position.x = tile.x;
+    plane.position.y = tile.y;
+    plane.position.z = tile.z;
+    plane.reference = tile;
 
 
 
     new THREE.TextureLoader().loadAsync(tname).then(texture => {
 
         let material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff, transparent: true });
-        let textureScaleX = msg.scale.x;
-        let textureScaleY = msg.scale.y;
+        let textureScaleX = tile.scale.x;
+        let textureScaleY = tile.scale.y;
         plane.baseScale = new THREE.Vector2(texture.image.width, texture.image.height);
         plane.material = material;
         plane.scale.set(textureScaleX, textureScaleY, 1);
 
     });
-    let layer = three_getLayer(msg.guiLayer);
+    let layer = three_getLayer(tile.guiLayer);
     layer.layer.add(plane);
     layer.selectables.push(plane);
-    layer.selectablesMap[msg.tile_id] = plane;
+    layer.selectablesMap[tile.tile_id] = plane;
 
-    plane.tile = msg;
+    plane.tile = tile;
 
 
 
 }
 
 function clearThree(obj) {
+    if (obj.parent) {
+        obj.parent.remove(obj);
+    }
     while (obj.children.length > 0) {
         clearThree(obj.children[0]);
         obj.remove(obj.children[0]);
@@ -332,31 +333,26 @@ export function three_replaceScene(sceneName, sceneType, c) {
     }
 }
 
-export async function three_updateTile(msg) {
-
-
+export async function three_updateTile(tile) {
     let i = 0;
-    fixTile(msg);
+    fixTile(tile);
 
-    let layer = three_getLayer(msg.guiLayer);
+    let layer = three_getLayer(tile.guiLayer);
 
-    let plane = layer.selectablesMap[msg.tile_id];
+    let plane = layer.selectablesMap[tile.tile_id];
 
     if (plane) {
-        if (layer.selectables[i].tile.texture != msg.texture) {
+        if (layer.selectables[i].tile.texture != tile.texture) {
             // update texture
             // TODO Make texture change work
-
-
         }
 
-        plane.position.x = msg.x;
-        plane.position.y = msg.y;
-        plane.position.z = msg.z;
-        let textureScaleX = msg.scale.x;
-        let textureScaleY = msg.scale.y;
+        plane.position.x = tile.x;
+        plane.position.y = tile.y;
+        plane.position.z = tile.z;
+        let textureScaleX = tile.scale.x;
+        let textureScaleY = tile.scale.y;
         plane.scale.set(textureScaleX, textureScaleY, 1);
-
     }
 
 }
@@ -368,7 +364,6 @@ export function three_animate() {
     requestAnimationFrame(three_animate);
 
     for (const [key, cube] of Object.entries(three_mouseShapes)) {
-
         cube.rotation.x += 0.01;
         cube.rotation.y += 0.01;
     }
@@ -469,7 +464,7 @@ export function three_mouseMove(event) {
             case "scaling":
                 for (let i = 0; i < selection.length; i++) {
                     let plane = selection[i];
-                    let scale = selection[i].tile.scale;
+                    let scale = plane.tile.scale;
 
                     plane.tile.x += (newMouse.x - three_lastMouse.x) / 2;
                     plane.tile.y += (newMouse.y - three_lastMouse.y) / 2;
@@ -477,7 +472,7 @@ export function three_mouseMove(event) {
                     scale.x = scalingX ? (newMouse.x - three_lastMouse.x) + scale.x : scale.x;
                     scale.y = scalingY ? (newMouse.y - three_lastMouse.y) + scale.y : scale.y;
 
-                    fixTile(selection[i].tile);
+                    fixTile(plane.tile);
                     socket.emit('updateTile', { tile: plane.tile, scene: current_scene.name });
                 }
                 break;
@@ -507,6 +502,7 @@ three_renderer.domElement.onwheel = (event) => {
     three_camera.updateProjectionMatrix()
 
 };
+
 
 function three_intersect(ev) {
     let pointer = new THREE.Vector2((ev.clientX / window.innerWidth) * 2 - 1,
@@ -548,7 +544,7 @@ three_renderer.domElement.oncontextmenu = function (event) {
 
 three_renderer.domElement.onmousedown = function (event) {
     event.preventDefault();
-
+    selection = [];
     let pointer = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1,
         -(event.clientY / window.innerHeight) * 2 + 1);
 
@@ -593,7 +589,37 @@ three_renderer.domElement.onmousedown = function (event) {
     }
 }
 
+export function three_deleteSelected() {
+    // delete the image and tell the server to delete it
+    for (let i = 0; i < selection.length; i++) {
+        socket.emit('deleteTile', { tile: selection[i].tile, scene: current_scene.name });
+    }
 
+}
+
+export function three_tileDeleted(tile) {
+    let i = 0;
+    fixTile(tile);
+
+    let layer = three_getLayer(tile.guiLayer);
+
+    let plane = layer.selectablesMap[tile.tile_id];
+
+    if (plane) {
+
+        for (let i = 0; i < selection.length; i++) {
+            if (selection[i] == plane) {
+                selection.splice(i, 1);
+
+            }
+        }
+
+        delete layer.selectablesMap[tile.tile_id];
+        clearThree(plane)
+
+    }
+
+}
 
 function uuidv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -660,7 +686,7 @@ three_renderer.domElement.onmouseup = function (event) {
 
             }
         }
-        selection = [];
+
     }
 
     // event.preventDefault();

@@ -296,6 +296,19 @@ io.on('connection', (socket) => {
             io.emit('updatedTile', msg);
         }
     });
+
+    socket.on('deleteTile', (msg) => {
+        console.log("delete file");
+        let sender = getUser(socket);
+        if (sender) {
+            let scene = folders.ScenesParsed[msg.scene];
+            console.log("scene");
+
+            Scene.removeSceneTile(scene, msg.tile);   // change to in place and update
+            console.log("emit", msg);
+            io.emit('deletedTile', msg);
+        }
+    });
     socket.on("add_token", (msg) => {
         let sender = getUser(socket);
         if (sender) {

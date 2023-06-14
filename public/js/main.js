@@ -1,7 +1,7 @@
 
 
 
-import { current_scene, three_camera, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
+import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
 
 ///////// 
 let players = { hero: "" };
@@ -100,6 +100,11 @@ socket.on('updateDir', function (msg) {
     updateDirectoryWindow(folders, msg);
 
 });
+
+socket.on('deletedTile', function (msg) {
+    if (msg.scene === current_scene.name)
+        three_tileDeleted(msg.tile);
+});
 //
 // error handling, for now simple stupid alerts, todo: better UI
 socket.on('error_alert', function (msg) {
@@ -166,8 +171,27 @@ Login.onClick = function (event) {
     createOrGetLoginWindow(0.9, 0.9, 0.05, 0.05, players);
 };
 
+function isTextInput(ele) {
+    let tagName = ele.tagName;
+    if (tagName === "INPUT") {
+        let validType = ['text', 'password', 'number', 'email', 'tel', 'url', 'search', 'date', 'datetime', 'datetime-local', 'time', 'month', 'week'];
+        let eleType = ele.type;
+        return validType.includes(eleType);
+    }
+    return false;
+}
 
 
+document.onkeydown = (event) => {
+    let c = event.code;
+    switch (c) {
+
+        case "Delete":
+            if (!isTextInput(document.activeElement)) {
+                three_deleteSelected();
+            }
+    }
+}
 
 const chatButton = document.getElementById("Chat");
 chatButton.onclick = function () {
