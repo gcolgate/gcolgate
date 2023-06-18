@@ -10,21 +10,27 @@ Deal with awkard HTML formatting
 HTML formatting use colums/grid
     Title
     Small title
-    Sub title
-    Need to make edit box resize to text entered (no dangling ft in movement)
-Need to support resizing sub windows
-Need to support resizing entire window
+    Sub title 
+    border on windows
+ 
 Need to be able to POP OUT sub windows
-
-
-Better roll formatting in chat
  
 
-1. Complete bestiary, add in 2 panels, actions, stats and skills
-    Add roll to spells -- only half done
-    Add rolls to feats --
-    Make proficiency in saves checkbox work
-    Add skills (only pick skills that are not default to show here)
+Instances:
+
+Dragging a character from compendium makes an instnace.
+Dragging a chracter from party or uniques doesn't
+
+Images:
+All images need size representation before loading somehow (pipeline)
+Editing for images
+    Setting size for display in corner
+    Cutting out tokens with nice edges
+    Layering
+Costumes -- easy to choose
+    token, avatar, 
+    Hud display
+
 
 2. For items, classify them more so they can be searched with more buttons
     magic/not 
@@ -52,9 +58,31 @@ Better roll formatting in chat
     class
     etc.
 
-3.
+3. translation sheet that converts 5e mechanics into Prittanian mechanics
 
-    for player sheet 
+
+    for player sheet : Maybe only support Prittanian sheet first
+        a. Choose elements from drop downs that correspond to items with their own sheets
+        b. Roll moves that give output
+        c. Compute steel for outfits
+        d. allow adding counters that can be refreshed on long rest, short rest, restock, healed as moves
+        e. transaction sheet for money and log
+        Equipment for costumes
+             Equipment list for costumes, lists encumberance level too, distributes equipment
+
+        equipment location
+            equipped
+            bag 
+            bag of holding
+            saddlebags
+            caravan
+            ship
+            home
+            lost/stolen
+
+  
+
+    for d&d
         allow selecting the various proficiencies (expertise, half expertise, etc) on skills
         allow equiping parts of bodies, showing relevant lists, capped by player coin 
         allow credit and gold currencies
@@ -102,3 +130,17 @@ Better roll formatting in chat
        1  Assistant GM -- restricted to compendium, party, partyMinions (default)
        2  Trusted Player -- restricted to party, partyMinions
        3 Rando Player -- restricted to his own sheet (default)
+    Auto limit costume for NPCs based on player info level
+
+
+5. FX
+    underwater effect
+    rain
+    snow
+    wind
+    darkness
+    overbright
+    lights
+    darknesses
+    fogs
+    spell templates

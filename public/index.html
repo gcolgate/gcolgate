@@ -253,7 +253,29 @@
 
     }
 
+    #hud {
+      position: absolute;
+      top: 10px;
+      text-align: left;
+      z-index: 200;
+      width: 256px;
+      display: block;
+      color: rgb(245, 245, 145);
+      text-shadow: 2px 2px 3px rgb(19, 6, 65), -2px -2px 3px rgb(134, 116, 197);
+      pointer-events: none;
 
+    }
+
+    #card {
+      position: absolute;
+      top: 10px;
+      text-align: left;
+      z-index: 200;
+      display: block;
+      color: rgb(245, 245, 145);
+      pointer-events: none;
+
+    }
 
     .drag {
       border: dashed 3px red;
@@ -363,7 +385,6 @@
 </head>
 
 <body>
-
   <button class="module" id="Login">Login</button>
   <button type="image" src="" id="avatar" alt="Avatar" width="100" height="100">
     <script type="module" src="./js/main.js"></script>
@@ -379,6 +400,7 @@
     <label for="EditMap"> Edit Map</label>
 
     <div class="windowGroup" id="windowGroup"></div>
+
 
 </body>
 

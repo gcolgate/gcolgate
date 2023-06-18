@@ -447,7 +447,17 @@ export function three_setEditMode(on) {
     selection = [];
 
 }
+function worldToScreen(worldPos) {
+    let dim = three_renderer_dimensions()
+    var screenPos = worldPos.clone();
+    screenPos.project(three_camera);
+    screenPos.x = (screenPos.x + 1) * dim.width / 2;
+    screenPos.y = (- screenPos.y + 1) * dim.height / 2;
+    return screenPos;
+}
 
+var hud = null;
+var card = null;
 export function three_mouseMove(event) {
     //  event.preventDefault();
     let newMouse = three_mousePositionToWorldPosition(event);
@@ -489,6 +499,66 @@ export function three_mouseMove(event) {
 
         //    console.log(event.timeStamp, "x " + (newMouse.x - three_lastMouse.x) + " y " + (newMouse.y - three_lastMouse.y));
     }
+
+    if (!mouseButtonsDown[mainButton] && !mouseButtonsDown[scrollButton]) {
+
+
+        let pointer = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1,
+            -(event.clientY / window.innerHeight) * 2 + 1);
+        three_rayCaster.setFromCamera(pointer, three_camera);
+
+        let intersect = three_intersect(event);
+        console.log(intersect);
+        if (intersect?.object) {
+            let o = intersect.object?.tile?.reference;
+            if (o) {
+
+                let screenPos = worldToScreen(intersect.object.position);
+
+                if (!hud) {
+                    hud = document.createElement("div");
+                    hud.id = "hud";
+                    hud.className = "hud";
+                    //  hud.style.position = "absolute";
+                    //  hud.style.textAlign = "center";
+                    // hud.style.zIndex = "200";
+                    //  hud.style.display = "block";
+                    //  hud.style.width = "256px";
+                    document.body.appendChild(hud);
+
+
+                }
+
+                hud.style.left = Math.trunc(screenPos.x) + "px";
+                hud.style.top = Math.trunc(screenPos.y) + "px";
+                hud.innerHTML = o.name;
+
+
+                if (!card) {
+                    card = document.createElement("img");
+                    card.id = "card";
+                    card.className = "card";
+
+                    document.body.appendChild(card);
+
+
+                }
+
+                card.src = o.img;
+                let dim = three_renderer_dimensions()
+
+                card.style.top = (dim.height - 300) + "px";
+                card.style.bottom = dim.height + "px";
+                card.width = 200; //* intersect.object.texture.width / intersect.object.texture.height;
+                card.height = 300;
+                //card.innerHTML = o.name;
+            }
+
+
+        }
+
+    }
+
     three_lastRawMouse = { x: event.clientX, y: event.clientY };
     three_lastMouse = newMouse;
 }
