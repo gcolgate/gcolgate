@@ -197,27 +197,32 @@ async function login(socket, credentials) {
 async function CopyThingFIles(socket, msg) {
 
 
+    console.log("From ", msg.from);
+    console.log("To ", msg.to);
     let p = path.parse(path.normalize(msg.from.file));
-    let indexFolderDir = p.dir.substring(0, p.dir.length - 5);
+    //   let indexFolderDir = p.dir.substring(0, p.dir.length - 5);
 
-    let srcName = p.name;
-    let srcDir = p.dir;
+
+    // let srcName = p.name;
+    // let srcDir = p.dir;
     let src = path.join(__dirname, "public", p.dir, p.name + '.json');
     let dest = path.join(__dirname, "public", msg.to + "Files", p.name + '.json');
 
-    let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + p.name + '.json');
+    // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + p.name + '.json');
     let dest2 = path.join(__dirname, "public", msg.to, "tag_" + p.name + '.json');
 
-    console.log(src + " to " + dest);
-    console.log(src2 + " to " + dest2);
+    // console.log(src + " to " + dest);
+    // console.log(src2 + " to " + dest2);
+    // warning overwrites msg.from.file, poor form
+    msg.from.file = msg.to + "Files/" + p.name + '.json';
+    console.log(msg.from);
 
     await Promise.all([
-        fs.copyFile(src, dest),
-        fs.copyFile(src2, dest2)
+        fs.writeFile(dest2, JSON.stringify(msg.from)),
+        fs.copyFile(src, dest)
     ]);
     console.log(path.join(__dirname, 'public', msg.to + '.json'));
-    let file = (await (fs.readFile(path.join(__dirname, 'public', msg.to, "tag_" + p.name + '.json')))).toString();
-    folders[msg.to].push(file);
+    folders[msg.to].push(msg.from);
 
     socket.emit('updateDir', msg.to);
 
@@ -314,12 +319,23 @@ io.on('connection', (socket) => {
         if (sender) {
             let scene = folders.ScenesParsed[msg.scene];
 
-
-
-
+            console.log(msg.tile);
+            let ref = msg.tile.reference;
+            if (ref.windowId == "Compendium" || ref.windowId === "Favorites") {
+                console.log("Do it");
+                let instance = path.join('SceneFiles', msg.scene, path.basename(ref.file) + Scene.uuidv4());
+                console.log(instance);
+                console.log(path.join(__dirname, "public", ref.file));
+                console.log(path.join(__dirname, "public", instance));
+                fs.copyFile(path.join(__dirname, "public", ref.file + '.json'),
+                    path.join(__dirname, "public", instance + '.json')
+                );
+                ref.file = instance;
+                msg.tile.sheet = ref;
+            }
 
             msg.scene = { name: msg.scene };
-            Scene.updateSceneTile(scene, msg.tile);   // change to in place and update 
+            Scene.updateSceneTile(scene, msg.tile);
 
             io.emit('newTile', msg);
         }
@@ -400,7 +416,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('copy_file', (msg) => {
+    socket.on('copy_files', (msg) => {
         console.log("To" + msg.to);
         console.log("From", msg.from);
         CopyThingFIles(socket, msg);

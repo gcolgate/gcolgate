@@ -18,8 +18,8 @@ Need to be able to POP OUT sub windows
 
 Instances:
 
-Dragging a character from compendium makes an instnace.
-Dragging a chracter from party or uniques doesn't
+Bug: selecting more than one in directory window
+ 
 
 Images:
 All images need size representation before loading somehow (pipeline)
@@ -80,7 +80,7 @@ Costumes -- easy to choose
             home
             lost/stolen
 
-  
+    
 
     for d&d
         allow selecting the various proficiencies (expertise, half expertise, etc) on skills
@@ -99,14 +99,10 @@ Costumes -- easy to choose
         future: provide Transactions tag where all transactions are recorded, with running total of money
 
 
-3. Creating a scene creates a scene.
-    start allowing dragging of image files into a scene
-       items and beasts dragged into a scene create instances, unless they are uniques or party, then they create references
-    default scene is full vision lights don't apply, these are toggleable
-    make a folder for each scene for these things when created
-    make a folder for items in the scene: each tile, image, character, item, beast, etc will go here
-    instance handling.
-    show hex grid (shader), square grid
+3. Image library required on server
+ 
+    default scene is full vision lights don't apply, these are toggleable  
+    show hex grid (shader) 
     set priorities, front/behind/use Z
     set z in 2d
     set hud.....simple like roll20?
@@ -144,3 +140,8 @@ Costumes -- easy to choose
     darknesses
     fogs
     spell templates
+
+    6. General tools
+        CVS to entities : convert CSV files with entities, where column is entity name
+        entities to CSV : reverse of that
+        

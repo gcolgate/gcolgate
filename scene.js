@@ -157,4 +157,4 @@ function removeSceneTile(scene, tile) {
 }
 
 
-module.exports = { loadScene, addTile, waitForLoaded, updateSceneTile, removeSceneTile, sceneSetSocket };
+module.exports = { loadScene, addTile, waitForLoaded, updateSceneTile, removeSceneTile, sceneSetSocket, uuidv4 };

@@ -37,11 +37,6 @@ function clickOnThing(event) {
 }
 
 
-function dragstart(event) {
-    thingDragged = this.references;
-
-
-}
 
 
 function searchChanged() {
@@ -170,7 +165,11 @@ function refreshDirectoryWindow(id, whole) {
         li.draggable = true;
         li.onmousedown = function (event) { clickOne(this); };
         li.ondblclick = clickOnThing;
-        li.ondragstart = dragstart;
+        li.ondragstart = function (event) {
+            thingDragged = this.references;
+            thingDragged.windowId = id;
+
+        }
 
         ul.appendChild(li);
     }
@@ -242,7 +241,7 @@ function showDirectoryWindow(id, array) {
                 }
             }
 
-            socket.emit("copy_file", { to: id, from: thingDragged });
+            socket.emit("copy_files", { to: id, from: thingDragged });
 
         }
         search = document.createElement("input");
