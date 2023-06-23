@@ -3,6 +3,15 @@ var registeredThings = {};
 var registeredSheets = {};
 var sheetDependencies = null;
 
+// format a number as +N or -N
+function signed(num) {
+    let n = Number(num);
+    if (n > 0)
+        return "+" + n;
+    else if (n < 0)
+        return n;
+    else return "+0";  // you can have -0
+}
 
 function details(s) {
     let array = [];
@@ -153,10 +162,16 @@ function changeSheet(button) {
 
 }
 
-function Editable(thing, s, className) { // thing must be here because the eval might use it
+function Editable(thing, s, className, listName) { // thing must be here because the eval might use it
     let t = eval(s);
-    return '<input class="' + className + '" type="text" id="' + s + '" value="' + t +
-        '" onchange="changeSheet(this)">';
+    if (listName != undefined) {
+        return '<input list="' + listName + '" class="' + className + '" id="' + s + '" value="' + t +
+            '" onchange="changeSheet(this)">';
+
+
+    } else
+        return '<input class="' + className + '" type="text" id="' + s + '" value="' + t +
+            '" onchange="changeSheet(this)">';
 }
 
 

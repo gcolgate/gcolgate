@@ -349,6 +349,7 @@ io.on('connection', (socket) => {
 
 
     socket.on('change', (msg) => {
+        console.log('change', msg);
         ChangeThing(msg.thing, msg.change, io, msg);
     })
     // to do in utilities class
@@ -362,6 +363,19 @@ io.on('connection', (socket) => {
         return '(' + text + ')';
     }
 
+    const fail = '<span style="color:#FF0000">Fail</span>';
+    const crit = '<span style="color:#0000ff">CRIT</span>';
+
+    function ptbaDescr(nat, r) {
+        // assumes 2d10
+        if (nat == 2) return fail;
+        if (nat == 20) return crit;
+        if (r < 10) return fail;
+        if (r < 16) return "Mixed Success";
+        if (r < 23) return '<span style="color:#008888">Success</span>';
+        return crit;
+    }
+
     function processRoll(m) {
 
         let outmsg = ""
@@ -372,20 +386,30 @@ io.on('connection', (socket) => {
 
         let r = dice(m.roll);
 
-        if (m.style == "dual") {
+        if (m.style == "dual-move") {
+
             let r2 = dice(m.roll);
             outmsg += div("diceexpression", r.expression) +
                 div("twocolumns",
-                    div("oneroll", strong(r.val) + ' ' + parens(r.rolls)) +
-                    div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls)));
+                    div("oneroll", strong(r.val) + ' ' + parens(r.rolls) + ' ' + ptbaDescr(r.rolls, r.val)) +
+                    div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls) + ' ' + ptbaDescr(r2.rolls, r2.val)));
 
 
-        } else {
-            outmsg +=
-                div("twocolumns",
-                    div("diceexpression", r.expression) +
-                    div("oneroll", strong(r.val) + ' ' + parens(r.rolls)));
-        }
+        } else
+            if (m.style == "dual") {
+                let r2 = dice(m.roll);
+                outmsg += div("diceexpression", r.expression) +
+                    div("twocolumns",
+                        div("oneroll", strong(r.val) + ' ' + parens(r.rolls)) +
+                        div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls)));
+
+
+            } else {
+                outmsg +=
+                    div("twocolumns",
+                        div("diceexpression", r.expression) +
+                        div("oneroll", strong(r.val) + ' ' + parens(r.rolls)));
+            }
         if (m.post) outmsg += div("msgpost", m.post);
 
         return outmsg;

@@ -355,7 +355,7 @@ function rollStat(ownerId, stat, isSave) {
         socket.emit('roll', {
             title: owner.name + ' ' + dndNiceStatNames[stat] + " Save ",
             style: "dual",
-            roll: "1d20+" + prof + "+" + bonus
+            roll: "1d20" + signed(prof) + signed(bonus)
         });
 
     } else {
@@ -363,7 +363,7 @@ function rollStat(ownerId, stat, isSave) {
         socket.emit('roll', {
             title: owner.name + ' ' + dndNiceStatNames[stat] + " Check ",
             style: "dual",
-            roll: "1d20+" + bonus
+            roll: "1d20" + signed(bonus)
         });
     }
 }
@@ -403,15 +403,10 @@ function rollSkill(ownerId, skillid) {
     socket.emit('roll', {
         title: owner.name + ' ' + dndNiceStatNames[stat] + " Check ",
         style: "dual",
-        roll: "1d20+" + statBonus + " + " + prof
+        roll: "1d20" + signed(statBonus) + signed(prof)
     });
 }
 
-function plusMinus(n) {
-    if (Number(n) >= 0)
-        return "+" + n;
-    return n;
-}
 
 function DndSkill(thing, skillid) {
     let skill = thing.system.skills[skillid];
@@ -421,7 +416,7 @@ function DndSkill(thing, skillid) {
     let answer = "<div class=outlined>";
     answer += '<span class=npcBold>' + dndNiceSkillNames[skillid] + '</span><br>';
 
-    answer += plusMinus(statBonus + prof);
+    answer += signed(statBonus + prof);
 
 
     // let answer = Editable(thing, thing.system.abilities[stat].value, "npcNum") +
@@ -478,7 +473,7 @@ function rollWeapon(ownerId, weaponId) {
     rolls.push({
         title: owner.name + "'s " + weapon.name,
         style: "dual",
-        roll: "1d20+" + prof + "+" + bonus + "+" + atk,
+        roll: "1d20" + signed(prof) + signed(bonus) + signed(atk)
 
     });
 
@@ -524,7 +519,7 @@ function rollSpell(ownerId, spellId) {
     rolls.push({
         title: owner.name + "'s " + weapon.name,
         style: "dual",
-        roll: "1d20+" + prof + "+" + bonus + "+" + atk,
+        roll: "1d20" + signed(prof) + signed(bonus) + signed(atk)
 
     });
 
@@ -597,7 +592,7 @@ function rollSpellSaveAsWeaponAsAttackHomebrew(ownerId, spellId) {
     rolls.push({
         title: owner.name + "'s " + spell.name + " roll or constant " + (bonus + 10),
         style: "dual",
-        roll: "1d20+" + bonus + " vs " + spell.system.save.ability
+        roll: "1d20" + signed(bonus) + " vs " + spell.system.save.ability
 
     });
 

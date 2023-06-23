@@ -14,6 +14,10 @@ HTML formatting use colums/grid
     border on windows
  
 Need to be able to POP OUT sub windows
+
+Reorganization: Consider putting items physically inside folders adjacent to the character , only for characters
+
+Consider having directories only for lists
  
 
 Instances:
