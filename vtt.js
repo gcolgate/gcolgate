@@ -248,9 +248,9 @@ async function sendScene(name, socket) {
     let scene = folders.ScenesParsed[name];
 
 
-    Scene.loadScene(scene);
-    await Scene.waitForLoaded(scene);
+    await Scene.loadScene(scene);
     let array = [];
+    console.log(scene);
     let keys = Object.keys(scene.tiles);
     for (let i = 0; i < keys.length; i++) {
         array.push(scene.tiles[keys[i]]);

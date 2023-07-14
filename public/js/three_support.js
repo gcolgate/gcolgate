@@ -328,8 +328,12 @@ export function three_replaceScene(sceneName, sceneType, c) {
     gridLayer.add(grid);
     let keys = Object.keys(c);
     for (let i = 0; i < keys.length; i++) {
-        fixTile(c[keys[i]]);
-        three_addTile(c[keys[i]]);
+        try {
+            fixTile(c[keys[i]]);
+            three_addTile(c[keys[i]]);
+        } catch (err) {
+            console.log("Could not load ", keys[i], c[keys[i]]);
+        }
     }
 }
 

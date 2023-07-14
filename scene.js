@@ -38,10 +38,12 @@ function sceneSetSocket(s) {
 
 }
 
+var loadedScenes = [];
+
 // due to wierd javascript this handling, made static
 function isLoaded(scene) {
-    let ans = scene.loaded === "Yes";
-    return ans;
+    return loadedScenes[scene.loaded] == true;
+
 }
 
 async function waitForLoaded(scene) {
@@ -58,7 +60,7 @@ async function waitForLoaded(scene) {
 
 async function loadScene(scene) {
 
-    if (scene.loaded == "Yes") return; // already loaded.
+    if (isLoaded(scene)) return; // already loaded.
 
     scene.loaded == "InProgress";
     //  try {
@@ -67,11 +69,9 @@ async function loadScene(scene) {
     let result = (await fs.readFile(filepath)).toString();
 
     info = jsonHandling.ParseJson(filepath, result); // for eval to work we need a thing
-
-
     let dir = await fs.readdir(path.join(__dirname, 'public', 'SceneFiles', scene.directory)); // TODO: use file cache
 
-
+    scene.tiles = [];
 
     for (let i = 0; i < dir.length; i++) {
 
@@ -80,7 +80,7 @@ async function loadScene(scene) {
         let tile = jsonHandling.ParseJson(dir[i], result); // for eval to work we need a thing
         scene.tiles[tile.tile_id] = tile;
     }
-    scene.loaded = "Yes";
+    loadedScenes[scene] = true;
 
 }
 
