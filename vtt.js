@@ -250,7 +250,6 @@ async function sendScene(name, socket) {
 
     await Scene.loadScene(scene);
     let array = [];
-    console.log(scene);
     let keys = Object.keys(scene.tiles);
     for (let i = 0; i < keys.length; i++) {
         array.push(scene.tiles[keys[i]]);
