@@ -253,6 +253,7 @@ function showDirectoryWindow(id, array) {
         search = document.createElement("input");
         search.id = "window_" + id + "_search";
         searchArea = document.createElement("div");
+        searchArea.className = "searchArea";
 
         title.insertAdjacentElement('afterend', searchArea);
         searchArea.id = "window_" + id + "_searchArea";
@@ -310,6 +311,7 @@ function showDirectoryWindow(id, array) {
         checkbox.array = array;
         checkbox.removable = true;
 
+        let checkDiv = document.createElement('div');
 
         checkbox.onchange = function () {
             refreshDirectoryWindow(this.windowId, this.array);
@@ -322,9 +324,10 @@ function showDirectoryWindow(id, array) {
         label.htmlFor = 'chk' + item;
         label.appendChild(document.createTextNode(item + "      ")); // todo: use style, margin isnt working
         label.removable = true;
-
-        searchArea.appendChild(checkbox);
-        searchArea.appendChild(label);
+        //checkDiv.className = "searchAreaCheckBox";
+        checkDiv.appendChild(checkbox);
+        checkDiv.appendChild(label);
+        searchArea.appendChild(checkDiv);
 
 
     }
