@@ -51,18 +51,23 @@ function maybe(x, stringo) {
 
 };
 
+function SanitizeSlashes(a) {
+    a.replace('\\', '/');
+    return a;
+}
+
 async function ensureThingLoaded(thingName, instance) {
 
-
+    thingName = SanitizeSlashes(thingName);
     if (!registeredThings[thingName + instance]) {
-        let file = thingName + '.json';
+        let file = thingName.endsWith('.json') ? thingName : thingName + '.json';
 
 
         try {
             response = await fetch(file);
             const thing = await response.json();
             registeredThings[thingName + instance] = thing;
-            thing.id = thingName + instance;
+            thing.id = SanitizeSlashes(thingName + instance);
 
             if (thing.items) {
                 let promises = [];
@@ -130,7 +135,7 @@ async function EnsureLoaded(sheetName, thingName, instance) {
 
 
 function changeSheet(button) {
-    let id = getWindowId(button).substr(7); // the window id is window_fullthingname
+    let id = SanitizeSlashes(getWindowId(button).substr(7)); // the window id is window_fullthingname
     // need to add network step
     let thing = registeredThings[id];
     console.log(button.id + ' = ' + button.value);
@@ -146,7 +151,7 @@ function changeSheet(button) {
             thing: id
         })
     } else {
-        let t = button.value.replace(/\"/g, '\'');
+        let t = button.value.replace(/\"/g, '\''); // double quotes to single quotes
         eval(button.id + ' = "' + t + '"');  // the button id is code like thing.strength.value
         socket.emit('change', {
             change: button.id + ' = "' + t + '"',
@@ -177,11 +182,12 @@ function Editable(thing, s, className, listName) { // thing must be here because
 
 async function showThing(name, instance, sheet) {
     //  then get the sheet
+    let key = SanitizeSlashes(name + instance);
 
-    await EnsureLoaded(sheet, name + instance, instance);
+    await EnsureLoaded(sheet, key, instance);
 
 
-    displayThing(name + instance, sheet);
+    displayThing(key, sheet);
 }
 
 async function UpdateNPC(change) {
@@ -242,6 +248,8 @@ async function displayThing(fullthingname, sheetName) {
 
     /// TODO: needs to save and restore any scrolling or window resizing
     console.log(fullthingname);
+
+    fullthingname = SanitizeSlashes(fullthingname);
     let w = createOrGetWindow(fullthingname, 0.4, 0.4, 0.3, 0.3); // todo better window placement
 
     w.sheet = sheetName;

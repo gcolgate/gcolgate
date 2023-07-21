@@ -47,7 +47,7 @@ function normalMouseDown(e) {
     e.stopPropagation();
     // e.preventDefault();
 }
-function escapeRegExp(stringToGoIntoTheRegex) {
+function escapeRegExp(stringToGoIntoTheRegex) { // htmlize these by inserting slash
     return stringToGoIntoTheRegex.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
@@ -200,6 +200,11 @@ async function GetDirectory(directory) {
     }
     return jsonData;
 }
+function SanitizeSlashes(text) {
+    text = text.replace(/\\/g, '/');
+    return text;
+
+}
 
 
 function showDirectoryWindow(id, array) {
@@ -231,6 +236,7 @@ function showDirectoryWindow(id, array) {
             onDragOver: (event) => { },
             onDragLeave: (event) => { }
         });
+        id = SanitizeSlashes(id);
 
         ul.acceptDrag = function (thingDragged, event) {
 
@@ -240,7 +246,7 @@ function showDirectoryWindow(id, array) {
                     return;
                 }
             }
-
+            id = SanitizeSlashes(id);
             socket.emit("copy_files", { to: id, from: thingDragged });
 
         }

@@ -325,7 +325,7 @@ function rollMoveStat(ownerId, stat, mv) {
 
 
 
-function rollStat(ownerId, stat, isSave) {
+function rollPTBAStat(ownerId, stat, isSave) {
 
     let owner = registeredThings[ownerId];
 
@@ -345,7 +345,7 @@ function rollStat(ownerId, stat, isSave) {
 
 function PTBAAbility(thing, stat) {
     let answer = Editable(thing, " thing.stats['" + stat + "'] ", "npcNum") +
-        "<button  onclick=\"rollStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
+        "<button  onclick=\"rollPTBAStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
     return answer;
 }
 

@@ -96,7 +96,6 @@ function infixToPostfix(expression) {
                 let d = DiceTermRoll(numDice, sides);
                 answer.push(d.value);
                 dices += d.text;
-                console.log(dices);
                 break;
             }
             case "number":
@@ -129,8 +128,6 @@ function infixToPostfix(expression) {
         }
 
     }
-
-    console.log("Answer " + answer[0]);
 
 
     return { val: answer[0], rolls: dices };
@@ -171,7 +168,6 @@ function isVariable(c) {
 }
 // entry point
 function dice(s) {
-    console.log(s);
     let original = s.split('').join('');
     let state = 'start';
     let token = "";
@@ -231,7 +227,7 @@ function dice(s) {
 
     let answer = infixToPostfix(node);
     answer.expression = original
-    console.log("%o", answer);
+
     return answer;
 }
 

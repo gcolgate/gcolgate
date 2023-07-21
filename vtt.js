@@ -42,7 +42,7 @@ function waitInit() {
 async function doTheUpload(res, req) {
 
     let file = req.files.file;
-    console.log(req.files);
+    //console.log(req.files);
 
     // Log the files to the console
     // Upload expects a file, an x, a y, and a z
@@ -60,15 +60,11 @@ async function doTheUpload(res, req) {
 
         let tile = { x: req.body.x, y: req.body.y, z: req.body.z, texture: file.name, scale: { x: probed.width, y: probed.height, z: 1 } };
         let scene_name = req.body.current_scene;
-        console.log("Writing to " + __dirname + '/images/' + tile.texture);
         let t = Date.now();
-        console.log("start time " + t);
 
         await file.mv(path.normalize(__dirname + '/public/images/' + tile.texture));
         res.sendStatus(200);
-        console.log("done time ", file);
 
-        console.log(scene_name);
         let scene = folders.ScenesParsed[scene_name];
         let fixedTile = Scene.addTile(scene, tile);
 
@@ -84,7 +80,7 @@ app.post('/upload', (req, res) => {
     // Upload expects a file, an x, a y, and a z
     // and it will create a new image
 
-    console.log(" req ", req);
+
 
     // If no image submitted, exit
     if (!req.files || !req.files.file) {
@@ -126,8 +122,7 @@ async function InitialDiskLoad() {
     promises.push(jsonHandling.fillDirectoryTable("Uniques", results[5]));
     promises.push(jsonHandling.fillDirectoryTable("Scenes", results[6]));
 
-    console.log(results[3]);
-    console.log(results[6]);
+
 
     results = await Promise.all(promises);
 
@@ -136,9 +131,6 @@ async function InitialDiskLoad() {
     folders.Party = results[2];
     folders.Uniques = results[3];
     folders.Scenes = results[4];
-    console.log(results[1]);
-    console.log('ddddddddddddddd');
-    console.log(results[4]);
 
     //  await delay(5000);
 
@@ -197,8 +189,7 @@ async function login(socket, credentials) {
 async function CopyThingFIles(socket, msg) {
 
 
-    console.log("From ", msg.from);
-    console.log("To ", msg.to);
+
     let p = path.parse(path.normalize(msg.from.file));
     //   let indexFolderDir = p.dir.substring(0, p.dir.length - 5);
 
@@ -214,14 +205,12 @@ async function CopyThingFIles(socket, msg) {
     // console.log(src + " to " + dest);
     // console.log(src2 + " to " + dest2);
     // warning overwrites msg.from.file, poor form
-    msg.from.file = msg.to + "Files/" + p.name + '.json';
-    console.log(msg.from);
+    msg.from.file = SanitizeSlashes(msg.to + "Files/" + p.name + '.json');
 
     await Promise.all([
         fs.writeFile(dest2, JSON.stringify(msg.from)),
         fs.copyFile(src, dest)
     ]);
-    console.log(path.join(__dirname, 'public', msg.to + '.json'));
     folders[msg.to].push(msg.from);
 
     socket.emit('updateDir', msg.to);
@@ -230,8 +219,7 @@ async function CopyThingFIles(socket, msg) {
 }
 
 async function sendScene(name, socket) {
-    console.log(folders.Scenes);
-    console.log(name);
+
     let found = 0;/// todo fix bad form
     for (i = 0; i < folders.Scenes.length; i++) {
         //      console.log(folders.Scenes[i], name);
@@ -241,8 +229,7 @@ async function sendScene(name, socket) {
         }
     }
     let unparsed = folders.Scenes[found];
-    console.log(typeof unparsed);
-    console.log(unparsed);
+
     folders.ScenesParsed[name] = jsonHandling.ParseJson(name, unparsed);
 
     let scene = folders.ScenesParsed[name];
@@ -309,7 +296,7 @@ io.on('connection', (socket) => {
             console.log("scene");
 
             Scene.removeSceneTile(scene, msg.tile);   // change to in place and update
-            console.log("emit", msg);
+
             io.emit('deletedTile', msg);
         }
     });
@@ -321,16 +308,16 @@ io.on('connection', (socket) => {
             console.log(msg.tile);
             let ref = msg.tile.reference;
             if (ref.windowId == "Compendium" || ref.windowId === "Favorites") {
-                console.log("Do it");
                 let instance = path.join('SceneFiles', msg.scene, path.basename(ref.file) + Scene.uuidv4());
-                console.log(instance);
-                console.log(path.join(__dirname, "public", ref.file));
-                console.log(path.join(__dirname, "public", instance));
+
                 fs.copyFile(path.join(__dirname, "public", ref.file + '.json'),
                     path.join(__dirname, "public", instance + '.json')
                 );
-                ref.file = instance;
+                console.log(msg.tile.tile_id);
+                ref.file = (instance);
                 msg.tile.sheet = ref;
+                ref.file = msg.tile.sheet.file = path.join(instance + '.json');
+
             }
 
             msg.scene = { name: msg.scene };
@@ -348,7 +335,7 @@ io.on('connection', (socket) => {
 
 
     socket.on('change', (msg) => {
-        console.log('change', msg);
+
         ChangeThing(msg.thing, msg.change, io, msg);
     })
     // to do in utilities class
@@ -440,8 +427,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('copy_files', (msg) => {
-        console.log("To" + msg.to);
-        console.log("From", msg.from);
+
         CopyThingFIles(socket, msg);
 
         //   ChangeThing(msg.thing, msg.change, io, msg);
@@ -475,7 +461,7 @@ app.get("/Scenes", (req, res) => {
 
 
 app.get("/Favorites", (req, res) => {
-    console.log("OK");
+
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
@@ -484,7 +470,7 @@ app.get("/Favorites", (req, res) => {
 
 
 app.get("/Uniques", (req, res) => {
-    console.log("OK");
+
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
@@ -493,7 +479,7 @@ app.get("/Uniques", (req, res) => {
 
 
 app.get("/Party", (req, res) => {
-    console.log("OK");
+
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
@@ -503,7 +489,7 @@ app.get("/Party", (req, res) => {
 // TO DO: could stringify chats once for multiple players loading at the same time
 // will speed up reloads into game
 app.get("/previous_chats", (req, res) => {
-    console.log("OK");
+
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);

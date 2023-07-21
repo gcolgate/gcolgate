@@ -7,6 +7,7 @@ const rawfs = require('fs');
 //const fsExtra = require('fs-extra');
 const path = require('path');
 const jsonHandling = require('./json_handling.js');
+const { timeLog } = require('console');
 
 // a promise that resolves when the boolean function is true
 function until(booleanFunction, pollTimeMs = 400) {
@@ -29,7 +30,7 @@ var scenes = {}
 
 function getSceneFilePath(scene) {
     let a = path.join(__dirname, 'public', 'scenes', "tag_" + scene.directory + '.json');
-    console.log(a);
+    //console.log(a);
     return a;
 }
 
@@ -58,6 +59,11 @@ async function waitForLoaded(scene) {
 
 }
 
+function SanitizeSlashes(a) {
+    a.replace('\\', '/');
+    return a;
+}
+
 async function loadScene(scene) {
 
     if (isLoaded(scene)) return; // already loaded.
@@ -69,15 +75,19 @@ async function loadScene(scene) {
     let result = (await fs.readFile(filepath)).toString();
 
     info = jsonHandling.ParseJson(filepath, result); // for eval to work we need a thing
+
     let dir = await fs.readdir(path.join(__dirname, 'public', 'SceneFiles', scene.directory)); // TODO: use file cache
 
-    scene.tiles = [];
+    if (!scene.tiles)
+        scene.tiles = [];
 
     for (let i = 0; i < dir.length; i++) {
 
         let result = (await fs.readFile(path.join(__dirname, 'public', 'SceneFiles',
             scene.directory, dir[i]))).toString();
         let tile = jsonHandling.ParseJson(dir[i], result); // for eval to work we need a thing
+        tile.tile_id = cleanTileId(dir[i]);
+        console.log("tile.tile_id ", tile.tile_id);
         scene.tiles[tile.tile_id] = tile;
     }
     loadedScenes[scene] = true;
@@ -95,14 +105,30 @@ function cleanFileName(destString) {
     destString = destString.replaceAll(" ", "_");
     destString = destString.replaceAll("%20%", "_");
     destString = destString.replaceAll("%2b%", "_plus_");
-    destString = destString.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+    destString = destString.replaceAll("\\", "/");
+    destString = destString.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\]/gi, '');
     return destString;
 }
+
+function cleanTileId(destString) {
+    // just path a name, not a path
+    destString = destString.replaceAll("\\", "_");
+    destString = destString.replaceAll("/", "_");
+    destString = destString.replaceAll(" ", "_");
+    destString = destString.replaceAll("%20%", "_");
+    destString = destString.replaceAll("%2b%", "_plus_");
+    destString = destString.replaceAll("\\", "/");
+    destString = destString.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\]/gi, '');
+    return destString;
+}
+
 
 function generateNewTileId(scene, tile) {
     // for now this is somewhat human readable, but it could be pure guid
     // it will have the name of the first texture used
-    tile.tile_id = cleanFileName(tile.texture + "_" + uuidv4());
+
+    tile.tile_id = cleanTileId(tile.texture + "_" + uuidv4());
+    console.log("Tile id ", tile.tile_id);
 }
 
 function getTileFileName(scene, tile) {
@@ -113,7 +139,6 @@ function addTile(scene, tile) {
 
 
     if (tile.z === undefined || tile.z === null || isNaN(tile.z)) {
-        console.log("Scene " + scene);
         tile.z = scene.nextZ;
         scene.nextZ += 0.00001;
     }
@@ -122,7 +147,7 @@ function addTile(scene, tile) {
     if (!tile.guiLayer) tile.guiLayer = "tile";
     scene.tiles[tile.tile_id] = tile;
     let name = getTileFileName(scene, tile);
-
+    console.log("Write tile ", name, tile);
     jsonHandling.writeJsonFile(name, tile);
 
     return tile;
