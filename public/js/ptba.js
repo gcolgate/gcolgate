@@ -238,54 +238,262 @@ var moves = {
 };
 
 var languages = [
-    "Cheptian  (Tribal)",
     "Dwarvish",
-    "Far Duric",
-    "Firespeech (Magic)",
-    "Frozen Cost(Tribal) ",
-    "Giant",
-    "High Elvish (Magic)",
+    "Far Durian",
+    "Illyrian",
     "Imperial, Court",
     "Imperial, Low",
     "Low Elvish",
-    "Orlanthi (Tribal)",
-    "Pavis (Tribal)",
     "Prittanian, High",
     "Prittanian, Low",
-    "Ratling (Tribal)",
-    "Trollish (Tribal) ",
+];
+
+var magic_languages = [
     "Abyssal (magic)",
     "Arachnos (Magic) ",
     "BeastSpeech (Magic)",
     "Celestial (Magic)",
+    "Firespeech (Magic)",
+    "High Elvish (Magic)",
     "Ignos (Firespeech) (Magic)",
     "Pirate King(Magic) ",
     "Saurian (Magic) ",
     "Windsong (Magic)"
 ];
 
+var tribal_languages = [
+    "Cheptian  (Tribal)",
+    "Frozen Cost(Tribal) ",
+    "Giant (Tribal)",
+    "Orlanthi (Tribal)",
+    "Pavis (Tribal)",
+    "Ratling (Tribal)",
+    "Trollish (Tribal)",
+
+];
+
+function drawCareerFeats(feats, owner) {
+    let text = "";
+    if (!feats) feats = [];
+    for (let i = 0; i < feats.length; i++) {
+        let name = "CompendiumFiles/" + feats[i];
+        text += "<div>";
+        text += parseSheet(registeredThings[name], "itemSummary", owner);
+        text += "</div>";
+
+    }
+    console.log(text); return text;
+}
+
+
+var weaponProf = {
+    Ambush: "Ambush, skilled in all weapons during a surprise attack, otherwise, daggers",
+    TribalWeapons: "Your tribe's weapons,  also Unarmed combat.",
+    Pirate: "Sword, Dagger, Slings, unarmed",
+    Melee: "Melee Weapons, Lance, Shield, Armor, also unarmed Combat",
+    Ranged: "Bow, dagger, spear",
+    Gladiator: "Melee weapons, shield, exotic, impractical and exotic wepaons, Unarmed, theatrical wrestling",
+    Immolator: "Conjured Fire",
+    Strong: "unarmed, swung weapons, wrestling"
+
+};
+
+
+var itemTags = {
+    Area: "It hits or effects everything in an area. ",
+    Armor: "Provides a bonus to your react to harm roll ",
+    Awkward: "It’s unwieldy and tough to wield or use appropriately. ",
+    Clumsy: "It’s unwieldy to use. ",
+    Dangerous: "Unsafe; take the proper precautions when using it or the GM may freely invoke the consequences on failed rolls",
+    Distinctive: "It has an obvious and unique sound, appearance or impression when used. ",
+    Fiery: "It painfully burns, sears, and causes things to catch fire. Hot to the touch. Inflicts Firey Damage. ",
+    Forceful: "It inflicts powerful, crushing blows that knock targets back and down. ",
+    Heavy: "It requires two hands to wield properly.",
+    Infinite: "Too many to keep count. Throw one away, and you have another one.",
+    Messy: "It harms foes in a particularly destructive way, ripping people and things apart.",
+    Piercing: "Inflicts Piercing Damage ",
+    Bludgeoning: "Inflicts Bludgeoning Damage",
+    Slashing: "Inflicts Slashing Damage ",
+    Silvered: "Hurts magical things too",
+    Blessed: "Hurts magical things and does double damage versus fiends and undead",
+    Reload: "You have to take time to reload it between uses",
+    Slow_Reload: "It takes at least one round to reload, and you have to be still to relaod it",
+    Slow: "It takes a while to use - at least a minute, if not more. ",
+    Unbreakable: "It can’t be broken or destroyed by normal means. ",
+    Valuable: "It’s worth Wealth to the right person. ",
+    Vicious: "It harms foes in an especially cruel way, its wounds inflicting debilitating pain",
+    Concealable: "Easily Concealable",
+    Armor_Piercing: "Reduces Armor",
+    Cheap: "May break",
+    Weak: "Won't penetrate proper armor",
+    LuckySave: "Once per game session can prevent all damage from one attack",
+    Knockback: "May knock foes back"
+}
+
+var itemRanges = {
+    Intimate: 0,
+    Close: 1,
+    Reach: 2,
+    Near: 10,
+    Far: 40
+};
+
+var weaponType = {
+    backup: 0,
+    sheathed: 1,
+    longarm: 2
+};
+
+var weapons = [
+    {
+        name: "Punch", description: "Basic unarmed attack", type: ["Melee",], Ranges: ["Intimate"],
+        cost: 0, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Bludgeoning, Weak", "Knockback"]
+    },
+    {
+        name: "Ragged Bow", description: "Crappy bow useful for rabbit hunting", steel: -1, type: ["Ranged",], Ranges: ["Near"],
+        cost: 15, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
+    },
+    {
+        name: "Fine Bow", description: "Basic Military bow", type: ["Ranged",], Ranges: ["Near", "Far"],
+        cost: 60, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
+    },
+    {
+        name: "Elven Bow", description: "Elvish Bow, not comon", steel: 1, type: ["Ranged",], Ranges: ["Near", "Far"],
+        cost: 300, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
+    },
+    {
+        name: "Crossbow", description: "Advanced Prittanian Arm", steel: 1, type: ["Ranged",], Ranges: ["Near", "Far"],
+        cost: 100, Hands: 2, encumerance: "longarm", Damage: 2, tags: ["Piercing", "Slow_Reload", "Armor_Piercing", "Vicious"]
+    },
+    {
+        name: "Dwarven Crossbow", description: "Powerful Dwarven Crossbow. Awkward for non-dwarves to use", steel: +2, type: ["Ranged"], Ranges: ["Near", "Far"],
+        cost: 300, Hands: 2, encumerance: "longarm", Damage: 2, tags: ["Piercing", "Slow_Reload", "Armor_Piercing", "Vicious"]
+    },
+    {
+        name: "Club", description: "Basic Club", type: ["Melee", "Swung",], Ranges: ["Close"],
+        cost: 1, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning", "Cheap"]
+    },
+    {
+        name: "Metal Shod Club", description: "Basic Club", type: ["Melee", "Swung",], Ranges: ["Close"],
+        cost: 10, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
+    },
+    {
+        name: "Staff", description: "Long piece of wood", type: ["Melee",], Ranges: ["Close"],
+        cost: 1, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning", "Cheap"]
+    },
+    {
+        name: "Dagger", description: "BIg Knife", steel: 1, type: ["Melee", "Ambush",], Ranges: ["Intimate"],
+        cost: 2, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing"]
+    },
+    {
+        name: "Shiv", description: "Small Knife", type: ["Melee", "Ambush",], Ranges: ["Intimate"],
+        cost: 1, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing", "Concealable"]
+    },
+    {
+        name: "Throwing Dagger", description: "Thrown dagger", type: ["Ranged",], Ranges: ["Near"],
+        cost: 1, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing"]
+    },
+    {
+        name: "Spear", description: "One handed spear", type: ["Melee",], Ranges: ["Close", "Reach"],
+        cost: 10, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Piercing"]
+    },
+    {
+        name: "Pike", description: "Two handed spear", type: ["Melee",], Ranges: ["Reach"],
+        cost: 10, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Piercing"]
+    },
+    {
+        name: "Lance", description: "Spear on horseback. Knockbacks with horse charge and +1 damage, will break", type: ["Melee",], Ranges: ["Reach"],
+        cost: 2, Hands: 1, encumerance: "longarm", Damage: 3, tags: ["Piercing", "Knockback"]
+    },
+    {
+        name: "Longsword", description: "Military weapon", steel: +1, type: ["Melee",], Ranges: ["Close"],
+        cost: 25, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
+    },
+    {
+        name: "Shortsword", description: "Military weapon", type: ["Melee",], Ranges: ["Close", "Intimate"],
+        cost: 10, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
+    },
+    {
+        name: "Greatsword", description: "Military weapon", type: ["Melee",], Ranges: ["Close", "Reach"],
+        cost: 150, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Slashing"]
+    },
+    {
+        name: "Rapier", description: "Military weapon", type: ["Melee,Duelist",], Ranges: ["Close", "Reach"],
+        cost: 60, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Piercing"]
+    },
+    {
+        name: "Peasant Axe", description: "Axe for chopping wood", steel: -1, type: ["Melee", "Swung",], Ranges: ["Close"],
+        cost: 15, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
+    },
+    {
+        name: "BattleAxe", description: "Basic battle axe", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
+        cost: 29, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Slashing"]
+    },
+    {
+        name: "GreatAxe", description: "Big axe", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
+        cost: 100, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Slashing"]
+    },
+    {
+        name: "War Hammer", description: "Basic hammere", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
+        cost: 20, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
+    },
+    {
+        name: "Whip", description: "Articulated Weapon", steel: 2, type: ["Exotic",], Ranges: ["Reach"],
+        cost: 10, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
+    },
+    {
+        name: "Whip of Pain", description: "Articulated Weapon", steel: 2, type: ["Exotic",], Ranges: ["Reach"],
+        cost: 400, Hands: 1, encumerance: "sheathed", Damage: 3, tags: ["Slashing"]
+    },
+    {
+        name: "Flail", description: "Articulated Weapon", steel: 2, type: ["Melee", "Swung",], Ranges: ["Close"],
+        cost: 40, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning", "Awkward"]
+    },
+    {
+        name: "Halberd", description: "Axe on stick", steel: 2, type: ["Melee", "Swung",], Ranges: ["Reach"],
+        cost: 80, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning"]
+    },
+    {
+        name: "Mace", description: "spiky club", steel: 1, type: ["Melee", "Swung",], Ranges: ["Reach"],
+        cost: 20, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
+    },
+    {
+        name: "Maul", description: "Two handed club", steel: 1, type: ["Melee", "Swung",], Ranges: ["Reach"],
+        cost: 80, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning"]
+    },
+    {
+        name: "Magic Longsword", description: "Watery tarts hand these out in lakes", steel: 3, type: ["Melee",], Ranges: ["Close"],
+        cost: 2500, Hands: 1, encumerance: "sheathed", Damage: 3, tags: ["Slashing", "Blessed"]
+    },
+
+];
+
+var armor = [
+    { name: "Light Armor", steel: 1, armor: 0, tags: [], cost: 50 },
+    { name: "Medium Armor: like mail", steel: 2, armor: 1, tags: [], cost: 300 },
+    { name: "Prittanian Plate", steel: 1, armor: 2, tags: ["Noisy",], cost: 1500 },
+    { name: "Elven Mithril Undergarment", steel: 1, armor: 1, tags: ["Concealed", "LuckySave"], cost: 1000 },
+    { name: "Scary Tribal Regalia", steel: 1, armor: 0, tags: [], cost: 50 },
+    { name: "Dragon Scale Armor", steel: 3, armor: 2, tags: ["Immunity", "LuckySave"], cost: 5670 },
+];
+
+
 const baseDice = "2d10";
 
 function rollptbadice(dice) {
     let rolls = []
-
     rolls.push(
         {
             title: dice,
             roll: dice,
-
         }
-    );
-
-    socket.emit('rolls', rolls);
+    ); socket.emit('rolls', rolls);
 }
 
 function selectLanguage(id, event, name) {
     let thing = registeredThings[id];
     let result = (event.currentTarget.checked ? true : false);
-    eval('thing.languages["' + name + '"]' + ' = ' + result);
-
-    socket.emit('change', {
+    eval('thing.languages["' + name + '"]' + ' = ' + result); socket.emit('change', {
         change: 'thing.languages["' + name + '"]' + ' = ' + result,
         thing: id
     })
@@ -293,28 +501,28 @@ function selectLanguage(id, event, name) {
 
 
 function languagesButtons(thing) {
-    let answer = "";
-
-    for (let i = 0; i < languages.length; i++) {
+    let answer = ""; for (let i = 0; i < languages.length; i++) {
         let name = (languages[i]);
         answer += '<input type="checkbox" id="' + name + '" name ="' + name + ((!!thing.languages[name]) ? '" checked = "true"' : "") + '"' +
-            ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">';
-
-        answer += '<label for="' + name + '">' + name + '</label>'
+            ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
+    }
+    for (let i = 0; i < tribal_languages.length; i++) {
+        let name = (tribal_languages[i]);
+        answer += '<input type="checkbox" id="' + name + '" name ="' + name + ((!!thing.languages[name]) ? '" checked = "true"' : "") + '"' +
+            ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
+    }
+    for (let i = 0; i < magic_languages.length; i++) {
+        let name = (magic_languages[i]);
+        answer += '<input type="checkbox" id="' + name + '" name ="' + name + ((!!thing.languages[name]) ? '" checked = "true"' : "") + '"' +
+            ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
     }
     return answer;
 }
 
 
 function rollMoveStat(ownerId, stat, mv) {
-
     let owner = registeredThings[ownerId];
-
-
     let bonus = owner.stats[stat];
-
-
-
     socket.emit('roll', {
         title: owner.name + ' ' + stat.toUpperCase() + " " + "'" + mv + "'",
         style: "dual-move",
@@ -326,14 +534,8 @@ function rollMoveStat(ownerId, stat, mv) {
 
 
 function rollPTBAStat(ownerId, stat, isSave) {
-
     let owner = registeredThings[ownerId];
-
-
     let bonus = owner.stats[stat];
-
-
-
     socket.emit('roll', {
         title: owner.name + ' ' + stat.toUpperCase() + " Check ",
         style: "dual-move",
@@ -364,17 +566,12 @@ function PTBAAbilities(thing) {
 }
 
 function PTBAMoves(thing) {
-
-
-
     let answer = "";
     let keys = Object.keys(moves);
     for (let i = 0; i < keys.length; i++) {
         a = keys[i];
         for (let j = 0; j < moves[a].stat.length; j++) {
-            let stat = moves[a].stat[j];
-
-            answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "')\">"
+            let stat = moves[a].stat[j]; answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "')\">"
                 + a + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
                 "</button>";
         }

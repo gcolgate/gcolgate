@@ -94,9 +94,15 @@ function ItemWeapon(thing, owner, full) {
     let damage = s.damage.parts;
     if (!atk) { atk = 0; }
     let answer = '';
-    if (owner != undefined) {
+    if (owner != undefined && !owner.isptba) {
         answer += "<button  onclick=\"rollWeapon('" + owner.id + "','" + thing.id + "')\">Attack</button>";
-
+        //  include applydamage button on roll need to decide who is target
+    } else {
+        // include dropdown for career , add magic bonus to compute steel
+        // add armor bonus for armor 
+        // roll with double damage vs monsters, have button Confront and Ambush and Parry and Dodge
+        //  include applydamage button on roll need to decide who is target
+        // 
     }
     if (full) answer += "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
     if (s.damage.versatile && s.damage.versatile != "")
@@ -123,7 +129,7 @@ function ItemWeapon(thing, owner, full) {
 
 function SpellIsAreaEffect(thing, owner) {
 
-    let area = thing.system.target.value;
+    let area = thing.system?.target?.value;
 
     return (typeof area == "number" && area > 1);
 }
@@ -206,7 +212,7 @@ function ItemSpellOrFeat(thing, owner, spell) {
         answer += circle;
 
     } else {
-        if (thing.system.target.value == 1)
+        if (thing.system?.target?.value == 1)
             answer += "1 Target ";
         answer += circle;
     }
@@ -632,6 +638,7 @@ function get5eDetails(thing) {
 
 function drawItems(thing, node) {
     let text = "";
+    if (!thing.items) thing.items = [];
     for (let i = 0; i < thing.items.length; i++) {
         let item = thing.items[i];
         text += "<div>";

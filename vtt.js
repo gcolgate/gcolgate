@@ -560,47 +560,9 @@ http_io.listen(port, () => console.log(`VTT listening on port ${port}`))
 //  per template, view
 //  per function
 
-
-// async function requestListener(req, res) {
-//     //  res.writeHead(200);
-//     //   res.end("My first server!");
-
-
-//     console.log('req.url ' + req.url);
-//     switch (req.url) {
-//         case "/books":
-//             res.setHeader("Content-Type", "application/json");
-//             res.writeHead(200);
-//             res.end('books');
-//             break
-//         case "/":
-//             req.url = '/index.html';
-
-//         default:
-
-//             console.log(__dirname + req.url);
-//             let fname = __dirname + path.normalize(req.url);
-//             try {
-//                 let contents = await fs.readFile(fname); // TODO: use file cache
-//                 let type = Mime.getType(path.extname(fname));
-//                 if (type != "application/javascript") { type = 'text/javascript'; }
-//                 console.log(type);
-
-//                 res.setHeader("Content-Type", type);
-
-//                 console.log('read ' + fname);
-//                 res.writeHead(200);
-//                 res.end(contents);
-//             } catch (error) {
-//                 console.error(error);
-//             }
-//     }
-
-// };
-
-// const server = http.createServer(requestListener);
-// server.listen(port, host, () => {
-//     console.log(`Server is running on http://${host}:${port}`);
-// }); 
+// things to do
+// 1. New Button
+// 2. Drag equipment or moves etc
+// 3. shop
 
 console.log(`Server is running on http://${host}:${port}`);

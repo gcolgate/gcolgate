@@ -66,7 +66,6 @@ async function ensureThingLoaded(thingName, instance) {
         try {
             response = await fetch(file);
             const thing = await response.json();
-            registeredThings[thingName + instance] = thing;
             thing.id = SanitizeSlashes(thingName + instance);
 
             if (thing.items) {
@@ -78,6 +77,20 @@ async function ensureThingLoaded(thingName, instance) {
                 }
                 await Promise.all(promises);
             }
+            if (thing?.system?.feats) { // should combine with items
+
+                let promises = [];
+                promises.push(ensureSheetLoaded("itemSummary"));
+
+
+                for (let i = 0; i < thing.system.feats.length; i++) {
+                    promises.push(EnsureLoaded("items", "CompendiumFiles/" + thing.system.feats[i], instance));
+                }
+
+                await Promise.all(promises);
+            }
+            registeredThings[thingName + instance] = thing;
+
 
         } catch (err) {
             console.log(err + ". Unable to fetch " + thingName + 'json');

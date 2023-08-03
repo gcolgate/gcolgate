@@ -512,7 +512,7 @@ export function three_mouseMove(event) {
         three_rayCaster.setFromCamera(pointer, three_camera);
 
         let intersect = three_intersect(event);
-        console.log(intersect);
+        //  console.log(intersect);
         if (intersect?.object) {
             let o = intersect.object?.tile?.reference;
             if (o) {

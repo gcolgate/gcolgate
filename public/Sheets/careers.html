@@ -1,8 +1,3 @@
-{
-if(!thing.system && thing.data) {
-thing.system = thing.data;
-}
-} @
 <div>
   <div class="body">
     <div class=" itemsetheader">
@@ -20,13 +15,11 @@ thing.system = thing.data;
           margin:8px;
           line-height: 26.1333px;
           text-transform: lowercase">
-      {thing.type +" "+ maybe(thing.system.consumableType) +" "+
-      maybe(thing.system.attunement, "Requires Attunement ") +
-      maybe(thing.system.rarity)
-      } </div>
-    <div>{thing.system.description.value}</div>
-    <div> { ( thing.type == "weapon" ?ItemWeapon(thing,owner,true) : "")}</div>
-    <div> {ItemArmor(thing,owner) } </div>
+      {thing.system.description.value } +
+      <span class="npcBold">Weapons </span>{ thing.system.weapons }
+      <span class="npcBold">Tools </span>{ thing.system.tools }
+      <div> {"funky town " + drawCareerFeats(thing.system.feats)+"end funky town" } </div>
+    </div>
 
   </div>
 </div>
