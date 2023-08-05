@@ -270,11 +270,18 @@ async function displayThing(fullthingname, sheetName) {
 
 
     let thing = registeredThings[fullthingname]
+    let body = document.getElementById("window_" + fullthingname + "_body");
+    body.innerHTML = parseSheet(thing, sheetName, w, undefined);
 
-    document.getElementById("window_" + fullthingname + "_body").innerHTML = parseSheet(thing, sheetName, w, undefined);
+    let draggables = body.getElementsByClassName("dragitem");
+    for (let i = 0; i < draggables.length; i++) {
+        dragDrop(draggables.item(i), {});
+        draggables.item(i).acceptDrag = (thingDragged, event) => {
+            if (thing.acceptDrag) {
+                thing.acceptDrag(thingDragged, event);
+            }
+        };
+    }
 }
 
-
-
-////////////// TEST
 

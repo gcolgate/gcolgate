@@ -15,9 +15,9 @@ var moves = {
         ],
         "Comments": "Some actions which get you a bonus to your steel for this purpose  of intimidation: \n•A Mighty Name The character’s reputation alone is enough to make enemies hesitate\n•Dead Man’s Stare The character brandishes the severed head of an enemy at arm’s length, raising the grim trophy high for all to see. This violent action, drenched in gore, deters all but the most hardened foes. For extra emphasis, the head can be dropped dramatically, cast away as refuse, or tossed into the hands of a hapless target. \n•Flaming Brand Against  beasts, the threat of fire is something that inspires a primal dread. \n•Impossible Feat of Might The character pulls out all the stops and overturns a massive statue or stone, or something similar,  sending it crashing to the ground\n•Knife to the Throat A particularly intimate form of intimidation, holding a foe at the point or edge of a blade can cause them to swiftly capitulate\n•Sorcerous Power The character’s flashy and  dark and unnatural arts is enough to terrify many foes\n•Stain the Soil Red Following the death of several foes and the shedding of copious amounts of blood, the character lets out a savage, primordial cry\n•Divine Power Against the superstitious and the extraplanar, the words of a priest can compel",
         "Critical": "",
-        "success": "Your foes seriously consider surrendering or fleeing, take +1 forward on your rolls against them for the scene, you keep the initiative",
-        "mixed": "Your foes may surrendering or fleeing, you keep the initiative, take +1 forward on your rolls against them for the scene",
-        "fail": "You lose the initiative, perhaps the foes laugh, perhaps the foe gets enraged with a bonus to steel, in extreme cases you suffer some sort of mental break"
+        "success": "Foes are frightened may flee: take +1 forward on your rolls against them for the scene,  keep the initiative",
+        "mixed": "Foes are frightened: choose 1: you keep the initiative, take +1 forward on your rolls against them for the scene",
+        "fail": "You lose the initiative, perhaps the foes laugh or become enraged with a bonus to steel, in extreme cases you suffer some sort of mental break"
     },
     "Attack": {
         "stat": [
@@ -78,8 +78,8 @@ var moves = {
         "Comments": "This roll is used in more detailed combat to represent dodging an attack\n It can be difficult to dodge multiple, swarming opponents, or volleys of arrow fire, without running pell mell away… \n It can be easy to dodge missiles if you can get into cover",
         "Critical": "",
         "success": "You dodge your foe and gain the initiative and either\n• Can move to a safer place\n• Can set yourself up for a better attack +1 on attacking next",
-        "mixed": "You dodge your foe  but (choose 1, GM  will offer 2 to choose between)\n•Take some damage anyway(½)\n•Don’t get the initiative (for combat system 2)\n•Your weapon is damaged or knocked away or dropped\n•You are knocked prone or otherwise put into a bad position",
-        "fail": "You are squarely hit, take damage, and perhaps the GM chooses 1 from mixed"
+        "mixed": "You dodge your foe  but (choose 1, GM  will offer 2 to choose between):\n•Take half damage anyway\n•Don’t get the initiative\n•Your weapon is damaged or knocked away or dropped\n•You are knocked prone or otherwise put into a bad position",
+        "fail": "You are squarely hit, take damage, and perhaps the GM may add 1 of: Your weapon is damaged or knocked away or dropped\n•You are knocked prone or otherwise put into a bad position"
     },
     "Bargain": {
         "stat": [
@@ -99,7 +99,7 @@ var moves = {
         "Critical": "",
         "success": "Ask 3 questions",
         "mixed": "Ask 1 question, or some sort of negative happens and you can ask 3 questions",
-        "fail": "On a miss  the DM may consider\n• Worse than it seemed: Tell an unwelcome truth.\n• Worse than you thought: Ask the question to the player, then craftily twist their answer.\n• Abyss gazes into you: While you try to read a person, they take notice of you.\n• Missed the obvious: While the character is looking for one thing, another one strikes.\n• Procrastinated: Character spent too much time thinking/looking instead of acting.\n• Got separated: character is not in the right place because of looking around.\n• Sticking your nose in: What is the character doing while investigating? That goes wrong. Put the character in a spot or use up their stuff.\n• Trouble you missed earlier: What could have gone wrong earlier and not been noticed until now? (e.g. you dropped something. Want to go back and get it?)\n• A pack of lies (obvious): Tell a lie and a player knows or suspects it—this one might as well just be a failure, but might be more interesting.\n• A pack of lies (infectious): Tell a lie and offer the PC xp if they act on it.\n• A pack of lies (devious): Tell something that actually deceives the players (hard to do)"
+        "fail": "The GM has a long list of ways to twist the information he gives",
     },
     "Purchase": {
         "stat": [
@@ -119,7 +119,7 @@ var moves = {
         "Critical": "",
         "success": "The GM will reveal something interesting and useful relevant to your situation. This might help you investigate further",
         "mixed": "GM will only tell you something interesting—it’s on you to make it useful. The GM might ask you “How do you know this?” Tell them the truth, now.",
-        "fail": "On a low roll the DM may consider\n• Worse than it seemed: Tell an unwelcome truth.\n• Worse than you thought: Ask the question to the player, then craftily twist their\nanswer.\n• Abyss gazes into you: While you try to read a person, they take notice of you.\n• Missed the obvious: While the character is looking for one thing, another one strikes.\n• Procrastinated: The character spent too much time thinking/looking instead of acting.\n• Got separated: character is not in the right place because of looking around.\n• Sticking your nose in: What is the character doing while investigating? That goes\nwrong. Put the character in a spot or use up their stuff.\n• Trouble you missed earlier: What could have gone wrong earlier and not been\nnoticed until now? (e.g. you dropped something. Want to go back and get it?)\n• A pack of lies (obvious): Tell a lie which everyone thinks is true (The earth is flat!)  and a player knows or suspects it—this one might\nas well just be a failure, but might be more interesting.\n• A pack of lies (infectious): Tell a lie  which everyone thinks is true and offer the PC xp if they act on it.\n• A pack of lies (devious): Tell something  which everyone thinks is true that actually deceives the players (hard to\ndo)\n "
+        "fail": "GM has a long list of twists to the infromation he gives",
     },
     "Heal": {
         "stat": [
@@ -139,7 +139,7 @@ var moves = {
         "Critical": "",
         "success": "You stop someone from freeking out",
         "mixed": "You stop someone from freaking out, but maybe after a second of him expressing it",
-        "fail": ""
+        "fail": "You cannot calm them, maybe you become upset too, or it becomes worse"
     },
     "Seduce/Flirt/Entertain": {
         "stat": [
@@ -208,7 +208,7 @@ var moves = {
         "Comments": "This roll is used in more detailed combat to represent the swing of a sword from behind with advantage. Note that it is difficult to backstab, unless you are entering the combat stealthily, or have been out of sight on the previous round. Then it might instead be easy.",
         "Critical": "Do +3 damage to him, stacks with assasin feats",
         "success": "You hit your foe and do +2 damage to him , (stacks with assassin feats)",
-        "mixed": " You hit your foe and either (choose 1)\nDo less damage (½)\nLose the initiative\nGet your weapon entangled, lose some gear,  are knocked prone or otherwise put into a bad position\nMiss instead, since you decided to stay hiding and not attack now, maybe you can try next turn",
+        "mixed": " You hit your foe and either (choose 1):\nDo less damage (½)\nLose the initiative\nGet your weapon entangled, lose some gear,  are knocked prone or otherwise put into a bad position\nMiss instead, since you decided to stay hiding and not attack now, maybe you can try next turn",
         "fail": "On a failure you lose the initiative and probably draw the ire of the person you tried to backstab."
     },
     "Gossip": {
@@ -221,7 +221,7 @@ var moves = {
         "Critical": "",
         "success": "Ask 3 questions",
         "mixed": "Ask 1 question, or ask 3 and GM choose\n•People remember you are gossiping and what about \n•you get some false information \n•you insult someone or cause a scene.",
-        "fail": ""
+        "fail": "GM choose:\n•People remember you are gossiping and what about \n•you get some false information \n•you insult someone or cause a scene. "
     },
     "Perilous Journey": {
         "stat": [
@@ -231,8 +231,8 @@ var moves = {
         ],
         "Comments": "Describe how you proceed through the wilderness, and how you avoid danger. This can mean that almost any stat can be used, but probably not bravery. I.E. by careful planning you use Intelligence, with a sense of discretion use discretion, by cunning arts use cunning.. If just marching into the unknown and trying to use bravery you probably just automatically fail unless you have a narrative power.",
         "Critical": "",
-        "success": "choose 3.\nYou don’t use too much food: Don’t  subtract from supplies or gain exhaustion for not eating\nYou find your way through the land to where you want to go\nYou don’t encounter evil denizens of the land\nYou find an adventure spot: i.e. https://www.roleplayingtips.com/campaigns/wilderness-encounter-ideas/\nYou meet a good denizen of the land who can assist you",
-        "mixed": "choose 2.\nYou don’t use too much food: Don’t  subtract from  your supplies or gain exhaustion from not eating\nYou find your way through the land to where you want to go\nYou don’t encounter evil denizens of the land\nYou find an adventure spot: i.e. https://www.roleplayingtips.com/campaigns/wilderness-encounter-ideas/\nYou meet a good denizen of the land who can assist you",
+        "success": "choose 3.\nYou don’t use too much food: Don’t  subtract from supplies or gain exhaustion for not eating\nYou find your way through the land to where you want to go\nYou don’t encounter evil denizens of the land\nYou find an adventure spot\nYou meet a good denizen of the land who can assist you",
+        "mixed": "choose 2.\nYou don’t use too much food: Don’t  subtract from  your supplies or gain exhaustion from not eating\nYou find your way through the land to where you want to go\nYou don’t encounter evil denizens of the land\nYou find an adventure spot\nYou meet a good denizen of the land who can assist you",
         "fail": "You are thirsty, lost, encounter evil denizens of the land and GM choose 1:\nThe area you are in is interfering with your magic or technology\nTerrible weather\nOne of the players has gotten lost from the party due to stampedes or sandstorms or mudslides or astral mental interference, maybe play this out\nThe evil denizens of the land are out in force or better armed or more violent\nThe evil denizens of the land get the drop on you"
     }
 };
@@ -526,7 +526,8 @@ function rollMoveStat(ownerId, stat, mv) {
     socket.emit('roll', {
         title: owner.name + ' ' + stat.toUpperCase() + " " + "'" + mv + "'",
         style: "dual-move",
-        roll: baseDice + signed(bonus)
+        roll: baseDice + signed(bonus),
+        resultsTable: moves[mv]
     });
 
 }
@@ -539,7 +540,8 @@ function rollPTBAStat(ownerId, stat, isSave) {
     socket.emit('roll', {
         title: owner.name + ' ' + stat.toUpperCase() + " Check ",
         style: "dual-move",
-        roll: baseDice + signed(bonus)
+        roll: baseDice + signed(bonus),
+        resultsTable: { Critical: "Crit", success: "Success", mixed: "Mixed", fail: "Failure" }
     });
 
 }

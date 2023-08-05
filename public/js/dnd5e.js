@@ -642,8 +642,6 @@ function drawItems(thing, node) {
     for (let i = 0; i < thing.items.length; i++) {
         let item = thing.items[i];
         text += "<div>";
-        console.log("re " + item.file + " %o", registeredThings[item.file]);
-        console.log("rs " + item.page + " %o", registeredThings[item.page]);
 
         text += parseSheet(registeredThings[item.file], item.page, undefined, thing); // no w
         text += "</div>";

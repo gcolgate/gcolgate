@@ -362,6 +362,21 @@ io.on('connection', (socket) => {
         return crit;
     }
 
+    function ptbaFormat(str) {
+        return str;
+    }
+
+    function ptbaResult(nat, r, resultsTable) {
+
+        console.log(resultsTable);
+        if (nat == 2) return ptbaFormat(resultsTable.fail);
+        if (nat == 20) return ptbaFormat(resultsTable.Critical.empty() ? resultsTable.success : resultsTable.Critical);
+        if (r < 10) return ptbaFormat(resultsTable.fail);
+        if (r < 16) return ptbaFormat(resultsTable.mixed);
+        if (r < 23) return ptbaFormat(resultsTable.success);
+        return ptbaFormat(resultsTable.Critical.empty() ? resultsTable.success : resultsTable.Critical);
+    }
+
     function processRoll(m) {
 
         let outmsg = ""
@@ -373,13 +388,17 @@ io.on('connection', (socket) => {
         let r = dice(m.roll);
 
         if (m.style == "dual-move") {
-
+            console.log(r);
             let r2 = dice(m.roll);
+            let d1 = ptbaDescr(r.rolls, r.val);
+            let d2 = ptbaDescr(r2.rolls, r2.val);
             outmsg += div("diceexpression", r.expression) +
                 div("twocolumns",
-                    div("oneroll", strong(r.val) + ' ' + parens(r.rolls) + ' ' + ptbaDescr(r.rolls, r.val)) +
-                    div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls) + ' ' + ptbaDescr(r2.rolls, r2.val)));
-
+                    div("oneroll", strong(r.val) + ' ' + parens(r.rolls) + ' ' + d1 +
+                        div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls) + ' ' + d2)));
+            outmsg += div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable));
+            if (d1 != d2)
+                outmsg += div("outlined", strong(d2) + ' ' + ptbaResult(r2.rolls, r2.val, m.resultsTable));
 
         } else
             if (m.style == "dual") {
