@@ -87,7 +87,7 @@ async function loadScene(scene) {
             scene.directory, dir[i]))).toString();
         let tile = jsonHandling.ParseJson(dir[i], result); // for eval to work we need a thing
         tile.tile_id = cleanTileId(dir[i]);
-        console.log("tile.tile_id ", tile.tile_id);
+
         scene.tiles[tile.tile_id] = tile;
     }
     loadedScenes[scene] = true;

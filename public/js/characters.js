@@ -91,6 +91,8 @@ async function ensureThingLoaded(thingName, instance) {
             }
             registeredThings[thingName + instance] = thing;
 
+            thing.acceptDrag = dragCareersAndItems; // todo do better
+
 
         } catch (err) {
             console.log(err + ". Unable to fetch " + thingName + 'json');
@@ -213,6 +215,21 @@ async function UpdateNPC(change) {
     w = windowShowing(change.thing);
     if (w) {
 
+        displayThing(change.thing, w.sheet);
+    }
+
+}
+
+async function AddItemToNPC(change) {
+
+    if (!registeredThings[change.thing]) {
+        return; //  NPC has never been opened
+    }
+    let thing = registeredThings[change.thing];
+    thing.items.push(change.item);
+
+    w = windowShowing(change.thing);
+    if (w) {
         displayThing(change.thing, w.sheet);
     }
 

@@ -95,6 +95,11 @@ socket.on('change', function (msg) {
     UpdateNPC(msg);
 });
 
+
+socket.on('addItem', function (msg) {
+    AddItemToNPC(msg);
+});
+
 socket.on('updateDir', function (msg) {
 
     updateDirectoryWindow(folders, msg);

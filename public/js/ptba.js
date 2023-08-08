@@ -582,7 +582,29 @@ function PTBAMoves(thing) {
 }
 
 
+function dragCareersAndItems(thingDragged, evt) {
 
+    if (!this.items)
+        return;
+
+    socket.emit('roll', {
+        title: ' debug',
+        style: "dual",
+        roll: "1d6"
+    });
+
+    console.log(thingDragged);
+    let id = this.id;
+    socket.emit('addItem', {
+        item: thingDragged,
+        thing: id
+    })
+    socket.emit('roll', {
+        title: ' debug2',
+        style: "dual",
+        roll: "1d6"
+    });
+}
 
 
 

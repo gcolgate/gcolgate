@@ -8,7 +8,7 @@ const http = require('http');
 const sockets = require("socket.io");
 require('./init.js');
 const dice = require('./roller.js')
-const ChangeThing = require('./sheeter.js')
+const sheeter = require('./sheeter.js')
 const fileUpload = require('express-fileupload');
 const Scene = require('./scene.js');
 const jsonHandling = require('./json_handling.js');
@@ -336,7 +336,11 @@ io.on('connection', (socket) => {
 
     socket.on('change', (msg) => {
 
-        ChangeThing(msg.thing, msg.change, io, msg);
+        sheeter.ChangeThing(msg.thing, msg.change, io, msg);
+    });
+    socket.on('addItem', (msg) => {
+
+        sheeter.AddItem(msg.thing, msg.item, io, msg);
     })
     // to do in utilities class
     function div(className, text) {

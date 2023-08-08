@@ -45,4 +45,36 @@ async function ChangeThing(thingName, replacement, io, msg) {
 }
 
 
-module.exports = ChangeThing;
+
+async function AddItem(thingName, item, io, msg) {
+    console.log(thingName);
+    console.log(item);
+
+    if (item) {
+        // Need to put these in a cache and write them out over time for speed
+        // this should go through a cache 
+
+        let filePath = path.normalize(path.join(__dirname, 'public', thingName + ".json"));
+        console.log(filePath);
+        let result = await fs.readFile(filePath);
+        let thing = jsonHandling.ParseJson(filePath, result); // for eval to work we need a thing
+
+        if (!thing.items) thing.items = [];
+        thing.items.push(item);
+        console.log("thing " + thing.name);
+        await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
+            if (err)
+                console.log(err);
+            else {
+                console.log("File written successfully\n");
+                console.log("The written has the following contents:");
+                //  console.log(fs.readFileSync("books.txt", "utf8"));
+            }
+        });
+        console.log("done");
+        io.emit('addItem', msg);
+    }
+
+}
+
+module.exports = { ChangeThing: ChangeThing, AddItem: AddItem };
