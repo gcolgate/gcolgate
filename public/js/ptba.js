@@ -276,10 +276,13 @@ function drawCareerFeats(feats, owner) {
     let text = "";
     if (!feats) feats = [];
     for (let i = 0; i < feats.length; i++) {
-        let name = "CompendiumFiles/" + feats[i];
-        text += "<div>";
-        text += parseSheet(registeredThings[name], "itemSummary", owner);
-        text += "</div>";
+
+        if (!owner || (owner.feats && owner.feats[feats[i]] > 0)) {
+            let name = "CompendiumFiles/" + feats[i];
+            text += "<div>";
+            text += parseSheet(registeredThings[name], "itemSummary", owner);
+            text += "</div>";
+        }
 
     }
     console.log(text); return text;
