@@ -12,6 +12,7 @@ thing.system = thing.data;
       (thing.type == "weapon" ?ItemWeapon(thing, owner, false) : "") +
       (thing.type == "spell" ?ItemSpellOrFeat(thing, owner, true): "") +
       (thing.type == "feat" ?ItemSpellOrFeat(thing, owner, false): "") +
+      (thing.type == "career" ?drawCareerFeats(thing,owner): "") +
       ItemArmor(thing) + thing.type +" "+ maybe(thing.system.consumableType) +" "+
       maybe(thing.system.attunement, "Requires Attunement ") +
       maybe(thing.system.rarity)

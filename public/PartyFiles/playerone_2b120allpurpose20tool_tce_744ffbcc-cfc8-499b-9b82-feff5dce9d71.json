@@ -1,0 +1,197 @@
+{
+    "name": "+1 All-Purpose Tool",
+    "type": "equipment",
+    "system": {
+        "description": {
+            "value": "\n\t\t<div class=\"rd__b  rd__b--2\"><p>This simple screwdriver can transform into a variety of tools; as an action, you can touch the item and transform it into any type of artisan's tool of your choice (see the \"Equipment\" chapter in the <a href=\"https://5etools-mirror-1.github.io/book.html#PHB\">Player's Handbook</a> for a list of @item[artisan's tools|PHB]). Whatever form the tool takes, you are proficient with it.</p><p>While holding this tool, you gain a +1 bonus to the spell attack rolls and the saving throw DCs of your artificer spells.</p><p>As an action, you can focus on the tool to channel your creative forces. Choose a cantrip that you don't know from any class list. For 8 hours, you can cast that cantrip, and it counts as an artificer cantrip for you. Once this property is used, it can't be used again until the next dawn.</p></div>",
+            "chat": "",
+            "unidentified": ""
+        },
+        "source": "TCE",
+        "quantity": 1,
+        "weight": 0,
+        "price": null,
+        "attunement": 1,
+        "equipped": true,
+        "rarity": "uncommon",
+        "identified": true,
+        "activation": {
+            "type": "",
+            "cost": 0,
+            "condition": ""
+        },
+        "duration": {
+            "value": null,
+            "units": ""
+        },
+        "cover": null,
+        "target": {
+            "value": null,
+            "width": null,
+            "units": "",
+            "type": ""
+        },
+        "range": {
+            "value": null,
+            "long": null,
+            "units": ""
+        },
+        "uses": {
+            "value": null,
+            "max": null,
+            "per": null,
+            "recovery": null
+        },
+        "consume": {
+            "type": "",
+            "target": null,
+            "amount": null
+        },
+        "ability": "",
+        "actionType": "",
+        "attackBonus": null,
+        "chatFlavor": "",
+        "critical": {
+            "threshold": null,
+            "damage": ""
+        },
+        "damage": {
+            "parts": [],
+            "versatile": ""
+        },
+        "formula": "",
+        "save": {
+            "ability": "",
+            "dc": null,
+            "scaling": "spell"
+        },
+        "armor": {
+            "value": null,
+            "type": "trinket",
+            "dex": null
+        },
+        "hp": {
+            "value": 0,
+            "max": 0,
+            "dt": null,
+            "conditions": ""
+        },
+        "baseItem": null,
+        "speed": {
+            "value": null,
+            "conditions": ""
+        },
+        "strength": null,
+        "stealth": false,
+        "proficient": true,
+        "attuned": true
+    },
+    "img": "images/modules/plutonium/media/icon/crossed-swords.svg",
+    "flags": {
+        "plutonium": {
+            "page": "items",
+            "source": "TCE",
+            "hash": "2b120allpurpose20tool_tce",
+            "propDroppable": "item",
+            "image": "images/modules/plutonium/media/icon/crossed-swords.svg"
+        }
+    },
+    "effects": [
+        {
+            "label": "Spell Attack Bonus (Melee)",
+            "icon": "modules/plutonium/media/icon/crossed-swords.svg",
+            "changes": [
+                {
+                    "key": "system.bonuses.msak.attack",
+                    "mode": 2,
+                    "value": "+1",
+                    "priority": 7
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": null,
+                "seconds": null,
+                "rounds": null,
+                "turns": null,
+                "startRound": null,
+                "startTurn": null,
+                "combat": null
+            },
+            "origin": null,
+            "tint": null,
+            "transfer": true,
+            "flags": {},
+            "_id": "XTOFABJBpUezadrf"
+        },
+        {
+            "label": "Spell Attack Bonus (Ranged)",
+            "icon": "modules/plutonium/media/icon/crossed-swords.svg",
+            "changes": [
+                {
+                    "key": "system.bonuses.rsak.attack",
+                    "mode": 2,
+                    "value": "+1",
+                    "priority": 7
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": null,
+                "seconds": null,
+                "rounds": null,
+                "turns": null,
+                "startRound": null,
+                "startTurn": null,
+                "combat": null
+            },
+            "origin": null,
+            "tint": null,
+            "transfer": true,
+            "flags": {},
+            "_id": "d7h2tgqlL3wnHtqp"
+        },
+        {
+            "label": "Spell Save DC Bonus",
+            "icon": "modules/plutonium/media/icon/crossed-swords.svg",
+            "changes": [
+                {
+                    "key": "system.bonuses.spell.dc",
+                    "mode": 2,
+                    "value": "+1",
+                    "priority": 7
+                }
+            ],
+            "disabled": false,
+            "duration": {
+                "startTime": null,
+                "seconds": null,
+                "rounds": null,
+                "turns": null,
+                "startRound": null,
+                "startTurn": null,
+                "combat": null
+            },
+            "origin": null,
+            "tint": null,
+            "transfer": true,
+            "flags": {},
+            "_id": "FHB7VSWu78yDPhxa"
+        }
+    ],
+    "_stats": {
+        "systemId": "dnd5e",
+        "systemVersion": "2.1.1",
+        "coreVersion": "10.291",
+        "createdTime": 1667935699540,
+        "modifiedTime": 1673506259790,
+        "lastModifiedBy": "puDQsBgIFUsMoPV1"
+    },
+    "folder": null,
+    "sort": 0,
+    "ownership": {
+        "default": 0,
+        "v5YiCMUGSH0oq3p7": 3
+    },
+    "_id": "X8CqiiATWRTkX6xe"
+}

@@ -59,46 +59,58 @@ function SanitizeSlashes(a) {
 async function ensureThingLoaded(thingName, instance) {
 
     thingName = SanitizeSlashes(thingName);
+    console.log(thingName);
     if (!registeredThings[thingName + instance]) {
         let file = thingName.endsWith('.json') ? thingName : thingName + '.json';
 
+        console.log(file);
 
         try {
             response = await fetch(file);
             const thing = await response.json();
             thing.id = SanitizeSlashes(thingName + instance);
 
-            if (thing.items) {
-                let promises = [];
-                for (let i = 0; i < thing.items.length; i++) {
-                    if (thing.items[i].file) {
-                        promises.push(EnsureLoaded(thing.items[i].page, thing.items[i].file, instance));
-                    }
-                }
-                await Promise.all(promises);
-            }
-            if (thing?.system?.feats) { // should combine with items
 
-                let promises = [];
-                promises.push(ensureSheetLoaded("itemSummary"));
-
-
-                for (let i = 0; i < thing.system.feats.length; i++) {
-                    promises.push(EnsureLoaded("items", "CompendiumFiles/" + thing.system.feats[i], instance));
-                }
-
-                await Promise.all(promises);
-            }
             registeredThings[thingName + instance] = thing;
 
             thing.acceptDrag = dragCareersAndItems; // todo do better
 
+            console.log("OK");
 
         } catch (err) {
             console.log(err + ". Unable to fetch " + thingName + 'json');
         }
     }
-    return registeredThings[thingName + instance];
+
+
+    thing = registeredThings[thingName + instance];
+    if (thing === undefined) throw ("Could not load");
+    try {
+        let promises = [];
+        if (thing.items) {
+            promises.push(ensureSheetLoaded("itemSummary"));
+            for (let i = 0; i < thing.items.length; i++) {
+                if (thing.items[i].file) {
+                    console.log(thing.items[i].file);
+                    promises.push(EnsureLoaded(thing.items[i].page, thing.items[i].file, instance));
+                }
+            }
+
+        }
+        if (thing?.system?.feats) { // should combine with items
+            for (let i = 0; i < thing.system.feats.length; i++) {
+                promises.push(EnsureLoaded("items", "CompendiumFiles/" + thing.system.feats[i], instance));
+            }
+
+        }
+        await Promise.all(promises);
+        console.log(promises);
+
+    } catch (err) {
+        console.log(err + ". Unable to fetch " + thingName + 'json');
+    }
+
+    return thing;
 
 }
 async function ensureSheetLoaded(sheetName) {
@@ -147,32 +159,35 @@ async function EnsureLoaded(sheetName, thingName, instance) {
 
 }
 
-
+// change this log.
+// each editable will have a thing id
+// and a field id
 
 function changeSheet(button) {
-    let id = SanitizeSlashes(getWindowId(button).substr(7)); // the window id is window_fullthingname
-    // need to add network step
-    let thing = registeredThings[id];
-    console.log(button.id + ' = ' + button.value);
+    let id = button.dataset.thingid; // the window id is window_fullthingname
+    let clause = button.dataset.clause; // the window id is window_fullthingname
+    let evaluation = clause + ' = ' + button.value;
+    console.log('id is ' + id);
+    console.log('evaluation is ' + evaluation);
+    socket.emit('change', {
+        change: evaluation,
+        thing: id
+    })
 
-    // Big bug editing these. Armor class and movement speeds to not work
-    // Changing name does not change name in compendium
-    // TODO: when converting    , make organization better. Include types?
-
-    if (!typeof button.value === "string") { // no should be if button.value evaluates to number
-        eval(button.id + ' = ' + button.value);  // the button id is code like thing.strength.value
-        socket.emit('change', {
-            change: button.id + ' = ' + button.value,
-            thing: id
-        })
-    } else {
-        let t = button.value.replace(/\"/g, '\''); // double quotes to single quotes
-        eval(button.id + ' = "' + t + '"');  // the button id is code like thing.strength.value
-        socket.emit('change', {
-            change: button.id + ' = "' + t + '"',
-            thing: id
-        })
-    };
+    // if (!typeof button.value === "string") { // no should be if button.value evaluates to number
+    //     eval(button.id + ' = ' + button.value);  // the button id is code like thing.strength.value
+    //     socket.emit('change', {
+    //         change: button.id + ' = ' + button.value,
+    //         thing: id
+    //     })
+    // } else {
+    //     let t = button.value.replace(/\"/g, '\''); // double quotes to single quotes
+    //     eval(button.id + ' = "' + t + '"');  // the button id is code like thing.strength.value
+    //     socket.emit('change', {
+    //         change: button.id + ' = "' + t + '"',
+    //         thing: id
+    //     })
+    // };
 
     // do do this displayThing should be called after network round trip
     // server should not do eval so server update has to be different, or it could evaluate the incoming thing
@@ -182,15 +197,18 @@ function changeSheet(button) {
 
 }
 
-function Editable(thing, s, className, listName) { // thing must be here because the eval might use it
-    let t = eval(s);
+function Editable(thing, clause, className, listName) { // thing must be here because the eval might use it
+    let t = eval(clause);
+
+    let id = thing.id;
+
     if (listName != undefined) {
-        return '<input list="' + listName + '" class="' + className + '" id="' + s + '" value="' + t +
+        return '<input list="' + listName + '" class="' + className + '" data-clause="' + clause + '"  data-thingid="' + id + '" value="' + t +
             '" onchange="changeSheet(this)">';
 
 
     } else
-        return '<input class="' + className + '" type="text" id="' + s + '" value="' + t +
+        return '<input class="' + className + '" type="text" data-clause="' + clause + '"  data-thingid="' + id + '" value="' + t +
             '" onchange="changeSheet(this)">';
 }
 
@@ -227,7 +245,7 @@ async function AddItemToNPC(change) {
     }
     let thing = registeredThings[change.thing];
     thing.items.push(change.item);
-
+    console.log("Add item to npc");
     w = windowShowing(change.thing);
     if (w) {
         displayThing(change.thing, w.sheet);
@@ -278,6 +296,7 @@ async function displayThing(fullthingname, sheetName) {
 
     /// TODO: needs to save and restore any scrolling or window resizing
     console.log(fullthingname);
+
 
     fullthingname = SanitizeSlashes(fullthingname);
     let w = createOrGetWindow(fullthingname, 0.4, 0.4, 0.3, 0.3); // todo better window placement

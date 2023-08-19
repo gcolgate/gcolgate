@@ -272,17 +272,100 @@ var tribal_languages = [
 
 ];
 
-function drawCareerFeats(feats, owner) {
+// function validateCareer(thing, owner) {
+//     if (!owner) return;
+
+//     if (owner.chosen == undefined)
+//         owner.chosen = {}
+//     if (owner.chosen[thing.name] == undefined)
+//         owner.chosen[thing.name] = { level: 0, featChosen: [] };
+
+//     let career = owner.chosen[thing.name];
+
+//     if (career.level < 0) career.level = 0;
+
+//     if (career.level < career.featChosen.length) {
+//         career.featChosen.length = career.level;
+//     }
+
+//     if (career.level > career.featChosen.length) {
+//         console.log("Please choose more feats");
+//     }
+//     return career;
+
+// }
+function div(x) { return "<div>" + x + "</div>"; }
+
+function clickFeatsButton(evt) {
+
+    console.log(evt);
+    let s = evt.currentTarget.nextSibling.style;
+
+    if (s.visibility === "hidden") {
+        s.visibility = "visible";
+    } else {
+        s.visibility = "hidden";
+    }
+
+}
+
+
+function featclicked(cb) {
+    console.log("Clicked, new value = " + cb.checked);
+    console.log("thing = ", cb.dataset.thingid);
+    console.log("cb = ", cb);
+
+    socket.emit('change', {
+        change: cb.dataset.clause + " = " + cb.checked,
+        thing: cb.dataset.thingid
+    });
+}
+
+
+function drawCareerFeats(thing, owner) {
     let text = "";
-    if (!feats) feats = [];
+    // let career = validateCareer(thing, owner);
+
+
+    let feats = thing.system.feats;
+
+
+    if (owner) {
+        text += div('<span class="npcBold">Level </span>' +
+            Editable(thing, "thing.system.owner_level", "npcNum"));
+        text += div('<span class="npcBold">Career Points Spent </span>' +
+            Editable(thing, "thing.system.owner_careerPointsSpent", "npcNum"));
+        text += div('<span class="npcBold">Weapons </span>' +
+            Editable(thing, "thing.system.weapons", ""));
+
+        text += '<div id="list3" class="dropdown-check-list" tabindex="100">' +
+            '<button  onclick="clickFeatsButton(event)"  >Choose Feats</button>' +
+            '<ul class=" .dropdown-check-list-ul-item">';
+
+        for (let i = 0; i < feats.length; i++) {
+            let name = "CompendiumFiles/" + feats[i];
+
+
+            let checked = thing.system.owner_featsChosen[feats[i]];
+
+            let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
+            text += '<li><input id="' + feats[i] + '" type="checkbox" class ="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
+                + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
+                ' onchange="featclicked(this);" /><label for="' + feats[i] + '">' + registeredThings[name].name + '</label></li>';
+
+        }
+        text += '</ul> </div>';
+    }
+
     for (let i = 0; i < feats.length; i++) {
 
-        if (!owner || (owner.feats && owner.feats[feats[i]] > 0)) {
-            let name = "CompendiumFiles/" + feats[i];
-            text += "<div>";
-            text += parseSheet(registeredThings[name], "itemSummary", owner);
-            text += "</div>";
-        }
+        if (owner && !thing.system.owner_featsChosen[feats[i]]) continue;
+
+        let name = "CompendiumFiles/" + feats[i];
+        text += "<div>";
+        text += parseSheet(registeredThings[name], "itemSummary", owner);
+        text += "</div>";
+
 
     }
     console.log(text); return text;

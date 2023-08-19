@@ -552,11 +552,11 @@ var feats = {
     },
     Magic_Reserve: {
         name: "Magic Reserve",
-        description: "You have a reserve of magic points equal to your normal points, that come back though  at only one per full moon",
+        description: "Get +6 base mana",
     },
     Wisdom: {
         name: "Wisdom",
-        description: "Optionally, your magic (cantrips and first circle) are restrained, and subtle, less flashy, and less likely to have side effects. Your spells should not seem to be magic unless stared at carefully, but you may have trouble when you need a flashy spell to summon the energy.",
+        description: "If you take care you can cast your spells more quietly, for cantrips and first circle, so that they don’t even appear to be magic.",
     },
     Brawler: {
         name: "Brawler",
@@ -1426,6 +1426,10 @@ function convertPTBA() {
             "name": career.name,
             "img": "images/modules/plutonium/media/icon/mighty-force.svg" /// need this
         };
+
+        career.owner_level = 0;
+        career.owner_careerPointsSpent = 0;
+        career.owner_featsChosen = [];
 
         item = {
             name: career.name,
