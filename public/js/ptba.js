@@ -296,18 +296,7 @@ var tribal_languages = [
 // }
 function div(x) { return "<div>" + x + "</div>"; }
 
-function clickFeatsButton(evt) {
 
-    console.log(evt);
-    let s = evt.currentTarget.nextSibling.style;
-
-    if (s.visibility === "hidden") {
-        s.visibility = "visible";
-    } else {
-        s.visibility = "hidden";
-    }
-
-}
 
 
 function featclicked(cb) {
@@ -339,7 +328,7 @@ function drawCareerFeats(thing, owner) {
             Editable(thing, "thing.system.weapons", ""));
 
         text += '<div id="list3" class="dropdown-check-list" tabindex="100">' +
-            '<button  onclick="clickFeatsButton(event)"  >Choose Feats</button>' +
+            Collapsible("Feats") +
             '<ul class=" .dropdown-check-list-ul-item">';
 
         for (let i = 0; i < feats.length; i++) {

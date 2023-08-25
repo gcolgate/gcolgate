@@ -2,6 +2,26 @@
 var registeredThings = {};
 var registeredSheets = {};
 var sheetDependencies = null;
+// preload
+ensureSheetLoaded("itemSummary");
+
+
+function ClickCollapsible(evt) {
+
+    console.log(evt);
+    let s = evt.currentTarget.nextSibling.style;
+
+    if (s.visibility === "hidden") {
+        s.visibility = "visible";
+    } else {
+        s.visibility = "hidden";
+    }
+
+}
+
+function Collapsible(text) {
+    return '<button  onclick="ClickCollapsible(event)">' + text + ' </button>';
+}
 
 // format a number as +N or -N
 function signed(num) {
@@ -88,7 +108,7 @@ async function ensureThingLoaded(thingName, instance) {
     try {
         let promises = [];
         if (thing.items) {
-            promises.push(ensureSheetLoaded("itemSummary"));
+            // promises.push(ensureSheetLoaded("itemSummary"));
             for (let i = 0; i < thing.items.length; i++) {
                 if (thing.items[i].file) {
                     console.log(thing.items[i].file);

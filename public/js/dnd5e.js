@@ -26,8 +26,9 @@ function MaybeDescription(description) {
 
     if (description.startsWith("Melee Weapon Attack:")) return "";
     if (description.startsWith("Ranged Weapon Attack:")) return "";
+    let outDescription = '<div class="itemtext"  >';
 
-    let outDescription = "";
+
     let state = "normal";
     let roll = "";
     //this could be faster but this is simple
@@ -82,8 +83,7 @@ function MaybeDescription(description) {
                     outDescription += description[i];
                 }
     }
-
-
+    outDescription += "</div>";
     return outDescription;
 };
 

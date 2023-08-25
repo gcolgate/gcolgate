@@ -668,12 +668,12 @@ var careers = {
             "As wandering entertainers, minstrels perform songs, music, poetry, and plays – telling tales of distant places and historical or fantastical events. They often create their own stories or memorize and embellish the work of others. Whilst most are travelers taking their songs and music from city to city, some are retained at the courts of nobles for their own entertainment",
         weapons: [],
         feats: [
-            "Bardic Lore",
-            "Master Musician",
-            "Magical Performance",
-            "Musical Number",
-            "Vicious Mockery",
-            "Musical Virtuoso"],
+            "Bardic_Lore",
+            "Master_Musician",
+            "Magical_Performance",
+            "Musical_Number",
+            "Vicious_Mockery",
+            "Musical_Virtuoso"],
         languages: [languages, tribal_languages],
         tools: "Musical Instrument"
     },
@@ -1429,7 +1429,7 @@ function convertPTBA() {
 
         career.owner_level = 0;
         career.owner_careerPointsSpent = 0;
-        career.owner_featsChosen = [];
+        career.owner_featsChosen = {};;
 
         item = {
             name: career.name,

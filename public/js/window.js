@@ -96,6 +96,7 @@ function createOrGetWindow(id, width, height, left, top) {
 
         let body = document.createElement("div");
         body.id = windowName + "_body";
+        body.className = "windowbody";
         w.appendChild(body);
 
 

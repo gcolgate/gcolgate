@@ -15,7 +15,7 @@
           margin:8px;
           line-height: 26.1333px;
           text-transform: lowercase">
-      {thing.system.description.value } +
+      {Collapsible("Description") + "<div>" + thing.system.description.value + "</div>" } +
       <span class="npcBold">Weapons </span>{ thing.system.weapons }
       <span class="npcBold">Tools </span>{ thing.system.tools }
       <div> { drawCareerFeats(thing,owner) } </div>
