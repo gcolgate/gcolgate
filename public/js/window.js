@@ -63,6 +63,7 @@ function CreateWindowTitle(w, windowName, Title, closes = true) {
     }
     w.appendChild(title);
     dragElement(w, title);
+    return title;
 
 }
 
@@ -75,7 +76,6 @@ function createOrGetWindow(id, width, height, left, top) {
         let group = document.getElementById("windowGroup");
         w = document.createElement("div");
 
-
         width *= window.innerWidth;
         height *= window.innerHeight;
         left *= window.innerWidth;
@@ -84,42 +84,45 @@ function createOrGetWindow(id, width, height, left, top) {
 
         w.contentHeight = height;
 
-        CreateWindowTitle(w, windowName, id, true);
+        let title = CreateWindowTitle(w, windowName, id, true);
 
+        w.windowTitle = title;
 
-
-        // let list = document.createElement("ul");
-        // list.className = "compendiumSyle";
-        // list.id = windowName + "_list";
-        // w.appendChild(list);
         group.appendChild(w);
 
         let body = document.createElement("div");
         body.id = windowName + "_body";
         body.className = "windowbody";
         w.appendChild(body);
+        w.body = body;
+        w.body.style.height = (w.clientHeight - 40) + "px";
 
-
-
-
-        // variable styles
-        // w.style.top = top + "px";
-        // w.style.left = left + "px";
         w.style.zIndex = 9 + windows.length;
         w.style.backgroundColor = "#ffffff";
-        // w.style.width = width + "px";
-        // w.style.height = height + "px";
 
 
         // Event listener for clicks
         w.addEventListener('mousedown', clickToBringWindowIntoFocus);
 
-
+        w.resizeObserver = new ResizeObserver((entries) => {
+            // w.addEventListener('mouseup', function (evt) {6main.js
+            //     console.log("Mou8se up");
+            //     w = evt.currentTarget;
+            //     w.body.style.height = (w.clientHeight - 40) + "px";
+            //     // w.body.style.width = w.width;
+            // });
+            w.style.width = body.style.width;
+            w.style.height = body.style.height + 40;
+            console.log("Size changed");
+        });
         windows.push(w);
+
+
+        w.resizeObserver.observe(body);
     }
 
-
     fadeIn(w);
+
     return w;
 
 }
@@ -155,7 +158,7 @@ function createOrGetChatWindow(id, width, height, left, top) {
         body.id = windowName + "_body";
         w.appendChild(body);
 
-
+        body.className = "windowBody";
 
 
         // variable styles

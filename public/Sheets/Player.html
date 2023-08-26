@@ -1,40 +1,47 @@
 <div class="c18 doc-content">
-    <p class="npcheader"> { Editable(thing,
-        "thing.name",
-        "itemsetheader npcTitleInput") } </p>
+    <div class="twocolumnsuneven">
+        <image src="{FetchImageFromAppearanceArray(thing)}" alt="{thing.name}" style="width:auto; height:100%"></image>
 
 
-    <p class="npcBold"><span class="c12">Species: { Editable(thing,
-            "thing.species",
-            "itemsetheader itemTitleInput", "species") }</span></p>
+        <div class>
 
-    <datalist id="species">
-        <option>Human</option>
-        <option>Elf</option>
-        <option>Dark Troll</option>
-        <option>Dwarf</option>
-        <option>Ratling</option>
-    </datalist>
+            <p class="npcheader"> { Editable(thing,
+                "thing.name",
+                "itemsetheader npcTitleInput") } </p>
 
 
-    <p class="npcBold"><span class="c12">Origin: {Editable(thing,
-            "thing.origin",
-            "itemsetheader itemTitleInput", "places")} </p>
-    <datalist id="places">
-        <option>Barony of Lewd Umber</option>
-        <option>Majority City</option>
-        <option>Barony of Orfor</option>
-        <option>Empire of the Red Moon</option>
-        <option>The Frozen Coast</option>
-        <option>Lorien Wood</option>
-        <option>Illyrian Isles</option>
-        <option>Mountains of Fear</option>
-        <option>Underdark</option>
-        <option>Far Chept</option>
-    </datalist>
+            <p class="npcBold"><span class="c12">Species: { Editable(thing,
+                    "thing.species",
+                    "itemsetheader itemTitleInput", "species") }</span></p>
 
-    <p class="npcBold"><span class="c12">Wealth: {Editable(thing,"thing.wealth", "npcNum") }</p>
+            <datalist id="species">
+                <option>Human</option>
+                <option>Elf</option>
+                <option>Dark Troll</option>
+                <option>Dwarf</option>
+                <option>Ratling</option>
+            </datalist>
 
+
+            <p class="npcBold"><span class="c12">Origin: {Editable(thing,
+                    "thing.origin",
+                    "itemsetheader itemTitleInput", "places")} </p>
+            <datalist id="places">
+                <option>Barony of Lewd Umber</option>
+                <option>Majority City</option>
+                <option>Barony of Orfor</option>
+                <option>Empire of the Red Moon</option>
+                <option>The Frozen Coast</option>
+                <option>Lorien Wood</option>
+                <option>Illyrian Isles</option>
+                <option>Mountains of Fear</option>
+                <option>Underdark</option>
+                <option>Far Chept</option>
+            </datalist>
+
+            <p class="npcBold"><span class="c12">Wealth: {Editable(thing,"thing.wealth", "npcNum") }</p>
+        </div>
+    </div>
     <div style="display: flex;
     color: rgb(88, 23, 13);
     justify-content: space-around;
@@ -46,6 +53,7 @@
     font-weight: 400">
         { PTBAAbilities(thing); }
     </div>
+
 
     <div> { PTBAMoves(thing) } </div>
     <!-- <p class="c31 c32 c13"><span class="c2"></span></p>

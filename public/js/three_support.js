@@ -522,6 +522,7 @@ export function three_mouseMove(event) {
                 if (!hud) {
                     hud = document.createElement("div");
                     hud.id = "hud";
+                    hud.style.zIndex = 8;
                     hud.className = "hud";
                     //  hud.style.position = "absolute";
                     //  hud.style.textAlign = "center";
@@ -552,10 +553,8 @@ export function three_mouseMove(event) {
                 let dim = three_renderer_dimensions()
 
                 card.style.top = (dim.height - 300) + "px";
-                card.style.bottom = dim.height + "px";
-                card.width = 200; //* intersect.object.texture.width / intersect.object.texture.height;
-                card.height = 300;
-                //card.innerHTML = o.name;
+                card.style.width = "auto";
+                card.style.height = "300px";
             }
 
 

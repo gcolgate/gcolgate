@@ -10,11 +10,11 @@
       overflow: hidden
     }
 
-    .body {
+    /* .body {
       margin: 0;
       overflow: hidden;
       background-color: rgb(255, 215, 170);
-    }
+    } */
 
     .container {
       display: inline-grid;
@@ -27,12 +27,6 @@
       box-sizing: border-box;
     }
 
-    .windowbody {
-      overflow: auto;
-      background-color: rgb(255, 215, 170);
-      resize: both;
-    }
-
     .window {
       position: absolute;
       top: 4%;
@@ -43,7 +37,6 @@
       opacity: 0.9;
       display: initial;
       resize: both;
-      overflow: auto;
       box-sizing: border-box;
     }
 
@@ -51,12 +44,30 @@
       padding: 10px;
       z-index: 10;
       background-color: rgb(162, 124, 75);
+      vertical-align: middle;
       color: #fff;
-      border-radius: 4px 4px 0 0;
+      padding: 0 8px 0 8px;
+      /* change NOT allowed */
       height: 40px;
+      width: inherit;
       justify-content: space-between;
       display: flex;
       touch-action: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: move;
+    }
+
+    .windowbody {
+      position: absolute;
+      top: 40px;
+      /* change allowed */
+      left: 0px;
+      /* change NOT allowed */
+      overflow: auto;
+      background-color: rgb(255, 215, 170);
+      resize: both;
     }
 
     ul {
@@ -109,6 +120,12 @@
     .twocolumns {
       display: grid;
       grid-template-columns: 50% 50%;
+      background-color: beige;
+    }
+
+    .twocolumnsuneven {
+      display: grid;
+      grid-template-columns: 30% 60%;
       background-color: beige;
     }
 

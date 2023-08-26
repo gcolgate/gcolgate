@@ -297,6 +297,23 @@ var tribal_languages = [
 function div(x) { return "<div>" + x + "</div>"; }
 
 
+// fetches image from appearance array, to do rename 
+function FetchImageFromAppearanceArray(thing) {
+
+    let image = "images/mighty-force.svg"
+    if (thing.current_appearance) {
+        for (let i = 0; i < thing.appearance.length; i++) {
+
+            if (thing.appearance[i].name == thing.current_appearance) {
+
+                image = thing.appearance[i].portrait;
+            }
+        }
+    }
+    return image;
+}
+
+
 
 
 function featclicked(cb) {
@@ -338,7 +355,7 @@ function drawCareerFeats(thing, owner) {
             let checked = thing.system.owner_featsChosen[feats[i]];
 
             let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
-            text += '<li><input id="' + feats[i] + '" type="checkbox" class ="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
+            text += '<li><input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
                 + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
                 ' onchange="featclicked(this);" /><label for="' + feats[i] + '">' + registeredThings[name].name + '</label></li>';
 
@@ -578,17 +595,17 @@ function selectLanguage(id, event, name) {
 function languagesButtons(thing) {
     let answer = ""; for (let i = 0; i < languages.length; i++) {
         let name = (languages[i]);
-        answer += '<input type="checkbox" id="' + name + '" name ="' + name + ((!!thing.languages[name]) ? '" checked = "true"' : "") + '"' +
+        answer += '<input type="checkbox" id="' + name + '" name="' + name + ((!!thing.languages[name]) ? '" checked="true"' : "") + '"' +
             ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
     }
     for (let i = 0; i < tribal_languages.length; i++) {
         let name = (tribal_languages[i]);
-        answer += '<input type="checkbox" id="' + name + '" name ="' + name + ((!!thing.languages[name]) ? '" checked = "true"' : "") + '"' +
+        answer += '<input type="checkbox" id="' + name + '" name="' + name + ((!!thing.languages[name]) ? '" checked="true"' : "") + '"' +
             ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
     }
     for (let i = 0; i < magic_languages.length; i++) {
         let name = (magic_languages[i]);
-        answer += '<input type="checkbox" id="' + name + '" name ="' + name + ((!!thing.languages[name]) ? '" checked = "true"' : "") + '"' +
+        answer += '<input type="checkbox" id="' + name + '" name="' + name + ((!!thing.languages[name]) ? '" checked="true"' : "") + '"' +
             ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
     }
     return answer;
@@ -624,7 +641,7 @@ function rollPTBAStat(ownerId, stat, isSave) {
 
 function PTBAAbility(thing, stat) {
     let answer = Editable(thing, " thing.stats['" + stat + "'] ", "npcNum") +
-        "<button  onclick=\"rollPTBAStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
+        "<button onclick=\"rollPTBAStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
     return answer;
 }
 
