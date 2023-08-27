@@ -294,7 +294,10 @@ var tribal_languages = [
 //     return career;
 
 // }
-function div(x) { return "<div>" + x + "</div>"; }
+function div(x, s) {
+    if (s === undefined) { s = ""; }
+    return "<div" + s + ">" + x + "</div > ";
+}
 
 
 // fetches image from appearance array, to do rename 
@@ -337,15 +340,15 @@ function drawCareerFeats(thing, owner) {
 
 
     if (owner) {
-        text += div('<span class="npcBold">Level </span>' +
-            Editable(thing, "thing.system.owner_level", "npcNum"));
-        text += div('<span class="npcBold">Career Points Spent </span>' +
-            Editable(thing, "thing.system.owner_careerPointsSpent", "npcNum"));
+        // text += div('<span class="npcBold">Level </span>' +
+        //     Editable(thing, "thing.system.owner_level", "npcNum"));
+        // text += div('<span class="npcBold">Career Points Spent </span>' +
+        //     Editable(thing, "thing.system.owner_careerPointsSpent", "npcNum"));
         text += div('<span class="npcBold">Weapons </span>' +
             Editable(thing, "thing.system.weapons", ""));
 
         text += '<div id="list3" class="dropdown-check-list" tabindex="100">' +
-            Collapsible("Feats") +
+
             '<ul class=" .dropdown-check-list-ul-item">';
 
         for (let i = 0; i < feats.length; i++) {
@@ -354,13 +357,17 @@ function drawCareerFeats(thing, owner) {
 
             let checked = thing.system.owner_featsChosen[feats[i]];
 
+            let featSheet = registeredThings[name];
+
             let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
             text += '<li><input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
                 + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
-                ' onchange="featclicked(this);" /><label for="' + feats[i] + '">' + registeredThings[name].name + '</label></li>';
+                ' onchange="featclicked(this);" /><label for="' + feats[i] + '"> <span class=npcBold>' +
+                featSheet.name + ':</span>' + featSheet.system.description.value + '</label></li > ';
 
         }
         text += '</ul> </div>';
+        return text;
     }
 
     for (let i = 0; i < feats.length; i++) {
@@ -374,6 +381,29 @@ function drawCareerFeats(thing, owner) {
 
 
     }
+    console.log(text); return text;
+}
+
+
+
+function drawCareerLevel(thing, owner) {
+    let text = "";
+    // let career = validateCareer(thing, owner);
+
+
+    let feats = thing.system.feats;
+
+
+    if (owner) {
+        text += div('<span class="npcBold">Level </span>' +
+            Editable(thing, "thing.system.owner_level", "npcNum"));
+        text += div('<span class="npcBold">Career Points Spent </span>' +
+            Editable(thing, "thing.system.owner_careerPointsSpent", "npcNum")
+        );
+
+    }
+
+
     console.log(text); return text;
 }
 

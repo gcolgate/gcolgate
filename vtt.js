@@ -186,6 +186,7 @@ async function login(socket, credentials) {
     //console.log("Room %o " + socket.rooms, socket.rooms);
 }
 
+
 async function CopyThingFIles(socket, msg) {
 
 
@@ -217,6 +218,7 @@ async function CopyThingFIles(socket, msg) {
 
 
 }
+
 
 async function sendScene(name, socket) {
 
@@ -452,12 +454,14 @@ io.on('connection', (socket) => {
     socket.on('copy_files', (msg) => {
 
         CopyThingFIles(socket, msg);
-
-        //   ChangeThing(msg.thing, msg.change, io, msg);
     });
 
 
+    socket.on('RemoveItemFromThing', (msg) => {
 
+        sheeter.RemoveItemFromThing(socket, msg);
+
+    });
 });
 
 app.get("/", (req, res) => {

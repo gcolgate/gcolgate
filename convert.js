@@ -44,6 +44,26 @@ let resetTerminal = "\u001b[39m";
     };
 });
 
+
+function ComputePage(json, page) {
+
+    if (!page.startsWith("items")) {
+        return page;
+    }
+
+    if (json.attunment != undefined && json.attunment != "0") { return "magic_items"; }
+    if (json.system.price === null) { return "magic_items"; }
+    if (json.name.startsWith("+")) { return "magic_items"; }
+    if (json.system.price && json.system.price > 1000) { return "expensive"; }
+    if (json.system.weight && json.system.weight > 60) { return "heavy"; }
+    if (json.type == "weapon") return "weapons";
+    if (json.system.consumableType == "poison") return "poison";
+    if (json.system.armor && json.system.armor.value > 10) return "armor";
+    return "items";
+
+
+}
+
 function writeJsonFileInPublic(dir, fileName, json) {
 
     try {
@@ -685,20 +705,7 @@ var careers = {
         languages: [],
         tools: ""
     },
-    BeastMaster: {
-        name: "Beast Master",
-        description: "Beastmasters are in demand all over for their special empathy and skill with animals. They train animals for riding, for pulling wagons, for combat, and even for the gladiatorial arena. Beastmasters can calm maddened creatures, are expert riders and wagoneers, can recognize whether creatures are dangerous and about to attack or not, and often have some skill in healing them if injured or sick. Some beastmasters rule their animals by fear and deprivation.",
-        weapons: [],
-        feats: [
-            "Animal_Companion",
-            "Swift_Rider",
-            "Animal_Influence",
-            "Animal_Communication",
-            "Commune",
-        ],
-        languages: [],
-        tools: "Animals"
-    },
+
     Cavalry: {
         name: "Cavalry",
         description: "Fighting with cavalry weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
@@ -744,7 +751,7 @@ var careers = {
             "Master_of_Stealth",
             "Expert_lockpick",
             "Expert_Pickpocket",
-            "Pack_Rack",
+            "Pack_Rat",
             "Crime_Lord",],
         languages: [],
         tools: "Lockpick, Cards"
@@ -795,7 +802,7 @@ var careers = {
         feats: [
             "Commune",
             "Mercy",
-            "Pack_Rack",
+            "Pack_Rat",
             "Wasn’t_here",
             "Animal_Influence",
         ],
@@ -816,12 +823,12 @@ var careers = {
         name: "Hunter", description: "The hunter is a master of tracking prey through the wilderness and the wastelands. Once hunters locate their target, they’ll use stealth, traps and/or expert bowmanship or spears  to bring it down. They are at home in the wild and can survive there for long periods, returning to more civilized areas only when they have furs and hides to sell, or when they require the company of their fellow men (or women). ",
         weapons: ["Ranged"],
         feats: [
-            "Home Field Advantage",
+            "Home_Field_Advantage",
             "Sniper",
-            "Pack Rat",
-            "Master of  Stealth",
+            "Pack_Rat",
+            "Master_of_Stealth",
             "Commune",
-            "Climbing",
+            "Climber",
         ],
         languages: [],
         tools: "Animals, Animal Traps,Camping, Tracking"
@@ -1122,7 +1129,7 @@ async function findSource(inputPath, recur = 0) {
 
     if (answer >= 0) {
         let resultPath = reverseString(sourceImages[answer]);
-        console.log(inputPath + " " + best + " " + resultPath)
+
         founds[inputPath] = resultPath;
         return resultPath;
     }
@@ -1222,13 +1229,13 @@ async function convertDnD5e() {
     //await fsExtra.emptyDir(path.join(__dirname, 'public', 'Compendium'));
     //await fsExtra.emptyDir(path.join(__dirname, 'public', 'CompendiumFiles'));
     let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert')); // 
-
+    let counts = {};
     console.log("%o", dir);
 
     for (let i = 0; i < dir.length; i++) {
 
         let fname = path.join(__dirname, 'public', 'toConvert', dir[i]);
-        console.log("Loading " + fname);
+
         let text = (await fs.readFile(fname)).toString();
         let level = 0;
         let inQuotes = false;
@@ -1281,18 +1288,33 @@ async function convertDnD5e() {
         let audit = false;
         for (let fileIndex = 0; fileIndex < subfiles.length; fileIndex++) {
             if (fileIndex > last + 50) { console.log(fileIndex + " of " + subfiles.length); last = fileIndex; audit = true; }
-            try {
+            {//   try {
                 json = JSON.parse(subfiles[fileIndex]);
-                let tagsSource = json?.flags?.plutonium;
-                if (audit) console.log(tagsSource.page);
+                if (!json.flags) { console.log("PRESKipping " + json.name); continue; }
+
+
+                let tagsSource = json.flags.plutonium;
+                if (json.name == "Mace") {
+                    console.log(json);
+                }
 
                 if (tagsSource) {
+
+                    if (json.type == "feat") { continue; };
+                    if (tagsSource.page.startsWith("subclassFeature")) { continue; }
+                    if (tagsSource.page.startsWith("classes")) { continue; };
+                    if (tagsSource.page.startsWith("races")) { continue; };
+                    if (tagsSource.page.startsWith("spell")) { continue; };
+                    if (tagsSource.page.startsWith("classFeature")) { continue; };
+                    if (tagsSource.page.startsWith("optionalFeatures")) { continue; };
+
                     if (!tagsSource.hash)
                         tagsSource.hash = uuidv4();
 
 
                     tagsSource.hash = cleanFileName(tagsSource.hash);
                     if (json.img) {
+                        // todo: avoid token images
                         json.img = await processImage(json.img, tagsSource);
                     }
 
@@ -1305,16 +1327,17 @@ async function convertDnD5e() {
                         let token = {};
                         if (t.texture.src) {
                             t.texture.src = await processImage(t.texture.src);
-                            // todo, design tokens
-
+                            // todo auto make tokens from main image
                         }
                     }
 
-                    if (audit) console.log(tagsSource.page);
+
                     tagsSource.hash = cleanFileName(tagsSource.hash);
-                    if (audit) console.log(tagsSource.page);
+
                     tagsSource.page = path.parse(tagsSource.page).name;
-                    if (audit) console.log(tagsSource.page);
+
+                    tagsSource.page = ComputePage(json, tagsSource.page);
+
                     tagsSource.image = json.img;
                     tagsSource.prototypeToken = json.protoTypeToken;
                     json.protoTypeToken = undefined;
@@ -1325,7 +1348,7 @@ async function convertDnD5e() {
                         name += " (" + tagsSource.page + ")";
                     }
                     /// change to split items off, change to have sheets load items, so that items are not embedded
-                    audit = false;
+
                     if (json.items) {
                         for (let i = 0; i < json.items.length; i++) {
                             let item = json.items[i];
@@ -1361,7 +1384,11 @@ async function convertDnD5e() {
                         img: json.img,
                         prototypeToken: tagsSource.prototypeToken
                     };
-                    //     console.log("ptype1 " + tagsSource.prototypeToken);
+
+
+                    if (counts[tagsSource.page] == undefined)
+                        counts[tagsSource.page] = 0;
+                    counts[tagsSource.page]++;
 
                     writeJsonFileInPublic('Compendium', "tag_" + tagsSource.hash, tags);
                     writeJsonFileInPublic('CompendiumFiles', tagsSource.hash, json);
@@ -1370,10 +1397,13 @@ async function convertDnD5e() {
                 };
 
             }
-            catch (err) {
-                console.error("error parsing json ( " + err + "+)");
-            }
-
+            //    catch (err) {
+            //       console.error("error parsing json ( " + err + "+)");
+            //   }
+        }
+        let keys = Object.keys(counts);
+        for (let i = 0; i < keys.length; i++) {
+            console.log(keys[i], counts[keys[i]]);
             // let outfile3 = path.join(path.join(__dirname, 'public', "artgenerator.json"));
             //  fs.writeFile(outfile3, JSON.stringify(artGeneratorFile));
         }
@@ -1391,7 +1421,7 @@ function convertPTBA() {
             "source": "Gil",
             "type": "feat",
             "name": feat.name,
-            "img": "images/modules/plutonium/media/icon/mighty-force.svg" /// need this
+            "img": "images/careers/" + key + ".avif" /// need this
         };
 
         item = {
@@ -1404,7 +1434,8 @@ function convertPTBA() {
                 source: "GilPTBA",
             },
             type: "feat",
-            img: "images/modules/plutonium/media/icon/mighty-force.svg",
+            "img": "images/careers/" + key + ".avif" /// need this
+
 
         };
 
@@ -1434,7 +1465,8 @@ function convertPTBA() {
         item = {
             name: career.name,
             type: "career",
-            img: "images/modules/plutonium/media/icon/mighty-force.svg",
+            "img": "images/careers/" + key + ".avif" /// need this
+
         };
         career.description = {
             value: "<div>\n\t\t\t\t\n\t\t\t\t<div class=\"rd__b  rd__b--3\"><p>" +
@@ -1449,6 +1481,6 @@ function convertPTBA() {
 }
 
 // note, run convertDnD5e and do not translate feats
-// convertDnD5e();
+//convertDnD5e();
 
 convertPTBA();

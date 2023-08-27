@@ -1,0 +1,32 @@
+{
+if(!thing.system && thing.data) {
+thing.system = thing.data;
+}
+} @
+<div>
+    <div class="body">
+        <div class=" itemsetheader">
+            { Editable(thing,
+            "thing.name",
+            "itemsetheader itemTitleInput")}
+        </div>
+        <div style="box-sizing: border-box;
+          color: rgb(0, 0, 0);
+          color-scheme: light dark;
+          font-family: Georgia, serif;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 400;
+          margin:8px;
+          line-height: 26.1333px;
+          text-transform: lowercase">
+            {thing.type +" "+ maybe(thing.system.consumableType) +" "+
+            maybe(thing.system.attunement, "Requires Attunement ") +
+            maybe(thing.system.rarity)
+            } </div>
+        <div>{thing.system.description.value}</div>
+        <div> { ( thing.type == "weapon" ?ItemWeapon(thing,owner,true) : "")}</div>
+        <div> {ItemArmor(thing,owner) } </div>
+
+    </div>
+</div>

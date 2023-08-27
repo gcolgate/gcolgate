@@ -33,7 +33,7 @@ function clickOnThing(event) {
         name = "SCENE" + this.references;
     }
 
-    showThing(name, "", this.references.page);
+    showThing(name, this.references.page);
 }
 
 
@@ -138,8 +138,10 @@ function refreshDirectoryWindow(id, whole) {
             console.log('width', entry.contentRect.width);
             console.log('height', entry.contentRect.height);
             let ul = document.getElementById("window_" + id + "_list");
-            ul.style.height = (win.clientHeight - ul.offsetTop) + "px";
-
+            if (ul) { ul.style.height = (win.clientHeight - ul.offsetTop) + "px"; }
+            else {
+                console.log("WTF");
+            }
         });
 
     });

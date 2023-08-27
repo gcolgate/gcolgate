@@ -636,6 +636,12 @@ function get5eDetails(thing) {
     return "";
 };
 
+function RemoveItemFromThing(thingId, itemId) {
+
+    socket.emit("RemoveItemFromThing", { thingId: thingId, itemId: itemId });
+
+}
+
 function drawItems(thing, node) {
     let text = "";
     if (!thing.items) thing.items = [];
@@ -644,6 +650,7 @@ function drawItems(thing, node) {
         text += "<div>";
 
         text += parseSheet(registeredThings[item.file], item.page, undefined, thing); // no w
+        text += "<button onclick=RemoveItemFromThing('" + thing.id + "','" + item.file + "')> Delete " + item.name + "</button > ";
         text += "</div>";
     }
     return text;

@@ -11,16 +11,49 @@ function ClickCollapsible(evt) {
     console.log(evt);
     let s = evt.currentTarget.nextSibling.style;
 
-    if (s.visibility === "hidden") {
+    if (s.maxHeight === "0px") {
+        s.maxHeight = "100%";
         s.visibility = "visible";
+
     } else {
+        s.maxHeight = "0px";
+        s.visibilitiy = false;
         s.visibility = "hidden";
     }
 
 }
 
-function Collapsible(text) {
-    return '<button  onclick="ClickCollapsible(event)">' + text + ' </button>';
+function Collapsible(text, shown) {
+    let a = '<button class=lbl-collapsible-toggle  onclick="ClickCollapsible(event)">' + text + ' </button>';
+    a += (shown ? '<div style="max-height:100%" visibility:visible >' : '<div style="max-height:0px; visibility:hidden">');
+    console.log(a);
+    return a;
+}
+
+function EndCollapsible() {
+    console.log("</div>");
+    return '</div>  </div>';
+}
+
+
+function cyrb53(str, seed = 0) {
+    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+    h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+    h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+};
+
+function constructInnocuousId(prefix, s) {
+
+    return '"' + prefix + cyrb53(s).toString() + '"';
 }
 
 // format a number as +N or -N
@@ -76,11 +109,11 @@ function SanitizeSlashes(a) {
     return a;
 }
 
-async function ensureThingLoaded(thingName, instance) {
+async function ensureThingLoaded(thingName) {
 
     thingName = SanitizeSlashes(thingName);
     console.log(thingName);
-    if (!registeredThings[thingName + instance]) {
+    if (!registeredThings[thingName]) {
         let file = thingName.endsWith('.json') ? thingName : thingName + '.json';
 
         console.log(file);
@@ -88,10 +121,10 @@ async function ensureThingLoaded(thingName, instance) {
         try {
             response = await fetch(file);
             const thing = await response.json();
-            thing.id = SanitizeSlashes(thingName + instance);
+            thing.id = SanitizeSlashes(thingName);
 
 
-            registeredThings[thingName + instance] = thing;
+            registeredThings[thingName] = thing;
 
             thing.acceptDrag = dragCareersAndItems; // todo do better
 
@@ -103,23 +136,25 @@ async function ensureThingLoaded(thingName, instance) {
     }
 
 
-    thing = registeredThings[thingName + instance];
+    let thing = registeredThings[thingName];
     if (thing === undefined) throw ("Could not load");
     try {
         let promises = [];
         if (thing.items) {
             // promises.push(ensureSheetLoaded("itemSummary"));
             for (let i = 0; i < thing.items.length; i++) {
+                console.log("Adding thingie" + i + " " + thing.items[i].file);
                 if (thing.items[i].file) {
                     console.log(thing.items[i].file);
-                    promises.push(EnsureLoaded(thing.items[i].page, thing.items[i].file, instance));
+                    promises.push(EnsureLoaded(thing.items[i].page, thing.items[i].file));
                 }
             }
 
         }
-        if (thing?.system?.feats) { // should combine with items
+        if (thing?.system?.feats != undefined) { // should combine with items
             for (let i = 0; i < thing.system.feats.length; i++) {
-                promises.push(EnsureLoaded("items", "CompendiumFiles/" + thing.system.feats[i], instance));
+                console.log("Adding feat" + i + " " + thing.system.feats[i]);
+                promises.push(EnsureLoaded("items", "CompendiumFiles/" + thing.system.feats[i]));
             }
 
         }
@@ -169,10 +204,9 @@ async function ensureSheetLoaded(sheetName) {
     }
 }
 
-async function EnsureLoaded(sheetName, thingName, instance) {
+async function EnsureLoaded(sheetName, thingName) {
 
-
-    let promise = ensureThingLoaded(thingName, instance);
+    let promise = ensureThingLoaded(thingName);
     let promise2 = ensureSheetLoaded(sheetName);
     await Promise.all([promise, promise2]);
 
@@ -233,11 +267,11 @@ function Editable(thing, clause, className, listName) { // thing must be here be
 }
 
 
-async function showThing(name, instance, sheet) {
+async function showThing(name, sheet) {
     //  then get the sheet
-    let key = SanitizeSlashes(name + instance);
+    let key = SanitizeSlashes(name);
 
-    await EnsureLoaded(sheet, key, instance);
+    await EnsureLoaded(sheet, key);
 
 
     displayThing(key, sheet);
@@ -268,7 +302,32 @@ async function AddItemToNPC(change) {
     console.log("Add item to npc");
     w = windowShowing(change.thing);
     if (w) {
+        await EnsureLoaded(w.sheet, change.thing);
+
         displayThing(change.thing, w.sheet);
+    }
+
+}
+
+async function RemoveFromNPC(change) {
+
+    if (!registeredThings[change.thingId]) {
+        return; //  NPC has never been opened
+    }
+    let thing = registeredThings[change.thingId];
+
+    if (thing && thing.items) {
+        for (let i = 0; i < thing.items.length; i++) {
+            if (thing.items[i].file == change.itemId) {
+                thing.items.splice(i, 1);
+                break;
+            }
+        }
+    }
+
+    w = windowShowing(change.thingId);
+    if (w) {
+        displayThing(change.thingId, w.sheet);
     }
 
 }
@@ -308,6 +367,7 @@ function parseSheet(thing, sheetName, w, owner) { // thing and w and owner are  
                 }
         }
     }
+    console.log(newText);
     return newText;
 }
 

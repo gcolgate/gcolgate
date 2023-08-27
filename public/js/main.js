@@ -95,6 +95,9 @@ socket.on('change', function (msg) {
     UpdateNPC(msg);
 });
 
+socket.on('removeItemFromNpc', function (msg) {
+    RemoveFromNPC(msg);
+});
 
 socket.on('addItem', function (msg) {
     AddItemToNPC(msg);

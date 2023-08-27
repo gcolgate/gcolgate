@@ -605,7 +605,7 @@ three_renderer.domElement.ondblclick = (ev) => {
     if (intersect?.object) {
         let o = intersect.object?.tile?.reference;
         if (o) {
-            showThing(o.file, "", o.page);
+            showThing(o.file, o.page);
         }
     }
 }

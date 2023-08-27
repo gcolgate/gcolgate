@@ -16,6 +16,7 @@ function uuidv4() {
     );
 }
 
+
 // TODO: got to make sure we have a consistent policy about extensions
 
 function optionallyAddExt(path, ext) {
@@ -64,6 +65,55 @@ async function ChangeThing(thingName, replacement, io, msg) {
     }
 
 }
+
+
+
+async function RemoveItemFromThing(io, msg) {
+
+    let thingId = msg.thingId;
+    let itemId = msg.itemId;
+
+    console.log(thingId);
+    console.log(itemId);
+
+
+    let filePath = path.normalize(path.join(__dirname, 'public', optionallyAddExt(thingId, ".json")));
+    console.log('filePath ', filePath);
+    ok = false;
+    let result = await fs.readFile(filePath);
+    let thing = jsonHandling.ParseJson(filePath, result); // for eval to work we need a thing
+    // console.log(thing);
+    if (thing && thing.items) {
+        for (let i = 0; i < thing.items.length; i++) {
+            if (thing.items[i].file == itemId) {
+                thing.items.splice(i, 1);
+                ok = true;
+                break;
+            }
+        }
+    }
+    if (ok) {
+        console.log("thing ", thing);
+        //  console.log('writeFile ', filePath);
+        await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
+            if (err)
+                console.log(err);
+            else {
+                console.log("File written successfully\n");
+                console.log("The written has the following contents:");
+                //  console.log(fs.readFileSync("books.txt", "utf8"));
+            }
+        });
+
+
+        let src = path.join(__dirname, "public", msg.itemId);
+        console.log("Erasing ", src);
+        await fs.unlink(src);
+
+        io.emit('removeItemFromNpc', msg);
+    }
+}
+
 
 function MakeTag(nom) {
 
@@ -133,4 +183,4 @@ async function AddItem(thingName, item_tag, io, msg) {
 
 }
 
-module.exports = { ChangeThing: ChangeThing, AddItem: AddItem };
+module.exports = { ChangeThing: ChangeThing, AddItem: AddItem, RemoveItemFromThing: RemoveItemFromThing };

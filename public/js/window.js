@@ -111,9 +111,12 @@ function createOrGetWindow(id, width, height, left, top) {
             //     w.body.style.height = (w.clientHeight - 40) + "px";
             //     // w.body.style.width = w.width;
             // });
-            w.style.width = body.style.width;
-            w.style.height = body.style.height + 40;
-            console.log("Size changed");
+            if (w.style) {
+                w.style.width = body.style.width;
+                w.style.height = body.style.height + 40;
+                console.log("Size changed");
+            } else
+                console.log("WTF");
         });
         windows.push(w);
 

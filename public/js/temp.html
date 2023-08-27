@@ -1,0 +1,564 @@
+<div class="c18 doc-content">
+    <div class="twocolumnsuneven">
+        <image src="images/mercs/eyepatchguy.jpg" alt="Player One!" style="width:auto; height:100%"></image>
+
+
+        <div class>
+
+            <p class="npcheader"> <input class="itemsetheader npcTitleInput" type="text" data-clause="thing.name"
+                    data-thingid="PartyFiles/playerone" value="Player One!" onchange="changeSheet(this)"> </p>
+
+
+            <p class="npcBold"><span class="c12">Species: <input list="species" class="itemsetheader itemTitleInput"
+                        data-clause="thing.species" data-thingid="PartyFiles/playerone" value="Human"
+                        onchange="changeSheet(this)"></span></p>
+
+            <datalist id="species">
+                <option>Human</option>
+                <option>Elf</option>
+                <option>Dark Troll</option>
+                <option>Dwarf</option>
+                <option>Ratling</option>
+            </datalist>
+
+
+            <p class="npcBold"><span class="c12">Origin: <input list="places" class="itemsetheader itemTitleInput"
+                        data-clause="thing.origin" data-thingid="PartyFiles/playerone" value="Majority City"
+                        onchange="changeSheet(this)"> </p>
+            <datalist id="places">
+                <option>Barony of Lewd Umber</option>
+                <option>Majority City</option>
+                <option>Barony of Orfor</option>
+                <option>Empire of the Red Moon</option>
+                <option>The Frozen Coast</option>
+                <option>Lorien Wood</option>
+                <option>Illyrian Isles</option>
+                <option>Mountains of Fear</option>
+                <option>Underdark</option>
+                <option>Far Chept</option>
+            </datalist>
+
+            <p class="npcBold"><span class="c12">Wealth: <input class="npcNum" type="text" data-clause="thing.wealth"
+                        data-thingid="PartyFiles/playerone" value="2" onchange="changeSheet(this)"></p>
+        </div>
+    </div>
+    <div style="display: flex;
+    color: rgb(88, 23, 13);
+    justify-content: space-around;
+    color-scheme: light dark;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: 400">
+        <div class=outlined style="font-weight: 700;display: inline-block"><span>AVOIDANCE</span><br>
+            <div style="font-weight: 400; font-size: 15px;"><input class="npcNum" type="text"
+                    data-clause=" thing.stats['avoidance'] " data-thingid="PartyFiles/playerone" value="2"
+                    onchange="changeSheet(this)"><button
+                    onclick="rollPTBAStat('PartyFiles/playerone','avoidance', false)">Check</button></div>
+        </div>
+        <div class=outlined style="font-weight: 700;display: inline-block"><span>ALLURE</span><br>
+            <div style="font-weight: 400; font-size: 15px;"><input class="npcNum" type="text"
+                    data-clause=" thing.stats['allure'] " data-thingid="PartyFiles/playerone" value="0"
+                    onchange="changeSheet(this)"><button
+                    onclick="rollPTBAStat('PartyFiles/playerone','allure', false)">Check</button></div>
+        </div>
+        <div class=outlined style="font-weight: 700;display: inline-block"><span>BRAVERY</span><br>
+            <div style="font-weight: 400; font-size: 15px;"><input class="npcNum" type="text"
+                    data-clause=" thing.stats['bravery'] " data-thingid="PartyFiles/playerone" value="2"
+                    onchange="changeSheet(this)"><button
+                    onclick="rollPTBAStat('PartyFiles/playerone','bravery', false)">Check</button></div>
+        </div>
+        <div class=outlined style="font-weight: 700;display: inline-block"><span>CARING</span><br>
+            <div style="font-weight: 400; font-size: 15px;"><input class="npcNum" type="text"
+                    data-clause=" thing.stats['caring'] " data-thingid="PartyFiles/playerone" value="-2"
+                    onchange="changeSheet(this)"><button
+                    onclick="rollPTBAStat('PartyFiles/playerone','caring', false)">Check</button></div>
+        </div>
+        <div class=outlined style="font-weight: 700;display: inline-block"><span>CUNNING</span><br>
+            <div style="font-weight: 400; font-size: 15px;"><input class="npcNum" type="text"
+                    data-clause=" thing.stats['cunning'] " data-thingid="PartyFiles/playerone" value="4"
+                    onchange="changeSheet(this)"><button
+                    onclick="rollPTBAStat('PartyFiles/playerone','cunning', false)">Check</button></div>
+        </div>
+        <div class=outlined style="font-weight: 700;display: inline-block"><span>INTELLIGENCE</span><br>
+            <div style="font-weight: 400; font-size: 15px;"><input class="npcNum" type="text"
+                    data-clause=" thing.stats['intelligence'] " data-thingid="PartyFiles/playerone" value="0"
+                    onchange="changeSheet(this)"><button
+                    onclick="rollPTBAStat('PartyFiles/playerone','intelligence', false)">Check</button></div>
+        </div>
+    </div>
+
+
+    <div> <button onclick="rollMoveStat('PartyFiles/playerone','bravery', 'Confront')">Confront</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','bravery', 'Display of Might and Power')">Display of Might and
+            Power</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','bravery', 'Attack')">Attack</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','bravery', 'Wrestle (offense)')">Wrestle
+            (offense)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','bravery', 'Wrestle (defense)')">Wrestle
+            (defense)(bravery)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','avoidance', 'Wrestle (defense)')">Wrestle
+            (defense)(avoidance)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','bravery', 'Parry')">Parry(bravery)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','avoidance', 'Parry')">Parry(avoidance)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','avoidance', 'Avoid')">Avoid</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','avoidance', 'Dodge')">Dodge</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','intelligence', 'Bargain')">Bargain</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','intelligence', 'Investigate/Insight')">Investigate/Insight</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','intelligence', 'Purchase')">Purchase</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','intelligence', 'Spout Lore')">Spout Lore</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','caring', 'Heal')">Heal</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','caring', 'Calm')">Calm</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','allure', 'Seduce/Flirt/Entertain')">Seduce/Flirt/Entertain</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','allure', 'Performance')">Performance</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','cunning', 'Wicked Lie')">Wicked Lie</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','cunning', 'Steal')">Steal</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','cunning', 'Scout')">Scout</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','cunning', 'Ambush')">Ambush</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','cunning', 'Backstab')">Backstab</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','cunning', 'Gossip')">Gossip(cunning)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','allure', 'Gossip')">Gossip(allure)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','intelligence', 'Gossip')">Gossip(intelligence)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','cunning', 'Perilous Journey')">Perilous
+            Journey(cunning)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','intelligence', 'Perilous Journey')">Perilous
+            Journey(intelligence)</button><button
+            onclick="rollMoveStat('PartyFiles/playerone','avoidance', 'Perilous Journey')">Perilous
+            Journey(avoidance)</button> </div>
+    <!-- <p class="c31 c32 c13"><span class="c2"></span></p>
+    <p class="c31 c32 c13"><span class="c2"></span></p>
+    <h2 class="c41 c32" id="h.mgj5wnut02kc"><span class="c16 c30 c24">Steel:
+            PTBAComputeSteel(thing) </span></h2>
+    <p class="npcBold"><span
+            class="c16 c24 c38">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    </p>
+    <h2 class="c32 c41" id="h.yj31nys9qpei"><span>Supplies</span><span class="c16 c24 c30">:
+            PTBAComputeMaxSupplies(thing)/2</span></h2>
+    <p clas="" npcBold"c13"><span class="c2"></span></p><a id="t.65e1cb7adb445e5b6fb90a596e799c0ac98d7fbc"></a><a
+        id="t.1"></a> -->
+    <div class="outlined dragitem">
+        <div>Items</div>
+        <div>
+            <div>
+                <div class="body">
+                    <div class=" itemsetheader">
+                        <div class="threecolumnsuneven">
+                            <div> Career: </div>
+                            <div> <input class="itemsetheadershort " type="text" data-clause="thing.name"
+                                    data-thingid="PartyFiles/playerone_Hunter_f0974674-3bce-49af-b640-0293e8bfe742.json"
+                                    value="Hunter" onchange="changeSheet(this)"></div>
+                            <div class="itemtextlt">
+                                <div><span class="npcBold">Level </span><input class="npcNum" type="text"
+                                        data-clause="thing.system.owner_level"
+                                        data-thingid="PartyFiles/playerone_Hunter_f0974674-3bce-49af-b640-0293e8bfe742.json"
+                                        value="3" onchange="changeSheet(this)"></div>
+                                <div><span class="npcBold">Career Points Spent </span><input class="npcNum" type="text"
+                                        data-clause="thing.system.owner_careerPointsSpent"
+                                        data-thingid="PartyFiles/playerone_Hunter_f0974674-3bce-49af-b640-0293e8bfe742.json"
+                                        value="0" onchange="changeSheet(this)"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="box-sizing: border-box;
+          color: rgb(0, 0, 0);
+          color-scheme: light dark;
+          font-family: Georgia, serif;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 400;
+          margin:8px;
+          line-height: 26.1333px;
+          text-transform: lowercase">
+                        <button class=lbl-collapsible-toggle onclick="ClickCollapsible(event)">Description </button>
+                        <div style="max-height:0px">
+                            <div>
+                                <div>
+                                    <div>
+
+                                        <div class="rd__b  rd__b--3">
+                                            <p>The hunter is a master of tracking prey through the wilderness and the
+                                                wastelands. Once hunters locate their target, they’ll use stealth, traps
+                                                and/or expert bowmanship or spears to bring it down. They are at home in
+                                                the wild and can survive there for long periods, returning to more
+                                                civilized areas only when they have furs and hides to sell, or when they
+                                                require the company of their fellow men (or women). </p>
+                                        </div>
+                                    </div>
+                                    <span class="npcBold">Weapons </span>Ranged
+                                    <span class="npcBold">Tools </span>Animals, Animal Traps,Camping, Tracking
+                                </div>
+                                <div> undefined </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><button
+                onclick=RemoveItemFromThing('PartyFiles/playerone','PartyFiles/playerone_Hunter_f0974674-3bce-49af-b640-0293e8bfe742.json')>
+                Delete Hunter</button>
+        </div>
+        <div>
+            <div>
+                <div class="body">
+                    <div class=" itemsetheader">
+                        <div class="threecolumnsuneven">
+                            <div> Career: </div>
+                            <div> <input class="itemsetheadershort " type="text" data-clause="thing.name"
+                                    data-thingid="PartyFiles/playerone_Assassin_981c94d2-3071-450b-ac50-1cd7ee94b6a2.json"
+                                    value="Assassin" onchange="changeSheet(this)"></div>
+                            <div class="itemtextlt">
+                                <div><span class="npcBold">Level </span><input class="npcNum" type="text"
+                                        data-clause="thing.system.owner_level"
+                                        data-thingid="PartyFiles/playerone_Assassin_981c94d2-3071-450b-ac50-1cd7ee94b6a2.json"
+                                        value="1" onchange="changeSheet(this)"></div>
+                                <div><span class="npcBold">Career Points Spent </span><input class="npcNum" type="text"
+                                        data-clause="thing.system.owner_careerPointsSpent"
+                                        data-thingid="PartyFiles/playerone_Assassin_981c94d2-3071-450b-ac50-1cd7ee94b6a2.json"
+                                        value="0" onchange="changeSheet(this)"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="box-sizing: border-box;
+          color: rgb(0, 0, 0);
+          color-scheme: light dark;
+          font-family: Georgia, serif;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 400;
+          margin:8px;
+          line-height: 26.1333px;
+          text-transform: lowercase">
+                        <button class=lbl-collapsible-toggle onclick="ClickCollapsible(event)">Description </button>
+                        <div style="max-height:0px">
+                            <div>
+                                <div>
+                                    <div>
+
+                                        <div class="rd__b  rd__b--3">
+                                            <p>Blades-for-hire, perhaps agents in the service of the king, spies and
+                                                assassins make killing and stealing in a discreet manner a way of life.
+                                                They are adept at sneak attacks, killing, information gathering,
+                                                disguises, city lore, persuasion, poisons, and lock picking. Their
+                                                methods involve gathering intelligence on their subject from various
+                                                (sometimes seedy) sources, circumventing security measures of all types,
+                                                adopting disguises that allow them to get close to the target, and
+                                                building up a broad selection of contacts. They are also patient,
+                                                sometimes hiding out in a single spot for days to await the perfect
+                                                opportunity to strike. </p>
+                                        </div>
+                                    </div>
+                                    <span class="npcBold">Weapons </span>Ambush
+                                    <span class="npcBold">Tools </span>By Feat
+                                </div>
+                                <div> undefined </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><button
+                onclick=RemoveItemFromThing('PartyFiles/playerone','PartyFiles/playerone_Assassin_981c94d2-3071-450b-ac50-1cd7ee94b6a2.json')>
+                Delete Assassin</button>
+        </div>
+        <div>
+            <div>
+                <div class="body">
+                    <div>
+                        <h1 class="itemsetheader">
+                            <input class="itemsetheader itemTitleInput" type="text" data-clause="thing.name"
+                                data-thingid="PartyFiles/playerone_longbow_phb_14dfb5e5-9037-41ae-b8f4-029147f59e33.json"
+                                value="Longbow" onchange="changeSheet(this)">
+                        </h1>
+                    </div>
+                    <div style="box-sizing: border-box;
+          color: rgb(0, 0, 0);
+          color-scheme: light dark;
+          font-family: Georgia, serif;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 400;
+          margin:8px;
+          line-height: 26.1333px;
+          text-transform: lowercase">
+                    </div>
+                    <div>
+                        <div class="rd__b  rd__b--2"></div>
+                    </div>
+                </div>
+            </div><button
+                onclick=RemoveItemFromThing('PartyFiles/playerone','PartyFiles/playerone_longbow_phb_14dfb5e5-9037-41ae-b8f4-029147f59e33.json')>
+                Delete Longbow</button>
+        </div>
+        <div>
+            <div>
+                <div class="body">
+                    <div class=" itemsetheader">
+                        <div class="threecolumnsuneven">
+                            <div> Career: </div>
+                            <div> <input class="itemsetheadershort " type="text" data-clause="thing.name"
+                                    data-thingid="PartyFiles/playerone_BeastMaster_5be2b8c0-8801-4cca-96bd-1b5dce912170.json"
+                                    value="Beast Master" onchange="changeSheet(this)"></div>
+                            <div class="itemtextlt">
+                                <div><span class="npcBold">Level </span><input class="npcNum" type="text"
+                                        data-clause="thing.system.owner_level"
+                                        data-thingid="PartyFiles/playerone_BeastMaster_5be2b8c0-8801-4cca-96bd-1b5dce912170.json"
+                                        value="0" onchange="changeSheet(this)"></div>
+                                <div><span class="npcBold">Career Points Spent </span><input class="npcNum" type="text"
+                                        data-clause="thing.system.owner_careerPointsSpent"
+                                        data-thingid="PartyFiles/playerone_BeastMaster_5be2b8c0-8801-4cca-96bd-1b5dce912170.json"
+                                        value="0" onchange="changeSheet(this)"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="box-sizing: border-box;
+          color: rgb(0, 0, 0);
+          color-scheme: light dark;
+          font-family: Georgia, serif;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 400;
+          margin:8px;
+          line-height: 26.1333px;
+          text-transform: lowercase">
+                        <button class=lbl-collapsible-toggle onclick="ClickCollapsible(event)">Description </button>
+                        <div style="max-height:0px">
+                            <div>
+                                <div>
+                                    <div>
+
+                                        <div class="rd__b  rd__b--3">
+                                            <p>Beastmasters are in demand all over for their special empathy and skill
+                                                with animals. They train animals for riding, for pulling wagons, for
+                                                combat, and even for the gladiatorial arena. Beastmasters can calm
+                                                maddened creatures, are expert riders and wagoneers, can recognize
+                                                whether creatures are dangerous and about to attack or not, and often
+                                                have some skill in healing them if injured or sick. Some beastmasters
+                                                rule their animals by fear and deprivation.</p>
+                                        </div>
+                                    </div>
+                                    <span class="npcBold">Weapons </span>
+                                    <span class="npcBold">Tools </span>Animals
+                                </div>
+                                <div> undefined </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><button
+                onclick=RemoveItemFromThing('PartyFiles/playerone','PartyFiles/playerone_BeastMaster_5be2b8c0-8801-4cca-96bd-1b5dce912170.json')>
+                Delete Beast Master</button>
+        </div>
+        <div>
+            <div>
+                <div class="body">
+                    <div>
+                        <h1 class="itemsetheader">
+                            <input class="itemsetheader itemTitleInput" type="text" data-clause="thing.name"
+                                data-thingid="PartyFiles/playerone_longbow_phb_a247807b-c69f-4a42-aff7-cca0f18d7821.json"
+                                value="Longbow" onchange="changeSheet(this)">
+                        </h1>
+                    </div>
+                    <div style="box-sizing: border-box;
+          color: rgb(0, 0, 0);
+          color-scheme: light dark;
+          font-family: Georgia, serif;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 400;
+          margin:8px;
+          line-height: 26.1333px;
+          text-transform: lowercase">
+                    </div>
+                    <div>
+                        <div class="rd__b  rd__b--2"></div>
+                    </div>
+                </div>
+            </div><button
+                onclick=RemoveItemFromThing('PartyFiles/playerone','PartyFiles/playerone_longbow_phb_a247807b-c69f-4a42-aff7-cca0f18d7821.json')>
+                Delete Longbow</button>
+        </div>
+        <div>
+            <div>
+                <div class="body">
+                    <div class=" itemsetheader">
+                        <input class="itemsetheader itemTitleInput" type="text" data-clause="thing.name"
+                            data-thingid="PartyFiles/playerone_abacus_phb_8ea7df05-6de0-4a55-ba4f-0f5307dc5e11.json"
+                            value="Abacus" onchange="changeSheet(this)">
+                    </div>
+                    <div style="box-sizing: border-box;
+          color: rgb(0, 0, 0);
+          color-scheme: light dark;
+          font-family: Georgia, serif;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 400;
+          margin:8px;
+          line-height: 26.1333px;
+          text-transform: lowercase">
+                        loot </div>
+                    <div>
+                    </div>
+                    <div> </div>
+                    <div> </div>
+
+                </div>
+            </div><button
+                onclick=RemoveItemFromThing('PartyFiles/playerone','PartyFiles/playerone_abacus_phb_8ea7df05-6de0-4a55-ba4f-0f5307dc5e11.json')>
+                Delete Abacus</button>
+        </div>
+    </div>
+
+    <!-- <p class="c31 c32"><span class="c2">&nbsp;</span></p>
+
+    <p clas="" npcBold"c13"><span class="c16 c24 c38"></span></p>
+    <p class="npcBold"><span class="c2">Languages</span></p>
+    <div> <input type="checkbox" id="Dwarvish" name="Dwarvish" onChange= "selectLanguage('PartyFiles/playerone',  event,'Dwarvish')  "><label for="Dwarvish">Dwarvish</label><input type="checkbox" id="Far Durian" name="Far Durian" onChange= "selectLanguage('PartyFiles/playerone',  event,'Far Durian')  "><label for="Far Durian">Far Durian</label><input type="checkbox" id="Illyrian" name="Illyrian" onChange= "selectLanguage('PartyFiles/playerone',  event,'Illyrian')  "><label for="Illyrian">Illyrian</label><input type="checkbox" id="Imperial, Court" name="Imperial, Court" checked="true"" onChange= "selectLanguage('PartyFiles/playerone',  event,'Imperial, Court')  "><label for="Imperial, Court">Imperial, Court</label><input type="checkbox" id="Imperial, Low" name="Imperial, Low" onChange= "selectLanguage('PartyFiles/playerone',  event,'Imperial, Low')  "><label for="Imperial, Low">Imperial, Low</label><input type="checkbox" id="Low Elvish" name="Low Elvish" onChange= "selectLanguage('PartyFiles/playerone',  event,'Low Elvish')  "><label for="Low Elvish">Low Elvish</label><input type="checkbox" id="Prittanian, High" name="Prittanian, High" onChange= "selectLanguage('PartyFiles/playerone',  event,'Prittanian, High')  "><label for="Prittanian, High">Prittanian, High</label><input type="checkbox" id="Prittanian, Low" name="Prittanian, Low" checked="true"" onChange= "selectLanguage('PartyFiles/playerone',  event,'Prittanian, Low')  "><label for="Prittanian, Low">Prittanian, Low</label><input type="checkbox" id="Cheptian  (Tribal)" name="Cheptian  (Tribal)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Cheptian  (Tribal)')  "><label for="Cheptian  (Tribal)">Cheptian  (Tribal)</label><input type="checkbox" id="Frozen Cost(Tribal) " name="Frozen Cost(Tribal) " onChange= "selectLanguage('PartyFiles/playerone',  event,'Frozen Cost(Tribal) ')  "><label for="Frozen Cost(Tribal) ">Frozen Cost(Tribal) </label><input type="checkbox" id="Giant (Tribal)" name="Giant (Tribal)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Giant (Tribal)')  "><label for="Giant (Tribal)">Giant (Tribal)</label><input type="checkbox" id="Orlanthi (Tribal)" name="Orlanthi (Tribal)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Orlanthi (Tribal)')  "><label for="Orlanthi (Tribal)">Orlanthi (Tribal)</label><input type="checkbox" id="Pavis (Tribal)" name="Pavis (Tribal)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Pavis (Tribal)')  "><label for="Pavis (Tribal)">Pavis (Tribal)</label><input type="checkbox" id="Ratling (Tribal)" name="Ratling (Tribal)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Ratling (Tribal)')  "><label for="Ratling (Tribal)">Ratling (Tribal)</label><input type="checkbox" id="Trollish (Tribal)" name="Trollish (Tribal)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Trollish (Tribal)')  "><label for="Trollish (Tribal)">Trollish (Tribal)</label><input type="checkbox" id="Abyssal (magic)" name="Abyssal (magic)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Abyssal (magic)')  "><label for="Abyssal (magic)">Abyssal (magic)</label><input type="checkbox" id="Arachnos (Magic) " name="Arachnos (Magic) " onChange= "selectLanguage('PartyFiles/playerone',  event,'Arachnos (Magic) ')  "><label for="Arachnos (Magic) ">Arachnos (Magic) </label><input type="checkbox" id="BeastSpeech (Magic)" name="BeastSpeech (Magic)" onChange= "selectLanguage('PartyFiles/playerone',  event,'BeastSpeech (Magic)')  "><label for="BeastSpeech (Magic)">BeastSpeech (Magic)</label><input type="checkbox" id="Celestial (Magic)" name="Celestial (Magic)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Celestial (Magic)')  "><label for="Celestial (Magic)">Celestial (Magic)</label><input type="checkbox" id="Firespeech (Magic)" name="Firespeech (Magic)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Firespeech (Magic)')  "><label for="Firespeech (Magic)">Firespeech (Magic)</label><input type="checkbox" id="High Elvish (Magic)" name="High Elvish (Magic)" onChange= "selectLanguage('PartyFiles/playerone',  event,'High Elvish (Magic)')  "><label for="High Elvish (Magic)">High Elvish (Magic)</label><input type="checkbox" id="Ignos (Firespeech) (Magic)" name="Ignos (Firespeech) (Magic)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Ignos (Firespeech) (Magic)')  "><label for="Ignos (Firespeech) (Magic)">Ignos (Firespeech) (Magic)</label><input type="checkbox" id="Pirate King(Magic) " name="Pirate King(Magic) " onChange= "selectLanguage('PartyFiles/playerone',  event,'Pirate King(Magic) ')  "><label for="Pirate King(Magic) ">Pirate King(Magic) </label><input type="checkbox" id="Saurian (Magic) " name="Saurian (Magic) " onChange= "selectLanguage('PartyFiles/playerone',  event,'Saurian (Magic) ')  "><label for="Saurian (Magic) ">Saurian (Magic) </label><input type="checkbox" id="Windsong (Magic)" name="Windsong (Magic)" onChange= "selectLanguage('PartyFiles/playerone',  event,'Windsong (Magic)')  "><label for="Windsong (Magic)">Windsong (Magic)</label> </div>
+    </p>
+    <p clas="" npcBold"c13"><span class="c9 c16"></span></p>
+    <h1 class="c25" id="h.db6o3zf5ld6q"><span class="c19">Boons and Banes</span></h1>
+    <p clas="" npcBold"c13"><span class="c9 c16"></span></p><a id="t.7eae1e230b7c42da16e9d3fbe5544d28f6d90e05"></a><a
+        id="t.2"></a>
+    <table class="c34">
+        <tr class="c42">
+            <td class="c33" colspan="1" rowspan="1">
+                <p class="c14"><span class="c39">Alert</span></p>
+            </td>
+            <td class="c23" colspan="1" rowspan="1">
+                <p class="c14"><span class="c19">You have the ability, at the last minute, to sense threats and to
+                        react
+                        to hostilities. You often get the initiative in the first round of combat.</span></p>
+            </td>
+        </tr>
+    </table>
+    <h1 class="c25" id="h.wsjktf87vsqf"><span class="c16 c20 c19">Narrative Power</span></h1>
+    <p clas="" npcBold"c13"><span class="c9 c16"></span></p><a id="t.edeaf4faa928b0459695d3ebe765e70869181eab"></a><a
+        id="t.3"></a>
+    <table class="c34">
+        <tr class="c42">
+            <td class="c33" colspan="1" rowspan="1">
+                <p class="c14"><span class="c39">Just in Time</span></p>
+            </td>
+            <td class="c23" colspan="1" rowspan="1">
+                <p class="c14"><span class="c19">You arrived just in time : the guards are at lunch, the dragon is
+                        sleeping, the portal that opens every one thousand years is open : you turned your head and
+                        the
+                        arrow missed , not to be used offensively to stab someone. You could also use this to arrive
+                        despite not knowing the way to locations</span></p>
+            </td>
+        </tr>
+    </table>
+    <h1 class="c25 c40" id="h.w1x2pg4xypqc"><span class="c16 c19 c20"></span></h1>
+    <p clas="" npcBold"c13"><span class="c2"></span></p>
+    <h1 class="c25" id="h.o7ba8sdyjxau"><span class="c19">Magic
+            Power&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mana
+            Points: 10</span></h1><a id="t.bbeefc39082d204025077b910d41483c05dbf2e1"></a><a id="t.4"></a>
+    <table class="c34">
+        <tr class="c17">
+            <td class="c0" colspan="1" rowspan="1">
+                <p class="c14"><span class="c12">Illusion</span></p>
+            </td>
+            <td class="c6" colspan="1" rowspan="1">
+                <p class="c14"><span class="c4">Any spell that can be explained by deceiving someone&rsquo;s
+                        senses.</span></p>
+                <p class="c14"><span class="c4">&#9679; Cantrip: minor cosmetic changes, magic tricks, get advantage
+                        on
+                        a performance,ventriloquism </span></p>
+                <p class="c14"><span class="c4">&#9679; First Circle: Invisibility, Light, Sounds, Standing
+                        Illusions,
+                    </span></p>
+                <p class="c14"><span class="c4">&#9679; Second Circle: Illusionary beings that interact
+                        convincingly,
+                        affecting all senses, Large Scale illusions, like terrain or buildings, &nbsp;trapping
+                        someone
+                        in dreams or nightmares,</span></p>
+                <p class="c14"><span class="c4">&#9679; Third Circle: Affecting reality with illusions</span></p>
+            </td>
+        </tr>
+    </table>
+    <h1 class="c25" id="h.fts45v31b3fr"><span class="c16 c20 c19">Careers</span></h1>
+    <p class="npcBold"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c16 c20 c19">Assassin :
+            2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            2</span>
+    </p>
+    <p class="npcBold"><span class="c16 c20 c19">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thug:
+            3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            3</span></p>
+    <p class="npcBold"><span class="c16 c20 c19">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Beggar:
+            1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1</span>
+    </p>
+    <h1 class="c25 c40" id="h.yiz94jg3kuw"><span class="c2"></span></h1><a
+        id="t.59178851f39ff5092638471d819fe652b6b6ee49"></a><a id="t.5"></a>
+    <table class="c34">
+        <tr class="c17">
+            <td class="c0" colspan="1" rowspan="1">
+                <p class="c21"><span class="c39">Disguise Master</span></p>
+            </td>
+            <td class="c28" colspan="1" rowspan="1">
+                <p class="c14"><span class="c4">Assassin</span></p>
+            </td>
+            <td class="c6" colspan="1" rowspan="1">
+                <p class="c21"><span class="c19">&nbsp;Spend a &nbsp;career point to make a perfect disguise, or as
+                        good
+                        as you can with the materials at hand.<br></span></p>
+            </td>
+        </tr>
+        <tr class="c17">
+            <td class="c0" colspan="1" rowspan="1">
+                <p class="c21"><span class="c1">Holdout Weapon</span></p>
+            </td>
+            <td class="c28" colspan="1" rowspan="1">
+                <p class="c14"><span class="c4">Assassin</span></p>
+            </td>
+            <td class="c6" colspan="1" rowspan="1">
+                <p class="c21"><span class="c2">conceal a small weapon on your person in a way too offensive to
+                        consider</span></p>
+            </td>
+        </tr>
+        <tr class="c17">
+            <td class="c0" colspan="1" rowspan="1">
+                <p class="c21"><span class="c1">Expert Pickpocket</span></p>
+            </td>
+            <td class="c28" colspan="1" rowspan="1">
+                <p class="c14"><span class="c4">Beggar</span></p>
+            </td>
+            <td class="c6" colspan="1" rowspan="1">
+                <p class="c21"><span class="c2">&nbsp;spend a career point to steal something without any sort of
+                        roll</span></p>
+            </td>
+        </tr>
+        <tr class="c17">
+            <td class="c0" colspan="1" rowspan="1">
+                <p class="c21"><span class="c1">Brawler</span></p>
+            </td>
+            <td class="c28" colspan="1" rowspan="1">
+                <p class="c14"><span class="c4">Thug</span></p>
+            </td>
+            <td class="c6" colspan="1" rowspan="1">
+                <p class="c21"><span class="c2">+1 damage with your bare hands</span></p>
+            </td>
+        </tr>
+        <tr class="c17">
+            <td class="c0" colspan="1" rowspan="1">
+                <p class="c21"><span class="c1">Wrestler</span></p>
+            </td>
+            <td class="c28" colspan="1" rowspan="1">
+                <p class="c14"><span class="c4">Thug</span></p>
+            </td>
+            <td class="c6" colspan="1" rowspan="1">
+                <p class="c21"><span class="c2">+1 to rolls involving wrestling</span></p>
+            </td>
+        </tr>
+        <tr class="c47">
+            <td class="c0" colspan="1" rowspan="1">
+                <p class="c21"><span class="c1">Tough</span></p>
+            </td>
+            <td class="c28" colspan="1" rowspan="1">
+                <p class="c14"><span class="c4">Thug</span></p>
+            </td>
+            <td class="c6" colspan="1" rowspan="1">
+                <p class="c21"><span class="c2">Use one career point to ignore the pain effect of a wound for a
+                        round</span></p>
+            </td>
+        </tr>
+    </table> -->
+    <h1 class="c25 c40" id="h.rsiskyc5jn9c"><span class="c16 c20 c19"></span></h1>
+</div>

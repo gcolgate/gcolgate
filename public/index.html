@@ -129,6 +129,12 @@
       background-color: beige;
     }
 
+    .threecolumnsuneven {
+      display: grid;
+      grid-template-columns: 25% 50% 25%;
+      background-color: beige;
+    }
+
     .diceexpression {
       text-align: center;
       font-style: italic;
@@ -145,6 +151,10 @@
 
     .chatmsg {
       border: groove black;
+    }
+
+    .npcBold {
+      font-weight: bold;
     }
 
     .crit {
@@ -239,6 +249,26 @@
       text-transform: capitalize;
     }
 
+    .itemsetheadershort {
+      box-sizing: border-box;
+      color: rgb(88, 23, 13);
+      background-color: rgb(255, 215, 170);
+      color-scheme: light dark;
+      font-family: Mrs Eaves;
+      font-size: 20px;
+      font-variant-alternates: normal;
+      font-variant-caps: small-caps;
+      font-variant-east-asian: normal;
+      font-variant-ligatures: normal;
+      font-variant-numeric: normal;
+      font-variant-position: normal;
+      font-weight: 700;
+      margin-left: 0px;
+      margin-right: 0px;
+      width: 100%;
+      text-transform: capitalize;
+    }
+
     .itemtext {
       color: rgb(52, 25, 21);
       background-color: rgb(255, 215, 170);
@@ -253,6 +283,88 @@
       margin-left: 5px;
       margin-right: 5px;
     }
+
+    .itemtextlt {
+      color: rgb(52, 25, 21);
+      background-color: beige;
+      color-scheme: light dark;
+      font-family: Mrs Eaves;
+      font-size: 12px;
+      font-variant-alternates: normal;
+      font-variant-east-asian: normal;
+      font-variant-ligatures: normal;
+      font-variant-numeric: normal;
+      font-variant-position: normal;
+      margin-left: 5px;
+      margin-right: 5px;
+      text-transform: none;
+      width: 100%;
+    }
+
+    .collapsible-toggle {
+      display: none;
+    }
+
+    .lbl-collapsible-toggle {
+
+      display: block;
+
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: center;
+      font-size: 8px;
+
+      padding: 1rem;
+
+      color: #2d240c;
+      background: beige;
+
+      cursor: pointer;
+
+      border-radius: 7px;
+      transition: all 0.25s ease-out;
+    }
+
+    .lbl-collapsible-toggle:hover {
+      color: #d2a71a;
+    }
+
+    /* triangle shape */
+
+    .lbl-collapsible-toggle::before {
+      content: ' ';
+      display: inline-block;
+
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 5px solid currentColor;
+
+      vertical-align: middle;
+      margin-right: .7rem;
+      transform: translateY(-2px);
+
+      transition: transform .2s ease-out;
+    }
+
+    /* .collapsible-content {
+      max-height: 0px;
+      overflow: hidden;
+
+      transition: max-height .25s ease-in-out;
+    } */
+
+    /* .collapsible-toggle:checked+.lbl-collapsible-toggle+.collapsible-content {
+      max-height: 100%;
+    }
+
+    .collapsible-toggle:checked+.lbl-collapsible-toggle::before {
+      transform: rotate(90deg) translateX(-3px);
+    }
+
+    .collapsible-toggle:checked+.lbl-collapsible-toggle {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    } */
 
 
     [id$="header"] {
