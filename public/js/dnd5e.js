@@ -85,7 +85,7 @@ function MaybeDescription(description) {
     }
     outDescription += "</div>";
     return outDescription;
-};
+}
 
 function ItemWeapon(thing, owner, full) {
 
@@ -95,16 +95,12 @@ function ItemWeapon(thing, owner, full) {
     if (!atk) { atk = 0; }
     let answer = '';
     if (owner != undefined && !owner.isptba) {
-        answer += "<button  onclick=\"rollWeapon('" + owner.id + "','" + thing.id + "')\">Attack</button>";
+        answer += "<button  onclick=\"rollWeapon('" + owner.id + "','" + thing.id + "')\">Damage</button>";
         //  include applydamage button on roll need to decide who is target
     } else {
-        // include dropdown for career , add magic bonus to compute steel
-        // add armor bonus for armor 
-        // roll with double damage vs monsters, have button Confront and Ambush and Parry and Dodge
-        //  include applydamage button on roll need to decide who is target
-        // 
+        answer += "<button  onclick=\"rollWeaponDamage('" + owner.id + "','" + thing.id + "'," + (thing.career ? thing.career : 0) + ")\">Damage</button>";
     }
-    if (full) answer += "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
+    if (full && owner.type) answer += "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
     if (s.damage.versatile && s.damage.versatile != "")
         answer += "<div><span>Versatile</span>" + s.damage.versatile + "</div>";
     let props = [];
@@ -125,7 +121,7 @@ function ItemWeapon(thing, owner, full) {
     }
 
     return answer;
-};
+}
 
 function SpellIsAreaEffect(thing, owner) {
 
@@ -455,12 +451,43 @@ function DndSpeed(title, thing, ability, units) {
     return '<li class="speedline"><span class="npcBold">' + title + '</span>' + value + units + '</li>';
 }
 
+function rollDamage(ownerId, weaponId, bonus, rolls) {
+    let weapon = registeredThings[weaponId];
+
+
+    for (let i = 0; i < weapon.system.damage.parts.length; i++) {
+        let damage = [...weapon.system.damage.parts[i]];
+        let damageDice = damage[0].replace('@mod', bonus);
+        damage.shift();
+        let t = commaString(damage);
+
+        rolls.push(
+            {
+                title: weapon.name + " " + t + " damage",
+                roll: damageDice,
+
+            }
+        );
+    }
+}
+
+
+
+function rollWeaponDamage(ownerId, weaponId, bonus) {
+    let rolls = [];
+    rollDamage(ownerId, weaponId, bonus, rolls);
+    socket.emit('rolls', rolls);
+
+}
+
 function rollWeapon(ownerId, weaponId) {
 
     let owner = registeredThings[ownerId];
     let weapon = registeredThings[weaponId];
 
     console.log('Weapon %o', weapon);
+
+
 
     let bonus = DndAbilityBonus(owner, owner.system.abilities[weapon.system.ability].value);
     if (weapon?.properties?.fin) {
@@ -483,21 +510,7 @@ function rollWeapon(ownerId, weaponId) {
 
     });
 
-    for (let i = 0; i < weapon.system.damage.parts.length; i++) {
-        let damage = [...weapon.system.damage.parts[i]];
-        let damageDice = damage[0].replace('@mod', bonus);
-        damage.shift();
-        let t = commaString(damage);
-
-        rolls.push(
-            {
-                title: weapon.name + " " + t + " damage",
-                roll: damageDice,
-
-            }
-        );
-
-    }
+    rollDamage(ownerId, weaponId, bonus, rolls)
 
     socket.emit('rolls', rolls);
 }
@@ -694,51 +707,6 @@ function Spell(thing) {
             +" " + s.range.units + "</div>";
     }
     return answer;
-};
+}
 
-
-
-createCSSSelector('.spellsetheader', "box-sizing: border-box; \
-    color: rgb(88, 23, 13); \
-    background-color: rgb(255, 215, 170); \
-    color-scheme: light dark; \
-    font-family: Mrs Eaves; \
-    font-size: 30px; \
-    font-variant-alternates: normal; \
-    font-variant-caps: small-caps; \
-    font-variant-east-asian: normal; \
-    font-variant-ligatures: normal; \
-    font-variant-numeric: normal; \
-    font-variant-position: normal; \
-    font-weight: 700; \
-    line-height: 42px; \
-    margin-bottom: -5px; \
-    margin-left: 0px; \
-    margin-right: 0px; \
-    margin-top: -10px; \
-    text-transform: capitalize");
-
-
-
-createCSSSelector('.spellNumInput', ' \
-    background-color: rgb(255, 215, 170); \
-    border-top-style: hidden;\
-    border-right-style: hidden;\
-    border-left-style: hidden;\
-    border-bottom-style: hidden;\
-    color-scheme: light dark; \
-    font-family: Mrs Eaves; \
-    font-variant-alternates: normal; \
-    font-variant-caps: small-caps; \
-    font-variant-east-asian: normal; \
-    font-variant-ligatures: normal; \
-    font-variant-numeric: normal; \
-    font-variant-position: normal; \
-    font-weight: 300;');
-
-createCSSSelector('.spellBold', "font-weight: 700;");
-
-
-
-createCSSSelector('.npcBold', "font-weight: 700;");
 

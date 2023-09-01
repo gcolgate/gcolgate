@@ -385,6 +385,53 @@ function drawCareerFeats(thing, owner) {
 }
 
 
+// Hide the popup menu when clicking anywhere in the document
+document.addEventListener("mouseup", () => {
+
+    //  const popupMenu = document.getElementById("popupMenu");
+    //popupMenu.style.display = "none";
+    //
+});
+
+
+function showApperancePopUp(e, id) {
+
+    const popupMenu = document.getElementById("popupMenu");
+    const ul = popupMenu.children[0]; // todo change to id
+    let thing = registeredThings[id];
+
+    if (thing) {
+        ul.replaceChildren();
+        for (let i = 0; i < thing.appearance.length; i++) {
+            let li = document.createElement("li");
+            li.appendChild(document.createTextNode(thing.appearance[i].name));
+            ul.appendChild(li);
+
+            li.onclick = function () {
+
+                //  thing.current_appearance = thing.appearance[i].name;
+                let id = thing.id; // the window id is window_fullthingname
+                let evaluation = 'thing.current_appearance =  "' + thing.appearance[i].name + '"'; // the window id is window_fullthingname
+                console.log('id is ' + id);
+                console.log('evaluation is ' + evaluation);
+                socket.emit('change', {
+                    change: evaluation,
+                    thing: id
+                })
+
+            }
+
+        }
+
+        popupMenu.style.display = "block";
+        popupMenu.style.visibility = "visible";
+        popupMenu.style.left = e.clientX + "px";
+        popupMenu.style.top = e.clientY + "px";
+
+
+    }
+
+}
 
 function drawCareerLevel(thing, owner) {
     let text = "";

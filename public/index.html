@@ -366,6 +366,36 @@
       border-bottom-left-radius: 0;
     } */
 
+    .popup-menu {
+      display: none;
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 0;
+      list-style: none;
+      z-index: 10000;
+    }
+
+    .popup-menu ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    .popup-menu li {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .popup-menu li:hover {
+      background-color: #e5c94d;
+    }
+
+    .target-element {
+      border: 1px solid #333;
+      padding: 10px;
+      width: 200px;
+      text-align: center;
+    }
 
     [id$="header"] {
 
@@ -610,6 +640,11 @@
 
     <div class="windowGroup" id="windowGroup"></div>
 
+    <div id="popupMenu" class="popup-menu">
+      <ul id="popupMenu_ul ">
+
+      </ul>
+    </div>
 
 </body>
 

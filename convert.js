@@ -1481,6 +1481,6 @@ function convertPTBA() {
 }
 
 // note, run convertDnD5e and do not translate feats
-//convertDnD5e();
+convertDnD5e();
 
 convertPTBA();
