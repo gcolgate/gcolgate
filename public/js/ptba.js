@@ -386,11 +386,11 @@ function drawCareerFeats(thing, owner) {
 
 
 // Hide the popup menu when clicking anywhere in the document
-document.addEventListener("mouseup", () => {
-
-    //  const popupMenu = document.getElementById("popupMenu");
-    //popupMenu.style.display = "none";
-    //
+document.addEventListener("mouseup", (event) => {
+    const popupMenu = document.getElementById("popupMenu");
+    if (popupMenu && event.target != popupMenu) {
+        popupMenu.style.display = "none";
+    }
 });
 
 
@@ -402,6 +402,11 @@ function showApperancePopUp(e, id) {
 
     if (thing) {
         ul.replaceChildren();
+
+        let li = document.createElement("li");
+        li.appendChild(document.createTextNode("Edit " + thing.current_appearance));
+        ul.appendChild(li);
+
         for (let i = 0; i < thing.appearance.length; i++) {
             let li = document.createElement("li");
             li.appendChild(document.createTextNode(thing.appearance[i].name));
@@ -418,6 +423,7 @@ function showApperancePopUp(e, id) {
                     change: evaluation,
                     thing: id
                 })
+                popupMenu.style.display = "none";
 
             }
 
