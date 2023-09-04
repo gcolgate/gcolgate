@@ -299,25 +299,51 @@ function div(x, s) {
     return "<div" + s + ">" + x + "</div > ";
 }
 
+function getTokenAppearance(thing) {
+
+    let image = undefined;
+    if (thing.current_appearance) {
+        for (let i = 0; i < thing.appearance.length; i++) {
+            if (thing.appearance[i].name == thing.current_appearance) {
+                image = thing.appearance[i].token?.image;
+            }
+        }
+    }
+    return image; //? image : "public/images/questionMark.png";
+}
 
 // fetches image from appearance array, to do rename 
 function FetchImageFromAppearanceArray(thing) {
 
-    let image = "images/mighty-force.svg"
+    let image = undefined;
     if (thing.current_appearance) {
         for (let i = 0; i < thing.appearance.length; i++) {
 
             if (thing.appearance[i].name == thing.current_appearance) {
 
-                image = thing.appearance[i].portrait;
+                image = thing.appearance[i].portrait?.image;
             }
         }
     }
-    return image;
+    return image ? image : "public/images/questionMark.png";
 }
 
 
+function FetchStyleFromAppearanceArray(thing) {
 
+    let parms = "";
+    if (thing.current_appearance) {
+        for (let i = 0; i < thing.appearance.length; i++) {
+            if (thing.appearance[i].name == thing.current_appearance) {
+                if (thing.appearance[i].portrait.rotation) {
+                    parms = ';transform:rotate(' + thing.appearance[i].portrait.rotation + 'deg)';
+                    break;
+                }
+            }
+        }
+    }
+    return parms;
+}
 
 function featclicked(cb) {
     console.log("Clicked, new value = " + cb.checked);
@@ -419,11 +445,9 @@ function showApperancePopUp(e, id) {
                 let evaluation = 'thing.current_appearance =  "' + thing.appearance[i].name + '"'; // the window id is window_fullthingname
                 console.log('id is ' + id);
                 console.log('evaluation is ' + evaluation);
-                socket.emit('change', {
-                    change: evaluation,
-                    thing: id
-                })
+
                 popupMenu.style.display = "none";
+                socket.emit("change_appearance", { thing: id, change: evaluation });
 
             }
 

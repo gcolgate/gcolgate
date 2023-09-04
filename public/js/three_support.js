@@ -193,13 +193,15 @@ var materials = {};
 
 var layers = {
     tile: {
-        selectables: [],
+        selectables: [],        // for some reason I have both an array and map of this, maybe because I need array for THREE calls? TODO: investigate
         selectablesMap: {},
+        protoSheetMap: {},      // if the object has a sheet with  with a file name, this will be the file name, like PlayerOne. TODO: better name
         layer: tileLayer,
     },
     token: {
         selectables: [],
         selectablesMap: {},
+        protoSheetMap: {},
         layer: tokenLayer,
     },
 };
@@ -247,23 +249,25 @@ export function three_findMouseShapes(who) {
 
 let baseMaterial = new THREE.MeshBasicMaterial({ color: 0x0, transparent: false });
 
-export async function three_addTile(tile) {
-    fixTile(tile);
+async function three_setTileImage(tile, plane) {
+
+
     // TODO: Fix calling this with two kinds of parameters and get rid of this line   
     let tname = (typeof tile.texture == "string" ? tile.texture : tile.texture.img);
 
     if (!tname.startsWith("images/"))
         tname = "./images/" + tile.texture; // todo fix this so we are not adding paths in random places
-    let materialName = tname + "_simple";
 
+    if (tile.sheet?.file) {
 
+        await ensureThingLoaded(tile.sheet.file);
 
-    const plane = new THREE.Mesh(plane_geometry, baseMaterial);
-    plane.position.x = tile.x;
-    plane.position.y = tile.y;
-    plane.position.z = tile.z;
-    plane.reference = tile;
+        let token = getTokenAppearance(registeredThings[tile.sheet.file]);
+        if (token) {
+            tname = token;
+        }
 
+    }
 
 
     new THREE.TextureLoader().loadAsync(tname).then(texture => {
@@ -276,13 +280,36 @@ export async function three_addTile(tile) {
         plane.scale.set(textureScaleX, textureScaleY, 1);
 
     });
+
+}
+
+export function three_addTile(tile) {
+    fixTile(tile);
+    const plane = new THREE.Mesh(plane_geometry, baseMaterial);
+
+
+    plane.position.x = tile.x;
+    plane.position.y = tile.y;
+    plane.position.z = tile.z;
+    plane.reference = tile;
+
+
     let layer = three_getLayer(tile.guiLayer);
     layer.layer.add(plane);
     layer.selectables.push(plane);
     layer.selectablesMap[tile.tile_id] = plane;
+    let original = tile?.sheet?.file;
+    if (original) {
+        if (layer.protoSheetMap[original] == undefined) {
+
+            layer.protoSheetMap[original] = [];
+        }
+        layer.protoSheetMap[original].push(plane);
+
+    }
 
     plane.tile = tile;
-
+    three_setTileImage(tile, plane);
 
 
 }
@@ -318,6 +345,8 @@ export function three_replaceScene(sceneName, sceneType, c) {
     Object.keys(layers).forEach((item) => {
         layers[item].selectables = [];
         layers[item].selectablesMap = {};
+        layers[item].protoSheetMap = {};
+
     });
 
     for (let i = 0; i < three_scenes.length; i++) {
@@ -346,10 +375,6 @@ export async function three_updateTile(tile) {
     let plane = layer.selectablesMap[tile.tile_id];
 
     if (plane) {
-        if (layer.selectables[i].tile.texture != tile.texture) {
-            // update texture
-            // TODO Make texture change work
-        }
 
         plane.position.x = tile.x;
         plane.position.y = tile.y;
@@ -460,6 +485,17 @@ function worldToScreen(worldPos) {
     return screenPos;
 }
 
+function getPortrait(o) {
+    if (o.file) {
+        let thing = registeredThings[o.file];
+        if (thing) {
+            return FetchImageFromAppearanceArray(thing);
+        }
+
+    }
+    return o.img;
+}
+
 var hud = null;
 var card = null;
 export function three_mouseMove(event) {
@@ -549,7 +585,7 @@ export function three_mouseMove(event) {
 
                 }
 
-                card.src = o.img;
+                card.src = getPortrait(o);
                 let dim = three_renderer_dimensions()
 
                 card.style.top = (dim.height - 300) + "px";
@@ -692,6 +728,22 @@ export function three_tileDeleted(tile) {
 
     }
 
+}
+
+export function three_updateAllUsingProto(id) {
+    let keys = Object.keys(layers);
+    keys.forEach((key, index) => {
+        let layer = layers[key];
+        let array = layer.protoSheetMap[id];
+
+        if (array) {
+            for (let i = 0; i < array.length; i++) {
+                let plane = array[i];
+                let tile = plane.reference;
+                three_setTileImage(tile, plane);
+            }
+        }
+    });
 }
 
 function uuidv4() {

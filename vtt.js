@@ -219,7 +219,6 @@ async function CopyThingFIles(socket, msg) {
 
 }
 
-
 async function sendScene(name, socket) {
 
     let found = 0;/// todo fix bad form
@@ -289,6 +288,9 @@ io.on('connection', (socket) => {
             io.emit('updatedTile', msg);
         }
     });
+    socket.on('change_appearance', (msg) => {
+        sheeter.ChangeThing(msg.thing, msg.change, io, msg, true);
+    });
 
     socket.on('deleteTile', (msg) => {
         console.log("delete file");
@@ -337,8 +339,7 @@ io.on('connection', (socket) => {
 
 
     socket.on('change', (msg) => {
-
-        sheeter.ChangeThing(msg.thing, msg.change, io, msg);
+        sheeter.ChangeThing(msg.thing, msg.change, io, msg, false);
     });
     socket.on('addItem', (msg) => {
 

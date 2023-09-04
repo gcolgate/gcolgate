@@ -78,9 +78,10 @@ async function loadScene(scene) {
 
     let dir = await fs.readdir(path.join(__dirname, 'public', 'SceneFiles', scene.directory)); // TODO: use file cache
 
-    if (!scene.tiles)
-        scene.tiles = [];
+    scenes[filepath] = scene;
+    scene.tiles = [];
 
+    // TODO parrallize? will it speed up with disk, I doubt it
     for (let i = 0; i < dir.length; i++) {
 
         let result = (await fs.readFile(path.join(__dirname, 'public', 'SceneFiles',
@@ -112,6 +113,10 @@ function cleanFileName(destString) {
 
 function cleanTileId(destString) {
     // just path a name, not a path
+    const img = path.parse(destString);
+
+    desttring = img.dir + img.base;
+
     destString = destString.replaceAll("\\", "_");
     destString = destString.replaceAll("/", "_");
     destString = destString.replaceAll(" ", "_");
@@ -132,7 +137,10 @@ function generateNewTileId(scene, tile) {
 }
 
 function getTileFileName(scene, tile) {
-    return path.join(__dirname, 'public', 'SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
+    if (tile.tile_id.endsWith("json")) {
+        return path.join(__dirname, 'public', 'SceneFiles', scene.directory, tile.tile_id);
+    }
+    return path.join(__dirname, 'public', 'SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json"); // this is a bad pattern
 }
 
 function addTile(scene, tile) {

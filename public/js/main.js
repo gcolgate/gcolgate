@@ -1,7 +1,7 @@
 
 
 
-import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
+import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
 
 ///////// 
 let players = { hero: "" };
@@ -83,7 +83,7 @@ socket.on('displayScene', function (msg) {
 
 socket.on('updatedTile', function (msg) {
     if (msg.scene === current_scene.name)
-        three_updateTile(msg.tile);
+        three_updateTile(msg.tile, msg.updateImage);
 });
 
 socket.on('chat', function (msg) {
@@ -93,6 +93,10 @@ socket.on('chat', function (msg) {
 
 socket.on('change', function (msg) {
     UpdateNPC(msg);
+    if (msg.updateAppearance) {
+
+        three_updateAllUsingProto(msg.thing);
+    }
 });
 
 socket.on('removeItemFromNpc', function (msg) {

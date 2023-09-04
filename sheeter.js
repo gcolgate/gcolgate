@@ -25,31 +25,32 @@ function optionallyAddExt(path, ext) {
     else
         return path;
 }
-
-async function ChangeThing(thingName, replacement, io, msg) {
+/*** 
+ *  ChangeThing
+ *  
+ * @param thingname: thing to change
+ * @param replacement: line of code to run on thing
+ * @param io : network io
+ * @param msg : change = msg to return (TODO get rid of thingname and replacement and read from msg)
+ * @param updateAppearance : appearance of tokens for this thing might have changed
+**/
+async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
     console.log(thingName);
     console.log(replacement);
 
     // replacement = SanitizeThing(replacement); // protect vs hacks, todo: see if screws up string assignments
-    console.log('sanitized ' + replacement);
     if (replacement) {
         // Need to put these in a cache and write them out over time for speed
         // this should go through a cache 
 
         let filePath = path.normalize(path.join(__dirname, 'public', optionallyAddExt(thingName, ".json")));
-        console.log('filePath ', filePath);
 
         let result = await fs.readFile(filePath);
         let thing = jsonHandling.ParseJson(filePath, result); // for eval to work we need a thing
         // console.log(thing);
         console.log(replacement);
-
-
-        console.log("thing ", thing);
-
         eval(replacement); // actually change the thing
 
-        console.log("thing ", thing);
         //  console.log('writeFile ', filePath);
         await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
             if (err)
@@ -60,7 +61,7 @@ async function ChangeThing(thingName, replacement, io, msg) {
                 //  console.log(fs.readFileSync("books.txt", "utf8"));
             }
         });
-        console.log("done");
+        msg.updateAppearance = updateAppearance;
         io.emit('change', msg);
     }
 
