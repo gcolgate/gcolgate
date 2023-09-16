@@ -16,6 +16,17 @@ function uuidv4() {
     );
 }
 
+function findInNamedArray(array, name) {
+
+    if (name) {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i].name == name) {
+                return array[i];
+            }
+        }
+    }
+    return undefined;
+}
 
 // TODO: got to make sure we have a consistent policy about extensions
 
@@ -184,4 +195,4 @@ async function AddItem(thingName, item_tag, io, msg) {
 
 }
 
-module.exports = { ChangeThing: ChangeThing, AddItem: AddItem, RemoveItemFromThing: RemoveItemFromThing };
+module.exports = { ChangeThing: ChangeThing, AddItem: AddItem, findInNamedArray, RemoveItemFromThing: RemoveItemFromThing };

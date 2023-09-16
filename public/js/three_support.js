@@ -261,8 +261,8 @@ async function three_setTileImage(tile, plane) {
     if (tile.sheet?.file) {
 
         await ensureThingLoaded(tile.sheet.file);
-
-        let token = getTokenAppearance(registeredThings[tile.sheet.file]);
+        // need to add style here
+        let token = getAppearanceImage(registeredThings[tile.sheet.file], 'token');
         if (token) {
             tname = token;
         }
@@ -489,7 +489,7 @@ function getPortrait(o) {
     if (o.file) {
         let thing = registeredThings[o.file];
         if (thing) {
-            return FetchImageFromAppearanceArray(thing);
+            return getAppearanceImage(thing, 'portrait');
         }
 
     }

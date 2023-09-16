@@ -299,48 +299,43 @@ function div(x, s) {
     return "<div" + s + ">" + x + "</div > ";
 }
 
-function getTokenAppearance(thing) {
+function findInNamedArray(array, name) {
 
-    let image = undefined;
-    if (thing.current_appearance) {
-        for (let i = 0; i < thing.appearance.length; i++) {
-            if (thing.appearance[i].name == thing.current_appearance) {
-                image = thing.appearance[i].token?.image;
+    if (name) {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i].name == name) {
+                return array[i];
             }
         }
     }
-    return image; //? image : "public/images/questionMark.png";
+    return undefined;
 }
 
-// fetches image from appearance array, to do rename 
-function FetchImageFromAppearanceArray(thing) {
+var missingImage = "public/images/questionMark.png";
 
-    let image = undefined;
-    if (thing.current_appearance) {
-        for (let i = 0; i < thing.appearance.length; i++) {
+function getAppearanceImage(thing, type) {
 
-            if (thing.appearance[i].name == thing.current_appearance) {
+    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
+    if (!answer) return missingImage;
+    answer = answer[type];
+    if (!answer) return missingImage;
+    return answer.image ? answer.image : missingImage;
 
-                image = thing.appearance[i].portrait?.image;
-            }
-        }
-    }
-    return image ? image : "public/images/questionMark.png";
 }
 
 
-function FetchStyleFromAppearanceArray(thing) {
 
+function FetchStyleFromAppearanceArray(thing, type) {
+
+
+    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
+    if (!answer) return "";
+    answer = answer[type];
+    if (!answer) return "";
     let parms = "";
-    if (thing.current_appearance) {
-        for (let i = 0; i < thing.appearance.length; i++) {
-            if (thing.appearance[i].name == thing.current_appearance) {
-                if (thing.appearance[i].portrait.rotation) {
-                    parms = ';transform:rotate(' + thing.appearance[i].portrait.rotation + 'deg)';
-                    break;
-                }
-            }
-        }
+    if (answer.rotation) {
+        parms += ';transform:rotate(' + answer.rotation + 'deg)';
+
     }
     return parms;
 }
@@ -420,6 +415,60 @@ document.addEventListener("mouseup", (event) => {
 });
 
 
+
+// input is drag and drop file
+async function UploadAppearanceArt(ev, which, id) {
+    try {
+        let url = new URL(window.location.href).origin + '/uploadFromButton';
+
+        let file = ev.target.files[0];
+
+        let formData = new FormData()
+        formData.append('file', file);
+
+
+        let response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.text();
+        console.log("Success:", result);
+
+        let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).' + which + '.image =  "images/uploaded/' + file.name + '"'; // the window id is window_fullthingname
+        console.log('id is ' + id);
+        console.log('evaluation is ' + evaluation);
+
+        socket.emit("change_appearance", { thing: id, change: evaluation });
+
+        return true;
+
+
+    } catch (error) {
+        console.error("Error:  file %o" + error, file);
+        return false;
+    }
+}
+
+function showPasteAndChoose(e, show, hide) {
+
+    let toShow = document.getElementById(show);
+    let toHide = document.getElementById(hide);
+
+    toShow.style.visibility = "visible";
+    toHide.style.visibility = "hidden";
+
+}
+
+function ChangeW(e, show, hide) {
+
+    let toShow = document.getElementById(show);
+    let toHide = document.getElementById(hide);
+
+    toShow.style.visibility = "visible";
+    toHide.style.visibility = "hidden";
+
+}
+
 function showApperancePopUp(e, id) {
 
     const popupMenu = document.getElementById("popupMenu");
@@ -433,6 +482,9 @@ function showApperancePopUp(e, id) {
         li.appendChild(document.createTextNode("Edit " + thing.current_appearance));
         ul.appendChild(li);
 
+        li.onclick = function () {
+            showThing(id, "Appearance");
+        }
         for (let i = 0; i < thing.appearance.length; i++) {
             let li = document.createElement("li");
             li.appendChild(document.createTextNode(thing.appearance[i].name));

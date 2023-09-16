@@ -1,7 +1,7 @@
 <div class="c18 doc-content">
     <div class="twocolumnsuneven">
-        <image src="{FetchImageFromAppearanceArray(thing)}" alt="{thing.name}"
-            style="width:auto; height:100%{FetchStyleFromAppearanceArray(thing)}"
+        <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+            style="width:auto; height:100%{FetchStyleFromAppearanceArray(thing, 'portrait')}"
             onclick="showApperancePopUp(event,'{thing.id}')"></image>
 
 

@@ -1,0 +1,38 @@
+<div class="c18 doc-content">
+    <div class="twocolumnsuneven">
+        <div>
+            <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+                style="width:auto; height:50%{FetchStyleFromAppearanceArray(thing, 'portrait')}"
+                onclick="showPasteAndChoose(event,'portrait_{thing.id}','token_{thing.id}')"></image>
+            <div id="portrait_{thing.id}" class="hiddenButton">
+                <button>Paste</button>
+                <form action="/uploadFromButton" method="POST" enctype="multipart/form-data"
+                    id="portrait_form_{thing.id}">
+                    <input type="file" id="portrait_file_{thing.id}" name="filename" hidden
+                        onchange="UploadAppearanceArt(event,'portrait','{thing.id}')">
+                    <input id='buttonid' type='button' value='Upload Image'
+                        onclick="document.getElementById('portrait_file_{thing.id}').click();" />
+                    <input type='submit' value='Submit' hidden />
+                </form>
+            </div>
+        </div>
+        <div>
+
+
+            <image src="{getAppearanceImage(thing, 'token')}" alt="{thing.name}"
+                style="width:auto; height:50%{FetchStyleFromAppearanceArray(thing, 'token')}"
+                onclick="showPasteAndChoose(event,'token_{thing.id}','token_{thing.id}')"></image>
+            <div id="token_{thing.id}" class="hiddenButton">
+                <button>Paste</button>
+                <form action="/uploadFromButton" method="POST" enctype="multipart/form-data" id="token_form_{thing.id}">
+                    <input type="file" id="token_file_{thing.id}" name="filename" hidden
+                        onchange="UploadAppearanceArt(event,'token','{thing.id}')">
+                    <input id='buttonid' type='button' value='Upload Image'
+                        onclick="document.getElementById('token_file_{thing.id}').click();" />
+                    <input type='submit' value='Submit' hidden />
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
