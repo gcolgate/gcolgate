@@ -311,7 +311,7 @@ function findInNamedArray(array, name) {
     return undefined;
 }
 
-var missingImage = "public/images/questionMark.png";
+var missingImage = "images/questionMark.png";
 
 function getAppearanceImage(thing, type) {
 
@@ -378,7 +378,7 @@ function drawCareerFeats(thing, owner) {
 
             let checked = thing.system.owner_featsChosen[feats[i]];
 
-            let featSheet = registeredThings[name];
+            let featSheet = GetRegisteredThing(name);
 
             let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
             text += '<li><input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
@@ -397,7 +397,7 @@ function drawCareerFeats(thing, owner) {
 
         let name = "CompendiumFiles/" + feats[i];
         text += "<div>";
-        text += parseSheet(registeredThings[name], "itemSummary", owner);
+        text += parseSheet(GetRegisteredThing(name), "itemSummary", owner);
         text += "</div>";
 
 
@@ -473,7 +473,7 @@ function showApperancePopUp(e, id) {
 
     const popupMenu = document.getElementById("popupMenu");
     const ul = popupMenu.children[0]; // todo change to id
-    let thing = registeredThings[id];
+    let thing = GetRegisteredThing(id);
 
     if (thing) {
         ul.replaceChildren();
@@ -742,7 +742,7 @@ function rollptbadice(dice) {
 }
 
 function selectLanguage(id, event, name) {
-    let thing = registeredThings[id];
+    let thing = GetRegisteredThing(id);
     let result = (event.currentTarget.checked ? true : false);
     eval('thing.languages["' + name + '"]' + ' = ' + result); socket.emit('change', {
         change: 'thing.languages["' + name + '"]' + ' = ' + result,
@@ -772,7 +772,7 @@ function languagesButtons(thing) {
 
 
 function rollMoveStat(ownerId, stat, mv) {
-    let owner = registeredThings[ownerId];
+    let owner = GetRegisteredThing(ownerId);
     let bonus = owner.stats[stat];
     socket.emit('roll', {
         title: owner.name + ' ' + stat.toUpperCase() + " " + "'" + mv + "'",
@@ -786,7 +786,7 @@ function rollMoveStat(ownerId, stat, mv) {
 
 
 function rollPTBAStat(ownerId, stat, isSave) {
-    let owner = registeredThings[ownerId];
+    let owner = GetRegisteredThing(ownerId);
     let bonus = owner.stats[stat];
     socket.emit('roll', {
         title: owner.name + ' ' + stat.toUpperCase() + " Check ",

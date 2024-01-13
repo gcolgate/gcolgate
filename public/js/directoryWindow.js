@@ -29,8 +29,8 @@ function clickOnThing(event) {
 
     // hack to handle scenes, which don't have a seperate file. TODO: make more readable
     if (name === undefined) {
-        registeredThings["SCENE" + this.references] = this.references;
-        name = "SCENE" + this.references;
+        let thing = SetRegisteredThing("SCENE" + this.references, this.references);
+        name = thing.registeredId;
     }
 
     showThing(name, this.references.page);

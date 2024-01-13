@@ -109,6 +109,7 @@ async function InitialDiskLoad() {
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Uniques'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Scenes'))); // TODO: use file cache
 
+    promises.push(fs.readdir(path.join(__dirname, 'public', 'images/uploaded'))); // TODO: use file cache
 
     let results = await Promise.all(promises);
     passwords = jsonHandling.ParseJson('passwords.json', results[0]);
@@ -121,6 +122,7 @@ async function InitialDiskLoad() {
     promises.push(jsonHandling.fillDirectoryTable("Party", results[4]));
     promises.push(jsonHandling.fillDirectoryTable("Uniques", results[5]));
     promises.push(jsonHandling.fillDirectoryTable("Scenes", results[6]));
+    promises.push(jsonHandling.fillDirectoryTable("images/uploaded", results[7]));
 
 
 
@@ -131,6 +133,7 @@ async function InitialDiskLoad() {
     folders.Party = results[2];
     folders.Uniques = results[3];
     folders.Scenes = results[4];
+    folders.uploadedImages = results[7];
 
     //  await delay(5000);
 
@@ -305,13 +308,17 @@ io.on('connection', (socket) => {
         }
     });
     socket.on("add_token", (msg) => {
+
+        console.log("Add token");
         let sender = getUser(socket);
         if (sender) {
             let scene = folders.ScenesParsed[msg.scene];
+            console.log("Add token2");
 
             console.log(msg.tile);
             let ref = msg.tile.reference;
             if (ref.windowId == "Compendium" || ref.windowId === "Favorites") {
+                console.log("Add token3");
                 let instance = path.join('SceneFiles', msg.scene, path.basename(ref.file) + Scene.uuidv4());
 
                 fs.copyFile(path.join(__dirname, "public", ref.file + '.json'),
@@ -324,9 +331,10 @@ io.on('connection', (socket) => {
 
             }
 
+            console.log("Add token4");
             msg.scene = { name: msg.scene };
             Scene.updateSceneTile(scene, msg.tile);
-
+            console.log("EMitting", msg);
             io.emit('newTile', msg);
         }
 

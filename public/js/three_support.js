@@ -262,7 +262,7 @@ async function three_setTileImage(tile, plane) {
 
         await ensureThingLoaded(tile.sheet.file);
         // need to add style here
-        let token = getAppearanceImage(registeredThings[tile.sheet.file], 'token');
+        let token = getAppearanceImage(GetRegisteredThing(tile.sheet.file), 'token');
         if (token) {
             tname = token;
         }
@@ -487,7 +487,7 @@ function worldToScreen(worldPos) {
 
 function getPortrait(o) {
     if (o.file) {
-        let thing = registeredThings[o.file];
+        let thing = GetRegisteredThing(o.file);
         if (thing) {
             return getAppearanceImage(thing, 'portrait');
         }

@@ -97,10 +97,10 @@ function ItemWeapon(thing, owner, full) {
     if (owner != undefined && !owner.isptba) {
         answer += "<button  onclick=\"rollWeapon('" + owner.id + "','" + thing.id + "')\">Damage</button>";
         //  include applydamage button on roll need to decide who is target
-    } else {
+    } else if (owner) {
         answer += "<button  onclick=\"rollWeaponDamage('" + owner.id + "','" + thing.id + "'," + (thing.career ? thing.career : 0) + ")\">Damage</button>";
     }
-    if (full && owner.type) answer += "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
+    if (full) answer += "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
     if (s.damage.versatile && s.damage.versatile != "")
         answer += "<div><span>Versatile</span>" + s.damage.versatile + "</div>";
     let props = [];
@@ -343,7 +343,7 @@ dndNiceSkillNames = {
 
 function rollStat(ownerId, stat, isSave) {
 
-    let owner = registeredThings[ownerId];
+    let owner = GetRegisteredThing(ownerId);
 
 
     let bonus = DndAbilityBonus(owner, owner.system.abilities[stat].value);
@@ -397,7 +397,7 @@ function DnDAbilities(thing) {
 }
 
 function rollSkill(ownerId, skillid) {
-    let owner = registeredThings[ownerId];
+    let owner = GetRegisteredThing(ownerId);
     let skill = owner.system.skills[skillid];
     let stat = skill.ability;
     let statBonus = DndAbilityBonus(owner, owner.system.abilities[stat].value);
@@ -452,7 +452,7 @@ function DndSpeed(title, thing, ability, units) {
 }
 
 function rollDamage(ownerId, weaponId, bonus, rolls) {
-    let weapon = registeredThings[weaponId];
+    let weapon = GetReigsteredThing(weaponId);
 
 
     for (let i = 0; i < weapon.system.damage.parts.length; i++) {
@@ -482,8 +482,8 @@ function rollWeaponDamage(ownerId, weaponId, bonus) {
 
 function rollWeapon(ownerId, weaponId) {
 
-    let owner = registeredThings[ownerId];
-    let weapon = registeredThings[weaponId];
+    let owner = GetRegisteredThing(ownerId);
+    let weapon = GetReigsteredThing(weaponId);
 
     console.log('Weapon %o', weapon);
 
@@ -518,8 +518,8 @@ function rollWeapon(ownerId, weaponId) {
 
 function rollSpell(ownerId, spellId) {
 
-    let owner = registeredThings[ownerId];
-    let spell = registeredThings[spellId];
+    let owner = GetRegisteredThing(ownerId);
+    let spell = GetRegisteredThing(spellId);
 
 
     let bonus = DndAbilityBonus(owner, owner.system.abilities[spell.system.ability].value);
@@ -570,8 +570,8 @@ function GetArmorClass(thing) {
     let adds = 0;
     let dexMax = 100000;
 
-    for (let i = 0; i < thing.items.length; i++) {
-        let item = registeredThings[thing.items[i].file];
+    if (thing.items) for (let i = 0; i < thing.items.length; i++) {
+        let item = GetRegisteredThing(thing.items[i].file);
         if (item.system.equipped && item.system.armor && item.system.armor.value) {
 
             switch (item.system.armor.type) {
@@ -600,8 +600,8 @@ function GetArmorClass(thing) {
 
 function rollSpellSaveAsWeaponAsAttackHomebrew(ownerId, spellId) {
 
-    let owner = registeredThings[ownerId];
-    let spell = registeredThings[spellId];
+    let owner = GetRegisteredThing(ownerId);
+    let spell = GetRegisteredThing(spellId);
 
     let bonus = SpellSaveDC(spell, owner) - 10;
 
@@ -662,7 +662,7 @@ function drawItems(thing, node) {
         let item = thing.items[i];
         text += "<div>";
 
-        text += parseSheet(registeredThings[item.file], item.page, undefined, thing); // no w
+        text += parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing); // no w
         text += "<button onclick=RemoveItemFromThing('" + thing.id + "','" + item.file + "')> Delete " + item.name + "</button > ";
         text += "</div>";
     }

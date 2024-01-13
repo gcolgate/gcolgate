@@ -1,5 +1,17 @@
 /// todo: need to clean these out as you close windows
 var registeredThings = {};
+
+function GetRegisteredThing(path) {
+    return registeredThings[SanitizeSlashes(path)];
+}
+function SetRegisteredThing(path, thing) {
+    let index = SanitizeSlashes(path);
+    registeredThings[index] = thing;
+    thing.registeredId = index;
+    return thing;
+}
+
+
 var registeredSheets = {};
 var sheetDependencies = null;
 // preload
@@ -106,25 +118,25 @@ function maybe(x, stringo) {
 
 function SanitizeSlashes(a) {
     a.replace('\\', '/');
+    a.replace('//', '/');
+    a += '/';
     return a;
 }
 
 async function ensureThingLoaded(thingName) {
 
-    thingName = SanitizeSlashes(thingName);
-    console.log(thingName);
-    if (!registeredThings[thingName]) {
-        let file = thingName.endsWith('.json') ? thingName : thingName + '.json';
+
+    if (!GetRegisteredThing(thingName)) {
+        let file = SanitizeSlashes(thingName.endsWith('.json') ? thingName : thingName + '.json');
 
         console.log(file);
-
         try {
             response = await fetch(file);
             const thing = await response.json();
-            thing.id = SanitizeSlashes(thingName);
+            thing.id = (thingName);
 
 
-            registeredThings[thingName] = thing;
+            SetRegisteredThing(thingName, thing);
 
             thing.acceptDrag = dragCareersAndItems; // todo do better
 
@@ -136,7 +148,7 @@ async function ensureThingLoaded(thingName) {
     }
 
 
-    let thing = registeredThings[thingName];
+    let thing = GetRegisteredThing(thingName);
     if (thing === undefined) throw ("Could not load");
     try {
         let promises = [];
@@ -279,44 +291,42 @@ async function showThing(name, sheet) {
 
 async function UpdateNPC(change) {
 
-    if (!registeredThings[change.thing]) {
+    let thing = GetRegisteredThing(change.thing);
+    if (!thing) {
         return; //  NPC has never been opened
     }
-    let thing = registeredThings[change.thing];
     eval(change.change);
-    w = windowShowing(change.thing);
+    w = windowShowing(thing.registeredId); // GIL thing.id?
     if (w) {
-
-        displayThing(change.thing, w.sheet);
+        displayThing(thing.registeredId, w.sheet);
     }
 
 }
 
 async function AddItemToNPC(change) {
 
-    if (!registeredThings[change.thing]) {
+    let thing = GetRegisteredThing(change.thing);
+    if (!thing) {
         return; //  NPC has never been opened
     }
-    let thing = registeredThings[change.thing];
-    thing.items.push(change.item);
+    thing.items.push(change.item); // GIL thing.id?
     console.log("Add item to npc");
-    w = windowShowing(change.thing);
+    w = windowShowing(thing.registeredId);
     if (w) {
-        await EnsureLoaded(w.sheet, change.thing);
+        await EnsureLoaded(w.sheet, thing.registeredId);
 
-        displayThing(change.thing, w.sheet);
+        displayThing(thing.registeredId, w.sheet);
     }
 
 }
 
 async function RemoveFromNPC(change) {
-
-    if (!registeredThings[change.thingId]) {
+    let thing = GetRegisteredThing(change.thing);
+    if (!thing) {
         return; //  NPC has never been opened
     }
-    let thing = registeredThings[change.thingId];
 
-    if (thing && thing.items) {
+    if (thing.items) {
         for (let i = 0; i < thing.items.length; i++) {
             if (thing.items[i].file == change.itemId) {
                 thing.items.splice(i, 1);
@@ -325,9 +335,9 @@ async function RemoveFromNPC(change) {
         }
     }
 
-    w = windowShowing(change.thingId);
+    w = windowShowing(thing.registeredId);
     if (w) {
-        displayThing(change.thingId, w.sheet);
+        displayThing(thing.registeredId, w.sheet);
     }
 
 }
@@ -385,7 +395,7 @@ async function displayThing(fullthingname, sheetName) {
 
 
 
-    let thing = registeredThings[fullthingname]
+    let thing = GetRegisteredThing(fullthingname);
     let body = document.getElementById("window_" + fullthingname + "_body");
     body.innerHTML = parseSheet(thing, sheetName, w, undefined);
 

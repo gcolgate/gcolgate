@@ -31,15 +31,30 @@ function ParseJson(name, raw) {
     return json;
 }
 
-async function fillDirectoryTable(name, raw) {
+async function fillDirectoryTable(name, raw, is_image) {
     let directory = [];
     let i = 0;
     // we might consider making this async
     try {
         for (i = 0; i < raw.length; i++) {
-            if (raw[i].startsWith('tag_')) {
+            if (!is_image && raw[i].startsWith('tag_')) {
                 let file = (await (fs.readFile(path.join(__dirname, 'public', name, raw[i])))).toString();
                 directory.push(file);
+            } else if (is_image) {
+                console.log('{      \
+                    "file": "' + raw[i] + '", \
+                    "page": "image", \
+                    "type": "image", \
+                    "name": "' + raw[i] + '", \
+                    "img": "' + raw[i] + '" \
+                }');
+                directory.push('{      \
+                    "file": "' + raw[i] + '", \
+                    "page": "image", \
+                    "type": "image", \
+                    "name": "' + raw[i] + '", \
+                    "img": "' + raw[i] + '" \
+                }')
             }
         }
     } catch (err) {
