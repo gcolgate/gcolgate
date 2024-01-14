@@ -51,8 +51,6 @@ function CreateWindowTitle(w, windowName, Title, closes = true) {
     let title = document.createElement("div");
     title.className = "windowtitle";
     title.id = windowName + "_title";
-    let text = document.createTextNode(Title);
-    title.appendChild(text);
     if (closes) {
         let closeButton = document.createElement("div");
         closeButton.innerHTML = "×";
@@ -61,6 +59,9 @@ function CreateWindowTitle(w, windowName, Title, closes = true) {
             fadeOut(w);
         };
     }
+    let text = document.createTextNode(Title);
+    title.appendChild(text);
+
     w.appendChild(title);
     dragElement(w, title);
     return title;
@@ -96,6 +97,10 @@ function createOrGetWindow(id, width, height, left, top) {
         w.appendChild(body);
         w.body = body;
         w.body.style.height = (w.clientHeight - 40) + "px";
+        w.body.style.width = width + "px";;// (w.clientHeight - 40) + "px";
+        w.style.borderStyle = "solid";
+        w.style.borderWidth = "5px";
+
 
         w.style.zIndex = 9 + windows.length;
         w.style.backgroundColor = "#ffffff";
@@ -113,8 +118,10 @@ function createOrGetWindow(id, width, height, left, top) {
             // });
             if (w.style) {
                 w.style.width = body.style.width;
-                w.style.height = body.style.height + 40;
-                console.log("Size changed");
+                w.style.height = body.style.height;
+                console.log("Size changed " + w);
+                // w.parentElement.style.height = w.style.height + 16;
+                // w.parentElement.style.width = w.style.width + 16;
             } else
                 console.log("WTF");
         });

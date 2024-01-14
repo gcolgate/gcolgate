@@ -400,7 +400,7 @@ async function displayThing(fullthingname, sheetName) {
 
 
     fullthingname = SanitizeSlashes(fullthingname);
-    let w = createOrGetWindow(fullthingname, 0.4, 0.4, 0.3, 0.3); // todo better window placement
+    let w = createOrGetWindow(fullthingname, 0.6, 0.4, 0.3, 0.3); // todo better window placement
 
     w.sheet = sheetName;
 
