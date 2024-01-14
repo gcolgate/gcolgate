@@ -572,7 +572,8 @@ function GetArmorClass(thing) {
 
     if (thing.items) for (let i = 0; i < thing.items.length; i++) {
         let item = GetRegisteredThing(thing.items[i].file);
-        if (item.system.equipped && item.system.armor && item.system.armor.value) {
+        if (!item) console.log("Error fetching " + thing.items[i].file);
+        if (item && item.system.equipped && item.system.armor && item.system.armor.value) {
 
             switch (item.system.armor.type) {
                 case "light": case "medium": case "heavy":

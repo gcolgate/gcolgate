@@ -61,6 +61,8 @@ async function waitForLoaded(scene) {
 
 function SanitizeSlashes(a) {
     a.replace('\\', '/');
+    a.replace('//', '/');
+    a = '/' + a;
     return a;
 }
 

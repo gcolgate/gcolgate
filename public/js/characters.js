@@ -119,20 +119,31 @@ function maybe(x, stringo) {
 function SanitizeSlashes(a) {
     a.replace('\\', '/');
     a.replace('//', '/');
-    a += '/';
     return a;
+}
+
+function construct_fetch_path(thingName, ext) {
+    let s = SanitizeSlashes(thingName);
+    if (!s.startsWith('./')) {
+        if (!s.startsWith('/')) s = '/' + s;
+        if (!s.startsWith('.')) s = '.' + s;
+    }
+    if (!s.endsWith(ext)) s += ext;
+    return s;
 }
 
 async function ensureThingLoaded(thingName) {
 
-
+    let file;
     if (!GetRegisteredThing(thingName)) {
-        let file = SanitizeSlashes(thingName.endsWith('.json') ? thingName : thingName + '.json');
+        file = construct_fetch_path(thingName, '.json');
 
         console.log(file);
         try {
             response = await fetch(file);
+            console.log("Fetched " + file);
             const thing = await response.json();
+            console.log("json " + file);
             thing.id = (thingName);
 
 
@@ -143,13 +154,13 @@ async function ensureThingLoaded(thingName) {
             console.log("OK");
 
         } catch (err) {
-            console.log(err + ". Unable to fetch " + thingName + 'json');
+            console.log(err + ". Unable to fetch " + file);
         }
     }
 
 
     let thing = GetRegisteredThing(thingName);
-    if (thing === undefined) throw ("Could not load");
+    if (thing === undefined) throw ("Could not load " + file);
     try {
         let promises = [];
         if (thing.items) {

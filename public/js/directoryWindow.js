@@ -202,12 +202,11 @@ async function GetDirectory(directory) {
     }
     return jsonData;
 }
-function SanitizeSlashes(text) {
+function RemoveSlashes(text) {
     text = text.replace(/\\/g, '/');
     return text;
 
 }
-
 
 function showDirectoryWindow(id, array) {
 
@@ -238,7 +237,7 @@ function showDirectoryWindow(id, array) {
             onDragOver: (event) => { },
             onDragLeave: (event) => { }
         });
-        id = SanitizeSlashes(id);
+        id = RemoveSlashes(id);
 
         ul.acceptDrag = function (thingDragged, event) {
 
@@ -248,7 +247,7 @@ function showDirectoryWindow(id, array) {
                     return;
                 }
             }
-            id = SanitizeSlashes(id);
+            id = RemoveSlashes(id);
             socket.emit("copy_files", { to: id, from: thingDragged });
 
         }

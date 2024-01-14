@@ -1,7 +1,7 @@
 
 const fs = require('fs').promises;
 const rawfs = require('fs');
-//const fsExtra = require('fs-extra');
+const fsExtra = require('fs-extra');
 const path = require('path');
 const sanitize = require('sanitize-filename');
 
@@ -68,8 +68,10 @@ function writeJsonFileInPublic(dir, fileName, json) {
 
     try {
         let pathName = path.join(__dirname, 'public', dir, fileName + '.json');
+        console.log(pathName);
 
         rawfs.writeFileSync(pathName, JSON.stringify(json));
+        console.log(pathName);
 
     } catch (err) {
         console.log(err + " Error with " + dir + " " + fileName);
@@ -1081,7 +1083,7 @@ async function findSource(inputPath, recur = 0) {
         let files = await readDir("C:/Users/gcolg/AppData/Local/FoundryVTT/Data");
 
         sourceImages = files;
-        files = await readDir("C:/Program Files/FoundryVTT/resources/app/public");
+        files = await readDir("C:/Program Files/FoundryVTT/Foundry Virtual Tabletop/resources/app/public");
         sourceImages = sourceImages.concat(files);
 
 
@@ -1102,7 +1104,6 @@ async function findSource(inputPath, recur = 0) {
 
             sourceBaseNames.push(path.basename(reverseString(sourceImages[i])));
         }
-        console.log(sourceImages);
     }
 
     let best = 0; let answer = -1;
@@ -1141,8 +1142,8 @@ async function findSource(inputPath, recur = 0) {
 
 
 async function processImage(imagePath, tagsSource) {
-    if (imagePath.startsWith("http")) {
 
+    if (imagePath.startsWith("http")) {
         const fileType = path.extname(imagePath);
         if (!tagsSource) tagsSource = {};
         if (!tagsSource?.hash) {
@@ -1207,7 +1208,6 @@ async function processImage(imagePath, tagsSource) {
             return a;
         }
 
-
     }
 
 }
@@ -1226,8 +1226,8 @@ function FixSlashes(a) {
 
 async function convertDnD5e() {
 
-    //await fsExtra.emptyDir(path.join(__dirname, 'public', 'Compendium'));
-    //await fsExtra.emptyDir(path.join(__dirname, 'public', 'CompendiumFiles'));
+    await fsExtra.emptyDir(path.join(__dirname, 'public', 'Compendium'));
+    await fsExtra.emptyDir(path.join(__dirname, 'public', 'CompendiumFiles'));
     let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert')); // 
     let counts = {};
     console.log("%o", dir);
@@ -1331,6 +1331,22 @@ async function convertDnD5e() {
                         }
                     }
 
+                    let tokenImage = json?.prototypeToken?.texture?.src;
+
+                    json.appearance = [];
+
+                    json.appearance.push({
+
+                        "name": "normal",
+                        "portrait": {
+                            "image": json.img,
+                        },
+                        "token": {
+                            "image": tokenImage ? tokenImage : json.img,
+                        }
+                    });
+
+                    json.current_appearance = "normal";
 
                     tagsSource.hash = cleanFileName(tagsSource.hash);
 
@@ -1438,6 +1454,7 @@ function convertPTBA() {
 
 
         };
+        console.log(key);
 
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
         writeJsonFileInPublic('CompendiumFiles', key, item);
@@ -1481,6 +1498,7 @@ function convertPTBA() {
 }
 
 // note, run convertDnD5e and do not translate feats
-convertDnD5e();
-
+//convertDnD5e();
+console.log("Converted D&D5e");
 convertPTBA();
+console.log("Converted convertPTBA");
