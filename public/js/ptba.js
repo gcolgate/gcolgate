@@ -205,9 +205,9 @@ var moves = {
         "stat": [
             "cunning"
         ],
-        "Comments": "This roll is used in more detailed combat to represent the swing of a sword from behind with advantage. Note that it is difficult to backstab, unless you are entering the combat stealthily, or have been out of sight on the previous round. Then it might instead be easy.",
-        "Critical": "Do +3 damage to him, stacks with assasin feats",
-        "success": "You hit your foe and do +2 damage to him , (stacks with assassin feats)",
+        "Comments": "The swing of a sword from behind with stealth. Note that it is difficult to backstab, unless you are entering the combat stealthily, or have been out of sight on the previous round. Then it might instead be easy.",
+        "Critical": "Do +3D damage to him, stacks with assasin feats",
+        "success": "You hit your foe and do +2D damage to him , (stacks with assassin feats)",
         "mixed": " You hit your foe and either (choose 1):\nDo less damage (½)\nLose the initiative\nGet your weapon entangled, lose some gear,  are knocked prone or otherwise put into a bad position\nMiss instead, since you decided to stay hiding and not attack now, maybe you can try next turn",
         "fail": "On a failure you lose the initiative and probably draw the ire of the person you tried to backstab."
     },
@@ -352,7 +352,29 @@ function featclicked(cb) {
 }
 
 
-function drawCareerFeats(thing, owner) {
+function openTab(evt, tabName, sheet) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+    sheet = document; // temp
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = sheet.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = sheet.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    sheet.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+function drawCareerFeats(thing, owner, notes) {
     let text = "";
     // let career = validateCareer(thing, owner);
 
@@ -365,8 +387,15 @@ function drawCareerFeats(thing, owner) {
         //     Editable(thing, "thing.system.owner_level", "npcNum"));
         // text += div('<span class="npcBold">Career Points Spent </span>' +
         //     Editable(thing, "thing.system.owner_careerPointsSpent", "npcNum"));
-        text += div('<span class="npcBold">Weapons </span>' +
-            Editable(thing, "thing.system.weapons", ""));
+
+        if (!notes) {
+            text += div('<span class="npcBold">Weapons </span>' +
+                Editable(thing, "thing.system.weapons", ""));
+        } else {
+            text += div('<span class="npcBold">Weapons </span>' +
+                thing.system.weapons);
+
+        }
 
         text += '<div id="list3" class="dropdown-check-list" tabindex="100">' +
 
@@ -377,6 +406,8 @@ function drawCareerFeats(thing, owner) {
 
 
             let checked = thing.system.owner_featsChosen[feats[i]];
+
+            if (notes && !checked) continue;
 
             let featSheet = GetRegisteredThing(name);
 
@@ -515,7 +546,7 @@ function showApperancePopUp(e, id) {
 
 }
 
-function drawCareerLevel(thing, owner) {
+function drawCareerLevel(thing, owner, notes) {
     let text = "";
     // let career = validateCareer(thing, owner);
 
@@ -525,7 +556,7 @@ function drawCareerLevel(thing, owner) {
 
     if (owner) {
         text += div('<span class="npcBold">Level </span>' +
-            Editable(thing, "thing.system.owner_level", "npcNum"));
+            notes ? Editable(thing, "thing.system.owner_level", "npcNum") : thing.system.owner_level);
         text += div('<span class="npcBold">Career Points Spent </span>' +
             Editable(thing, "thing.system.owner_careerPointsSpent", "npcNum")
         );
@@ -808,9 +839,9 @@ function PTBAAbilities(thing) {
     let answer = "";
     let keys = Object.keys(thing.stats);
     for (let i = 0; i < keys.length; i++) {
-        answer += '<div class=outlined style = "font-weight: 700;display: inline-block">';
+        answer += '<div class=outlined style = "font-weight: 700;font-size: 12px;display: inline-block">';
         answer += '<span>' + keys[i].toUpperCase() + '</span><br>';
-        answer += '<div style="font-weight: 400; font-size: 15px;">';
+        answer += '<div style="font-weight: 400; font-size: 12px;">';
         answer += PTBAAbility(thing, keys[i]);
         answer += '</div>';
         answer += '</div>';

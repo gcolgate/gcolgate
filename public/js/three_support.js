@@ -500,6 +500,9 @@ var hud = null;
 var card = null;
 export function three_mouseMove(event) {
     //  event.preventDefault();
+
+    if (document.elementFromPoint(event.clientX, event.clientY).nodeName != "CANVAS") return;
+
     let newMouse = three_mousePositionToWorldPosition(event);
 
     if (mouseButtonsDown[mainButton]) {
@@ -558,7 +561,7 @@ export function three_mouseMove(event) {
                 if (!hud) {
                     hud = document.createElement("div");
                     hud.id = "hud";
-                    hud.style.zIndex = 8;
+                    hud.style.zIndex = 2;
                     hud.className = "hud";
                     //  hud.style.position = "absolute";
                     //  hud.style.textAlign = "center";
@@ -579,6 +582,7 @@ export function three_mouseMove(event) {
                     card = document.createElement("img");
                     card.id = "card";
                     card.className = "card";
+                    card.style.zIndex = 1;
 
                     document.body.appendChild(card);
 

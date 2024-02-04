@@ -452,7 +452,7 @@ function DndSpeed(title, thing, ability, units) {
 }
 
 function rollDamage(ownerId, weaponId, bonus, rolls) {
-    let weapon = GetReigsteredThing(weaponId);
+    let weapon = GetRegisteredThing(weaponId);
 
 
     for (let i = 0; i < weapon.system.damage.parts.length; i++) {
@@ -483,7 +483,7 @@ function rollWeaponDamage(ownerId, weaponId, bonus) {
 function rollWeapon(ownerId, weaponId) {
 
     let owner = GetRegisteredThing(ownerId);
-    let weapon = GetReigsteredThing(weaponId);
+    let weapon = GetRegisteredThing(weaponId);
 
     console.log('Weapon %o', weapon);
 
@@ -656,14 +656,50 @@ function RemoveItemFromThing(thingId, itemId) {
 
 }
 
-function drawItems(thing, node) {
+function IsInventoryItem(item) {
+
+    switch (item.page) {
+        case "armor": return true;
+        case "careers": return false;
+        case "bestiary": return true;
+        case "expensive": return true;
+        case "items": return true;
+        case "weapons": return true;
+        default:
+            console.log("Unkown type ", item.page);
+            throw ("Uknown type" + item);
+
+
+    }
+    return false;
+}
+
+
+function IsCareerItem(item) {
+
+    switch (item.page) {
+        case "careers": return true;
+
+
+    }
+    return false;
+}
+function ItemFiltered(item, filter) {
+    if (!filter) return false;
+    return !(filter(item));
+
+}
+
+function drawItems(thing, filter, notes) {
     let text = "";
     if (!thing.items) thing.items = [];
     for (let i = 0; i < thing.items.length; i++) {
         let item = thing.items[i];
+
+        if (ItemFiltered(item, filter)) { continue; }
         text += "<div>";
 
-        text += parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing); // no w
+        text += parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes); // no w
         text += "<button onclick=RemoveItemFromThing('" + thing.id + "','" + item.file + "')> Delete " + item.name + "</button > ";
         text += "</div>";
     }

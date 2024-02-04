@@ -332,7 +332,7 @@ async function AddItemToNPC(change) {
 }
 
 async function RemoveFromNPC(change) {
-    let thing = GetRegisteredThing(change.thing);
+    let thing = GetRegisteredThing(change.thingId);
     if (!thing) {
         return; //  NPC has never been opened
     }
@@ -353,7 +353,7 @@ async function RemoveFromNPC(change) {
 
 }
 
-function parseSheet(thing, sheetName, w, owner) { // thing and w and owner are  required by evals, w or owner can be undefined
+function parseSheet(thing, sheetName, w, owner, notes) { // thing and w and owner are  required by evals, w or owner can be undefined
     let text = `${registeredSheets[sheetName]}`; // makes a copy to destroy the copy,  TODO: maybe should make structure context
     let newText = "";
     let state = 0;
