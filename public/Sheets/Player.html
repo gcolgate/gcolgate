@@ -1,64 +1,78 @@
 <div class="c18 doc-content">
-    <div class="twocolumnsuneven">
-        <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
-            style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-            onclick="showApperancePopUp(event,'{thing.id}')"></image>
 
 
-        <div class>
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'stats', this, '{ thing.id }')">Stats</button>
+        <button class="tablinks" onclick="openTab(event, 'inventory', this,  '{ thing.id }')">Inventory</button>
+        <button class="tablinks" onclick="openTab(event, 'careers',  this, '{ thing.id }')">Careers</button>
+        <button class="tablinks" onclick="openTab(event, 'features', this,  '{ thing.id }')">Features</button>
+    </div>
+    <p class="npcheader"> { Editable(thing,
+        "thing.name",
+        "itemsetheader npcTitleInput") } </p>
 
-            <p class="npcheader"> { Editable(thing,
-                "thing.name",
-                "itemsetheader npcTitleInput") } </p>
+    <!-- Different tabs here -->
+
+    <div id="stats" { tabClass( !thing.tab || (thing.tab && thing.tab=="stats" ) ) }>
+        <div class=" twocolumnsuneven">
+            <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
+                onclick="showApperancePopUp(event,'{thing.id}')"></image>
+            <div id="columntwo">
+
+                <p class="npcBold"><span class="c12">Species: { Editable(thing,
+                        "thing.species",
+                        "itemsetheader itemTitleInput", "species") }</span></p>
+
+                <datalist id="species">
+                    <option>Human</option>
+                    <option>Elf</option>
+                    <option>Dark Troll</option>
+                    <option>Dwarf</option>
+                    <option>Ratling</option>
+                </datalist>
 
 
-            <p class="npcBold"><span class="c12">Species: { Editable(thing,
-                    "thing.species",
-                    "itemsetheader itemTitleInput", "species") }</span></p>
+                <p class="npcBold"><span class="c12">Origin: {Editable(thing,
+                        "thing.origin",
+                        "itemsetheader itemTitleInput", "places")} </p>
+                <datalist id="places">
+                    <option>Barony of Lewd Umber</option>
+                    <option>Majority City</option>
+                    <option>Barony of Orfor</option>
+                    <option>Empire of the Red Moon</option>
+                    <option>The Frozen Coast</option>
+                    <option>Lorien Wood</option>
+                    <option>Illyrian Isles</option>
+                    <option>Mountains of Fear</option>
+                    <option>Underdark</option>
+                    <option>Far Chept</option>
+                </datalist>
 
-            <datalist id="species">
-                <option>Human</option>
-                <option>Elf</option>
-                <option>Dark Troll</option>
-                <option>Dwarf</option>
-                <option>Ratling</option>
-            </datalist>
+                <p class="npcBold"><span class="c12">Wealth: {Editable(thing,"thing.wealth", "npcNum") }</p>
 
-
-            <p class="npcBold"><span class="c12">Origin: {Editable(thing,
-                    "thing.origin",
-                    "itemsetheader itemTitleInput", "places")} </p>
-            <datalist id="places">
-                <option>Barony of Lewd Umber</option>
-                <option>Majority City</option>
-                <option>Barony of Orfor</option>
-                <option>Empire of the Red Moon</option>
-                <option>The Frozen Coast</option>
-                <option>Lorien Wood</option>
-                <option>Illyrian Isles</option>
-                <option>Mountains of Fear</option>
-                <option>Underdark</option>
-                <option>Far Chept</option>
-            </datalist>
-
-            <p class="npcBold"><span class="c12">Wealth: {Editable(thing,"thing.wealth", "npcNum") }</p>
+                <div style="display: flex;
+                    color: rgb(88, 23, 13);
+                    justify-content: space-around;
+                    color-scheme: light dark;
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    font-family: Georgia, serif;
+                    font-size: 20px;
+                    font-weight: 400">
+                    { PTBAAbilities(thing); }
+                </div>
+            </div>
         </div>
     </div>
-    <div style="display: flex;
-    color: rgb(88, 23, 13);
-    justify-content: space-around;
-    color-scheme: light dark;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    font-family: Georgia, serif;
-    font-size: 20px;
-    font-weight: 400">
-        { PTBAAbilities(thing); }
-    </div>
 
+    <!-- Different tabs here -->
 
-    <div> { PTBAMoves(thing) } </div>
-    <!-- <p class="c31 c32 c13"><span class="c2"></span></p>
+    <div id="careers" { tabClass( thing.tab && thing?.tab=="careers" ) }>
+        <div class=" outlined dragitem">
+            { drawItems(thing, IsCareerItem) }
+        </div>
+        <!-- <p class="c31 c32 c13"><span class="c2"></span></p>
     <p class="c31 c32 c13"><span class="c2"></span></p>
     <h2 class="c41 c32" id="h.mgj5wnut02kc"><span class="c16 c30 c24">Steel:
             PTBAComputeSteel(thing) </span></h2>
@@ -69,11 +83,35 @@
             PTBAComputeMaxSupplies(thing)/{thing.counters.supplies}</span></h2>
     <p clas="" npcBold"c13"><span class="c2"></span></p><a id="t.65e1cb7adb445e5b6fb90a596e799c0ac98d7fbc"></a><a
         id="t.1"></a> -->
-    <div class="outlined dragitem">
-        <div>Items</div> { drawItems(thing) }
     </div>
+    <!-- Different tabs here -->
 
-    <!-- <p class="c31 c32"><span class="c2">&nbsp;</span></p>
+    <div id="features" { tabClass( thing.tab && thing.tab=="features" )}>
+
+        <div> { PTBAMoves(thing) } </div>
+
+        <div class="outlined dragitem">
+            { drawItems(thing, IsCareerItem, "full") }
+        </div>
+    </div>
+    <!-- Different tabs here -->
+
+    <div id="inventory" { tabClass( thing.tab && thing.tab=="inventory" )}>
+        <div class="twocolumnsuneven">
+            <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
+                onclick="showApperancePopUp(event,'{thing.id}')"></image>
+            <div id="columntwo">
+                <div class="outlined dragitem">
+                    <div>Items</div> { drawItems(thing, IsInventoryItem) }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- <p class="c31 c32"><span class="c2">&nbsp;</span></p>
 
     <p clas="" npcBold"c13"><span class="c16 c24 c38"></span></p>
     <p class="npcBold"><span class="c2">Languages</span></p>
@@ -226,5 +264,3 @@
             </td>
         </tr>
     </table> -->
-    <h1 class="c25 c40" id="h.rsiskyc5jn9c"><span class="c16 c20 c19"></span></h1>
-</div>
