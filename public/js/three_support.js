@@ -507,6 +507,15 @@ export function three_mouseMove(event) {
 
     if (mouseButtonsDown[mainButton]) {
         switch (mouseMode) {
+            // case "scrolling":
+            //     if (!mouseButtonsDown[0]) {
+            //         mouseMode = "none";
+            //         break;
+            //     }
+
+            //     three_camera.position.x -= (newMouse.x - three_lastMouse.x);
+            //     three_camera.position.y -= (newMouse.y - three_lastMouse.y);
+            //     break;
             case "dragging":
                 for (let i = 0; i < selection.length; i++) {
                     selection[i].tile.x += (newMouse.x - three_lastMouse.x);
@@ -608,8 +617,7 @@ export function three_mouseMove(event) {
 three_renderer.domElement.onwheel = (event) => {
     console.log(event.delta);
     let d = event.wheelDelta * 0.6;
-    let wd = d * three_renderer_dimensions().aspect
-
+    let wd = d * three_renderer_dimensions().aspect;
     three_camera.left += wd; three_camera.right -= wd;
     three_camera.top -= d; three_camera.bottom += d
     three_camera.updateProjectionMatrix()

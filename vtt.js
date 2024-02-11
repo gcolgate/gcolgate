@@ -372,7 +372,7 @@ io.on('connection', (socket) => {
         if (nat == 2) return fail;
         if (nat == 20) return crit;
         if (r < 10) return fail;
-        if (r < 16) return "Mixed Success";
+        if (r < 16) return "Mixed";
         if (r < 23) return '<span style="color:#008888">Success</span>';
         return crit;
     }
@@ -395,25 +395,69 @@ io.on('connection', (socket) => {
     function processRoll(m) {
 
         let outmsg = ""
-        if (m.title.length > 15)
-            outmsg += div("rolltitle", m.title);
-        else
-            outmsg += div("centeredtext rolltitle", m.title);
+        // if (m.title.length > 15)
+        //    outmsg += div("rolltitle", m.title);
+        //else
+        outmsg += div("centeredtext rolltitle", m.title);
+
 
         let r = dice(m.roll);
 
         if (m.style == "dual-move") {
             console.log(r);
-            let r2 = dice(m.roll);
-            let d1 = ptbaDescr(r.rolls, r.val);
-            let d2 = ptbaDescr(r2.rolls, r2.val);
-            outmsg += div("diceexpression", r.expression) +
-                div("twocolumns",
-                    div("oneroll", strong(r.val) + ' ' + parens(r.rolls) + ' ' + d1 +
-                        div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls) + ' ' + d2)));
-            outmsg += div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable));
-            if (d1 != d2)
-                outmsg += div("outlined", strong(d2) + ' ' + ptbaResult(r2.rolls, r2.val, m.resultsTable));
+
+            switch (m.advantage) {
+
+                default: {
+                    let r2 = dice(m.roll);
+                    let d1 = ptbaDescr(r.rolls, r.val);
+                    let d2 = ptbaDescr(r2.rolls, r2.val);
+                    outmsg += div("diceexpression", r.expression) +
+                        div("twocolumns",
+                            div("oneroll", strong(r.val) + ' ' + parens(r.rolls) + ' ' + d1 +
+                                div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls) + ' ' + d2)));
+                    outmsg += div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable));
+                    if (d1 != d2)
+                        outmsg += div("outlined", strong(d2) + ' ' + ptbaResult(r2.rolls, r2.val, m.resultsTable));
+                } break;
+                case 0: {
+                    outmsg += div("centeredtext rolltitle", "normal");
+                    let d1 = ptbaDescr(r.rolls, r.val);
+                    outmsg += div("diceexpression", r.expression) +
+                        div("oneroll", strong(r.val) + ' ' + parens(r.rolls) + ' ' + d1 +
+                            div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable)));
+
+                } break;
+                case 1: {
+                    outmsg += div("centeredtext rolltitle", strong("Advantage"));
+                    let r2 = dice(m.roll);
+                    let d1 = ptbaDescr(r.rolls, r.val);
+                    let d2 = ptbaDescr(r2.rolls, r2.val);
+                    outmsg += div("diceexpression", r.expression) +
+                        div("oneroll", (r.val > r2.val ? strong(r.val) : r.val) + ' ' + parens(r.rolls) + ' vs ' +
+                            (r.val < r2.val ? strong(r2.val) : r2.val) + ' ' + parens(r2.rolls));
+                    if (r.val > r2.val)
+                        outmsg += div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable));
+                    else
+                        outmsg += div("outlined", strong(d2) + ' ' + ptbaResult(r2.rolls, r2.val, m.resultsTable));
+                } break;
+                case -1: {
+                    outmsg += div("centeredtext rolltitle", strong("Disadvantage"));
+                    let r2 = dice(m.roll);
+                    let d1 = ptbaDescr(r.rolls, r.val);
+                    let d2 = ptbaDescr(r2.rolls, r2.val);
+                    outmsg += div("diceexpression", r.expression);
+                    outmsg += div("oneroll", (r.val < r2.val ? strong(r.val) : r.val) + ' ' + parens(r.rolls) + ' vs ' +
+                        (r.val > r2.val ? strong(r2.val) : r2.val) + '   ' + parens(r2.rolls));
+                    if (r.val < r2.val) {
+                        outmsg += div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable));
+                    }
+                    else {
+                        console.log("winner 2 d1 " + r.val + " d2 " + r2.val);
+                        outmsg += div("outlined", strong(d2) + ' ' + ptbaResult(r2.rolls, r2.val, m.resultsTable));
+                    }
+                } break;
+            }
 
         } else
             if (m.style == "dual") {

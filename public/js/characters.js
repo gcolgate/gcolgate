@@ -105,7 +105,7 @@ function commaString(array) {
 function span(title, contents, classname) {
     if (!classname)
         return "<span>" + title + "</span>" + contents;
-    return "<span class=" + classname + "> " + a + "</span > " + b;
+    return "<span class=" + classname + "> " + title + "</span > " + contents;
 
 }
 // returns x or stringo or ""
@@ -353,6 +353,12 @@ async function RemoveFromNPC(change) {
 
 }
 
+function isToken(text, i, token) {
+
+    let tok = text.substring(i, token.length);
+    return (tok == token)
+}
+
 function parseSheet(thing, sheetName, w, owner, notes) { // thing and w and owner are  required by evals, w or owner can be undefined
     let text = `${registeredSheets[sheetName]}`; // makes a copy to destroy the copy,  TODO: maybe should make structure context
     let newText = "";
@@ -362,18 +368,55 @@ function parseSheet(thing, sheetName, w, owner, notes) { // thing and w and owne
 
         switch (state) {
             case 0:
-                if (text[i] == '@') { newText = ""; break; };
-                if (text[i] == '{') { state = 1; code = ""; }
-                else if (text[i] == '}') throw new Error("Mismatched '} fileSOFar: " + newText + "\ncodeBeingEvaluated " + code);
-                else newText += text[i];
+                // remove these characters they cause problems down the line
+                if (text[i] == '\n' || text[i] == '\r') {
+                    newText += ' ';
+                    break;
+                }
+                // remove comments by going to state 2
+                if (isToken(text, i, '<!--')) {
+                    state = -1;
+                }
+                else {
+                    // I don't remember why these are bad, I didn't comment before
+                    if (text[i] == '@') {
+                        newText = ""; break;
+                    }
+                    // if it is code we want to execute, got to steate 1
+                    if (text[i] == '{') {
+                        state = 1; code = "";
+                    }
+                    // assert for mismatched }
+                    else if (text[i] == '}') {
+                        throw new Error("Mismatched '} fileSOFar: " + newText + "\ncodeBeingEvaluated " + code);
+                    }
+                    else newText += text[i];
+                }
                 break;
-            default:
+            case -1:
+                if (isToken(text, i, '-->')) state = 0; // comment
+                break;
+
+            default: // states go >1 in recursive code blocks
+                // remove these characters they cause problems down the line
+                if (text[i] == '\n' || text[i] == '\r') {
+                    code += ' ';
+                    break;
+                }
+                // reach end of code block
                 if (text[i] == '}') {
                     state--;
                     if (state == 0) {
                         try {
                             console.log("Eval " + code);
+                            if (code == ' drawItems(thing, IsCareerItem) ') {
+                                console.log("Here");
+                            }
                             newText += eval(code);
+
+                            if (code == ' drawItems(thing, IsCareerItem) ') {
+                                console.log("Here2");
+                            }
                         } catch (error) {
                             throw new Error(error + "  fileSOFar: " + newText + "\ncodeBeingEvaluated " + error.stack + "\n" + code);
                         }
@@ -382,7 +425,7 @@ function parseSheet(thing, sheetName, w, owner, notes) { // thing and w and owne
                         code += '}';
                     }
                 } else if (text[i] == '{') {
-                    state++; code += '{';
+                    state++; code += '{'; // recusive code block
                 } else {
                     code += text[i];
                 }

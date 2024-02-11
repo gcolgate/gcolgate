@@ -68,7 +68,6 @@ function writeJsonFileInPublic(dir, fileName, json) {
 
     try {
         let pathName = path.join(__dirname, 'public', dir, fileName + '.json');
-        console.log(pathName);
 
         rawfs.writeFileSync(pathName, JSON.stringify(json));
         console.log(pathName);
@@ -145,7 +144,7 @@ const uniq = (xs) =>
 var feats = {
     Anatomy: {
         name: "Anatomy",
-        description: "Do +3 damage to an unarmored person by surprise.",
+        description: "Do +5 damage to an on a surprise attack.",
     },
     Animal_Communication: {
         name: "Animal Communication",
@@ -1224,6 +1223,49 @@ function FixSlashes(a) {
     return a;
 }
 
+function convert_weapons(input) {
+
+    if (input.type != "weapon") return input;
+    let output = {};
+    output.name = input.name;
+    output.type = input.type;
+    output.system = {};
+    output.system.description = input.system.description;
+    output.range = {};
+    output.range = input.range;
+    output.types = [];
+    console.log(input.name);
+    console.log(input.system.range?.long);
+    console.log(input?.system.range?.long);
+
+    if (input.name == "Longbow")
+        console.log(input);
+
+    if (input?.system.range?.long && input.system.range.long > 0)
+        output.types.push("Ranged");
+
+    // else if (output.range.long > 0 && output.comsume.type == "") {
+    //     // output.types.push("Thrown");
+    //     output.types.push("Melee");
+    // }
+    else
+        output.types.push("Melee");
+
+    if (input.system?.properties.fin) output.types.push("Finesse");
+    if (input.system?.properties.lgt) output.types.push("Light");
+    if (input.systems?.properties.thr) {
+        output.types.push("Thrown");
+        output.types.push("Melee");
+    }
+    if (input.system?.properties.mgc) output.types.push("Magic");
+
+    output.system.damage = input.system.damage;
+    output.system.range = input.system.range;
+    output.system.attackBonus = input.system.attackBonus;
+
+
+    return output;
+}
 async function convertDnD5e() {
 
     await fsExtra.emptyDir(path.join(__dirname, 'public', 'Compendium'));
@@ -1382,6 +1424,8 @@ async function convertDnD5e() {
                                 img: item.img,
                             };
 
+                            item = convert_weapons(item);
+
                             writeJsonFileInPublic('Compendium', "tag_" + subFile, tags);
                             writeJsonFileInPublic('CompendiumFiles', subFile, item);
 
@@ -1401,6 +1445,7 @@ async function convertDnD5e() {
                         prototypeToken: tagsSource.prototypeToken
                     };
 
+                    json = convert_weapons(json);
 
                     if (counts[tagsSource.page] == undefined)
                         counts[tagsSource.page] = 0;
@@ -1466,6 +1511,7 @@ function convertPTBA() {
 
 
         let career = careers[key];
+        console.log(career);
         tags = {
             "file": "CompendiumFiles/" + key,
             "page": "careers",
@@ -1493,6 +1539,8 @@ function convertPTBA() {
             item.system = career;
 
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
+
+
         writeJsonFileInPublic('CompendiumFiles', key, item);
     });
 }

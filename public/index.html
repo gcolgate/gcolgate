@@ -130,13 +130,20 @@
 
     .twocolumnsuneven {
       display: grid;
-      grid-template-columns: 30% 60%;
+      grid-template-columns: 38% 55%;
       background-color: beige;
     }
 
-    .threecolumnsuneven {
+    .fourcolumncareers {
       display: grid;
-      grid-template-columns: 25% 50% 25%;
+      grid-template-columns: 10% 40% 25% 25%;
+      background-color: beige;
+      width: 100%;
+    }
+
+    .threecolumnsunevenfull {
+      display: grid;
+      grid-template-columns: 60% 20% 20%;
       background-color: beige;
     }
 
@@ -162,6 +169,7 @@
       font-weight: bold;
     }
 
+
     .crit {
       color: red;
       font-weight: bold;
@@ -176,8 +184,21 @@
       text-align: center;
     }
 
+    .oneroll-small {
+      text-align: center;
+    }
+
     .centeredtext {
       text-align: center;
+    }
+
+    .basicFont {
+      font-family: Mrs Eaves;
+      font-weight: 300;
+    }
+
+    .bodyText {
+      font-size: 12;
     }
 
     .numberinput {
@@ -211,6 +232,12 @@
       justify-content: space-around
     }
 
+    .c12 {
+      font-size: 13px;
+      font-family: Mrs Eaves;
+
+
+    }
 
     .npcheader {
       box-sizing: border-box;
@@ -218,7 +245,7 @@
       background-color: rgb(255, 215, 170);
       color-scheme: light dark;
       font-family: Mrs Eaves;
-      font-size: 30px;
+      font-size: 16px;
       font-variant-alternates: normal;
       font-variant-caps: small-caps;
       font-variant-east-asian: normal;
@@ -226,11 +253,11 @@
       font-variant-numeric: normal;
       font-variant-position: normal;
       font-weight: 700;
-      line-height: 42px;
+      /* line-height: 22px; */
       margin-left: 0px;
       margin-right: 0px;
-      margin-top: -10px;
-      width: 600px;
+      /* margin-top: -10px; */
+      /* width: 600px; */
       text-transform: capitalize;
     }
 
@@ -240,7 +267,7 @@
       background-color: rgb(255, 215, 170);
       color-scheme: light dark;
       font-family: Mrs Eaves;
-      font-size: 20px;
+      font-size: 12px;
       font-variant-alternates: normal;
       font-variant-caps: small-caps;
       font-variant-east-asian: normal;
@@ -250,7 +277,7 @@
       font-weight: 700;
       margin-left: 0px;
       margin-right: 0px;
-      width: 600px;
+      width: 300px;
       text-transform: capitalize;
     }
 
@@ -260,7 +287,7 @@
       background-color: rgb(255, 215, 170);
       color-scheme: light dark;
       font-family: Mrs Eaves;
-      font-size: 20px;
+      font-size: 12px;
       font-variant-alternates: normal;
       font-variant-caps: small-caps;
       font-variant-east-asian: normal;
@@ -270,8 +297,12 @@
       font-weight: 700;
       margin-left: 0px;
       margin-right: 0px;
-      width: 100%;
+      width: 80%;
       text-transform: capitalize;
+    }
+
+    itemsetheadershort-no_outline {
+      outline: none;
     }
 
     .itemtext {
@@ -279,7 +310,7 @@
       background-color: rgb(255, 215, 170);
       color-scheme: light dark;
       font-family: Mrs Eaves;
-      font-size: 12px;
+      font-size: 10x;
       font-variant-alternates: normal;
       font-variant-east-asian: normal;
       font-variant-ligatures: normal;
@@ -294,7 +325,7 @@
       background-color: beige;
       color-scheme: light dark;
       font-family: Mrs Eaves;
-      font-size: 12px;
+      font-size: 10px;
       font-variant-alternates: normal;
       font-variant-east-asian: normal;
       font-variant-ligatures: normal;
@@ -303,7 +334,7 @@
       margin-left: 5px;
       margin-right: 5px;
       text-transform: none;
-      width: 100%;
+      width: 80%;
     }
 
     .collapsible-toggle {
@@ -349,6 +380,41 @@
       transform: translateY(-2px);
 
       transition: transform .2s ease-out;
+    }
+
+    /* Style the buttons that are used to open the tab content */
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+    }
+
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+      background-color: #ddd;
+    }
+
+    /* Create an active/current tablink class */
+    .tab button.active {
+      background-color: #ccc;
+    }
+
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+    }
+
+    .selectedtabcontent {
+      display: block;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
     }
 
     /* .collapsible-content {
@@ -641,8 +707,8 @@
     <button type="button" id="Settings">Settings </button>
     <button type="button" id="Chat">Chat </button>
     <input type="checkbox" id="EditMap" name="EditMap">
-    <label for="EditMap"> Edit Map</label>
-
+    <label for="EditMap"> Edit Map... </label>
+    Left mouse selects, right mouse scales (edit on) and middle mouse drags, wheel zooms
     <div class="windowGroup" id="windowGroup"></div>
 
     <div id="popupMenu" class="popup-menu">

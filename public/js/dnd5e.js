@@ -87,6 +87,33 @@ function MaybeDescription(description) {
     return outDescription;
 }
 
+function findBestCareer(owner, thing) {
+
+    let bonus = 0;
+    let strbonus = 0;
+    for (let i = 0; i < owner.items.length; i++) {
+
+        let item = owner.items[i];
+        if (item.page == "careers") {
+            let career = GetRegisteredThing(item.file).system;
+            if (career.owner_level > bonus) {
+                for (let cw = 0; cw < career.weapons.length; cw++) {
+                    let career_wt = career.weapons[cw];
+                    for (wt2 = 0; wt2 < thing.types.length; wt2++) {
+                        if (career_wt == thing.types[wt2])
+                            bonus = career.owner_level;
+                    }
+                }
+            }
+            if (career.name == "Strength") {
+                strbonus = career.owner_level;
+            }
+        }
+    }
+    return bonus + strbonus;
+}
+
+
 function ItemWeapon(thing, owner, full) {
 
     let s = thing.system;
@@ -98,17 +125,17 @@ function ItemWeapon(thing, owner, full) {
         answer += "<button  onclick=\"rollWeapon('" + owner.id + "','" + thing.id + "')\">Damage</button>";
         //  include applydamage button on roll need to decide who is target
     } else if (owner) {
-        answer += "<button  onclick=\"rollWeaponDamage('" + owner.id + "','" + thing.id + "'," + (thing.career ? thing.career : 0) + ")\">Damage</button>";
+        career = findBestCareer(owner, thing);
+        answer += "<button  onclick=\"rollWeaponDamage('" + owner.id + "','" + thing.id + "'," + career + ")\">Damage</button>";
+
     }
-    if (full) answer += "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
+    if (full) answer += "<div><span>Attack</span> " + atk + "<span> Damage: </span>" + commaString(damage);
     if (s.damage.versatile && s.damage.versatile != "")
         answer += "<div><span>Versatile</span>" + s.damage.versatile + "</div>";
-    let props = [];
-    if (s.properties.fin) props.push("Finesse");
-    if (s.properties.lgt) props.push("Light");
-    if (s.properties.thr) props.push("Thrown");
-    if (s.properties.mgc) props.push("Magic");
-    answer += "<div> " + commaString(props) + "</div>";
+
+
+
+    answer += "<div> " + commaString(thing.types) + "</div>";
     if (s.range && s.range.value) {
         let longString = "";
         if (s.range.long && s.range.long != 0) {
@@ -118,6 +145,9 @@ function ItemWeapon(thing, owner, full) {
         answer += "<div><span>Range</span> " + s.range.value + longString
             + " " + s.range.units + "</div>"
 
+    }
+    if (owner && owner.isptba) {
+        answer = answer.replace("@mod", career + " ");
     }
 
     return answer;
@@ -665,6 +695,7 @@ function IsInventoryItem(item) {
         case "expensive": return true;
         case "items": return true;
         case "weapons": return true;
+        case "magic_items": return true;
         default:
             console.log("Unkown type ", item.page);
             throw ("Uknown type" + item);
