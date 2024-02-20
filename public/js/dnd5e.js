@@ -735,12 +735,13 @@ function drawItems(thing, filter, notes) {
         if (ItemFiltered(item, filter)) { continue; }
         let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes); // no w
         if (item.page != "careers")
-            a += "<button onclick=RemoveItemFromThing('" + thing.id + "','" + item.file + "')> Delete " + item.name + "</button > ";
+            a += formatRemoveButton(thing.id, item.file);;
         text += div(a);
     }
     console.log(div(text));
     return div(text);
 }
+
 
 
 // create support for sheet

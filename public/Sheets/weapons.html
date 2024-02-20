@@ -11,6 +11,7 @@ thing.system = thing.data;
         "thing.name",
         "itemsetheader itemTitleInput")} </h1>
     </div>
+    {Collapsible("Description",false) }
     <div style="box-sizing: border-box;
           color: rgb(0, 0, 0);
           color-scheme: light dark;
@@ -28,5 +29,7 @@ thing.system = thing.data;
     <div>{thing.system.description.value}</div>
     <div> { ( thing.type == "weapon" ? ItemWeapon(thing,owner,true) : "")}</div>
     <div> {ItemArmor(thing,owner) } </div>
+    {EndCollapsible()}
+
   </div>
 </div>
