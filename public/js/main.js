@@ -1,18 +1,11 @@
 
 
-
 import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
 
 ///////// 
 let players = { hero: "" };
 
-var folders = {
-    Compendium: {},
-    Party: {},
-    Favorites: {},
-    Uniques: {},
-    Scenes: {},
-};
+
 ////////
 
 // add windows which are lists for the different buttons, hooking up logic
@@ -109,7 +102,7 @@ socket.on('addItem', function (msg) {
 
 socket.on('updateDir', function (msg) {
 
-    updateDirectoryWindow(folders, msg);
+    updateDirectoryWindow(msg);
 
 });
 
@@ -134,40 +127,12 @@ socket.on('login_success', function (msg) {
     players.hero = msg;
     setLogin(msg);
     Login.innerText = msg;
-    GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
-    GetDirectory('Party').then((c) => { folders.Party = c; });
-    GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
-    GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
-    GetDirectory('Scenes').then((c) => { folders.Scenes = c; });
+    GetMainDirectories();
 
     // GetDirectory('CurrentOpenScene').then((c) => { three_replaceScene(c); });
-    setUpDirButton('Compendium')
-    setUpDirButton('Party')
-    setUpDirButton('Favorites')
-    setUpDirButton('Uniques')
-    setUpDirButton('Scenes')
+
 });
 
-////// folder windows  put in sub file?
-function createDirWindow(buttonName) {
-    if (!players.hero) {
-        alert("Please log in");
-    }
-    if (!folders[buttonName]) {
-        alert("Have not yet receieved " + buttonName + "from server");
-    } else {
-        let w = createOrGetDirWindow(buttonName, .2, .6, .2, .2);
-        bringToFront(w);
-        showDirectoryWindow(buttonName, folders[buttonName]);
-    }
-}
-
-function setUpDirButton(buttonName) {
-    const compendiumButton = document.getElementById(buttonName);
-    compendiumButton.onclick = function () {
-        createDirWindow(buttonName)
-    }
-}
 
 ////// login handling
 const Login = document.getElementById("Login");
@@ -369,6 +334,8 @@ three_renderer.domElement.ondrop = function (e) {
         return false;
     }
 };
+
+
 
 setSocket(socket);
 

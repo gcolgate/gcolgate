@@ -1,4 +1,39 @@
+var folders = {
+    Compendium: {},
+    Party: {},
+    Favorites: {},
+    Uniques: {},
+    Scenes: {},
+};
+function GetMainDirectories() {
+    GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
+    GetDirectory('Party').then((c) => { folders.Party = c; });
+    GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
+    GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
+    GetDirectory('Scenes').then((c) => { folders.Scenes = c; });
+    setUpDirButton('Compendium')
+    setUpDirButton('Party')
+    setUpDirButton('Favorites')
+    setUpDirButton('Uniques')
+    setUpDirButton('Scenes')
+}
 
+function setUpDirButton(buttonName) {
+    const compendiumButton = document.getElementById(buttonName);
+    compendiumButton.onclick = function () {
+        createDirWindow(buttonName)
+    }
+}
+function createDirWindow(buttonName) {
+
+    if (!folders[buttonName]) {
+        alert("Have not yet receieved " + buttonName + "from server");
+    } else {
+        let w = createOrGetDirWindow(buttonName, .2, .6, .2, .2);
+        bringToFront(w);
+        showDirectoryWindow(buttonName, folders[buttonName]);
+    }
+}
 
 async function GetDirectory(directory) {
 
@@ -6,22 +41,75 @@ async function GetDirectory(directory) {
         let response = await fetch("./" + directory);
         console.log("Fetch " + directory);
         const jsonData = await response.json();
+        for (let i = 0; i < jsonData.length; i++) {
+            try {
+                jsonData[i] = JSON.parse(jsonData[i]);
+            } catch (err) {
+
+                console.log("Error in parsing " + i + " " + jsonData[i]);
+            }
+        }
+        return jsonData;
     } catch (err) {
         console.log("Failed to fetch" + err + " " + directory);
         return [];
     }
 
-    for (let i = 0; i < jsonData.length; i++) {
-        try {
-            jsonData[i] = JSON.parse(jsonData[i]);
-        } catch (err) {
 
-            console.log("Error in parsing " + i + " " + jsonData[i]);
-        }
-    }
-    return jsonData;
 }
 
+async function addToPlayerFromDropdown(thing_file, ownerid) {
+
+    // await (ensureThingLoaded(thingName));
+    //  let thing_to_add = GetRegisteredThing(thingName);
+
+    console.log(thing_file);
+    console.log(ownerid);
+
+    socket.emit('addItem', {
+        item: thing_file,
+        thing: ownerid
+    })
+
+    dropDownToggle('dropdown_' + ownerid);
+}
+
+function extractFromCompendium(filter_array, thing) {
+
+    if (!folders.Compendium) {
+        return [];
+    }
+    let whole = folders.Compendium;
+
+    let array = filter(whole, filter_array);
+
+    let search_in_directory = new searchInDirectory(array);
+    let searched = search_in_directory.search();
+
+    let answer = "";
+
+    for (let i = 0; i < searched.length; i++) {
+
+        let quote = '"';
+
+        answer += "<p   onmousedown='addToPlayerFromDropdown("
+            + JSON.stringify(searched[i]) + "," + quote + thing.id + quote + ")'>";
+
+        // answer += '<img src="' + searched[i].img + '" width="32" height="32"></img>';
+        answer += searched[i].name;
+        // li.references = array[i];
+        // li.draggable = true;
+        // li.onmousedown = function (event) { clickOne(this); };
+        // li.ondblclick = clickOnThing;
+        // li.ondragstart = function (event) {
+        //     thingDragged = this.references;
+        //     thingDragged.windowId = id;
+
+        // }
+        answer += "</p>";
+    }
+    return chkDiv(answer);
+}
 
 function clickOnThing(event) {
 
@@ -52,15 +140,15 @@ function escapeRegExp(stringToGoIntoTheRegex) { // htmlize these by inserting sl
 }
 
 
-function search(whole, search) {
-    if (search === "") {
-        return whole;
+function search(array, for_what) {
+    if (for_what === "") {
+        return array;
     } else {
         let searched = [];
-        let s = escapeRegExp(search.toLowerCase()); // i couldn't figure out the incantations to make this ignore case
-        for (let i = 0; i < whole.length; i++) {
-            if (whole[i].name.toLowerCase().search(s) >= 0) {
-                searched.push(whole[i]);
+        let s = escapeRegExp(for_what.toLowerCase()); // i couldn't figure out the incantations to make this ignore case
+        for (let i = 0; i < array.length; i++) {
+            if (array[i].name.toLowerCase().search(s) >= 0) {
+                searched.push(array[i]);
             }
         }
         return searched;
@@ -85,7 +173,7 @@ function filter(whole, buttons) {
     }
 }
 
-function collectSearchandFilter(id) {
+function collectFilter(id) {
     let title = document.getElementById("window_" + id + "_title");
 
     let filter = [];
@@ -97,48 +185,47 @@ function collectSearchandFilter(id) {
         }
     }
 
-    let search = document.getElementById("window_" + id + "_search").value;
-
     return {
         filter: filter,
-        search: search
+
     };
 
 }
 
 
 
+
 function refreshDirectoryWindow(id, whole) {
 
-    let params = collectSearchandFilter(id);
-    let win = document.getElementById("window_" + id);
+    let params = collectFilter(id);
+    let window = document.getElementById("window_" + id);
 
+    window.search_in_directory.set_array(whole); //search_input.array = array;
 
-
-    let searched = search(whole, params.search);
+    let searched = window.search_in_directory.search();
 
 
     let array = filter(searched, params.filter);
 
-    let title = document.getElementById("window_" + id + "_title");
+    // let title = document.getElementById("window_" + id + "_title");
 
 
     let ul = document.getElementById("window_" + id + "_list");
 
-    ul.style.height = (win.clientHeight - ul.offsetTop) + "px";
+    ul.style.height = (window.clientHeight - ul.offsetTop) + "px";
     ul.style.overflow = "auto";
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
     }
 
 
-    win.resizeObserver = new ResizeObserver(entries => {
+    window.resizeObserver = new ResizeObserver(entries => {
         entries.forEach(entry => {
             console.log("%o", entry);
             console.log('width', entry.contentRect.width);
             console.log('height', entry.contentRect.height);
             let ul = document.getElementById("window_" + id + "_list");
-            if (ul) { ul.style.height = (win.clientHeight - ul.offsetTop) + "px"; }
+            if (ul) { ul.style.height = (window.clientHeight - ul.offsetTop) + "px"; }
             else {
                 console.log("WTF");
             }
@@ -146,8 +233,8 @@ function refreshDirectoryWindow(id, whole) {
 
     });
 
-    win.resizeObserver.observe(win);
-    win.resizeObserver.observe(ul);
+    window.resizeObserver.observe(window);
+    window.resizeObserver.observe(ul);
 
     for (let i = 0; i < array.length; i++) {
         let li = document.createElement("li");
@@ -178,7 +265,7 @@ function refreshDirectoryWindow(id, whole) {
 
 }
 
-async function updateDirectoryWindow(folders, id) {
+async function updateDirectoryWindow(id) {
 
     folders[id] = await GetDirectory(id);
     let w = createOrGetDirWindow(id, .2, .6, .2, .2);
@@ -186,27 +273,53 @@ async function updateDirectoryWindow(folders, id) {
     showDirectoryWindow(id, folders[id]);
 }
 
-async function GetDirectory(directory) {
-    let response = await fetch("./" + directory);
-    const jsonData = await response.json();
-    console.log(jsonData);
 
-
-    for (let i = 0; i < jsonData.length; i++) {
-        try {
-            jsonData[i] = JSON.parse(jsonData[i]);
-        } catch (err) {
-
-            console.log("Error in parsing " + i + " " + jsonData[i]);
-        }
-    }
-    return jsonData;
-}
 function RemoveSlashes(text) {
     text = text.replace(/\\/g, '/');
     return text;
 
 }
+
+class searchInDirectory {
+
+    constructor(array) {
+        this.input = document.createElement("input");
+        // this.earchString.id = "window_" + id + "_search";
+        this.searchHTML = document.createElement("div");
+        this.searchHTML.className = "searchArea";
+        this.searchHTML.appendChild(document.createTextNode("Search"));
+        this.searchHTML.appendChild(this.input);
+        this.searchHTML.style.backgroundColor = "burlywood";
+        this.input.oninput = searchChanged;
+        this.input.onmousedown = normalMouseDown;
+        this.input.array = array;
+    }
+    // returns string
+    get_search_string() { return this.input.value; }
+    //sets array
+    set_array(array) { this.input.array = array; }
+
+    search() {
+        return search(this.input.array, this.input.value);
+    }
+
+    addUITo(elem, id) {
+
+        this.searchHTML.windowId = id;
+        this.input.windowId = id;
+        elem.insertAdjacentElement('afterend', this.searchHTML);
+
+
+    }
+
+};
+
+class filterDirectory {
+
+
+
+}
+
 
 function showDirectoryWindow(id, array) {
 
@@ -217,7 +330,6 @@ function showDirectoryWindow(id, array) {
 
     let ul = document.getElementById("window_" + id + "_list");
 
-    let search = null;
 
     if (!window.inited) {
 
@@ -251,31 +363,19 @@ function showDirectoryWindow(id, array) {
             socket.emit("copy_files", { to: id, from: thingDragged });
 
         }
-        search = document.createElement("input");
-        search.id = "window_" + id + "_search";
-        searchArea = document.createElement("div");
-        searchArea.className = "searchArea";
+        window.search_in_directory = new searchInDirectory();
 
-        title.insertAdjacentElement('afterend', searchArea);
-        searchArea.id = "window_" + id + "_searchArea";
 
-        searchArea.appendChild(document.createTextNode("Search"));
-        searchArea.appendChild(search);
-        searchArea.style.backgroundColor = "burlywood";
-        search.oninput = searchChanged;
-        search.onmousedown = normalMouseDown;
-        search.windowId = id;
+        window.search_in_directory.addUITo(title, id);
+
+
         title.style.height = "35px";
+
     }
     else {
 
 
-
-        search = document.getElementById("window_" + id + "_search");
-
-        searchArea = document.getElementById("window_" + id + "_searchArea");
-
-        const children = searchArea.children;
+        const children = window.search_in_directory.searchHTML.children;
         // or
         const listArray = [...children];
         listArray.forEach((item) => {
@@ -287,7 +387,7 @@ function showDirectoryWindow(id, array) {
 
     }
 
-    search.array = array;
+    window.search_in_directory.set_array(array); //search_input.array = array;
 
     let allTypes = new Set();
 
@@ -325,10 +425,11 @@ function showDirectoryWindow(id, array) {
         label.htmlFor = 'chk' + item;
         label.appendChild(document.createTextNode(item + "      ")); // todo: use style, margin isnt working
         label.removable = true;
-        //checkDiv.className = "searchAreaCheckBox";
+        //checkDiv.className = "searchHTMLCheckBox";
+        checkDiv.removable = true;
         checkDiv.appendChild(checkbox);
         checkDiv.appendChild(label);
-        searchArea.appendChild(checkDiv);
+        window.search_in_directory.searchHTML.appendChild(checkDiv);
 
 
     }

@@ -654,7 +654,7 @@ var careers = {
     Assassin: {
         name: "Assassin",
         description: "Blades-for-hire, perhaps agents in the service of the king, spies and assassins make killing and stealing in a discreet manner a way of life. They are adept at sneak attacks, killing, information gathering, disguises, city lore, persuasion, poisons, and lock picking. Their methods involve gathering intelligence on their subject from various (sometimes seedy) sources, circumventing security measures of all types, adopting disguises that allow them to get close to the target, and building up a broad selection of contacts. They are also patient, sometimes hiding out in a single spot for days to await the perfect opportunity to strike. ",
-        weapons: ["Ambush"],
+        weapons: ["Ambush", "Simple"],
         feats: ["Holdout_Weapon", "Wicked_Lie", "Anatomy", "Poison_Master", "Sniper", "Disguise_Master", "Master_of_Stealth"],
 
         languages: [],
@@ -672,7 +672,7 @@ var careers = {
     Barbarian: {
         name: "Barbarian",
         description: "Living off the lands in a small tribal group, Barbarians are wild and untamed, like the lands they live in. They have natural skills in wilderness lore, survival, beast riding, intimidation, natural instincts, berserk rages, jumping and climbing, and so on.",
-        weapons: ["TribalWeapons"],
+        weapons: ["Tribal"],
 
         feats: ["Swift",
             "Climber",
@@ -701,7 +701,7 @@ var careers = {
     Beast: {
         name: "Beast",
         description: "For animal companions. Animal companions can choose from Beast, also Slave, Strong, perhaps Mother as their careers. Note, animals don't naturally fight well, this could represent a gerbil, choose strong if you want skill at claw and teeth",
-        weapons: [],
+        weapons: ["Unarmed"],
         feats: ["Tracking_Scent", "Animal_Influence", "Animal_Communication", "Human_Communication", "Commune", "Swift"],
         languages: [],
         tools: ""
@@ -710,16 +710,29 @@ var careers = {
     Cavalry: {
         name: "Cavalry",
         description: "Fighting with cavalry weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Melee", "Ranged"],
+        weapons: ["Melee", "Unarmed"],
 
         feats: [
             "Ride_By",
             "Swift_Rider",
             "Spirited_Charge",
-            "Mobile_Archer",
             "Weapon_Choices",
             "Shield_Master",
             "Armor_Master",
+        ],
+        languages: [],
+        tools: "Horses, Camping"
+    },
+    HorseArcher: {
+        name: "Horse Archer",
+        description: "Fighting with ranged weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
+        weapons: ["Ranged", "Simple"],
+
+        feats: [
+            "Ride_By",
+            "Swift_Rider",
+            "Mobile_Archer",
+            "Weapon_Choices",
         ],
         languages: [],
         tools: "Horses, Camping"
@@ -811,7 +824,7 @@ var careers = {
         tools: "Camping"
     }, Gladiator: {
         name: "Gladiator", description: "Gladiators are specialists at individual combat. They are adept with a variety of weapons. They fight humans or beasts in an entertaining fashion. Gladiators may have ended up in the arena as a slave or to pay off a debt – whatever the reason, they have survived to hear the howls of the crowd and their adversary at their feet. The best gladiators are often famous outside the arena, which can be to their advantage or to their detriment",
-        weapons: ["Gladiator"],
+        weapons: ["Gladiator", "Melee", "Unarmed"],
         feats: [
             "Two_Weapon_Fighting",
             "Wrestler",
@@ -822,7 +835,7 @@ var careers = {
     },
     Hunter: {
         name: "Hunter", description: "The hunter is a master of tracking prey through the wilderness and the wastelands. Once hunters locate their target, they’ll use stealth, traps and/or expert bowmanship or spears  to bring it down. They are at home in the wild and can survive there for long periods, returning to more civilized areas only when they have furs and hides to sell, or when they require the company of their fellow men (or women). ",
-        weapons: ["Ranged"],
+        weapons: ["Ranged", "Simple"],
         feats: [
             "Home_Field_Advantage",
             "Sniper",
@@ -852,15 +865,27 @@ var careers = {
     Infantry: {
         name: "Infantry",
         description: "Fighting with infantry weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Melee", "Ranged"],
+        weapons: ["Melee", "Thrown", "Simple"],
         feats: [
             "Phalanx",
             "Artillery",
             "Tough",
-            "Mobile_Archer",
-            "Sniper",
             "Shield_Master",
             "Armor_Master",
+            "Weapon_Choices",
+        ],
+        languages: [],
+        tools: "Camping"
+    },
+    Archer: {
+        name: "Archer",
+        description: "Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
+        weapons: ["Ranged", "Simple"],
+        feats: [
+            "Artillery",
+            "Tough",
+            "Mobile_Archer",
+            "Sniper",
             "Weapon_Choices",
         ],
         languages: [],
@@ -921,7 +946,7 @@ var careers = {
     Noble: {
         name: "Noble",
         description: "Often holding homes in the city and estates or villas outside the city, these characters are usually titled (though not necessarily deserving) and have some authority over the common people, peasants, and slaves. Nobles are often able to obtain credit, have high-ranking contacts, and are skilled in such things as bribery, browbeating, dress sense, and etiquette.",
-        weapons: [],
+        weapons: ["Light"],
         feats: [
             "Swift_Rider",
             "Great_Beauty",
@@ -961,8 +986,9 @@ var careers = {
     Pirate: {
         name: "Pirate",
         description: "Ability to sail and survive in the seas. Navigating, captaining a ship and supplying it, knowledge of strange and distant lands and islands, climbing, acrobatics. Perhaps you were  a pilot, perhaps a sailor, or a pirate, and you probably can swim well.",
-        weapons: ["Pirate"],
+        weapons: ["Light", "Thrown"],
         feats: ["Sail_Monkey",
+            "Artillery",
             "Every_Port",
             "Artillery",
             "Fisherman",
@@ -1005,7 +1031,7 @@ var careers = {
             "3 = Massive\n" +
             "2 = Huge\n" +
             "1 = Muscular",
-        weapons: ["Strong"],
+        weapons: ["Strong", "Simple", "Unarmed"],
         feats: [
             "Brawler",
             "Wrestler",
@@ -1014,10 +1040,20 @@ var careers = {
         languages: [],
         tools: ""
     },
-    Thug_or_guard: {
-        name: "Thug or guard",
+    Thug: {
+        name: "Thug",
         description: "You have not fought in wars for this career, but you have fought. You have beaten up people, fought in gang wars, been a bodyguard. You have contacts in the city, and  know how to get information out of people, whether that means intimidation or knuckles. You know how to commit violence in a city without getting into trouble. You might have been in charge of prisoners or slaves.",
-        weapons: ["Melee"],
+        weapons: ["Melee", "Unarmed", "Light"],
+        feats: ["Brawler",
+            "Wrestler",
+            "Tough", "Bodyguard"],
+        languages: [],
+        tools: ""
+    },
+    Guard: {
+        name: "Guard",
+        description: "You have not fought in wars for this career, but you have fought. You have beaten up people, fought in gang wars, been a bodyguard. You have contacts in the city, and  know how to get information out of people, whether that means intimidation or knuckles. You know how to commit violence in a city without getting into trouble. You might have been in charge of prisoners or slaves.",
+        weapons: ["Melee", "Unarmed", "Light"],
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
@@ -1489,8 +1525,8 @@ function convertPTBA() {
             name: feat.name,
             system: {
                 description: {
-                    value: "<div>\n\t\t\t\t\n\t\t\t\t<div class=\"rd__b  rd__b--3\"><p>" +
-                        feat.description + "</p></div>",
+                    value: "<div class=\"rd__b  rd__b--3\"> " +
+                        feat.description + " ></div>",
                 },
                 source: "GilPTBA",
             },
@@ -1532,7 +1568,7 @@ function convertPTBA() {
 
         };
         career.description = {
-            value: "<div>\n\t\t\t\t\n\t\t\t\t<div class=\"rd__b  rd__b--3\"><p>" +
+            value: " <div class=\"rd__b  rd__b--3\"><p>" +
                 career.description + "</p></div>",
         },
             career.source = "GilPTBA",
@@ -1550,3 +1586,4 @@ function convertPTBA() {
 console.log("Converted D&D5e");
 convertPTBA();
 console.log("Converted convertPTBA");
+

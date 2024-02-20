@@ -20,7 +20,7 @@ ensureSheetLoaded("itemSummary");
 
 function ClickCollapsible(evt) {
 
-    console.log(evt);
+
     let s = evt.currentTarget.nextSibling.style;
 
     if (s.maxHeight === "0px") {
@@ -37,14 +37,14 @@ function ClickCollapsible(evt) {
 
 function Collapsible(text, shown) {
     let a = '<button class=lbl-collapsible-toggle  onclick="ClickCollapsible(event)">' + text + ' </button>';
-    a += (shown ? '<div style="max-height:100%" visibility:visible >' : '<div style="max-height:0px; visibility:hidden">');
-    console.log(a);
+    a += (shown ? '<div style="max-height:100%" visibility:visible>' : '<div style="max-height:0px; visibility:hidden">');
+
     return a;
 }
 
 function EndCollapsible() {
-    console.log("</div>");
-    return '</div>  </div>';
+
+    return '</div>';
 }
 
 
@@ -100,7 +100,7 @@ function commaString(array) {
         first = false;
         text += array[i];
     }
-    return text;
+    return chkDiv(text);
 }
 function span(title, contents, classname) {
     if (!classname)
@@ -151,7 +151,7 @@ async function ensureThingLoaded(thingName) {
 
             thing.acceptDrag = dragCareersAndItems; // todo do better
 
-            console.log("OK");
+
 
         } catch (err) {
             console.log(err + ". Unable to fetch " + file);
@@ -182,7 +182,7 @@ async function ensureThingLoaded(thingName) {
 
         }
         await Promise.all(promises);
-        console.log(promises);
+
 
     } catch (err) {
         console.log(err + ". Unable to fetch " + thingName + 'json');
@@ -244,8 +244,7 @@ function changeSheet(button) {
     let id = button.dataset.thingid; // the window id is window_fullthingname
     let clause = button.dataset.clause; // the window id is window_fullthingname
     let evaluation = clause + ' = ' + button.value;
-    console.log('id is ' + id);
-    console.log('evaluation is ' + evaluation);
+
     socket.emit('change', {
         change: evaluation,
         thing: id
@@ -364,6 +363,7 @@ function parseSheet(thing, sheetName, w, owner, notes) { // thing and w and owne
     let newText = "";
     let state = 0;
     let code = "";
+    console.log("NOTES ", notes);
     for (let i = 0; i < text.length; i++) {
 
         switch (state) {
@@ -408,15 +408,10 @@ function parseSheet(thing, sheetName, w, owner, notes) { // thing and w and owne
                     state--;
                     if (state == 0) {
                         try {
-                            console.log("Eval " + code);
-                            if (code == ' drawItems(thing, IsCareerItem) ') {
-                                console.log("Here");
-                            }
+
                             newText += eval(code);
 
-                            if (code == ' drawItems(thing, IsCareerItem) ') {
-                                console.log("Here2");
-                            }
+
                         } catch (error) {
                             throw new Error(error + "  fileSOFar: " + newText + "\ncodeBeingEvaluated " + error.stack + "\n" + code);
                         }
@@ -431,7 +426,7 @@ function parseSheet(thing, sheetName, w, owner, notes) { // thing and w and owne
                 }
         }
     }
-    console.log(newText);
+
     return newText;
 }
 
@@ -439,7 +434,7 @@ function parseSheet(thing, sheetName, w, owner, notes) { // thing and w and owne
 async function displayThing(fullthingname, sheetName) {
 
     /// TODO: needs to save and restore any scrolling or window resizing
-    console.log(fullthingname);
+
 
 
     fullthingname = SanitizeSlashes(fullthingname);
@@ -464,4 +459,24 @@ async function displayThing(fullthingname, sheetName) {
     }
 }
 
+function formatRemoveButton(ownerid, itemid) {
+    return div("<button onclick=RemoveItemFromThing('" + ownerid + "','" + itemid + "')> Delete  </button>");
+}
 
+function LineOfCareer(owner, thing, notes) {
+    if (notes == undefined && owner != undefined)
+        return div(
+            div(Editable(thing, "thing.name", "itemsetheadershort crit")) +
+            div(span("Level ", Editable(thing, "thing.system.owner_level", "shortwidth coloring basicFont bodyText crit"), "crit")) +
+            div(span("Feats chosen", " " + sumCareerFeats(thing) + "/" + thing.system.owner_level, "shortwidth coloring basicFont bodyText crit")) +
+            div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")) +
+            formatRemoveButton(owner.id, thing.id),
+            'class="fourcolumncareers"');
+    else
+        return div(
+            div("Career:", 'class="basicFont italic"') +
+            div(thing.name, "itemsetheadershort") +
+            div(span("Level ", thing.system.owner_level, "shortwidth coloring basicFont bodyText crit", "crit")) +
+            div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")),
+            'class="fourcolumncareers2"');
+}

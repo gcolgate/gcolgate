@@ -91,6 +91,7 @@ function findBestCareer(owner, thing) {
 
     let bonus = 0;
     let strbonus = 0;
+    let career_string = "";
     for (let i = 0; i < owner.items.length; i++) {
 
         let item = owner.items[i];
@@ -100,8 +101,10 @@ function findBestCareer(owner, thing) {
                 for (let cw = 0; cw < career.weapons.length; cw++) {
                     let career_wt = career.weapons[cw];
                     for (wt2 = 0; wt2 < thing.types.length; wt2++) {
-                        if (career_wt == thing.types[wt2])
+                        if (career_wt == thing.types[wt2]) {
                             bonus = career.owner_level;
+                            career_string = career.name;
+                        }
                     }
                 }
             }
@@ -110,7 +113,7 @@ function findBestCareer(owner, thing) {
             }
         }
     }
-    return bonus + strbonus;
+    return [bonus + strbonus, career_string];
 }
 
 
@@ -125,32 +128,34 @@ function ItemWeapon(thing, owner, full) {
         answer += "<button  onclick=\"rollWeapon('" + owner.id + "','" + thing.id + "')\">Damage</button>";
         //  include applydamage button on roll need to decide who is target
     } else if (owner) {
-        career = findBestCareer(owner, thing);
-        answer += "<button  onclick=\"rollWeaponDamage('" + owner.id + "','" + thing.id + "'," + career + ")\">Damage</button>";
+        [career_value, career_string] = findBestCareer(owner, thing);
+        answer += chkDiv("<button  onclick=\"rollWeaponDamage('" + owner.id + "','" + thing.id + "'," + career_value + ")\">Damage</button>");
+        answer += div(career_string);
 
     }
-    if (full) answer += "<div><span>Attack</span> " + atk + "<span> Damage: </span>" + commaString(damage);
+    if (full && atk != 0) answer += div(" <span>Attack</span> " + atk + "<span> Damage: </span>" + commaString(damage));
+    else if (full) answer += div("<span> Damage: </span > " + commaString(damage));
     if (s.damage.versatile && s.damage.versatile != "")
-        answer += "<div><span>Versatile</span>" + s.damage.versatile + "</div>";
+        answer += div("<span>Versatile</span>" + s.damage.versatile);
 
 
 
-    answer += "<div> " + commaString(thing.types) + "</div>";
+    answer += div(commaString(thing.types));
     if (s.range && s.range.value) {
         let longString = "";
         if (s.range.long && s.range.long != 0) {
             longString = "/" + s.range.long;
         }
 
-        answer += "<div><span>Range</span> " + s.range.value + longString
-            + " " + s.range.units + "</div>"
+        answer += div("<span>Range</span> " + s.range.value + longString
+            + " " + s.range.units);
 
     }
     if (owner && owner.isptba) {
-        answer = answer.replace("@mod", career + " ");
+        answer = answer.split("@mod").join(career_value + " ");
     }
 
-    return answer;
+    return chkDiv(answer);
 }
 
 function SpellIsAreaEffect(thing, owner) {
@@ -515,7 +520,6 @@ function rollWeapon(ownerId, weaponId) {
     let owner = GetRegisteredThing(ownerId);
     let weapon = GetRegisteredThing(weaponId);
 
-    console.log('Weapon %o', weapon);
 
 
 
@@ -721,6 +725,7 @@ function ItemFiltered(item, filter) {
 
 }
 
+
 function drawItems(thing, filter, notes) {
     let text = "";
     if (!thing.items) thing.items = [];
@@ -728,13 +733,13 @@ function drawItems(thing, filter, notes) {
         let item = thing.items[i];
 
         if (ItemFiltered(item, filter)) { continue; }
-        text += "<div>";
-
-        text += parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes); // no w
-        text += "<button onclick=RemoveItemFromThing('" + thing.id + "','" + item.file + "')> Delete " + item.name + "</button > ";
-        text += "</div>";
+        let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes); // no w
+        if (item.page != "careers")
+            a += "<button onclick=RemoveItemFromThing('" + thing.id + "','" + item.file + "')> Delete " + item.name + "</button > ";
+        text += div(a);
     }
-    return text;
+    console.log(div(text));
+    return div(text);
 }
 
 

@@ -1,16 +1,13 @@
-<div>
+{
+LineOfCareer(owner, thing, notes)
+}
 
-  <div class="fourcolumncareers">
-    <div> Career: </div>
-    <div> { Editable(thing,
-      "thing.name",
-      "itemsetheadershort ")}</div>
-    { drawCareerLevel(thing, owner) }
-  </div>
-</div>
+
+
+
 <div style="box-sizing: border-box;
-          color: rgb(0, 0, 0);
-          color-scheme: light dark;
+          color: rgb(0, 0, 0); 
+        color-scheme: light dark
           font-family: Georgia, serif;
           font-size: 15px;
           font-style: italic;
@@ -19,13 +16,11 @@
           line-height: 26.1333px;
           text-transform: lowercase">
   {Collapsible("Description",false) }
-  <div>
-    <div> { thing.system.description.value }</div>
-    <!-- <span class="npcBold">Weapons </span>{ thing.system.weapons } -->
-    <span class="npcBold">Tools </span>{ thing.system.tools }
-  </div>
-  <div> { drawCareerFeats(thing,owner) } </div>
-  {EndCollapsible()}
-</div>
 
+  <div> { notes!=undefined ? "" : thing.system.description.value } </div>
+  <!-- <span class="npcBold">Weapons </span>{ thing.system.weapons } -->
+  <!-- <span class="npcBold">Tools </span>{ thing.system.tools } -->
+
+  <div> { drawCareerFeats(thing,owner, notes) } </div>
+  {EndCollapsible()}
 </div>

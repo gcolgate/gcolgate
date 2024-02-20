@@ -146,8 +146,8 @@ function MakeTag(nom) {
 }
 
 async function AddItem(thingName, item_tag, io, msg) {
-    console.log(thingName);
-    console.log(item_tag);
+    console.log("THing name " + thingName);
+    console.log("Item tag %o", item_tag);
 
     if (item_tag) {
         // Need to put these in a cache and write them out over time for speed

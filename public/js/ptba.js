@@ -432,9 +432,44 @@ var tribal_languages = [
 //     return career;
 
 // }
+
+function getLine(offset) {
+    var stack = new Error().stack.split('\n'),
+        line = stack[offset + 1].split(':');
+    return parseInt(line[line.length - 2], 10);
+}
+
+
 function div(x, s) {
     if (s === undefined) { s = ""; }
-    return "<div" + s + ">" + x + "</div > ";
+
+
+
+    let divfront = x.toString().split("<div");;
+    let divback = x.toString().split("</div>");;
+
+    if (divfront?.length != divback?.length) {
+        console.log("Error, div_front " + divfront?.length + " vs div_back " + divback?.length);
+        return "Error  div_front + " + divfront?.length + " vs div_back " + divback?.length;;
+
+    }
+
+    return "<div " + s + ">" + x + "</div> ";
+}
+
+function chkDiv(x, s) {
+
+
+
+    let divfront = x.toString().split("<div");;
+    let divback = x.toString().split("</div>");;
+
+    if (divfront?.length != divback?.length) {
+        console.log("Error, div_front " + divfront?.length + " vs div_back " + divback?.length);
+        return "Error  div_front + " + divfront?.length + " vs div_back " + divback?.length;;
+    }
+
+    return x;
 }
 
 function findInNamedArray(array, name) {
@@ -545,6 +580,47 @@ function openTab(evt, tabName, button, id) {
     evt.currentTarget.className += " active";
 }
 
+function featCheckBox(feats, i, thing, owner, checked, featSheet) {
+
+
+    let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
+    text = "<li> &#x25BA;"
+    text += '<input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"'
+        + '"  data-owner="' + owner.id + '" '
+        + '" data-clause="' + clause
+        + '"  data-thingid="' + thing.id
+        + '" ' + (checked ? " checked " : "")
+        + ' onchange="featclicked(this);"'
+        + ' /><label for="' + feats[i] + '"> <span class=npcBold>' +
+        featSheet.name + ':</span>' + featSheet.system.description.value + '</li > ';
+
+    return text;
+}
+
+
+function sumCareerFeats(thing) {
+
+
+    let feats = thing.system.feats;
+
+    if (!thing.system?.owner_featsChosen) return 0;
+    let count = 0;
+
+    for (let i = 0; i < feats.length; i++) {
+        let name = "CompendiumFiles/" + feats[i];
+
+        let checked = thing.system.owner_featsChosen[feats[i]];
+
+        if (checked) count++;
+
+
+    }
+    return count;
+
+}
+
+
+
 function drawCareerFeats(thing, owner, notes) {
     let text = "";
     // let career = validateCareer(thing, owner);
@@ -562,15 +638,19 @@ function drawCareerFeats(thing, owner, notes) {
         if (!notes) {
             text += div(span("Weapons", Editable(thing, "thing.system.weapons", ""))) +
                 div(span("Tools", Editable(thing, "thing.system.tools", "")));
+        } else {
+
+            text += div(span("Weapons", thing.system.weapons, 'class="bold"')) +
+                div(span("Tools", thing.system.tools, 'class="bold"'));
+
         }
 
-        text += '<div id="list3" class="dropdown-check-list" tabindex="100">' +
+        text += '<div id="list3" class="dropdown-check-list" tabindex="100">';
 
-            '<ul class=" .dropdown-check-list-ul-item">';
+        text += '<ul class=" .dropdown-check-list-ul-item">';
 
         for (let i = 0; i < feats.length; i++) {
             let name = "CompendiumFiles/" + feats[i];
-
 
             let checked = thing.system.owner_featsChosen[feats[i]];
 
@@ -578,11 +658,13 @@ function drawCareerFeats(thing, owner, notes) {
 
             let featSheet = GetRegisteredThing(name);
 
-            let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
-            text += '<li> &#x25BA; <input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
-                + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
-                ' onchange="featclicked(this);" /><label for="' + feats[i] + '"> <span class=npcBold>' +
-                featSheet.name + ':</span>' + featSheet.system.description.value + '</label></li > ';
+            text += featCheckBox(feats, i, thing, owner, checked, featSheet);
+
+            // let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
+            // text += '<li> &#x25BA; <input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
+            //     + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
+            //     ' onchange="featclicked(this);" /><label for="' + feats[i] + '"> <span class=npcBold>' +
+            //     featSheet.name + ':</span>' + featSheet.system.description.value + '</label></li > ';
 
         }
         text += '</ul> </div>';
@@ -656,6 +738,32 @@ function showPasteAndChoose(e, show, hide) {
     toHide.style.visibility = "hidden";
 
 }
+function dropDownToggle(elem) {
+    let toShow = document.getElementById(elem);
+    if (toShow.style.visibility == "visible")
+        toShow.style.visibility = "hidden";
+    else {
+        toShow.style.visibility = "visible";
+        toShow.style.display = "block";
+
+    }
+}
+
+function filterDropDown(input, dropdown) {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById(input);
+    filter = input.value.toUpperCase();
+    div = document.getElementById(dropdown);
+    a = div.getElementsByTagName("p");
+    for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+        } else {
+            a[i].style.display = "none";
+        }
+    }
+}
 
 function ChangeW(e, show, hide) {
 
@@ -719,18 +827,17 @@ function drawCareerLevel(thing, owner, notes) {
 
 
 
-    let feats = thing.system.feats;
 
 
     if (owner && notes) {
         text += div('Career Points Spent ' +
-            Editable(thing, "thing.system.owner_careerPointsSpent", "npcNum npcBold basicFont bodyText"), "basicFont npcBold bodyText");
+            Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText"), "basicFont coloring bodyText");
 
     } else if (owner) {
         text += div('<span class="basicFont npcBold bodyText">Level </span>' +
-            Editable(thing, "thing.system.owner_level", "npcNum npcBold basicFont bodyText"));
-        text += div('<span class="basicFont npcBold bodyText">Career Points Spent </span>' +
-            Editable(thing, "thing.system.owner_careerPointsSpent", "npcNum npcBold basicFont bodyText")
+            Editable(thing, "thing.system.owner_level", "shortwidth coloring basicFont bodyText"));
+        text += div('<span class="basicFont coloring bodyText">CP Spent </span>' +
+            Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText")
         );
 
 
@@ -1101,11 +1208,6 @@ function dragCareersAndItems(thingDragged, evt) {
     if (!this.items)
         return;
 
-    socket.emit('roll', {
-        title: ' debug',
-        style: "dual",
-        roll: "1d6"
-    });
 
     console.log(thingDragged);
     let id = this.id;

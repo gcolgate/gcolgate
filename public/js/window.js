@@ -322,6 +322,16 @@ function createOrGetLoginWindow(width, height, left, top, players) {
                 okButton.selected = li;
             };
 
+            li.ondblclick = () => {
+                clickOne(li);
+                okButton.selected = li;
+                socket.emit('join', { player: okButton.selected.innerText, password: okButton.password });
+                fadeOut(w);
+                window.onkeydown = function (event) {
+                };
+
+            };
+
             li.appendChild(document.createTextNode(players.players[i].name));
             ul.appendChild(li);
 
