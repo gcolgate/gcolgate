@@ -77,6 +77,17 @@ function writeJsonFileInPublic(dir, fileName, json) {
     }
 }
 
+function writeText(pathName, text) {
+
+    try {
+
+        rawfs.writeFileSync(pathName, text);
+        console.log(pathName);
+
+    } catch (err) {
+        console.log(err + " Error with " + pathName);
+    }
+}
 const EnsureDestinationExists = async (fullFilePath) => {
 
     let dir = path.dirname(path.normalize(fullFilePath));
@@ -139,6 +150,856 @@ const uniq = (xs) =>
     [... new Set(xs)]
 
 
+// items
+//   name
+// slot: longarm, sidearm, small, bulky, mount, amulet, ring, hat, feet, shield, cloak, mount-armor, large, abstract, container
+// has pockets (and size)
+
+// containers:: pack .. allows a number of small or bulky items
+// containers:: pockets:: allows a number of smnall items
+// hammerspace:: pockets with a large amount of items
+// 
+// counters 
+//      charges, ammo, : recharges at: long rest, short rest, shopping, activity, dawn, dusk, midnight, 
+// Careers or weapon types that apply
+// weapon stats
+// range: min, short, long
+// [damage, when, damage type] (Computed)
+// Steel (computed)
+// armor stats
+// toughness bonus
+// Button: Take damage... rolls dice. Take damage armor doesn't help
+
+
+var items = [
+
+    {
+        name: "Breastplate",
+        description: "breast plate",
+        image: "",
+        slot: "armor",
+        wealth: 3,
+        armor: {
+            type: ["bludgeoning", "piercing", "slashing"],
+            sacrifice: 1,
+            bonus: 2,
+            career: ["Infantry", "Gladiator", "Cavalry"],
+        },
+    },
+    {
+        name: "Hoplite Armor",
+        description: "Greek Armor",
+        image: "",
+        slot: "armor",
+        wealth: 3,
+        armor: {
+            type: ["bludgeoning", "piercing", "slashing"],
+            sacrifice: 2,
+            bonus: 3,
+            career: ["Infantry", "Gladiator"],
+        },
+    },
+    {
+        name: "Knights Armor",
+        description: "Greek Armor",
+        image: "",
+        slot: "armor",
+        wealth: 3,
+        armor: {
+            type: ["bludgeoning", "piercing", "slashing"],
+            sacrifice: 2,
+            bonus: 3,
+            career: ["Thug"],
+            movement: -1
+        },
+    },
+    {
+        name: "Viking Armor",
+        description: "Chaimail Armor",
+        image: "",
+        slot: "armor",
+        wealth: 3,
+        armor: {
+            type: ["bludgeoning", "piercing", "slashing"],
+            sacrifice: 1,
+            bonus: 2,
+            career: ["Thug"],
+            movement: -1
+        },
+    },
+    {
+        name: "Padded Armor",
+        description: "Chaimail Armor",
+        image: "",
+        slot: "armor",
+        wealth: 2,
+        armor: {
+            type: ["bludgeoning", "piercing", "slashing"],
+            sacrifice: 1,
+            bonus: 1,
+            career: ["Thug"],
+            movement: -1
+        },
+    },
+    {
+        name: "Leather Armor",
+        description: "Chaimail Armor",
+        image: "",
+        slot: "armor",
+        wealth: 2,
+        armor: {
+            type: ["bludgeoning", "slashing"],
+            sacrifice: 1,
+            bonus: 1,
+            career: ["AllMartial"],
+            movement: -1
+        },
+    },
+    {
+        name: "Open Helmet",
+        description: "Open faced helmet",
+        image: "",
+        slot: "armor",
+        wealth: 2,
+        armor: {
+            type: ["bludgeoning", "slashing"],
+            bonus: 1,
+            sacrifice: 1,
+            career: ["Cavalry", "Infantry", "Gladiator"],
+
+        },
+    },
+    {
+        name: "Closed Helmet",
+        description: "Open faced helmet",
+        image: "",
+        slot: "armor",
+        wealth: 2,
+        armor: {
+            type: ["bludgeoning", "piercing", "slashing"],
+            bonus: 1,
+            career: ["Infantry", "Cavalry"],
+            sacrifice: 2,
+            notes: "Hard to see out of",
+        },
+    },
+    // TODO: Make variant modes for armor hinge up, hinge down, from front, from back
+    {
+        name: "Shield",
+        description: "shield",
+        image: "",
+        slot: "armor",
+        wealth: 2,
+        armor: {
+            type: ["bludgeoning", "piercing", "slashing", "fire"],
+            bonus: 1,
+            career: ["Infantry", "Cavalry", "Gladiator"],
+            sacrifice: 12
+        },
+    },
+    {
+        name: "Large Shield",
+        description: "shield",
+        image: "",
+        slot: "armor",
+        wealth: 2,
+        armor: {
+            type: ["bludgeoning", "piercing", "slashing", "fire"],
+            bonus: 1,
+            career: ["Infantry", "Gladiator"],
+            sacrifice: 2,
+            movement: -1,
+        },
+    },
+    /// end of armor
+    /// start of wepaons
+    {
+        name: "Phalanx Spear",
+        description: "Your classic spear",
+        image: "",
+        slot: "longarm",
+        wealth: 1,
+        weapon_modes:
+            [{
+                range: 2,
+                hands: 1,
+                type: "Melee",
+                damage: [{ damage: "2d8", type: "piercing", when: "" }],
+                career: ["Infantry", "Gladiator"],
+            },
+            {
+                range: 0,
+                hands: 2,
+                type: "Grapple",
+                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
+                career: ["Brawler"],
+            }],
+    },
+    {
+        name: "Quarterstaff",
+        description: "Your classic staff",
+        image: "",
+        slot: "longarm",
+        wealth: 0,
+        weapon_modes:
+            [{
+                range: 1,
+                hands: 2,
+                type: "Melee",
+                damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
+                career: ["Infantry", "Hunter", "Gladiator"],
+            },
+            {
+                range: 0,
+                hands: 2,
+                type: "Grapple",
+                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
+                career: ["Brawler"],
+            }],
+    },
+    {
+        name: "Glaive ",
+        description: "Your classic Polearm",
+        image: "",
+        slot: "longarm",
+        wealth: 3,
+        weapon_modes:
+            [{
+                range: 2,
+                min_range: 2,
+                hands: 2,
+                type: "Melee",
+                damage: [{ damage: "2d10", type: "piercing or slashing", when: "" }],
+                career: ["Infantry"],
+            },
+            {
+                range: 1,
+                hands: 2,
+                type: "Melee",
+                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
+                career: ["Brawler"],
+            }],
+    },
+    {
+        name: "Pike ",
+        description: "A very long spear",
+        image: "",
+        slot: "longarm",
+        wealth: 1,
+        weapon_modes:
+            [{
+                range: 3,
+                min_range: 2,
+                hands: 2,
+                type: "Melee",
+                damage: [{ damage: "2d10", type: "piercing or slashing", when: "" }],
+                career: ["Infantry"],
+            },
+            {
+                range: 1,
+                hands: 2,
+                type: "Melee",
+                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
+                career: ["Brawler"],
+            }],
+    },
+    {
+        name: "Long Sword",
+        description: "Your classic sword",
+        image: "",
+        slot: "sidearm",
+        hands: 1,
+        wealth: 3,
+
+        weapon_modes:
+            [{
+                range: 1,
+                hands: 1,
+                career: ["Paladin", "Cavalry", "Noble"],
+                type: "Melee",
+                damage: [{ damage: "2d8", type: "slashing", when: "" }],
+            },
+            {
+                range: 1.5,
+                hands: 1,
+                career: ["Paladin", "Cavalry", "Noble"],
+                type: "Melee",
+                damage: [{ damage: "2d10", type: "slashing", when: "" }],
+            },
+            {
+                range: 0,
+                type: "Melee",
+                career: ["Paladin", "Cavalry", "Noble", "Brawling"],
+                hands: 1,
+                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }]
+            }],
+    },
+    {
+        name: "BattleAxe",
+        description: "Your classic sword",
+        image: "",
+        slot: "sidearm",
+        hands: 1,
+        wealth: 3,
+
+        weapon_modes:
+            [{
+                range: 1,
+                hands: 1,
+                career: ["Infantry"],
+                type: "Melee",
+                damage: [{ damage: "2d8", type: "slashing", when: "" }],
+            },
+            {
+                range: 1.5,
+                hands: 1,
+                career: ["Infantry"],
+                type: "Melee",
+                damage: [{ damage: "2d10", type: "slashing", when: "" }],
+            },
+            {
+                range: 0,
+                type: "Melee",
+                career: ["Infantry", "Brawling"],
+                hands: 1,
+                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }]
+            }],
+    },
+    {
+        name: "Cutlass",
+        description: "A light sword",
+        image: "",
+        slot: "sidearm",
+        wealth: 2,
+        weapon_modes:
+            [{
+                range: 1,
+                type: "Melee",
+                hands: 1,
+                damage: [{ damage: "2d6", type: "slashing", when: "" }],
+                career: ["Pirate", "Cavalry"],
+            },
+            {
+                range: 1.5,
+                type: "Horseback Charge",
+                hands: 1,
+                damage: [{ damage: "2d6+", type: "slashing or piercing", when: "" }],
+                career: ["Cavalry"],
+            },
+            {
+                range: 0,
+                type: "Melee",
+                hands: 1,
+                career: ["Pirate", "Brawling"],
+                damage: [{ damage: "1d6", type: "bludgeoning", when: "" }]
+            }
+            ],
+    },
+    {
+        name: "Lance",
+        description: "Pointy spear",
+        image: "",
+        slot: "longarm",
+        wealth: 2,
+        weapon_modes:
+            [{
+                range: 2,
+                type: "Horseback Charge",
+                hands: 1,
+                damage: [{ damage: "2d12+4", type: "Piercing", when: "" }],
+                career: ["Paladin", "Cavalry"],
+                charges: "(1d3) / 6)"
+            },
+            {
+                range: 2,
+                type: "Melee",
+                hands: 2,
+                damage: [{ damage: "2d8", type: "Piercing", when: "" }],
+                career: ["Infantry"],
+            },
+
+            ],
+        counters: [{ max: 1, cur: 1, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 1 },] }],
+
+    },
+    {
+        name: "Club",
+        description: "A basic heavy club",
+        image: "",
+        slot: "longarm",
+        wealth: 0,
+        weapon_modes:
+            [{
+                range: 1,
+                type: "Melee",
+                hands: 1,
+                damage: [{ damage: "2d4", type: "bludgeoning", when: "" }],
+                career: ["Strength", "Brawling", "Gladiator", "Thug", "Guard"],
+            },
+            ],
+    },
+    {
+        name: "Mace",
+        description: "A basic heavy club",
+        image: "",
+        slot: "sidearm",
+        wealth: 2,
+        weapon_modes:
+            [{
+                range: 1,
+                type: "Melee",
+                hands: 1,
+                damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
+                career: ["Strength", "Brawling", "Infantry", "Gladiator"],
+            }],
+    },
+    {
+        name: "Unarmed",
+        description: "Kick or fist",
+        image: "",
+        slot: "",
+        wealth: 0,
+        weapon_modes:
+            [{
+                range: 1,
+                type: "Melee",
+                hands: 1,
+                damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
+                career: ["Simple"],
+            },
+            ],
+    },
+    {
+        name: "Hand Crossbow",
+        description: "A small ahistorical crossbow useful as a stand in for pistols in urban adventures",
+        image: "",
+        slot: "sidearm",
+        wealth: 3,
+        weapon_modes:
+            [{
+                range: 6,
+                type: "Ranged",
+                hands: 1,
+                loading: 1,
+                damage: [{ damage: "2d6", type: "piercing", when: "" }],
+                career: ["Asassin", "Thug", "Pirate"],
+                charges: 1,
+                no_strength: true,
+            },
+            ],
+        counters: [{ max: 6, cur: 6, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 6 },] }],
+    },
+    {
+        name: "Crossbow",
+        description: "A heavy crossbow that requires winding up, useful for assassinations or seiges",
+        image: "",
+        slot: "longarm",
+        wealth: 3,
+        weapon_modes:
+            [{
+                range: 30,
+                type: "Ranged",
+                hands: 2,
+                loading: 2,
+                armor_piercing: 2,
+                damage: [{ damage: "2d10", type: "piercing", when: "" }],
+                career: ["Asassin", "Archer", "Pirate"],
+                charges: 1,
+                no_strength: true,
+            },
+            ],
+        counters: [{ max: 20, cur: 20, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 20 },] }],
+    },
+    {
+        name: "Longbow",
+        description: "A powerful bow",
+        image: "",
+        slot: "longarm",
+        wealth: 3,
+        weapon_modes:
+            [{
+                range: 30,
+                type: "Ranged",
+                hands: 2,
+                loading: 0,
+                armor_piercing: 1,
+                damage: [{ damage: "2d8", type: "piercing", when: "" }],
+                career: ["Archer"],
+                charges: 1,
+            },
+            ],
+        counters: [{ max: 20, cur: 20, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 20 },] }],
+    },
+    {
+        name: "Horse Bow",
+        description: "A powerful bow, short enough to be used from the saddle",
+        image: "",
+        slot: "longarm",
+        wealth: 3,
+        weapon_modes:
+            [{
+                range: 30,
+                type: "Ranged",
+                hands: 2,
+                loading: 0,
+                armor_piercing: 1,
+                damage: [{ damage: "2d6", type: "piercing", when: "" }],
+                career: ["HorseArcher"],
+                charges: 1,
+            },
+            ],
+        counters: [{ max: 20, cur: 20, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 20 },] }],
+    },
+    {
+        name: "Short Bow",
+        description: "A  bow for hunting",
+        image: "",
+        slot: "longarm",
+        wealth: 3,
+        weapon_modes:
+            [{
+                range: 20,
+                type: "Ranged",
+                hands: 2,
+                loading: 0,
+                damage: [{ damage: "2d6", type: "piercing", when: "" }],
+                career: ["Archer", "HorseArcher", "Hunter"],
+                charges: 1,
+            },
+            ],
+        counters: [{ max: 20, cur: 20, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 20 },] }],
+    },
+    {
+        name: "Rapier",
+        description: "A duelling sword",
+        image: "",
+        slot: "sidearm",
+        range: 1.5,
+        wealth: 3,
+        weapon_modes:
+            [{
+                type: "Melee",
+                range: 1.5,
+                damage: [{ damage: "2d6", type: "piercing", when: "" }],
+                career: ["Pirate", "Noble", "Thug"],
+            },
+            {
+                type: "Melee",
+                range: 0,
+                damage: [{ damage: "1d4", type: "bludgeoning", when: "" }],
+                career: ["Pirate", "Noble", "Thug"],
+            }],
+    }
+    ,
+    {
+        name: "Rapier with spring dagger hilt",
+        description: "A duelling sword",
+        image: "",
+        slot: "sidearm",
+        wealth: 4,
+        weapon_modes:
+            [{
+                type: "Melee",
+                range: 1.5,
+                damage: [{ damage: "2d6", type: "piercing", when: "" }],
+                career: ["Pirate", "Noble", "Thug"],
+            },
+            {
+                type: "Melee",
+                range: 0,
+                damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                career: ["Pirate", "Noble", "Thug"],
+            }],
+    },
+    {
+        name: "Throwing dagger",
+        description: "A dagger balanced to throw as well as stab",
+        image: "",
+        slot: "small",
+        wealth: 2,
+        weapon_modes:
+            [{
+                type: "Melee",
+                range: 0.5,
+                career: ["Pirate", "Noble", "Thug", "Assassin"],
+                damage: [{ damage: "1d8", type: "piercing", when: "" }],
+            },
+            {
+                type: "Melee",
+                range: 0,
+                career: ["Pirate", "Noble", "Thug", "Assassin"],
+                damage: [{ damage: "1d8", type: "piercing", when: "" }],
+            },
+            {
+                type: "Thrown",
+                career: ["Pirate", "Noble", "Thug", "Assassin"],
+                range: 10,
+                damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                charges: 1,
+            }],
+        counters: [{ max: 1, cur: 1, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 1 },] }],
+
+    },
+
+    {
+        name: "Hand Axe",
+        description: "A hand axe balanced to throw as well as chop, useful as a tool too",
+        image: "",
+        slot: "small",
+        wealth: 2,
+        weapon_modes:
+            [{
+                type: "Melee",
+                range: 0.5,
+                career: ["Gladiator", "Hunter", "Pirate", "Assassin"],
+                damage: [{ damage: "2d6", type: "slashing", when: "" }],
+            },
+            {
+                type: "Thrown",
+                career: ["Gladiator", "Hunter", "Pirate", "Assassin"],
+                range: 10,
+                damage: [{ damage: "1d8", type: "slashing", when: "" }],
+                charges: 1,
+            }],
+        counters: [{ max: 1, cur: 1, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 1 },] }],
+
+    },
+
+    {
+        name: "Javelin",
+        description: "A light spear",
+        image: "",
+        slot: "longarm",
+        wealth: 0,
+        weapon_modes:
+            [{
+                type: "Melee",
+                range: 1,
+                career: ["Hunter", "Infantry", "Gladiator", "Athlete"],
+                damage: [{ damage: "2d6", type: "piercing", when: "" }],
+            },
+            {
+                type: "Thrown",
+                career: ["Hunter", "Infantry", "Gladiator", "Athlete"],
+                range: 10,
+                damage: [{ damage: "2d6", type: "piercing", when: "" }],
+                charges: 1,
+            }],
+        counters: [{ max: 1, cur: 1, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 1 },] }],
+
+    },
+    {
+        name: "Knife",
+        description: "A knife, not primarily intended as a weapon",
+        image: "",
+        slot: "small",
+        wealth: 1,
+        weapon_modes:
+            [{
+                type: "Melee",
+                range: 0.5,
+                damage: [{ damage: "1d6", type: "piercing", when: "" }],
+                career: ["Assassin", "Brawling"],
+            },
+            {
+                type: "Grapple",
+                range: 0,
+                damage: [{ damage: "1d6", type: "piercing", when: "" }],
+                career: ["Assassin", "Brawling"],
+            },
+            {
+                type: "Thrown",
+                range: 10,
+                awkward: true,
+                damage: [{ damage: "1d6", type: "piercing", when: "" }]
+
+            }],
+        counters: [{ max: 1, cur: 1, regen_when: "Short Rest", regen_amount: "1" }],
+    }
+    ,
+    {
+        name: "Flail",
+        description: "A ball on a chain. A skillful user can try to grapple or disarm opponents. Fails are harder to parry giving a +1 steel to fight versus humanoids who wish to parry, but a critical failure will often indicate self inflicted damage",
+        image: "",
+        slot: "longarm",
+        wealth: 1,
+        weapon_modes:
+            [{
+                type: "Melee",
+                range: 1.1,
+                damage: [{ damage: "2d8", type: "bludgeoning", when: "" }],
+                career: ["Gladiator", "Paladin"],
+            }
+            ],
+
+    },
+    {
+        name: "Great Axe",
+        description: "A very heavy axe",
+        image: "",
+        slot: "longarm",
+        strengthMin: 2,
+        wealth: 4,
+        weapon_modes:
+            [{
+                type: "Melee",
+                hands: 2,
+                range: 1.1,
+                damage: [{ damage: "2d12", type: "slashing", when: "" }],
+                career: ["Infantry", "Gladiator"],
+            }
+            ],
+
+    },
+    {
+        name: "Great Club",
+        description: "A very heavy club",
+        image: "",
+        slot: "longarm",
+        strengthMin: 2,
+        wealth: 1,
+        weapon_modes:
+            [{
+                type: "Melee",
+                hands: 2,
+                range: 1.1,
+                damage: [{ damage: "2d8", type: "slashing", when: "" }],
+                career: ["Infantry", "Gladiator", "Strength"],
+            }
+            ],
+
+    },
+    {
+        name: "Net",
+        description: "A Large or smaller creature hit by a net is restrained until it is freed. A net has no effect on creatures that are formless, or creatures that are Huge or larger.A creature can use its action to make a DC 10 Strength check, freeing itself or another creature within its reach on a success. Dealing 5 slashing damage to the net  also frees the creature without harming it, ending the effect and destroying the net.",
+        image: "",
+        slot: "longarm",
+        strengthMin: 2,
+        wealth: 1,
+        weapon_modes:
+            [{
+                type: "Ranged",
+                hands: 2,
+                range: 2,
+                damage: [{ condition: "restrained", type: "fabric", when: "Large or smaller target" }],
+                career: ["Hunter", "Gladiator"],
+            }
+            ],
+
+    },
+    {
+        name: "Great Sword",
+        description: "A very heavy Sword",
+        image: "",
+        slot: "longarm",
+        strengthMin: 2,
+        wealth: 5,
+        weapon_modes:
+            [{
+                type: "Melee",
+                hands: 2,
+                range: 1.1,
+                damage: [{ damage: "4d6", type: "slashing", when: "" }],
+                career: ["Infantry", "Gladiator", "Paladin"],
+            }
+            ],
+
+    },
+    {
+        name: "Fireball Wand",
+        description: "Opens a temporary rift to the plane of fire, on defense, it could be used in reverse to parry a fire blast",
+        image: "",
+        slot: "sidearm",
+        wealth: 10,
+        weapon_modes:
+            [
+                {
+                    type: "Blast",
+                    radius: 2,
+                    career: ["Immolator", "Sorcerer"],
+                    range: 12,
+                    damage: [{ damage: "6d6", type: "fire", when: "" }],
+                    description: "Can set target alfame",
+                    charges: 1,
+                    no_strength: true,
+                }
+            ],
+        counters: [{ name: "charges", max: 7, cur: 7, regen_when: "Dawn", regen_amount: "1d4" }],
+    },
+    {
+        name: "Acid Vial ",
+        description: "A vial of strong acid",
+        image: "",
+        slot: "small",
+        wealth: 3,
+        weapon_modes:
+            [{
+                range: 4,
+                hands: 1,
+                type: "Thrown",
+                damage: [{ damage: "4d6", type: "acid", when: "" }],
+                career: ["Assassin"],
+                charges: 1,
+                no_strength: true,
+            }],
+        counters: [{ max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
+    },
+    {
+        name: "Alchemist's Fire",
+        description: "Sticky, adhesive fluid that ignites when exposed to air",
+        image: "",
+        slot: "small",
+        wealth: 3,
+        weapon_modes:
+            [{
+                range: 4,
+                radius: 1,
+                hands: 1,
+                type: "Thrown",
+                damage: [{ damage: "1d6", type: "fire", when: "" }, { condition: "aflame", type: "fire", when: "flammable" }],
+                career: ["Assassin"],
+                charges: 1,
+                no_strength: true,
+            }],
+        counters: [{ name: "vials", max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
+    },
+    {
+        name: "Bomb",
+        description: "As an action, a character can light this bomb and throw it. Each creature within 5 feet of that point must succeed on a DC 12 Dexterity saving throw or take 3d6 fire damage.",
+        image: "",
+        slot: "small",
+        wealth: 5,
+        weapon_modes:
+            [{
+                range: 6,
+                hands: 1,
+                type: "Thrown",
+                damage: [{ damage: "6d6", type: "fire", when: "DC 12 Saving throw failed" }, { condition: "aflame", type: "fire", when: "flammable" }],
+                career: ["Assassin"],
+                charges: 1,
+                no_strength: true,
+            }],
+        counters: [{ max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
+    },
+    {
+        name: "Boomerang",
+        description: "The boomerang is a ranged weapon, on a miss it returns to your hand. Useful for killing birds.",
+        image: "",
+        slot: "small",
+        wealth: 5,
+        weapon_modes:
+            [{
+                range: 12,
+                hands: 1,
+                type: "Thrown",
+                damage: [{ damage: "1s4", type: "bludgeoning", when: "" },],
+                career: ["Hunter"],
+                charges: 1,
+            }],
+        counters: [{ max: 1, cur: 1, regen_when: "Short Rest", regen_amount: "1" }],
+    },
+
+];
 /////////// PTBA source
 
 var feats = {
@@ -654,7 +1515,7 @@ var careers = {
     Assassin: {
         name: "Assassin",
         description: "Blades-for-hire, perhaps agents in the service of the king, spies and assassins make killing and stealing in a discreet manner a way of life. They are adept at sneak attacks, killing, information gathering, disguises, city lore, persuasion, poisons, and lock picking. Their methods involve gathering intelligence on their subject from various (sometimes seedy) sources, circumventing security measures of all types, adopting disguises that allow them to get close to the target, and building up a broad selection of contacts. They are also patient, sometimes hiding out in a single spot for days to await the perfect opportunity to strike. ",
-        weapons: ["Ambush", "Simple"],
+        weapons: ["Ambush", "Simple", "AllMartial"],
         feats: ["Holdout_Weapon", "Wicked_Lie", "Anatomy", "Poison_Master", "Sniper", "Disguise_Master", "Master_of_Stealth"],
 
         languages: [],
@@ -710,7 +1571,7 @@ var careers = {
     Cavalry: {
         name: "Cavalry",
         description: "Fighting with cavalry weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Melee", "Unarmed"],
+        weapons: ["Melee", "Unarmed", "AllMartial"],
 
         feats: [
             "Ride_By",
@@ -726,7 +1587,7 @@ var careers = {
     HorseArcher: {
         name: "Horse Archer",
         description: "Fighting with ranged weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Ranged", "Simple"],
+        weapons: ["Ranged", "Simple", "AllMartial"],
 
         feats: [
             "Ride_By",
@@ -835,7 +1696,7 @@ var careers = {
     },
     Hunter: {
         name: "Hunter", description: "The hunter is a master of tracking prey through the wilderness and the wastelands. Once hunters locate their target, they’ll use stealth, traps and/or expert bowmanship or spears  to bring it down. They are at home in the wild and can survive there for long periods, returning to more civilized areas only when they have furs and hides to sell, or when they require the company of their fellow men (or women). ",
-        weapons: ["Ranged", "Simple"],
+        weapons: ["Ranged", "Simple", "AllMartial"],
         feats: [
             "Home_Field_Advantage",
             "Sniper",
@@ -865,7 +1726,7 @@ var careers = {
     Infantry: {
         name: "Infantry",
         description: "Fighting with infantry weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Melee", "Thrown", "Simple"],
+        weapons: ["Melee", "Thrown", "Simple", "AllMartial"],
         feats: [
             "Phalanx",
             "Artillery",
@@ -880,7 +1741,7 @@ var careers = {
     Archer: {
         name: "Archer",
         description: "Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Ranged", "Simple"],
+        weapons: ["Ranged", "Simple", "AllMartial"],
         feats: [
             "Artillery",
             "Tough",
@@ -946,7 +1807,7 @@ var careers = {
     Noble: {
         name: "Noble",
         description: "Often holding homes in the city and estates or villas outside the city, these characters are usually titled (though not necessarily deserving) and have some authority over the common people, peasants, and slaves. Nobles are often able to obtain credit, have high-ranking contacts, and are skilled in such things as bribery, browbeating, dress sense, and etiquette.",
-        weapons: ["Light"],
+        weapons: ["Light", "AllMartial"],
         feats: [
             "Swift_Rider",
             "Great_Beauty",
@@ -960,7 +1821,7 @@ var careers = {
     Paladin: {
         name: "Paladin",
         description: "A classic paladin, who swears an oath (pick one from the lists in the feats) who fights for justice (or maybe injustice). You may want to round your conception with Cavalry and Noble… note weapon skills do not come from your oath",
-        weapons: [],
+        weapons: ["AllMartial"],
         feats: [
             "Lay_On_Hands",
             "Smite",
@@ -986,7 +1847,7 @@ var careers = {
     Pirate: {
         name: "Pirate",
         description: "Ability to sail and survive in the seas. Navigating, captaining a ship and supplying it, knowledge of strange and distant lands and islands, climbing, acrobatics. Perhaps you were  a pilot, perhaps a sailor, or a pirate, and you probably can swim well.",
-        weapons: ["Light", "Thrown"],
+        weapons: ["Light", "Thrown", "AllMartial"],
         feats: ["Sail_Monkey",
             "Artillery",
             "Every_Port",
@@ -1043,7 +1904,7 @@ var careers = {
     Thug: {
         name: "Thug",
         description: "You have not fought in wars for this career, but you have fought. You have beaten up people, fought in gang wars, been a bodyguard. You have contacts in the city, and  know how to get information out of people, whether that means intimidation or knuckles. You know how to commit violence in a city without getting into trouble. You might have been in charge of prisoners or slaves.",
-        weapons: ["Melee", "Unarmed", "Light"],
+        weapons: ["Melee", "Unarmed", "Light", "AllMartial"],
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
@@ -1053,7 +1914,7 @@ var careers = {
     Guard: {
         name: "Guard",
         description: "You have not fought in wars for this career, but you have fought. You have beaten up people, fought in gang wars, been a bodyguard. You have contacts in the city, and  know how to get information out of people, whether that means intimidation or knuckles. You know how to commit violence in a city without getting into trouble. You might have been in charge of prisoners or slaves.",
-        weapons: ["Melee", "Unarmed", "Light"],
+        weapons: ["Melee", "Unarmed", "Light", "AllMartial"],
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
@@ -1175,6 +2036,68 @@ async function findSource(inputPath, recur = 0) {
 }
 
 
+async function processImageForTraining(imagePath, tagsSource) {
+
+    if (imagePath.startsWith("http")) {
+
+        destFile = path.pasename(imagePath);
+        destFile = path.normalize(path.join(__dirname, 'public', 'trainingData', destFile));
+        if (!rawfs.existsSync(destFile)) {
+
+            try {
+                let response = await fetch(imagePath);
+                //  console.log(imagePath);
+                const arrayBuffer = await response.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                //  console.log(fileType);
+
+
+                await EnsureDestinationExists(destFile);
+                console.log("Would copy " + imagePath + " to " + destFile);
+
+                await rawfs.createWriteStream(destFile).write(buffer);
+                console.log("Did copy " + imagePath + " to " + destFile);
+                return destFile;
+
+            }
+
+            catch (error) {
+                console.log(error, "Cannot fetch " + imagePath);
+                return "";
+            }
+        } else {
+            return destFile;
+        }
+    } else {
+
+        let a = path.basename(imagePath);
+        sourceFile = await findSource(a, 0);
+        if (!(nameOk(sourceFile))) {
+            console.error("Cannot find " + a);
+            return "";
+        }
+        a = cleanPath(a);
+        let destFile = path.normalize(path.join(__dirname, 'public', 'trainingData', a));
+        if (typeof destFile != "string") throw ("WTF1");
+        if (!rawfs.existsSync(destFile)) {
+
+            await EnsureDestinationExists(destFile);
+
+            try {
+                console.log("Would copy " + sourceFile + " to " + destFile);
+                await fs.copyFile(sourceFile, destFile);
+                console.log("did copy " + sourceFile + " to " + destFile);
+            } catch (error) { console.log("Error Could not copy ", '"' + sourceFile + '"', " to ", '"' + destFile + '"'); }
+            return destFile;
+
+        } else {
+            return destFile;
+
+        }
+
+    }
+
+}
 
 async function processImage(imagePath, tagsSource) {
 
@@ -1501,12 +2424,147 @@ async function convertDnD5e() {
         let keys = Object.keys(counts);
         for (let i = 0; i < keys.length; i++) {
             console.log(keys[i], counts[keys[i]]);
-            // let outfile3 = path.join(path.join(__dirname, 'public', "artgenerator.json"));
+            // let outfile3 = path.join(pathy.join(__dirname, 'public', "artgenerator.json"));
             //  fs.writeFile(outfile3, JSON.stringify(artGeneratorFile));
         }
 
     }
 }
+
+
+async function makeTrainingData() {
+
+    await fsExtra.emptyDir(path.join(__dirname, 'public', 'TrainingData'));
+    await fsExtra.emptyDir(path.join(__dirname, 'public', 'TrainingData'));
+    let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert3')); // 
+    let counts = {};
+    console.log("Make training data " + dir.length);;
+
+    for (let i = 0; i < dir.length; i++) {
+
+        let fname = path.join(__dirname, 'public', 'toConvert3', dir[i]);
+
+        console.log("CHecking " + fname);;
+
+        let text = (await fs.readFile(fname)).toString();
+        let level = 0;
+        let inQuotes = false;
+        let subfiles = [];
+        let oneEntry = "";
+        badNews = false;
+        for (let i = 0; i < text.length; i++) {
+            oneEntry += text[i];
+            if (!inQuotes) {
+                switch (text[i]) {
+                    case '"': inQuotes = true; break;
+                    case '{': level++; //console.log("up:" + level);
+                        // console.log(oneEntry);
+                        break;
+                    case '}': level--;
+                        // console.log("down:" + level); console.log(oneEntry);
+                        if (level < 0) {
+                            console.log("Error in conversion");
+                            console.log(oneEntry);
+                            exit(-1);
+                        }
+                        if (level === 0) {
+                            //    console.log("Writing size " + oneEntry.length);
+                            subfiles.push(oneEntry);
+                            oneEntry = "";
+                        } break;
+                    default: break;
+                }
+            }
+            else {
+                //  if (text[i] === '@') { badNews = true; }
+
+                if (!badNews) {
+                    if (text[i] === '"' && text[i - 1] !== '/') { inQuotes = false; }
+                } else {
+                    if (text[i] == '{') badNews = false;
+                    else {
+                        oneEntry = oneEntry.slice(0, -1);
+                    }
+                }
+            }
+        }
+
+        console.log("Num SubFiles " + subfiles.length);
+
+        let last = 0;
+        let audit = false;
+        for (let fileIndex = 0; fileIndex < subfiles.length; fileIndex++) {
+
+
+            if (fileIndex > last + 50) { console.log(fileIndex + " of " + subfiles.length); last = fileIndex; audit = true; }
+            {//   try {
+                json = JSON.parse(subfiles[fileIndex]);
+                if (!json.flags) { console.log("PRESKipping " + json.name); continue; }
+
+
+                let tagsSource = json.flags.plutonium;
+                if (json.name == "Mace") {
+                    console.log(json);
+                }
+
+
+
+
+                if (json.img) {
+                    console.log("json.img " + json.img);
+                    // todo: avoid token images
+                    //    console.log("json %o ", json);
+                    let destFile = await processImageForTraining(json.img, tagsSource);
+                    console.log("json.img " + destFile);
+
+
+                    let text = path.basename(destFile);
+
+                    text = text.replace(/\.[^/.]+$/, "")
+
+
+
+
+                    let pathName = destFile;
+                    pathName = pathName.replace(/\.[^/.]+$/, ".txt")
+                    console.log("pathName " + pathName);
+                    writeText(pathName, text);
+
+                }
+
+                // if (json?.prototypeToken) {
+
+
+                //     let t = json.prototypeToken;
+
+                //     let text = json.base?.name + " " + json.base._typeHtml
+                //         + json.base?._subTypeHtml + " token " + json?.description
+                //         + (json.base?.weapon ? "weapon" : "");
+
+                //     json.prototypeToken = await processImageForTraining(t.texture.src);
+
+                //     let pathName = json.prototypeToken;
+                //     pathName = pathName.replace(/\.[^/.]+$/, ".txt")
+                //     writeText(pathName, text);
+
+
+                //     // todo auto make tokens from main image
+                // }
+
+
+
+            };
+
+        }
+        //    catch (err) {
+        //       console.error("error parsing json ( " + err + "+)");
+        //   }
+    }
+
+
+}
+
+
 
 function convertPTBA() {
 
@@ -1581,9 +2639,28 @@ function convertPTBA() {
     });
 }
 
+for (let item = 0; item < items.length; item++) {
+
+    let key = items[item].name.split(' ').join('_');
+    console.log(items[item].name);
+    tags = {
+        "file": "CompendiumFiles/" + key,
+        "page": "weapon",
+        "source": "Gil",
+        "type": "weapon",
+        "name": items[item].name,
+        "img": "images/modules/plutonium/media/icon/mighty-force.svg" /// need this
+    };
+    writeJsonFileInPublic('Compendium', "tag_" + key, tags);
+
+
+    writeJsonFileInPublic('CompendiumFiles', key, items[item]);
+}
+
 // note, run convertDnD5e and do not translate feats
+makeTrainingData();
 //convertDnD5e();
-console.log("Converted D&D5e");
-convertPTBA();
+//console.log("Converted D&D5e");
+//convertPTBA();
 console.log("Converted convertPTBA");
 

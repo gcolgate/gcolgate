@@ -28,6 +28,40 @@
       gap: 10px;
     }
 
+
+    .imageWrapper {
+      position: relative;
+    }
+
+    .overlayImage {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .overlayImageDoll {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .tooltipcontainer {
+      position: relative;
+    }
+
+    .tooltip {
+      display: none;
+      position: absolute;
+      border-radius: 5px;
+      border-color: #2d240c;
+      border-style: outset;
+      /* Additional positioning, height, width, etc. */
+    }
+
+    a:hover .tooltip {
+      display: block;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -322,6 +356,64 @@
       margin-left: 0px;
       margin-right: 0px;
       width: 80%;
+      text-transform: capitalize;
+    }
+
+    .displayinline {
+      display: inline;
+    }
+
+    .displayblock {
+      display: block;
+    }
+
+    .image-holder {
+      filter: sepia(100%);
+      display: inline;
+    }
+
+    .image-holder:hover {
+      display: inline;
+      filter: none;
+    }
+
+    .itemsetnada {
+      box-sizing: border-box;
+      color: rgb(84, 44, 38);
+      background-color: rgb(248, 228, 205);
+      color-scheme: light dark;
+      font-family: Mrs Eaves;
+      font-size: 12px;
+      font-variant-alternates: normal;
+      font-variant-east-asian: normal;
+      font-variant-ligatures: normal;
+      font-variant-numeric: normal;
+      font-variant-position: normal;
+      font-weight: 700;
+      margin-left: 0px;
+      margin-right: 0px;
+      border: none;
+      width: 300px;
+      text-transform: capitalize;
+    }
+
+    .itemsetbkg {
+      box-sizing: border-box;
+      color: rgb(84, 44, 38);
+      background-color: lightgray;
+      color-scheme: light dark;
+      font-family: Mrs Eaves;
+      font-size: 12px;
+      font-variant-alternates: normal;
+      font-variant-east-asian: normal;
+      font-variant-ligatures: normal;
+      font-variant-numeric: normal;
+      font-variant-position: normal;
+      font-weight: 700;
+      margin-left: 0px;
+      margin-right: 0px;
+      border: none;
+      width: 300px;
       text-transform: capitalize;
     }
 

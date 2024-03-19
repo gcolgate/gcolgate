@@ -43,7 +43,6 @@ function Collapsible(text, shown) {
 }
 
 function EndCollapsible() {
-
     return '</div>';
 }
 
@@ -460,7 +459,7 @@ async function displayThing(fullthingname, sheetName) {
 }
 
 function formatRemoveButton(ownerid, itemid) {
-    return div("<button onclick=RemoveItemFromThing('" + ownerid + "','" + itemid + "')> Delete  </button>");
+    return "<img class='image-holder' src='Sheets/trashcan.png' width='16' height='16' onclick=RemoveItemFromThing('" + ownerid + "','" + itemid + "')  </img>";
 }
 
 function LineOfCareer(owner, thing, notes) {

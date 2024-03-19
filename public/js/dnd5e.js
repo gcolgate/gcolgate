@@ -698,7 +698,7 @@ function IsInventoryItem(item) {
         case "bestiary": return true;
         case "expensive": return true;
         case "items": return true;
-        case "weapons": return true;
+        case "weapon": return true;
         case "magic_items": return true;
         default:
             console.log("Unkown type ", item.page);
@@ -734,7 +734,13 @@ function drawItems(thing, filter, notes) {
 
         if (ItemFiltered(item, filter)) { continue; }
         let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes); // no w
-        if (item.page != "careers")
+        dragDrop(draggables.item(i), {});
+        draggables.item(i).acceptDrag = (thingDragged, event) => {
+            if (thing.acceptDrag) {
+                thing.acceptDrag(thingDragged, event);
+            }
+        };
+        if (item.page != "careers" && item.page != "weapon")
             a += formatRemoveButton(thing.id, item.file);;
         text += div(a);
     }

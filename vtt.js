@@ -474,6 +474,21 @@ io.on('connection', (socket) => {
                         div("diceexpression", r.expression) +
                         div("oneroll", strong(r.val) + ' ' + parens(r.rolls)));
             }
+        if (m.damage) {
+            let damageString = "";
+
+            for (let d = 0; d < m.damage.length; d++) {
+                let dam = m.damage[d];
+                let r = dice(dam.damage + (d == 0 ? "+" + m.damage_bonus : ""));
+                damageString += div("oneroll", "Damage " + strong(r.val) + ' ' + parens(r.rolls) + dam.type + " " + dam.when);
+
+
+            }
+
+            outmsg += div("", damageString);
+
+        }
+
         if (m.post) outmsg += div("msgpost", m.post);
 
         return outmsg;

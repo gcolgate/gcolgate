@@ -108,11 +108,26 @@
 
 <div id="inventory" { tabClass( thing.tab && thing.tab=="inventory" )}>
     <div class="twocolumnsuneven">
-        <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
-            style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-            onclick="showApperancePopUp(event,'{thing.id}')"></image>
+        <div class="imageWrapper">
+            <img class="overlayImage" src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
+                onclick="showApperancePopUp(event,'{thing.id}')"></image>
+            <img class="overlayImage" src="assets/black.webp" alt="{thing.name}"
+                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
+                onclick="showApperancePopUp(event,'{thing.id}')"></image>
+            <img class="overlayImage" src="assets/paperdoll.webp" alt="{thing.name}"
+                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
+                onclick="showApperancePopUp(event,'{thing.id}')"></image>
+        </div>
+
         <div id="columntwo">
             <div>Items</div>
+            <button onclick="dropDownToggle('ddi_{thing.id}')" class="drop_list_button">Buy Item</button>
+            <div id="ddi_{thing.id}" class="dropdown-content itemsetheadershort crit"">
+                    <input type=" text" placeholder="Search.." id="ddi_c_{thing.id}"
+                onkeyup="filterDropDown('ddi_c_{thing.id}','ddi_{thing.id}')">
+                { extractFromCompendium(["items"], thing); }
+            </div>
             <div class="outlined dragitem">
                 { drawItems(thing, IsInventoryItem) }
             </div>
