@@ -1,0 +1,32 @@
+@
+<div>
+    <div class="body itemsetnada" ondragenter="ondragenter(event)" ondragover="ondragover(event)"
+        ondragleave="ondragleave(event)" ondrop="ondrop(event)">
+        <image src="{'thing.img'}" width="16" height="16" draggable=true ondragstart=setDragStart(event,{thing.id})>
+        </image>
+        { Editable(thing,
+        "thing.name",
+        "displayinline") + ( owner ? formatRemoveButton(owner.id, thing.file):"") }
+
+        <a href="#">Info
+            <div class="tooltipcontainer">
+                <div class="tooltip">
+
+                    <div class="block backgroundColor">
+                        <div> { Editable(thing,
+                            "thing.description",
+                            "backgroundColor") }</div>
+
+                        <span>inventory slot: </span> {Editable(thing, "thing.slot", "itemsetbkg") }
+
+                        <span> cost: </span> {Editable(thing, "thing.wealth", "itemsetbkg") }
+                        <div>{ showWeaponModes(thing, owner) } </div>
+                        <div>{ showArmorBenefit(thing, owner) } </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+</div>

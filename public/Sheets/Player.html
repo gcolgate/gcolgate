@@ -137,31 +137,101 @@
                     </linearGradient>
                 </defs>
 
-                <image href="{getAppearanceImage(thing, 'portrait')}" width="75%" height="80%" y="10%" x="10%"
+                <image href="{getAppearanceImage(thing, 'portrait')}" width="75%" height="80%" y="05%" x="10%"
                     title="image" preserveAspectRatio="xMidYMid meet" />
 
                 <rect x="0%" y="0%" width="20%" height="100%" fill="url(#darktolight)"></rect>
                 <rect x="70%" y="0%" width="40%" height="100%" fill="url(#lighttodark)"></rect>
 
-                <rect x=1% y="11%" width="9%" title="cloak" height="5.625%" class="inventoryitem" />
-                <rect x=1% y="21%" width="9%" title="armor" height="5.625%" class="inventoryitem" />
-                <rect x=1% y="31%" width="9%" title="glove" height="5.625%" class="inventoryitem" />
-                <rect x=1% y="41%" width="9%" title="foot" height="5.625%" class="inventoryitem" />
-                <rect x=1% y="51%" width="9%" title="longarm" height="18%" class="inventoryitem" />
-                <rect x="1%" y="81%" width="9%" title="sidearm" height="5.625%" class="inventoryitem" />
-                <rect x="1%" y="81%" width="9%" title="leftarm" height="5.625%" class="inventoryitem" />
-                <rect x="81%" y="1%" width="9%" title="pendant" height="5.625%" class="inventoryitem" />
-                <rect x="81%" y="11%" width="9%" title="ring-one" height="5.625%" class="inventoryitem" />
-                <rect x="81%" y="11%" width="9%" title="ring-two" height="5.625%" class="inventoryitem" />
-                <rect x="75%" y="21%" width="9%" title="bag-1" height="5.625%" class="inventoryitem" />
-                <rect x="85%" y="21%" width="9%" title="bag-2" height="5.625%" class="inventoryitem" />
-                <rect x="75%" y="31%" width="9%" title="bag-3" height="5.625%" class="inventoryitem" />
-                <rect x="85%" y="31%" width="9%" title="bag-4" height="5.625%" class="inventoryitem" />
-                <rect x="75%" y="41%" width="9%" title="bag-5" height="5.625%" class="inventoryitem" />
-                <rect x="85%" y="41%" width="9%" title="bag-6" height="5.625%" class="inventoryitem" />
-                <rect x="85%" y="51%" width="9%" title="potion-1" height="5.625%" class="inventoryitem" />
-                <rect x="85%" y="61%" width="9%" title="potion-2" height="5.625%" class="inventoryitem" />
-                <rect x="85%" y="71%" width="9%" title="potion-3" height="5.625%" class="inventoryitem" />
+
+
+                <image href="assets/cloak.webp" x=1% y="11%" width="9%" title="image-cloak" height="5.625%" />
+                <image href="assets/helm.webp" x=01% y="1%" width="9%" title="image-head" height="5.625%" />
+                <image href="assets/armor.webp" x=01% y="21%" width="9%" title="image-armor" height="5.625%" />
+                <image href="assets/glove.webp" x=01% y="31%" width="9%" title="image-glove" height="5.625%" />
+                <image href="assets/feet.webp" x=01% y="41%" width="9%" title="image-foot" height="5.625%" />
+                <image href="assets/longarm.webp" x=01% y="51%" width="9%" title="image-longarm" height="18%" />
+                <image href="assets/sidearm.webp" x="1%" y="81%" width="9%" title="image-sidearm" height="5.625%" />
+                <image href="assets/shield.webp" x="11%" y="81%" width="9%" title="image-leftarm" height="5.625%" />
+                <image href="assets/pendant.webp" x="81%" y="1%" width="9%" title="image-pendant" height="5.625%" />
+                <image href="assets/ring.webp" x="75%" y="11%" width="9%" title="image-ring-one" height="5.625%" />
+                <image href="assets/ring.webp" x="85%" y="11%" width="9%" title="image-ring-two" height="5.625%" />
+                <image href="assets/bag.webp" x="75%" y="21%" width="9%" title="image-bag-1" height="5.625%" />
+                <image href="assets/bag.webp" x="85%" y="21%" width="9%" title="image-bag-2" height="5.625%" />
+                <image href="assets/bag.webp" x="75%" y="31%" width="9%" title="image-bag-3" height="5.625%" />
+                <image href="assets/bag.webp" x="85%" y="31%" width="9%" title="image-bag-4" height="5.625%" />
+                <image href="assets/bag.webp" x="75%" y="41%" width="9%" title="image-bag-5" height="5.625%" />
+                <image href="assets/bag.webp" x="85%" y="41%" width="9%" title="image-bag-6" height="5.625%" />
+                <image href="assets/potion.webp" x="85%" y="51%" width="9%" title="image-potion-1" height="5.625%" />
+                <image href="assets/potion.webp" x="85%" y="61%" width="9%" title="image-potion-2" height="5.625%" />
+                <image href="assets/potion.webp" x="85%" y="71%" width="9%" title="image-potion-3" height="5.625%" />
+
+
+
+                <rect x=1% y="1%" width="9%" title="head" height="5.625%" class="inventoryitem">
+                    <title>Headgear</title>
+                </rect>
+
+                <rect x=1% y="11%" width="9%" title="cloak" height="5.625%" class="inventoryitem">
+                    <title>Cloak</title>
+                </rect>
+
+
+
+                <rect x=1% y="21%" width="9%" title="armor" height="5.625%" class="inventoryitem">
+                    <title>Armor</title>
+                </rect>
+                <rect x=1% y="31%" width="9%" title="glove" height="5.625%" class="inventoryitem">
+                    <title>Gloves</title>
+                </rect>
+                <rect x=1% y="41%" width="9%" title="foot" height="5.625%" class="inventoryitem">
+                    <title>Shoes</title>
+                </rect>
+                <rect x=1% y="51%" width="9%" title="longarm" height="18%" class="inventoryitem">
+                    <title>LongArm</title>
+                </rect>
+                <rect x="1%" y="81%" width="9%" title="sidearm" height="5.625%" class="inventoryitem">
+                    <title>sideArm</title>
+                </rect>
+                <rect x="11%" y="81%" width="9%" title="shield" height="5.625%" class="inventoryitem">
+                    <title>LeftArm</title>
+                </rect>
+                <rect x="81%" y="1%" width="9%" title="pendant" height="5.625%" class="inventoryitem">
+                    <title>pendant</title>
+                </rect>
+                <rect x="75%" y="11%" width="9%" title="ring-one" height="5.625%" class="inventoryitem">
+                    <title>Ring 1</title>
+                </rect>
+                <rect x="85%" y="11%" width="9%" title="ring-two" height="5.625%" class="inventoryitem">
+                    <title>Ring 2</title>
+                </rect>
+                <rect x="75%" y="21%" width="9%" title="bag-1" height="5.625%" class="inventoryitem">
+                    <title>Pockets 1</title>
+                </rect>
+                <rect x="85%" y="21%" width="9%" title="bag-2" height="5.625%" class="inventoryitem">
+                    <title>Pockets 2</title>
+                </rect>
+                <rect x="75%" y="31%" width="9%" title="bag-3" height="5.625%" class="inventoryitem">
+                    <title>Pockets 3</title>
+                </rect>
+                <rect x="85%" y="31%" width="9%" title="bag-4" height="5.625%" class="inventoryitem">
+                    <title>Pockets 4</title>
+                </rect>
+                <rect x="75%" y="41%" width="9%" title="bag-5" height="5.625%" class="inventoryitem">
+                    <title>Pockets 5</title>
+                </rect>
+                <rect x="85%" y="41%" width="9%" title="bag-6" height="5.625%" class="inventoryitem">
+                    <title>Pockets 6</title>
+                </rect>
+                <rect x="85%" y="51%" width="9%" title="potion-1" height="5.625%" class="inventoryitem">
+                    <title>Potion 1</title>
+                </rect>
+                <rect x="85%" y="61%" width="9%" title="potion-2" height="5.625%" class="inventoryitem">
+                    <title>Potion 2</title>
+                </rect>
+                <rect x="85%" y="71%" width="9%" title="potion-3" height="5.625%" class="inventoryitem">
+                    <title>Potion 3</title>
+                </rect>
             </svg>
 
         </div>
