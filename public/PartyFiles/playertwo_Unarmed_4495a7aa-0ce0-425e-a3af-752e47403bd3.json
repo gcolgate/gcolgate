@@ -1,0 +1,24 @@
+{
+    "name": "Unarmed",
+    "description": "Kick or fist",
+    "image": "",
+    "slot": "",
+    "wealth": 0,
+    "weapon_modes": [
+        {
+            "range": 1,
+            "type": "Melee",
+            "hands": 1,
+            "damage": [
+                {
+                    "damage": "1d6",
+                    "type": "bludgeoning",
+                    "when": ""
+                }
+            ],
+            "career": [
+                "Simple"
+            ]
+        }
+    ]
+}

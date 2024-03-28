@@ -265,6 +265,14 @@ function refreshDirectoryWindow(id, whole) {
 
 }
 
+function setDragStart(event, name) {
+    let thing = GetRegisteredThing(thing.name);
+    thingDragged = thing;
+    thingDragged.windowId = null;
+
+
+}
+
 async function updateDirectoryWindow(id) {
 
     folders[id] = await GetDirectory(id);

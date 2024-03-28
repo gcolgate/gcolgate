@@ -1,1 +1,0 @@
-{"name":"Adamantine Glaive","type":"weapon","system":{"description":{"value":"\n\t\t<div class=\"rd__b  rd__b--2\"><p>Whenever you hit an object with this weapon, the hit is a critical hit.</p></div>","chat":"","unidentified":""},"damage":{"parts":[["1d10+@mod","slashing"]],"versatile":""},"range":{"value":10,"long":0,"units":"ft"},"attackBonus":null},"types":["Melee"]}

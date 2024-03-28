@@ -104,23 +104,69 @@
         { drawItems(thing, IsCareerItem, "full") }
     </div>
 </div>
-<!-- Different tabs here -->
+<!-- Different tabs here onclick="showApperancePopUp(event,'{thing.id}')" 
+
+ onclick="showApperancePopUp(event,'{thing.id}')"
+
+  onclick="showApperancePopUp(event,'{thing.id}')"
+
+-->
 
 <div id="inventory" { tabClass( thing.tab && thing.tab=="inventory" )}>
     <div class="twocolumnsuneven">
         <div class="imageWrapper">
-            <img class="overlayImage" src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
-                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                onclick="showApperancePopUp(event,'{thing.id}')"></image>
-            <img class="overlayImage" src="assets/black.webp" alt="{thing.name}"
-                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                onclick="showApperancePopUp(event,'{thing.id}')"></image>
-            <img class="overlayImage" src="assets/paperdoll.webp" alt="{thing.name}"
-                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                onclick="showApperancePopUp(event,'{thing.id}')"></image>
+            <!-- <img class="overlayImage" src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+                style="width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"></image> -->
+            <!-- <img class="overlayImage" src="assets/black.webp" alt="{thing.name}"
+                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"></image> -->
+            <!-- <img class="overlayImage" src="assets/paperdoll.webp" alt="{thing.name}"
+                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"></image> -->
+
+            <svg viewBox="0 0 250 400" xmlns="http://www.w3.org/2000/svg" class="overlayImageDolll">
+                <rect x=0% y="0%" width="100%" title="bkg" height="100%" class="inventorygbkg" />
+
+                <defs>
+                    <linearGradient id="darktolight" x1="0%" x2="100%" y1="0%" y2="0%">
+                        <stop offset="0%" stop-color="black" stop-opacity="1.0" />
+                        <stop offset="100%" stop-color="black" stop-opacity="0.0" />
+                    </linearGradient>
+
+                    <linearGradient id="lighttodark" x1="100%" x2="0%" y1="0%" y2="0%">
+                        <stop offset="0%" stop-color="black" stop-opacity="1.0" />
+                        <stop offset="100%" stop-color="black" stop-opacity="0.0" />
+                    </linearGradient>
+                </defs>
+
+                <image href="{getAppearanceImage(thing, 'portrait')}" width="75%" height="80%" y="10%" x="10%"
+                    title="image" preserveAspectRatio="xMidYMid meet" />
+
+                <rect x="0%" y="0%" width="20%" height="100%" fill="url(#darktolight)"></rect>
+                <rect x="70%" y="0%" width="40%" height="100%" fill="url(#lighttodark)"></rect>
+
+                <rect x=1% y="11%" width="9%" title="cloak" height="5.625%" class="inventoryitem" />
+                <rect x=1% y="21%" width="9%" title="armor" height="5.625%" class="inventoryitem" />
+                <rect x=1% y="31%" width="9%" title="glove" height="5.625%" class="inventoryitem" />
+                <rect x=1% y="41%" width="9%" title="foot" height="5.625%" class="inventoryitem" />
+                <rect x=1% y="51%" width="9%" title="longarm" height="18%" class="inventoryitem" />
+                <rect x="1%" y="81%" width="9%" title="sidearm" height="5.625%" class="inventoryitem" />
+                <rect x="1%" y="81%" width="9%" title="leftarm" height="5.625%" class="inventoryitem" />
+                <rect x="81%" y="1%" width="9%" title="pendant" height="5.625%" class="inventoryitem" />
+                <rect x="81%" y="11%" width="9%" title="ring-one" height="5.625%" class="inventoryitem" />
+                <rect x="81%" y="11%" width="9%" title="ring-two" height="5.625%" class="inventoryitem" />
+                <rect x="75%" y="21%" width="9%" title="bag-1" height="5.625%" class="inventoryitem" />
+                <rect x="85%" y="21%" width="9%" title="bag-2" height="5.625%" class="inventoryitem" />
+                <rect x="75%" y="31%" width="9%" title="bag-3" height="5.625%" class="inventoryitem" />
+                <rect x="85%" y="31%" width="9%" title="bag-4" height="5.625%" class="inventoryitem" />
+                <rect x="75%" y="41%" width="9%" title="bag-5" height="5.625%" class="inventoryitem" />
+                <rect x="85%" y="41%" width="9%" title="bag-6" height="5.625%" class="inventoryitem" />
+                <rect x="85%" y="51%" width="9%" title="potion-1" height="5.625%" class="inventoryitem" />
+                <rect x="85%" y="61%" width="9%" title="potion-2" height="5.625%" class="inventoryitem" />
+                <rect x="85%" y="71%" width="9%" title="potion-3" height="5.625%" class="inventoryitem" />
+            </svg>
+
         </div>
 
-        <div id="columntwo">
+        <div id=" columntwo">
             <div>Items</div>
             <button onclick="dropDownToggle('ddi_{thing.id}')" class="drop_list_button">Buy Item</button>
             <div id="ddi_{thing.id}" class="dropdown-content itemsetheadershort crit"">
