@@ -8,7 +8,7 @@ public/Uniques/*
 public/Favorites/*
 public/FavoritesFiles/*
 public/CompendiumOld/* 
-public/assets/*  
+public/assets/srd5e/
 public/modules/*     
 public/toConvert/*
 public/toConvert2/*
@@ -25,6 +25,7 @@ public/SceneFiles/default_scene/tag_momo.jpg_0_.json
 public/SceneFiles/default_scene/tag_nomadTents.webp_0_.json
 public/SceneFiles/default_scene/tag_nomadTentssmall.webp_0_.json
 public/SceneFiles/default_scene/tag_aarakocra_mm.jpg_0_.json
+public/trainingData/*
 public/SceneFiles/default_scene/tag_[object Object]_5ca2fed7-c7ed-4c00-889a-4c72137680a2_.json
 public/SceneFiles/default_scene/tag_[object Object]_6b63710f-945f-42ea-b0e1-c6e945eee142_.json
 public/SceneFiles/default_scene/tag_[object Object]_65415aac-3830-4f6b-9c68-d1db9c39712f_.json
