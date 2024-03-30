@@ -446,19 +446,19 @@ function showWeaponModes(thing, owner) {
     if (!thing.weapon_modes) return answer;
     for (let i = 0; i < thing.weapon_modes.length; i++) {
         let mode = thing.weapon_modes[i];
-        if (mode.range) answer += div(span("range ", mode.range));
-        if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
-        if (mode.radius) answer += div(span("radius range ", mode.radius));
-        answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
+        if (mode.range) answer += (span("range ", mode.range, "italic")) + ".  ";
+        if (mode.min_range) answer += (span("minimum range ", mode.min_range, "italic")) + ".  ";
+        if (mode.radius) answer += (span("radius range ", mode.radius, "italic")) + ".  ";
+        answer += span(mode.type + " ", (mode.hands > 1 ? " Two Handed. " : ""), "italic");
         let bonus = FindBestCareerNode(owner, mode);
         for (let d = 0; d < mode.damage.length; d++) {
             if (mode.damage) {
                 let damage = mode.damage[d];
-                answer += "damage " + damage.damage + "+" + bonus[0] + " " + damage.type + " " + damage.when;
+                answer += span("damage ", "", "italic") + damage.damage + "+" + bonus[0] + " " + damage.type + " " + damage.when + ". ";
                 bonus = 0;
             } else if (mode.condition) {
                 let damage = mode.damage[d];
-                answer += "condition " + damage.damage + " " + damage.type + " " + damage.when;
+                answer += span("condition", "", "italic") + damage.damage + " " + damage.type + " " + damage.when + ". ";
             }
         }
     }

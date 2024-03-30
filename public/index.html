@@ -53,8 +53,12 @@
       display: none;
       position: absolute;
       border-radius: 5px;
+      color: black;
       border-color: #2d240c;
+      background-color: white;
       border-style: outset;
+      font-family: sans-serif;
+      font-weight: Normal;
       /* Additional positioning, height, width, etc. */
     }
 
@@ -703,6 +707,10 @@
       font-size: 24px;
     }
 
+    .flex {
+      display: flex;
+    }
+
     .windowGroup {
       justify-content: center;
       display: flex;
@@ -863,6 +871,12 @@
       z-index: 11000;
       height: 350px;
       overflow: auto;
+    }
+
+
+    /* The container <div> - needed to position the dropdown content */
+    .inline_block {
+      display: inline-block;
     }
 
     /* Links inside the dropdown */
