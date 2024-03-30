@@ -1,7 +1,7 @@
 {
     "name": "Cutlass",
     "description": "A light sword",
-    "image": "",
+    "image": "images/cutlass.jpg",
     "slot": "sidearm",
     "wealth": 2,
     "weapon_modes": [

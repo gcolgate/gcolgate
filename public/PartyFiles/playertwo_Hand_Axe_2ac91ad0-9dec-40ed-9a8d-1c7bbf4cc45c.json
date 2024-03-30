@@ -1,0 +1,60 @@
+{
+    "name": "Hand Axe",
+    "description": "A hand axe balanced to throw as well as chop, useful as a tool too",
+    "image": "",
+    "slot": "pockets",
+    "wealth": 2,
+    "weapon_modes": [
+        {
+            "type": "Melee",
+            "range": 0.5,
+            "career": [
+                "Gladiator",
+                "Hunter",
+                "Pirate",
+                "Assassin"
+            ],
+            "damage": [
+                {
+                    "damage": "2d6",
+                    "type": "slashing",
+                    "when": ""
+                }
+            ]
+        },
+        {
+            "type": "Thrown",
+            "career": [
+                "Gladiator",
+                "Hunter",
+                "Pirate",
+                "Assassin"
+            ],
+            "range": 10,
+            "damage": [
+                {
+                    "damage": "1d8",
+                    "type": "slashing",
+                    "when": ""
+                }
+            ],
+            "charges": 1
+        }
+    ],
+    "counters": [
+        {
+            "max": 1,
+            "cur": 1,
+            "regen": [
+                {
+                    "when": "After Fight",
+                    "regen_amount": 1
+                },
+                {
+                    "when": "Shopping",
+                    "regen_amount": 1
+                }
+            ]
+        }
+    ]
+}

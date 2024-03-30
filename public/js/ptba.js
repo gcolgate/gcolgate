@@ -573,7 +573,115 @@ function getAppearanceImage(thing, type) {
 }
 
 
+function setSlot(thing, slotExact, item) {
+    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
 
+
+    let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).slots["' + slotExact + '"] = "' + item.id + '"';
+
+    socket.emit("change_appearance", { thing: thing.id, change: evaluation });
+
+
+}
+
+function removeFromSlot(thing, slotExact) {
+    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
+
+
+    let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).slots["' + slotExact + '"] = ""';
+
+    socket.emit("change_appearance", { thing: thing.id, change: evaluation });
+
+
+}
+
+function getSlotImage(thing, type, placeholder) {
+
+    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
+    if (!answer) return placeholder;
+    let slots = answer['slots'];
+    if (!slots) return placeholder;
+
+    if (!slots[type]) return placeholder;
+
+    let item = GetRegisteredThing(slots[type]);
+
+    return item.image;
+
+
+}
+
+function isEquipped(owner_id, thing_id) {
+    let thing = GetRegisteredThing(thing_id);
+    if (thing.slot == "Always") return true;
+    let owner = GetRegisteredThing(owner_id);
+    let answer = findInNamedArray(owner.appearance, owner.current_appearance);
+    if (!answer) return false;
+    let slots = answer['slots'];
+    if (!slots) return false;
+    for (const [key, value] of Object.entries(slots)) {
+        if (value == thing_id)
+            return true;
+    }
+    return false;
+}
+
+function ToggleEquip(owner_id, thing_id) {
+
+    let thing = GetRegisteredThing(thing_id);
+    if (thing.slot == "Always") return;
+    let owner = GetRegisteredThing(owner_id);
+    let answer = findInNamedArray(owner.appearance, owner.current_appearance);
+    if (!answer) return;
+    let slots = answer['slots'];
+    if (!slots) return false;
+    // turn it off
+    for (const [key, value] of Object.entries(slots)) {
+        if (value == thing_id) {
+            removeFromSlot(owner, key);
+            return;
+        }
+    }
+    // else turn it on
+    for (let i = 0; i < slotList.length; i++) {
+        if (slotList[i].slot == thing.slot) {
+            if (slotList[i].num == 1) {
+                setSlot(owner, thing.slot, thing);
+                return;
+            }
+
+            else {
+                // find a blank one
+                for (let j = 0; j < slotList[i].num; j++) {
+
+                    if (!slots[thing.slot + j])
+                        setSlot(owner, thing.slot, thing);
+                    return;
+                }
+
+                setSlot(owner, thing.slot + '1', thing);
+            }
+
+
+        }
+
+
+    }
+
+
+}
+
+function EquippedCheckBox(owner_id, thing_id) {
+    let e = isEquipped(owner_id, thing_id);
+    console.log("e " + e);
+
+    console.log('<input type="checkbox" id="' + owner_id + "_" + thing_id + '" name="Equipped"' + (e ? ' checked="true"' : "") + '"' +
+        ' onChange= "ToggleEquip(' + "'" + owner_id + "'" + thing_id + "')" + '  ">');
+
+    return '<input type="checkbox" id="' + owner_id + "_" + thing_id + '" name="Equipped"' + (e ? ' checked="true"' : "") + '"' +
+        ' onChange= "ToggleEquip(' + "'" + owner_id + "','" + thing_id + "')" + '  ">';
+
+}
 function FetchStyleFromAppearanceArray(thing, type) {
 
 
@@ -981,138 +1089,138 @@ var weaponType = {
     longarm: 2
 };
 
-var weapons = [
-    {
-        name: "Punch", description: "Basic unarmed attack", type: ["Melee",], Ranges: ["Intimate"],
-        cost: 0, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Bludgeoning, Weak", "Knockback"]
-    },
-    {
-        name: "Ragged Bow", description: "Crappy bow useful for rabbit hunting", steel: -1, type: ["Ranged",], Ranges: ["Near"],
-        cost: 15, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
-    },
-    {
-        name: "Fine Bow", description: "Basic Military bow", type: ["Ranged",], Ranges: ["Near", "Far"],
-        cost: 60, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
-    },
-    {
-        name: "Elven Bow", description: "Elvish Bow, not comon", steel: 1, type: ["Ranged",], Ranges: ["Near", "Far"],
-        cost: 300, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
-    },
-    {
-        name: "Crossbow", description: "Advanced Prittanian Arm", steel: 1, type: ["Ranged",], Ranges: ["Near", "Far"],
-        cost: 100, Hands: 2, encumerance: "longarm", Damage: 2, tags: ["Piercing", "Slow_Reload", "Armor_Piercing", "Vicious"]
-    },
-    {
-        name: "Dwarven Crossbow", description: "Powerful Dwarven Crossbow. Awkward for non-dwarves to use", steel: +2, type: ["Ranged"], Ranges: ["Near", "Far"],
-        cost: 300, Hands: 2, encumerance: "longarm", Damage: 2, tags: ["Piercing", "Slow_Reload", "Armor_Piercing", "Vicious"]
-    },
-    {
-        name: "Club", description: "Basic Club", type: ["Melee", "Swung",], Ranges: ["Close"],
-        cost: 1, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning", "Cheap"]
-    },
-    {
-        name: "Metal Shod Club", description: "Basic Club", type: ["Melee", "Swung",], Ranges: ["Close"],
-        cost: 10, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
-    },
-    {
-        name: "Staff", description: "Long piece of wood", type: ["Melee",], Ranges: ["Close"],
-        cost: 1, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning", "Cheap"]
-    },
-    {
-        name: "Dagger", description: "BIg Knife", steel: 1, type: ["Melee", "Ambush",], Ranges: ["Intimate"],
-        cost: 2, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing"]
-    },
-    {
-        name: "Shiv", description: "Small Knife", type: ["Melee", "Ambush",], Ranges: ["Intimate"],
-        cost: 1, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing", "Concealable"]
-    },
-    {
-        name: "Throwing Dagger", description: "Thrown dagger", type: ["Ranged",], Ranges: ["Near"],
-        cost: 1, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing"]
-    },
-    {
-        name: "Spear", description: "One handed spear", type: ["Melee",], Ranges: ["Close", "Reach"],
-        cost: 10, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Piercing"]
-    },
-    {
-        name: "Pike", description: "Two handed spear", type: ["Melee",], Ranges: ["Reach"],
-        cost: 10, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Piercing"]
-    },
-    {
-        name: "Lance", description: "Spear on horseback. Knockbacks with horse charge and +1 damage, will break", type: ["Melee",], Ranges: ["Reach"],
-        cost: 2, Hands: 1, encumerance: "longarm", Damage: 3, tags: ["Piercing", "Knockback"]
-    },
-    {
-        name: "Longsword", description: "Military weapon", steel: +1, type: ["Melee",], Ranges: ["Close"],
-        cost: 25, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
-    },
-    {
-        name: "Shortsword", description: "Military weapon", type: ["Melee",], Ranges: ["Close", "Intimate"],
-        cost: 10, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
-    },
-    {
-        name: "Greatsword", description: "Military weapon", type: ["Melee",], Ranges: ["Close", "Reach"],
-        cost: 150, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Slashing"]
-    },
-    {
-        name: "Rapier", description: "Military weapon", type: ["Melee,Duelist",], Ranges: ["Close", "Reach"],
-        cost: 60, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Piercing"]
-    },
-    {
-        name: "Peasant Axe", description: "Axe for chopping wood", steel: -1, type: ["Melee", "Swung",], Ranges: ["Close"],
-        cost: 15, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
-    },
-    {
-        name: "BattleAxe", description: "Basic battle axe", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
-        cost: 29, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Slashing"]
-    },
-    {
-        name: "GreatAxe", description: "Big axe", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
-        cost: 100, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Slashing"]
-    },
-    {
-        name: "War Hammer", description: "Basic hammere", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
-        cost: 20, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
-    },
-    {
-        name: "Whip", description: "Articulated Weapon", steel: 2, type: ["Exotic",], Ranges: ["Reach"],
-        cost: 10, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
-    },
-    {
-        name: "Whip of Pain", description: "Articulated Weapon", steel: 2, type: ["Exotic",], Ranges: ["Reach"],
-        cost: 400, Hands: 1, encumerance: "sheathed", Damage: 3, tags: ["Slashing"]
-    },
-    {
-        name: "Flail", description: "Articulated Weapon", steel: 2, type: ["Melee", "Swung",], Ranges: ["Close"],
-        cost: 40, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning", "Awkward"]
-    },
-    {
-        name: "Halberd", description: "Axe on stick", steel: 2, type: ["Melee", "Swung",], Ranges: ["Reach"],
-        cost: 80, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning"]
-    },
-    {
-        name: "Mace", description: "spiky club", steel: 1, type: ["Melee", "Swung",], Ranges: ["Reach"],
-        cost: 20, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
-    },
-    {
-        name: "Maul", description: "Two handed club", steel: 1, type: ["Melee", "Swung",], Ranges: ["Reach"],
-        cost: 80, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning"]
-    },
-    {
-        name: "Magic Longsword", description: "Watery tarts hand these out in lakes", steel: 3, type: ["Melee",], Ranges: ["Close"],
-        cost: 2500, Hands: 1, encumerance: "sheathed", Damage: 3, tags: ["Slashing", "Blessed"]
-    },
+// var weapons = [
+//     {
+//         name: "Punch", description: "Basic unarmed attack", type: ["Melee",], Ranges: ["Intimate"],
+//         cost: 0, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Bludgeoning, Weak", "Knockback"]
+//     },
+//     {
+//         name: "Ragged Bow", description: "Crappy bow useful for rabbit hunting", steel: -1, type: ["Ranged",], Ranges: ["Near"],
+//         cost: 15, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
+//     },
+//     {
+//         name: "Fine Bow", description: "Basic Military bow", type: ["Ranged",], Ranges: ["Near", "Far"],
+//         cost: 60, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
+//     },
+//     {
+//         name: "Elven Bow", description: "Elvish Bow, not comon", steel: 1, type: ["Ranged",], Ranges: ["Near", "Far"],
+//         cost: 300, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
+//     },
+//     {
+//         name: "Crossbow", description: "Advanced Prittanian Arm", steel: 1, type: ["Ranged",], Ranges: ["Near", "Far"],
+//         cost: 100, Hands: 2, encumerance: "longarm", Damage: 2, tags: ["Piercing", "Slow_Reload", "Armor_Piercing", "Vicious"]
+//     },
+//     {
+//         name: "Dwarven Crossbow", description: "Powerful Dwarven Crossbow. Awkward for non-dwarves to use", steel: +2, type: ["Ranged"], Ranges: ["Near", "Far"],
+//         cost: 300, Hands: 2, encumerance: "longarm", Damage: 2, tags: ["Piercing", "Slow_Reload", "Armor_Piercing", "Vicious"]
+//     },
+//     {
+//         name: "Club", description: "Basic Club", type: ["Melee", "Swung",], Ranges: ["Close"],
+//         cost: 1, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning", "Cheap"]
+//     },
+//     {
+//         name: "Metal Shod Club", description: "Basic Club", type: ["Melee", "Swung",], Ranges: ["Close"],
+//         cost: 10, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
+//     },
+//     {
+//         name: "Staff", description: "Long piece of wood", type: ["Melee",], Ranges: ["Close"],
+//         cost: 1, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning", "Cheap"]
+//     },
+//     {
+//         name: "Dagger", description: "BIg Knife", steel: 1, type: ["Melee", "Ambush",], Ranges: ["Intimate"],
+//         cost: 2, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing"]
+//     },
+//     {
+//         name: "Shiv", description: "Small Knife", type: ["Melee", "Ambush",], Ranges: ["Intimate"],
+//         cost: 1, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing", "Concealable"]
+//     },
+//     {
+//         name: "Throwing Dagger", description: "Thrown dagger", type: ["Ranged",], Ranges: ["Near"],
+//         cost: 1, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing"]
+//     },
+//     {
+//         name: "Spear", description: "One handed spear", type: ["Melee",], Ranges: ["Close", "Reach"],
+//         cost: 10, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Piercing"]
+//     },
+//     {
+//         name: "Pike", description: "Two handed spear", type: ["Melee",], Ranges: ["Reach"],
+//         cost: 10, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Piercing"]
+//     },
+//     {
+//         name: "Lance", description: "Spear on horseback. Knockbacks with horse charge and +1 damage, will break", type: ["Melee",], Ranges: ["Reach"],
+//         cost: 2, Hands: 1, encumerance: "longarm", Damage: 3, tags: ["Piercing", "Knockback"]
+//     },
+//     {
+//         name: "Longsword", description: "Military weapon", steel: +1, type: ["Melee",], Ranges: ["Close"],
+//         cost: 25, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
+//     },
+//     {
+//         name: "Shortsword", description: "Military weapon", type: ["Melee",], Ranges: ["Close", "Intimate"],
+//         cost: 10, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
+//     },
+//     {
+//         name: "Greatsword", description: "Military weapon", type: ["Melee",], Ranges: ["Close", "Reach"],
+//         cost: 150, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Slashing"]
+//     },
+//     {
+//         name: "Rapier", description: "Military weapon", type: ["Melee,Duelist",], Ranges: ["Close", "Reach"],
+//         cost: 60, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Piercing"]
+//     },
+//     {
+//         name: "Peasant Axe", description: "Axe for chopping wood", steel: -1, type: ["Melee", "Swung",], Ranges: ["Close"],
+//         cost: 15, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
+//     },
+//     {
+//         name: "BattleAxe", description: "Basic battle axe", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
+//         cost: 29, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Slashing"]
+//     },
+//     {
+//         name: "GreatAxe", description: "Big axe", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
+//         cost: 100, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Slashing"]
+//     },
+//     {
+//         name: "War Hammer", description: "Basic hammere", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
+//         cost: 20, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
+//     },
+//     {
+//         name: "Whip", description: "Articulated Weapon", steel: 2, type: ["Exotic",], Ranges: ["Reach"],
+//         cost: 10, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
+//     },
+//     {
+//         name: "Whip of Pain", description: "Articulated Weapon", steel: 2, type: ["Exotic",], Ranges: ["Reach"],
+//         cost: 400, Hands: 1, encumerance: "sheathed", Damage: 3, tags: ["Slashing"]
+//     },
+//     {
+//         name: "Flail", description: "Articulated Weapon", steel: 2, type: ["Melee", "Swung",], Ranges: ["Close"],
+//         cost: 40, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning", "Awkward"]
+//     },
+//     {
+//         name: "Halberd", description: "Axe on stick", steel: 2, type: ["Melee", "Swung",], Ranges: ["Reach"],
+//         cost: 80, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning"]
+//     },
+//     {
+//         name: "Mace", description: "spiky club", steel: 1, type: ["Melee", "Swung",], Ranges: ["Reach"],
+//         cost: 20, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
+//     },
+//     {
+//         name: "Maul", description: "Two handed club", steel: 1, type: ["Melee", "Swung",], Ranges: ["Reach"],
+//         cost: 80, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning"]
+//     },
+//     {
+//         name: "Magic Longsword", description: "Watery tarts hand these out in lakes", steel: 3, type: ["Melee",], Ranges: ["Close"],
+//         cost: 2500, Hands: 1, encumerance: "sheathed", Damage: 3, tags: ["Slashing", "Blessed"]
+//     },
 
-];
+// ];
 
-var armor = [
-    { name: "Light Armor", steel: 1, armor: 0, tags: [], cost: 50 },
-    { name: "Medium Armor: like mail", steel: 2, armor: 1, tags: [], cost: 300 },
-    { name: "Prittanian Plate", steel: 1, armor: 2, tags: ["Noisy",], cost: 1500 },
-    { name: "Elven Mithril Undergarment", steel: 1, armor: 1, tags: ["Concealed", "LuckySave"], cost: 1000 },
-    { name: "Scary Tribal Regalia", steel: 1, armor: 0, tags: [], cost: 50 },
-    { name: "Dragon Scale Armor", steel: 3, armor: 2, tags: ["Immunity", "LuckySave"], cost: 5670 },
-];
+// var armor = [
+//     { name: "Light Armor", steel: 1, armor: 0, tags: [], cost: 50 },
+//     { name: "Medium Armor: like mail", steel: 2, armor: 1, tags: [], cost: 300 },
+//     { name: "Prittanian Plate", steel: 1, armor: 2, tags: ["Noisy",], cost: 1500 },
+//     { name: "Elven Mithril Undergarment", steel: 1, armor: 1, tags: ["Concealed", "LuckySave"], cost: 1000 },
+//     { name: "Scary Tribal Regalia", steel: 1, armor: 0, tags: [], cost: 50 },
+//     { name: "Dragon Scale Armor", steel: 3, armor: 2, tags: ["Immunity", "LuckySave"], cost: 5670 },
+// ];
 
 
 const baseDice = "2d10";

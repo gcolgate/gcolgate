@@ -1,9 +1,173 @@
 
 var thingDragged = null;
 
+function svgFindFirstOverlapping(svg, pt) {
+
+    let myRects = Array.from(svg.querySelectorAll("rect"));
+    const kFirstRealRect = 3;
+    for (let i = myRects.length - 1; i >= kFirstRealRect; i--) { // don't do biggest rect which is 0
+        let bbox = myRects[i].getBoundingClientRect();
+        let x = pt.x - bbox.x;
+        if (x < 0 || x > bbox.width) continue;
+        let y = pt.y - bbox.y;
+        if (y < 0 || y > bbox.height) continue;
+        return myRects[i];
+
+    }
+    return null;
+}
+
+function svgDragFind(event) {
+
+    let svg = event.currentTarget;
+    try {
+        var pt = {}; // x: event.cliensvg.createSVGPoint();
+        pt.x = event.clientX; pt.y = event.clientY;
+        return svgFindFirstOverlapping(svg, pt);
+
+    } catch (err) { console.log("Err"); console.log(svg); return null; }
+
+}
+
+function svgCleanUp(svg) {
+
+    let myRects = Array.from(svg.querySelectorAll("rect"));
+    for (let i = 0; i < myRects.length; i++) {
+        myRects[i].classList.remove("inventoryitemDragAvailable");
+    }
+    if (svg.hilite) {
+        svg.hilite.classList.remove('inventoryitemDragAccept')
+        svg.hilite = null;
+    }
+    svg.slot = null;
+}
+
+
+// todo this table and the SVG are in cahoots, TODO: build svg from this table instead
+var slotList = [
+    { slot: "head", num: 1 },
+    { slot: "cloak", num: 1 },
+    { slot: "armor", num: 1 },
+    { slot: "glove", num: 1 },
+    { slot: "feet", num: 1 },
+    { slot: "longarm", num: 1 },
+    { slot: "sidearm", num: 1 },
+    { slot: "shield", num: 1 },
+    { slot: "pendant", num: 1 },
+    { slot: "ring", num: 2 },
+    { slot: "pockets", num: 6 },
+    { slot: "potion", num: 3 },
+];
+
+function svgDragDrop(event) {
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    let svg = event.currentTarget;
+
+    if (thingDragged && thingDragged.slot) {
+
+        let foundSlot = null;
+        let which = 0;
+        for (let i = 0; i < slotList.length; i++) {
+            if (slotList[i].slot == thingDragged.slot) {
+
+
+                if (slotList[i].num = 1) {
+                    foundSlot = slotList[i].slot;
+                } else {
+                    // preferably choose the one we are dragging to
+                    let groups = Array.from(svg.querySelectorAll("g"));
+                    let found = [];
+                    for (let i = 0; i < groups.length; i++) {
+                        if (groups[i].slot == thingDragged.slot) {
+                            found.push(i);
+                        }
+                    }
+                    let chosen = -1;
+
+                    chosen = found[0];
+                    which = 0;
+                    // to do: add some code to  prefer to fill empty ones.
+                    for (let i = 0; i < found.length; i++) {
+
+                        let rect = Array.from(groups[found[i]].querySelectorAll("rect"));
+                        if (rect[0].classList.contains(inventoryitemDragAccept)) {
+                            chosen = found[i];
+                            which = i + 1;
+                            break;
+                        }
+                    }
+
+                }
+            }
+        }
+        let owner = GetRegisteredThing(svg.getAttribute("ownerid"));
+        setSlot(owner, thingDragged.slot + (which > 0 ? which : ""), thingDragged);
+
+        // let images = Array.from(groups[chosen].querySelectorAll("image"));
+        //    images[0].setAttribute("href", thingDragged.image);
+    }
+
+    svgCleanUp(svg);
+
+}
+
+
+function svgDragOver(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    let svg = event.currentTarget;
+    if (svg.hilite) {
+        svg.hilite.classList.remove('inventoryitemDragAccept')
+        svg.hilite = null;
+    }
+    if (thingDragged && thingDragged.slot) {
+
+        if (thingDragged.slot != svg.slot) {
+            let myRects = Array.from(svg.querySelectorAll("rect"));
+            for (let i = 0; i < myRects.length; i++) {
+
+
+                if (myRects[i].slot == thingDragged.slot) {
+                    console.log("Addubg available" + myRects[i].slot);
+                    myRects[i].classList.add("inventoryitemDragAvailable");
+                }
+            }
+            svg.slot = thingDragged.slot;
+        }
+        let elem = svgDragFind(event);
+        if (elem && event.dataTransfer) {
+            console.log("Drag over");
+            elem.classList.add('inventoryitemDragAccept')
+            event.dataTransfer.dropEffect = 'copy';
+            svg.hilite = elem;
+        } else {
+            let e = event?.dataTransfer;
+            if (e) {
+                e.dropEffect = 'copy';
+
+            }
+        }
+    }
+
+}
+
+
+function svgDragOut(event) {
+    event.stopPropagation()
+    event.preventDefault()
+    let svg = event.currentTarget;
+    svgCleanUp(svg);
+}
+
+
+
+
 function dragDrop(elem, listeners) {
     if (typeof elem === 'string') {
-        const selector = elem
+        const selector = elem;
         elem = window.document.querySelector(elem)
         if (!elem) {
             throw new Error(`"${selector}" does not match any HTML elements`)
@@ -18,7 +182,7 @@ function dragDrop(elem, listeners) {
         listeners = { onDrop: listeners }
     }
 
-    elem.addEventListener('dragenter', onDragEnter, false)
+    elem.addEventListener('dragenter', onDragEnter, false);
     elem.addEventListener('dragover', onDragOver, false)
     elem.addEventListener('dragleave', onDragLeave, false)
     elem.addEventListener('drop', onDrop, false)
@@ -107,8 +271,8 @@ function dragDrop(elem, listeners) {
     function onDragLeave(event) {
         event.stopPropagation()
         event.preventDefault()
-
-        if (!isEventHandleable(event)) return
+        console.log("Drag leave2");
+        if (!isEventHandleable(event)) return;
 
         if (numIgnoredEnters > 0) {
             numIgnoredEnters -= 1
@@ -118,6 +282,7 @@ function dragDrop(elem, listeners) {
         isEntered = false
 
         if (listeners.onDragLeave) {
+            console.log("Drag leave3");
             listeners.onDragLeave(event)
         }
 

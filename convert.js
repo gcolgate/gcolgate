@@ -176,7 +176,7 @@ var items = [
     {
         name: "Breastplate",
         description: "breast plate",
-        image: "",
+        image: "images/icons/equipment/chest/breastplate-cuirass-steel-grey.webp",
         slot: "armor",
         wealth: 3,
         armor: {
@@ -468,7 +468,7 @@ var items = [
     {
         name: "Cutlass",
         description: "A light sword",
-        image: "",
+        image: "images/cutlass.jpg",
         slot: "sidearm",
         wealth: 2,
         weapon_modes:
@@ -557,7 +557,7 @@ var items = [
         name: "Unarmed",
         description: "Kick or fist",
         image: "",
-        slot: "",
+        slot: "Always",
         wealth: 0,
         weapon_modes:
             [{
@@ -715,7 +715,7 @@ var items = [
         name: "Throwing dagger",
         description: "A dagger balanced to throw as well as stab",
         image: "",
-        slot: "small",
+        slot: "pockets",
         wealth: 2,
         weapon_modes:
             [{
@@ -745,7 +745,7 @@ var items = [
         name: "Hand Axe",
         description: "A hand axe balanced to throw as well as chop, useful as a tool too",
         image: "",
-        slot: "small",
+        slot: "pockets",
         wealth: 2,
         weapon_modes:
             [{
@@ -792,7 +792,7 @@ var items = [
         name: "Knife",
         description: "A knife, not primarily intended as a weapon",
         image: "",
-        slot: "small",
+        slot: "pockets",
         wealth: 1,
         weapon_modes:
             [{
@@ -930,7 +930,7 @@ var items = [
         name: "Acid Vial ",
         description: "A vial of strong acid",
         image: "",
-        slot: "small",
+        slot: "pockets",
         wealth: 3,
         weapon_modes:
             [{
@@ -948,7 +948,7 @@ var items = [
         name: "Alchemist's Fire",
         description: "Sticky, adhesive fluid that ignites when exposed to air",
         image: "",
-        slot: "small",
+        slot: "pockets",
         wealth: 3,
         weapon_modes:
             [{
@@ -967,7 +967,7 @@ var items = [
         name: "Bomb",
         description: "As an action, a character can light this bomb and throw it. Each creature within 5 feet of that point must succeed on a DC 12 Dexterity saving throw or take 3d6 fire damage.",
         image: "",
-        slot: "small",
+        slot: "pockets",
         wealth: 5,
         weapon_modes:
             [{
@@ -985,7 +985,7 @@ var items = [
         name: "Boomerang",
         description: "The boomerang is a ranged weapon, on a miss it returns to your hand. Useful for killing birds.",
         image: "",
-        slot: "small",
+        slot: "pockets",
         wealth: 5,
         weapon_modes:
             [{
@@ -2344,7 +2344,8 @@ async function convertDnD5e() {
                         },
                         "token": {
                             "image": tokenImage ? tokenImage : json.img,
-                        }
+                        },
+                        "slots": {}
                     });
 
                     json.current_appearance = "normal";

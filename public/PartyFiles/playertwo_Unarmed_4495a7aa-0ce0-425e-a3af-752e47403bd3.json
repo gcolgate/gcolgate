@@ -2,7 +2,7 @@
     "name": "Unarmed",
     "description": "Kick or fist",
     "image": "",
-    "slot": "",
+    "slot": "Always",
     "wealth": 0,
     "weapon_modes": [
         {

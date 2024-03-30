@@ -266,10 +266,10 @@ function refreshDirectoryWindow(id, whole) {
 }
 
 function setDragStart(event, name) {
-    let thing = GetRegisteredThing(thing.name);
+    let thing = GetRegisteredThing(name);
     thingDragged = thing;
     thingDragged.windowId = null;
-
+    console.log(thing);
 
 }
 
@@ -355,7 +355,7 @@ function showDirectoryWindow(id, array) {
             },
             onDragEnter: (event) => { },
             onDragOver: (event) => { },
-            onDragLeave: (event) => { }
+            onDragLeave: (event) => { console.log("Drag leave1"); }
         });
         id = RemoveSlashes(id);
 

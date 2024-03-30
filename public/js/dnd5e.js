@@ -736,7 +736,7 @@ function drawItems(thing, filter, notes) {
         let item = thing.items[i];
 
         if (ItemFiltered(item, filter)) { continue; }
-        let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes); // no w
+        let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes, { file: item.file }); // no w
         if (item.page != "careers" && item.page != "weapon")
             a += formatRemoveButton(thing.id, item.file);;
         text += div(a);

@@ -2,11 +2,12 @@
 <div>
     <div class="body itemsetnada" ondragenter="ondragenter(event)" ondragover="ondragover(event)"
         ondragleave="ondragleave(event)" ondrop="ondrop(event)">
-        <image src="{'thing.img'}" width="16" height="16" draggable=true ondragstart=setDragStart(event,{thing.id})>
+        <image src="{thing.image}" width="16" height="16" draggable=true ondragstart="setDragStart(event,'{thing.id}')">
         </image>
         { Editable(thing,
         "thing.name",
-        "displayinline") + ( owner ? formatRemoveButton(owner.id, thing.file):"") }
+        "displayinline") + ( owner && additionalParms ? formatRemoveButton(owner.id, additionalParms.file):"") +
+        EquippedCheckBox(owner.id, additionalParms.file) }
 
         <a href="#">Info
             <div class="tooltipcontainer">

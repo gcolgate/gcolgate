@@ -72,9 +72,9 @@
         <div class=" outlined dragitem">
             <div class="relative_inline_block">
                 <button onclick="dropDownToggle('dropdown_{thing.id}')" class="drop_list_button">Add Career</button>
-                <div id="dropdown_{thing.id}" class="dropdown-content itemsetheadershort crit"">
+                <div id="dropdown_{thing.id}" class="dropdown-content itemsetheadershort crit">
                     <input type=" text" placeholder="Search.." id="dropdown_content_{thing.id}"
-                    onkeyup="filterDropDown('dropdown_content_{thing.id}','dropdown_{thing.id}')">
+                        onkeyup="filterDropDown('dropdown_content_{thing.id}','dropdown_{thing.id}')">
                     { extractFromCompendium(["careers"], thing); }
                 </div>
                 { drawItems(thing, IsCareerItem, undefined) }
@@ -90,7 +90,7 @@
     </p>
     <h2 class="c32 c41" id="h.yj31nys9qpei"><span>Supplies</span><span class="c16 c24 c30">:
             PTBAComputeMaxSupplies(thing)/{thing.counters.supplies}</span></h2>
-    <p clas="" npcBold"c13"><span class="c2"></span></p><a id="t.65e1cb7adb445e5b6fb90a596e799c0ac98d7fbc"></a><a
+    <p clas=" npcBold"c13"><span class="c2"></span></p><a id="t.65e1cb7adb445e5b6fb90a596e799c0ac98d7fbc"></a><a
         id="t.1"></a> -->
 
 </div>
@@ -122,8 +122,10 @@
             <!-- <img class="overlayImage" src="assets/paperdoll.webp" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"></image> -->
 
-            <svg viewBox="0 0 250 400" xmlns="http://www.w3.org/2000/svg" class="overlayImageDolll">
-                <rect x=0% y="0%" width="100%" title="bkg" height="100%" class="inventorygbkg" />
+            <svg viewBox="0 0 250 400" xmlns="http://www.w3.org/2000/svg" class="overlayImageDolll" ownerid="{thing.id}"
+                ondragenter="svgDragOver(evt)" ondragover="svgDragOver(evt)" ondrop="svgDragDrop(evt)"
+                ondragleave="svgDragOut(evt)">
+                <rect x=0% y="0%" width="100%" height="100%" class="inventorygbkg" />
 
                 <defs>
                     <linearGradient id="darktolight" x1="0%" x2="100%" y1="0%" y2="0%">
@@ -138,100 +140,149 @@
                 </defs>
 
                 <image href="{getAppearanceImage(thing, 'portrait')}" width="75%" height="80%" y="05%" x="10%"
-                    title="image" preserveAspectRatio="xMidYMid meet" />
+                    title="image" preserveAspectRatio="xMidYMid meet" onclick="showApperancePopUp(event,'{thing.id}')">
+                </image>/>
 
                 <rect x="0%" y="0%" width="20%" height="100%" fill="url(#darktolight)"></rect>
                 <rect x="70%" y="0%" width="40%" height="100%" fill="url(#lighttodark)"></rect>
 
 
+                <g slot="head">
+                    <image href='{ getSlotImage(thing,"head","assets/helm.webp")}' x=01% y="1%" width="11.25%"
+                        height="7.03125%" />
+                    <rect x=1% y="1%" width="11.25%" height="7.03125%" slot="head" class="inventoryitem">
+                        <title>Headgear</title>
+                    </rect>
+                </g>
 
-                <image href="assets/cloak.webp" x=1% y="11%" width="9%" title="image-cloak" height="5.625%" />
-                <image href="assets/helm.webp" x=01% y="1%" width="9%" title="image-head" height="5.625%" />
-                <image href="assets/armor.webp" x=01% y="21%" width="9%" title="image-armor" height="5.625%" />
-                <image href="assets/glove.webp" x=01% y="31%" width="9%" title="image-glove" height="5.625%" />
-                <image href="assets/feet.webp" x=01% y="41%" width="9%" title="image-foot" height="5.625%" />
-                <image href="assets/longarm.webp" x=01% y="51%" width="9%" title="image-longarm" height="18%" />
-                <image href="assets/sidearm.webp" x="1%" y="81%" width="9%" title="image-sidearm" height="5.625%" />
-                <image href="assets/shield.webp" x="11%" y="81%" width="9%" title="image-leftarm" height="5.625%" />
-                <image href="assets/pendant.webp" x="81%" y="1%" width="9%" title="image-pendant" height="5.625%" />
-                <image href="assets/ring.webp" x="75%" y="11%" width="9%" title="image-ring-one" height="5.625%" />
-                <image href="assets/ring.webp" x="85%" y="11%" width="9%" title="image-ring-two" height="5.625%" />
-                <image href="assets/bag.webp" x="75%" y="21%" width="9%" title="image-bag-1" height="5.625%" />
-                <image href="assets/bag.webp" x="85%" y="21%" width="9%" title="image-bag-2" height="5.625%" />
-                <image href="assets/bag.webp" x="75%" y="31%" width="9%" title="image-bag-3" height="5.625%" />
-                <image href="assets/bag.webp" x="85%" y="31%" width="9%" title="image-bag-4" height="5.625%" />
-                <image href="assets/bag.webp" x="75%" y="41%" width="9%" title="image-bag-5" height="5.625%" />
-                <image href="assets/bag.webp" x="85%" y="41%" width="9%" title="image-bag-6" height="5.625%" />
-                <image href="assets/potion.webp" x="85%" y="51%" width="9%" title="image-potion-1" height="5.625%" />
-                <image href="assets/potion.webp" x="85%" y="61%" width="9%" title="image-potion-2" height="5.625%" />
-                <image href="assets/potion.webp" x="85%" y="71%" width="9%" title="image-potion-3" height="5.625%" />
+                <g slot="cloak">
+                    <image href=' { getSlotImage(thing,"cloak","assets/cloak.webp")}' , x=1% y="11%" width="11.25%"
+                        height="7.03125%"" />
+                    <rect x=1% y=" 11%" width="11.25%" height="7.03125%" slot="cloak" class="inventoryitem">
+                        <title>Cloak</title>
+                        </rect>
+                </g>
+                <g slot="armor">
+                    <image href=' {getSlotImage(thing,"armor","assets/armor.webp")}' x=01% y="21%" width="11.25%"
+                        height="7.03125%" />
+                    <rect x=1% y="21%" width="11.25%" height="7.03125%" slot="armor" class="inventoryitem">
+                        <title>Armor</title>
+                    </rect>
+                </g>
+                <g slot="glove">
+                    <image href=' {getSlotImage(thing,"glove","assets/glove.webp")}' x=01% y="31%" width="11.25%"
+                        height="7.03125%" />
+                    <rect x=1% y="31%" width="11.25%" height="7.03125%" slot="glove" class="inventoryitem">
+                        <title>Gloves</title>
+                    </rect>
+                </g>
+                <g slot="feet">
+                    <image href=' {getSlotImage(thing,"feet","assets/feet.webp")}' x=01% y="41%" width="11.25%"
+                        height="7.03125%" />
+                    <rect x=1% y="41%" width="11.25%" height="7.03125%" slot="foot" class="inventoryitem">
+                        <title>Shoes</title>
+                    </rect>
+                </g>
 
+                <g slot="longarm">
+                    <image href=' {getSlotImage(thing,"longarm","assets/longarm.webp")}' x=01% y="51%" width="9%"
+                        height="18%" />
+                    <rect x=1% y="51%" width="9%" slot="longarm" height="18%" class="inventoryitem">
+                        <title>LongArm</title>
+                    </rect>
+                </g>
+                <g slot="sidearm">
+                    <image href=' {getSlotImage(thing,"sidearm", "assets/sidearm.webp")}' x="1%" y="81%" width="11.25%"
+                        height="7.03125%" />
+                    <rect x="1%" y="81%" width="11.25%" height="7.03125%" slot="sidearm" class="inventoryitem">
+                        <title>sideArm</title>
+                    </rect>
+                </g>
+                <g slot="shield">
+                    <image href=' {getSlotImage(thing,"shield", "assets/shield.webp")}' x="15%" y="81%" width="11.25%"
+                        height="7.03125%" />
+                    <rect x="15%" y="81%" width="11.25%" height="7.03125%" slot="shield" class="inventoryitem">
+                        <title>LeftArm</title>
+                    </rect>
+                </g>
+                <g slot="pendant">
+                    <image href=' {getSlotImage(thing,"pendant","assets/pendant.webp")}' x="78%" y="1%" width="11.25%"
+                        height="7.03125%" />
+                    <rect x="78%" y="1%" width="11.25%" height="7.03125%" slot="pendant" class="inventoryitem">
+                        <title>pendant</title>
+                    </rect>
+                </g>
+                <g slot="ring">
+                    <image href=' {getSlotImage(thing,"ring1","assets/ring.webp")}' x="75%" y="11%" width="9%"
+                        height="5.625%" />
+                    <rect x="75%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem">
+                        <title>Ring 1</title>
+                    </rect>
+                </g>
+                <g slot="ring">
+                    <image href="assets/ring.webp" x="85%" y="11%" width="9%" height="5.625%" />
+                    <rect x="85%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem">
+                        <title>Ring 2</title>
+                    </rect>
+                </g>
+                <g slot="pockets">
+                    <image href="assets/bag.webp" x="75%" y="21%" width="9%" height="5.625%" />
+                    <rect x="75%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                        <title>Pockets 1</title>
+                    </rect>
+                </g>
+                <g slot="pockets">
+                    <image href="assets/bag.webp" x="85%" y="21%" width="9%" height="5.625%" />
+                    <rect x="85%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                        <title>Pockets 2</title>
+                    </rect>
+                </g>
+                <g slot="pockets">
+                    <image href="assets/bag.webp" x="75%" y="31%" width="9%" height="5.625%" />
+                    <rect x="75%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                        <title>Pockets 3</title>
+                    </rect>
+                </g>
+                <g slot="pockets">
+                    <image href="assets/bag.webp" x="85%" y="31%" width="9%" height="5.625%" />
+                    <rect x="85%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                        <title>Pockets 4</title>
+                    </rect>
+                </g>
+                <g slot="pockets">
+                    <image href="assets/bag.webp" x="75%" y="41%" width="9%" height="5.625%" />
 
+                    <rect x="75%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                        <title>Pockets 5</title>
+                    </rect>
+                </g>
+                <g slot="pockets">
+                    <image href="assets/bag.webp" x="85%" y="41%" width="9%" height="5.625%" />
 
-                <rect x=1% y="1%" width="9%" title="head" height="5.625%" class="inventoryitem">
-                    <title>Headgear</title>
-                </rect>
+                    <rect x="85%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                        <title>Pockets 6</title>
+                    </rect>
+                </g>
+                <g slot="potion">
+                    <image href="assets/potion.webp" x="80%" y="51%" width="9%" height="5.625%" />
+                    <rect x="80%" y="51%" width="9%" slot="potion" height="5.625%" class="inventoryitem">
+                        <title>Potion 1</title>
+                    </rect>
+                </g>
+                <g slot="potion">
+                    <image href="assets/potion.webp" x="80%" y="61%" width="9%" height="5.625%" />
+                    <rect x="80%" y="61%" width="9%" slot="potion" height="5.625%" class="inventoryitem">
+                        <title>Potion 2</title>
+                    </rect>
+                </g>
+                <g slot="potion">
+                    <image href="assets/potion.webp" x="80%" y="71%" width="9%" height="5.625%" />
 
-                <rect x=1% y="11%" width="9%" title="cloak" height="5.625%" class="inventoryitem">
-                    <title>Cloak</title>
-                </rect>
+                    <rect x="80%" y="71%" width="9%" slot="potion" height="5.625%" class="inventoryitem">
+                        <title>Potion 3</title>
+                    </rect>
+                </g>
 
-
-
-                <rect x=1% y="21%" width="9%" title="armor" height="5.625%" class="inventoryitem">
-                    <title>Armor</title>
-                </rect>
-                <rect x=1% y="31%" width="9%" title="glove" height="5.625%" class="inventoryitem">
-                    <title>Gloves</title>
-                </rect>
-                <rect x=1% y="41%" width="9%" title="foot" height="5.625%" class="inventoryitem">
-                    <title>Shoes</title>
-                </rect>
-                <rect x=1% y="51%" width="9%" title="longarm" height="18%" class="inventoryitem">
-                    <title>LongArm</title>
-                </rect>
-                <rect x="1%" y="81%" width="9%" title="sidearm" height="5.625%" class="inventoryitem">
-                    <title>sideArm</title>
-                </rect>
-                <rect x="11%" y="81%" width="9%" title="shield" height="5.625%" class="inventoryitem">
-                    <title>LeftArm</title>
-                </rect>
-                <rect x="81%" y="1%" width="9%" title="pendant" height="5.625%" class="inventoryitem">
-                    <title>pendant</title>
-                </rect>
-                <rect x="75%" y="11%" width="9%" title="ring-one" height="5.625%" class="inventoryitem">
-                    <title>Ring 1</title>
-                </rect>
-                <rect x="85%" y="11%" width="9%" title="ring-two" height="5.625%" class="inventoryitem">
-                    <title>Ring 2</title>
-                </rect>
-                <rect x="75%" y="21%" width="9%" title="bag-1" height="5.625%" class="inventoryitem">
-                    <title>Pockets 1</title>
-                </rect>
-                <rect x="85%" y="21%" width="9%" title="bag-2" height="5.625%" class="inventoryitem">
-                    <title>Pockets 2</title>
-                </rect>
-                <rect x="75%" y="31%" width="9%" title="bag-3" height="5.625%" class="inventoryitem">
-                    <title>Pockets 3</title>
-                </rect>
-                <rect x="85%" y="31%" width="9%" title="bag-4" height="5.625%" class="inventoryitem">
-                    <title>Pockets 4</title>
-                </rect>
-                <rect x="75%" y="41%" width="9%" title="bag-5" height="5.625%" class="inventoryitem">
-                    <title>Pockets 5</title>
-                </rect>
-                <rect x="85%" y="41%" width="9%" title="bag-6" height="5.625%" class="inventoryitem">
-                    <title>Pockets 6</title>
-                </rect>
-                <rect x="85%" y="51%" width="9%" title="potion-1" height="5.625%" class="inventoryitem">
-                    <title>Potion 1</title>
-                </rect>
-                <rect x="85%" y="61%" width="9%" title="potion-2" height="5.625%" class="inventoryitem">
-                    <title>Potion 2</title>
-                </rect>
-                <rect x="85%" y="71%" width="9%" title="potion-3" height="5.625%" class="inventoryitem">
-                    <title>Potion 3</title>
-                </rect>
             </svg>
 
         </div>
@@ -239,9 +290,9 @@
         <div id=" columntwo">
             <div>Items</div>
             <button onclick="dropDownToggle('ddi_{thing.id}')" class="drop_list_button">Buy Item</button>
-            <div id="ddi_{thing.id}" class="dropdown-content itemsetheadershort crit"">
-                    <input type=" text" placeholder="Search.." id="ddi_c_{thing.id}"
-                onkeyup="filterDropDown('ddi_c_{thing.id}','ddi_{thing.id}')">
+            <div id="ddi_{thing.id}" class="dropdown-content itemsetheadershort crit">
+                <input type=" text" placeholder="Search.." id="ddi_c_{thing.id}"
+                    onkeyup="filterDropDown('ddi_c_{thing.id}','ddi_{thing.id}')">
                 { extractFromCompendium(["items"], thing); }
             </div>
             <div class="outlined dragitem">
