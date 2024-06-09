@@ -242,7 +242,7 @@ async function EnsureLoaded(sheetName, thingName) {
 function changeSheet(button) {
     let id = button.dataset.thingid; // the window id is window_fullthingname
     let clause = button.dataset.clause; // the window id is window_fullthingname
-    let evaluation = clause + ' = ' + button.value;
+    let evaluation = clause + " = '" + button.value + "'";
 
     socket.emit('change', {
         change: evaluation,
@@ -271,6 +271,25 @@ function changeSheet(button) {
 
 
 }
+
+
+
+async function ChangeName(button) {
+
+    // let thing = GetRegisteredThing(change.thing);
+    // if (!thing) {
+    //     return; //  NPC has never been opened
+    // }
+
+    let id = button.dataset.thingid; // the window id is window_fullthingname 
+    let newName = button.value;
+
+
+    let split = id.split('/');
+
+    socket.emit('changeName', { dir: split[0], thingName: split[1], newName: newName });
+}
+
 
 function Editable(thing, clause, className, listName) { // thing must be here because the eval might use it
     let t = eval(clause);

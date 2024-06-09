@@ -45,7 +45,24 @@ function windowShowing(name) {
     let w = document.getElementById(windowName);
     return w;
 }
-function CreateWindowTitle(w, windowName, Title, closes = true) {
+
+
+let ButtonTitles = {
+    newPlayer: "New Player",
+};
+
+function DoButton(id) {
+    switch (id) {
+        case "newPlayer":
+            console.log("New Player");
+            socket.emit('newPlayer');
+
+            break;
+    }
+
+}
+
+function CreateWindowTitle(w, windowName, Title, closes = true, newButton = undefined) {
     w.id = windowName;
     w.className = "window";
     let title = document.createElement("div");
@@ -58,6 +75,15 @@ function CreateWindowTitle(w, windowName, Title, closes = true) {
         closeButton.onclick = function () {
             fadeOut(w);
         };
+    }
+    if (newButton) {
+        let createButton = document.createElement("button");
+        createButton.textContent = ButtonTitles[newButton];
+        createButton.className = "blueButton";
+        createButton.onclick = function () {
+            DoButton(newButton);
+        };
+        title.appendChild(createButton);
     }
     let text = document.createTextNode(Title);
     title.appendChild(text);
@@ -196,7 +222,7 @@ function createOrGetChatWindow(id, width, height, left, top) {
 
 
 
-function createOrGetDirWindow(id, width, height, left, top) {
+function createOrGetDirWindow(id, width, height, left, top, customization) {
 
     let windowName = "window_" + id;
     let w = document.getElementById(windowName);
@@ -216,7 +242,7 @@ function createOrGetDirWindow(id, width, height, left, top) {
 
 
 
-        CreateWindowTitle(w, windowName, id, true);
+        CreateWindowTitle(w, windowName, id, true, customization.newButton);
 
 
         let list = document.createElement("ul");

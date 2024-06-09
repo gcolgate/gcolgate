@@ -37,12 +37,31 @@ function waitInit() {
     return new Promise(poll);
 }
 
+async function justAnUpload(res, req) {
 
+    let file = req.files.file;
+    console.log(req.files);
+    if (!file.mimetype.startsWith('image')) {
+        console.log("Must be image not " + file.mimetype);
+        return res.sendStatus(400);
+    }
+    try {
+
+        let probed = probeImage.sync(req.files.file.data);
+        console.log(path.normalize(__dirname + '/public/images/uploaded/' + file.name));
+        await file.mv(path.normalize(__dirname + '/public/images/uploaded/' + file.name));
+        res.sendStatus(200);
+
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
 
 async function doTheUpload(res, req) {
 
     let file = req.files.file;
-    //console.log(req.files);
+    console.log(req.files);
 
     // Log the files to the console
     // Upload expects a file, an x, a y, and a z
@@ -93,6 +112,19 @@ app.post('/upload', (req, res) => {
 
 
 
+
+app.post('/uploadFromButton', (req, res) => {
+    // Log the files to the console
+    // Upload expects a file, an x, a y, and a z
+    // and it will create a new image
+    // If no image submitted, exit
+    if (!req.files || !req.files.file) {
+        console.log("Cant find image");
+        return res.sendStatus(400);
+    }
+    justAnUpload(res, req);
+
+});
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
@@ -217,8 +249,248 @@ async function CopyThingFIles(socket, msg) {
     ]);
     folders[msg.to].push(msg.from);
 
-    socket.emit('updateDir', msg.to);
+    socket.emit('updateDir', { id: msg.to, folder: folders[msg.to] });
 
+
+}
+
+let RandomNames = [
+    "dhirhan",
+    "ilenor",
+    "iqor",
+    "arasior",
+    "vaqinn",
+    "aless",
+    "anodor",
+    "oro",
+    "arabras",
+    "dhidarin",
+
+
+    "urick",
+    "uniwyn",
+    "ivibahn",
+    "aras",
+    "owix",
+    "inorim",
+    "elafaris",
+    "agekius",
+    "izashan",
+    "azasim",
+
+
+    "aqille",
+    "amorith",
+    "aphyx",
+    "oqiohne",
+    "ephevia",
+    "moqille",
+    "ibaris",
+    "iphior",
+    "illuvira",
+    "idirune",
+
+    "Cenwiu",
+    "Finy Benthey",
+    "Gauwill",
+    "Chenry",
+    "Aldfric",
+    "Walda",
+    "Brida",
+    "Wulfa",
+    "Anthond Woodaye",
+    "Eadworht",
+
+    "Cece",
+    "Suse",
+    "Witha",
+    "Anor",
+    "Wena",
+    "Bricta",
+    "Beatrey",
+    "Burga",
+    "Wenflu",
+    "Sane",
+    "Stomes Sharcey",
+    "Bando",
+    "Herib Rowich",
+    "Cotme Bairnell",
+    "Hamond Balley",
+    "Willas",
+    "Ibras",
+    "Hildo",
+    "Helrey",
+    "Sonas",
+
+];
+
+function randInt(low, high) {
+    return low + Math.floor(Math.random() * (high - low + 1));
+}
+
+
+function doesPathExist(path) {
+    try {
+        fs.accessSync(path, fs.constants.R_OK)
+        return true
+    } catch (e) {
+        return false
+    }
+};
+
+
+
+async function UniqueName(dir, ext) {
+    do {
+        let baseName = RandomNames[randInt(0, RandomNames.length - 1)];
+        let name = path.join(dir, baseName + ext);
+
+        if (!doesPathExist(path)) return baseName;
+
+        // todo if every name is taken!
+
+    } while (true);
+}
+
+
+async function NewPlayer(socket, msg) {
+
+    let dir = "Party";
+
+    let baseName = await UniqueName(path.join(__dirname, "public", dir), ".json");
+    //   let indexFolderDir = dir.substring(0, dir.length - 5);
+
+    console.log("New baseName " + baseName);
+    let newPartyMember = {
+        isptba: true,
+        appearance: [{
+            name: "armed", portrait: { image: "images/questionMark.png" },
+            token: { image: "images//questionMark.png" },
+            slots: {
+                X: "X", armor: "", pockets: "",
+                sidearm: "", head: "", pockets0: "", pockets1: "", pockets2: "",
+                pockets3: "", pockets4: ""
+            }
+        }, {
+            name: "sleeping", portrait: { image: "images/questionMark.png" },
+            token: { image: "images/questionMark.png", rotation: "90" },
+            slots: { X: "X" }
+        }, {
+            name: "relaxation",
+            portrait: { image: "images/questionMark.png" },
+            token: { image: "images/questionMark.png" },
+            slots: { X: "X" }
+        }, {
+            name: "fancy", portrait: { image: "images/questionMark.png" },
+            token: { image: "images/questionMark.png" },
+            slots: { X: "X" }
+        }, {
+            name: "bathing", portrait: { image: "images/questionMark.png" },
+            token: { image: "images/questionMark.png" },
+            slots: { X: "X" }
+        }],
+        current_appearance: "armed", name: baseName,
+        species: "Human", origin: "Majority City", wealth: 2,
+        stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0 },
+        counters: { supplies: 2, hurt: 0, manspent: 0, exhaustion: 0 },
+        languages: { FarDuric: true, Dwarvish: false, Firespeech: false, PrittanianLow: false, ImperialCourt: false },
+        items: [], tab: "stats"
+
+    };
+
+    let newPartyMemberTag = {
+        file: "PartyFiles/" + baseName,
+        page: "Player",
+        source: "",
+        type: "",
+        name: baseName,
+        img: "images/questionMark.png"
+    };
+
+
+    // let srcName = p.name;
+    // let srcDir = dir;
+
+    console.log("New baseName " + baseName);
+
+    let dest1 = path.join(__dirname, "public", dir + "Files", baseName + '.json');
+
+    // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + name + '.json');
+    let dest2 = path.join(__dirname, "public", dir, "tag_" + baseName + '.json');
+
+    console.log(" to " + dest1);
+    console.log(" to " + dest2);
+    // warning overwrites msg.from.file, poor form
+
+
+    await Promise.all([
+        fs.writeFile(dest1, JSON.stringify(newPartyMember)),
+        fs.writeFile(dest2, JSON.stringify(newPartyMemberTag)),
+
+    ]);
+    folders[dir].push(newPartyMemberTag);
+
+    socket.emit('updateDir', { id: dir, folder: folders[dir] });
+
+
+}
+
+
+async function ChangeName(dir, thingName, newName, io, msg, updateAppearance) {
+
+    /// this could be done better with more callbacks instead of async
+    let tagDir = dir.slice(0, -5);
+    let folder = folders[tagDir];
+
+    console.log("Tag dir (" + tagDir + ")");
+    let filePath = path.normalize(path.join(__dirname, 'public', dir, sheeter.optionallyAddExt(thingName, ".json")));
+    let tag_filePath = path.normalize(path.join(__dirname, 'public', tagDir, "tag_" + sheeter.optionallyAddExt(thingName, ".json")));
+    console.log("filePath " + filePath);
+    console.log("tag_filePath " + tag_filePath);
+
+    let result = await fs.readFile(filePath);
+    let thing = jsonHandling.ParseJson(filePath, result);
+
+    result = await fs.readFile(tag_filePath);
+    let tag = jsonHandling.ParseJson(tag_filePath, result);
+
+    for (let i = 0; i < folder.length; i++) {
+
+        let entry = jsonHandling.ParseJson("inline", folder[i]);
+        console.log(entry.file + " vs " + tag.file);
+        console.log("%o", folder[i]);
+
+        if (entry.file == tag.file) {
+            entry.name = newName;
+            folder[i] = JSON.stringify(entry);
+            break;
+        }
+    }
+
+    thing.name = newName;
+    tag.name = newName;
+
+    await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
+        if (err)
+            console.log(err);
+        else {
+            console.log("File written successfully\n");
+            console.log("The written has the following contents:");
+            //  console.log(fs.readFileSync("books.txt", "utf8"));
+        }
+    });
+    await fs.writeFile(tag_filePath, JSON.stringify(tag), (err) => {
+        if (err)
+            console.log(err);
+        else {
+            console.log("File written successfully\n");
+            console.log("The written has the following contents:");
+            //  console.log(fs.readFileSync("books.txt", "utf8"));
+        }
+    });
+
+
+    io.emit('updateDir', { id: tagDir, folder: folders[tagDir] });
 
 }
 
@@ -267,6 +539,10 @@ io.on('connection', (socket) => {
         console.log('Login connection: %o', socket.rooms.values());
     });
 
+    socket.on('newPlayer', (msg) => {
+        NewPlayer(socket, msg);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
@@ -280,6 +556,9 @@ io.on('connection', (socket) => {
             chats.push(formatted);
             ReBroadCast(socket, formatted);
         }
+    });
+    socket.on('changeName', (msg) => {
+        ChangeName(msg.dir, msg.thingName, msg.newName, io, msg, true);
     });
     socket.on('updateTile', (msg) => {
 

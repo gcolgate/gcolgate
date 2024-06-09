@@ -78,6 +78,26 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
 
 }
 
+function RemoveDanglingRefs(io, thing, thingId, itemId) { // this is clunky
+
+    for (let i = 0; i < thing.appearance.length; i++) {
+
+        let slots = thing.appearance[i].slots;
+        if (!slots) continue;
+
+        let keys = Object.keys(slots);
+
+        keys.forEach((key, index) => {
+
+            if (slots[key] == itemId) {
+                slots[key] = "";
+                let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).slots["' + key + '"] = ""';
+                io.emit('change', { thing: thingId, change: evaluation });
+            }
+        });
+    }
+
+}
 
 
 async function RemoveItemFromThing(io, msg) {
@@ -100,6 +120,9 @@ async function RemoveItemFromThing(io, msg) {
             if (thing.items[i].file == itemId) {
                 thing.items.splice(i, 1);
                 ok = true;
+                if (thing.appearance) {
+                    RemoveDanglingRefs(io, thing, msg.thingId, itemId); // this is clunky
+                }
                 break;
             }
         }
@@ -195,4 +218,4 @@ async function AddItem(thingName, item_tag, io, msg) {
 
 }
 
-module.exports = { ChangeThing: ChangeThing, AddItem: AddItem, findInNamedArray, RemoveItemFromThing: RemoveItemFromThing };
+module.exports = { ChangeThing: ChangeThing, AddItem: AddItem, findInNamedArray, RemoveItemFromThing: RemoveItemFromThing, optionallyAddExt: optionallyAddExt };

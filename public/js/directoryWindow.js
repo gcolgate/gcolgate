@@ -5,17 +5,24 @@ var folders = {
     Uniques: {},
     Scenes: {},
 };
+var dirWindowCustomization = {
+    Compendium: {},
+    Party: { newButton: "newPlayer" },
+    Favorites: {},
+    Uniques: {},
+    Scenes: {},
+};
 function GetMainDirectories() {
     GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
     GetDirectory('Party').then((c) => { folders.Party = c; });
     GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
     GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
     GetDirectory('Scenes').then((c) => { folders.Scenes = c; });
-    setUpDirButton('Compendium')
-    setUpDirButton('Party')
-    setUpDirButton('Favorites')
-    setUpDirButton('Uniques')
-    setUpDirButton('Scenes')
+    setUpDirButton('Compendium');
+    setUpDirButton('Party');
+    setUpDirButton('Favorites');
+    setUpDirButton('Uniques');
+    setUpDirButton('Scenes');
 }
 
 function setUpDirButton(buttonName) {
@@ -29,10 +36,26 @@ function createDirWindow(buttonName) {
     if (!folders[buttonName]) {
         alert("Have not yet receieved " + buttonName + "from server");
     } else {
-        let w = createOrGetDirWindow(buttonName, .2, .6, .2, .2);
+        let w = createOrGetDirWindow(buttonName, .2, .6, .2, .2, dirWindowCustomization[buttonName]);
         bringToFront(w);
         showDirectoryWindow(buttonName, folders[buttonName]);
     }
+}
+
+function processDirectory(jsonData) {
+
+    for (let i = 0; i < jsonData.length; i++) {
+        try {
+            jsonData[i] = JSON.parse(jsonData[i]);
+            if (directory == "Party") {
+                console.log(jsonData[i].name);
+            }
+        } catch (err) {
+
+            console.log("Error in parsing " + i + " " + jsonData[i]);
+        }
+    }
+    return jsonData;
 }
 
 async function GetDirectory(directory) {
@@ -41,14 +64,7 @@ async function GetDirectory(directory) {
         let response = await fetch("./" + directory);
         console.log("Fetch " + directory);
         const jsonData = await response.json();
-        for (let i = 0; i < jsonData.length; i++) {
-            try {
-                jsonData[i] = JSON.parse(jsonData[i]);
-            } catch (err) {
-
-                console.log("Error in parsing " + i + " " + jsonData[i]);
-            }
-        }
+        processDirectory(jsonData);
         return jsonData;
     } catch (err) {
         console.log("Failed to fetch" + err + " " + directory);
@@ -71,7 +87,7 @@ async function addToPlayerFromDropdown(thing_file, ownerid) {
         thing: ownerid
     })
 
-    dropDownToggle('dropdown_' + ownerid);
+    // dropDownToggle('dropdown_' + ownerid);
 }
 
 function extractFromCompendium(filter_array, thing) {
@@ -87,16 +103,16 @@ function extractFromCompendium(filter_array, thing) {
     let searched = search_in_directory.search();
 
     let answer = "";
-
+    answer += "<ul>";
     for (let i = 0; i < searched.length; i++) {
 
         let quote = '"';
 
-        answer += "<p   onmousedown='addToPlayerFromDropdown("
+        answer += "<li   onmousedown='addToPlayerFromDropdown("
             + JSON.stringify(searched[i]) + "," + quote + thing.id + quote + ")'>";
-
-        // answer += '<img src="' + searched[i].img + '" width="32" height="32"></img>';
+        answer += '<img src="' + searched[i].img + '" width="32" height="32"></img>';
         answer += searched[i].name;
+        if (searched[i].price) answer += '<span class="bold"> ' + searched[i].price + "</span > "
         // li.references = array[i];
         // li.draggable = true;
         // li.onmousedown = function (event) { clickOne(this); };
@@ -106,8 +122,9 @@ function extractFromCompendium(filter_array, thing) {
         //     thingDragged.windowId = id;
 
         // }
-        answer += "</p>";
+        answer += "</li>";
     }
+    answer += "</ul>";
     return chkDiv(answer);
 }
 
@@ -273,10 +290,10 @@ function setDragStart(event, name) {
 
 }
 
-async function updateDirectoryWindow(id) {
+async function updateDirectoryWindow(id, updatedFolder) {
 
-    folders[id] = await GetDirectory(id);
-    let w = createOrGetDirWindow(id, .2, .6, .2, .2);
+    folders[id] = updatedFolder;
+    let w = createOrGetDirWindow(id, .2, .6, .2, .2, dirWindowCustomization[id]);
     bringToFront(w);
     showDirectoryWindow(id, folders[id]);
 }

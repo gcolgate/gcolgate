@@ -70,45 +70,49 @@ function svgDragDrop(event) {
 
         let foundSlot = null;
         let which = 0;
+
+        if (isEquipped(svg.getAttribute("ownerid"), thingDragged.id)) {
+            alert("Already equipped");
+            return;
+        }
         for (let i = 0; i < slotList.length; i++) {
             if (slotList[i].slot == thingDragged.slot) {
 
 
-                if (slotList[i].num = 1) {
+                if (slotList[i].num == 1) {
                     foundSlot = slotList[i].slot;
+                    let owner = GetRegisteredThing(svg.getAttribute("ownerid"));
+                    setSlot(owner, thingDragged.slot + (which > 0 ? which : ""), thingDragged);
+
                 } else {
-                    // preferably choose the one we are dragging to
-                    let groups = Array.from(svg.querySelectorAll("g"));
-                    let found = [];
-                    for (let i = 0; i < groups.length; i++) {
-                        if (groups[i].slot == thingDragged.slot) {
-                            found.push(i);
+
+                    // need to prefer one hilited
+                    let owner = GetRegisteredThing(svg.getAttribute("ownerid"));
+                    let answer = findInNamedArray(owner.appearance, owner.current_appearance);
+                    if (!answer) return;
+                    let slots = answer['slots'];
+                    for (let j = 0; j < slotList[i].num; j++) {
+                        if (slots[thingDragged.slot + j] == thingDragged.id) {
+
                         }
                     }
-                    let chosen = -1;
 
-                    chosen = found[0];
-                    which = 0;
-                    // to do: add some code to  prefer to fill empty ones.
-                    for (let i = 0; i < found.length; i++) {
 
-                        let rect = Array.from(groups[found[i]].querySelectorAll("rect"));
-                        if (rect[0].classList.contains(inventoryitemDragAccept)) {
-                            chosen = found[i];
-                            which = i + 1;
-                            break;
+                    for (let j = 0; j < slotList[i].num; j++) {
+
+
+                        if (!slots[thingDragged.slot + j]) {
+                            setSlot(owner, thingDragged.slot + j, thingDragged);
+                            return;
                         }
                     }
 
                 }
+
             }
         }
-        let owner = GetRegisteredThing(svg.getAttribute("ownerid"));
-        setSlot(owner, thingDragged.slot + (which > 0 ? which : ""), thingDragged);
-
-        // let images = Array.from(groups[chosen].querySelectorAll("image"));
-        //    images[0].setAttribute("href", thingDragged.image);
     }
+
 
     svgCleanUp(svg);
 

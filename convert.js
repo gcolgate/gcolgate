@@ -169,8 +169,21 @@ const uniq = (xs) =>
 // armor stats
 // toughness bonus
 // Button: Take damage... rolls dice. Take damage armor doesn't help
-
-
+var weapon_effects = {
+    "Intimidate": { "Save": "Bravery", "Effect": "Foe becomes cautious and -1" },
+    "Push": { "Save": "Str", "Effect": "Foe forced to retreat or knocked back" },
+    "Prone": { "Save": "Str or Dex", "Effect": "Foe made prone" },
+    "Bleeding": { "Save": "Con", "Effect": "Foe bleeds" },
+    "Disarm": { "Save": "Str or Dex", "Effect": "Foe loses weapon" },
+};
+var critical_effects = {
+    "Sever": { "Save": "Str or Con", "Effect": "Limb chopped off" },
+    "Blind": { "Save": "Str or Con", "Effect": "Foe blinded" },
+    "Deep Bleeding": { "Save": "Con", "Effect": "Foe bleeds x3" },
+    "Broken Bones": { "Save": "Con", "Effect": "one limb useless" },
+    "Vorpal": { "Save": "Con", "Effect": "Head chopped off" },
+    "KO": { "Save": "Con", "Effect": "Knocked out for a few minutes" },
+};
 var items = [
 
     {
@@ -201,7 +214,7 @@ var items = [
     },
     {
         name: "Knights Armor",
-        description: "Greek Armor",
+        description: "Knightly Armor",
         image: "",
         slot: "armor",
         wealth: 3,
@@ -209,13 +222,13 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 2,
             bonus: 3,
-            career: ["Thug"],
+            career: ["Cavalry"],
             movement: -1
         },
     },
     {
         name: "Viking Armor",
-        description: "Chaimail Armor",
+        description: "Chainmail Armor",
         image: "",
         slot: "armor",
         wealth: 3,
@@ -223,13 +236,13 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 1,
             bonus: 2,
-            career: ["Thug"],
+            career: ["Viking", "Guard"],
             movement: -1
         },
     },
     {
         name: "Padded Armor",
-        description: "Chaimail Armor",
+        description: "Padded Armor",
         image: "",
         slot: "armor",
         wealth: 2,
@@ -237,13 +250,13 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 1,
             bonus: 1,
-            career: ["Thug"],
+            career: ["AllMartial"],
             movement: -1
         },
     },
     {
         name: "Leather Armor",
-        description: "Chaimail Armor",
+        description: "Leather Armor",
         image: "",
         slot: "armor",
         wealth: 2,
@@ -259,7 +272,7 @@ var items = [
         name: "Open Helmet",
         description: "Open faced helmet",
         image: "",
-        slot: "armor",
+        slot: "head",
         wealth: 2,
         armor: {
             type: ["bludgeoning", "slashing"],
@@ -273,7 +286,7 @@ var items = [
         name: "Closed Helmet",
         description: "Open faced helmet",
         image: "",
-        slot: "armor",
+        slot: "head",
         wealth: 2,
         armor: {
             type: ["bludgeoning", "piercing", "slashing"],
@@ -316,11 +329,12 @@ var items = [
     {
         name: "Phalanx Spear",
         description: "Your classic spear",
-        image: "",
+        image: "images/icons/weapons/polearms/spear-flared-worn-grey.webp",
         slot: "longarm",
         wealth: 1,
         weapon_modes:
             [{
+                name: "Stab",
                 range: 2,
                 hands: 1,
                 type: "Melee",
@@ -328,6 +342,7 @@ var items = [
                 career: ["Infantry", "Gladiator"],
             },
             {
+                name: "Grapple",
                 range: 0,
                 hands: 2,
                 type: "Grapple",
@@ -338,11 +353,12 @@ var items = [
     {
         name: "Quarterstaff",
         description: "Your classic staff",
-        image: "",
+        image: "images/icons/skills/melee/hand-grip-staff-blue.webp",
         slot: "longarm",
         wealth: 0,
         weapon_modes:
             [{
+                name: "Staff",
                 range: 1,
                 hands: 2,
                 type: "Melee",
@@ -350,6 +366,7 @@ var items = [
                 career: ["Infantry", "Hunter", "Gladiator"],
             },
             {
+                name: "Grapple",
                 range: 0,
                 hands: 2,
                 type: "Grapple",
@@ -360,11 +377,12 @@ var items = [
     {
         name: "Glaive ",
         description: "Your classic Polearm",
-        image: "",
+        image: "images/icons/weapons/polearm/halberd-crescent-glowing.webp",
         slot: "longarm",
         wealth: 3,
         weapon_modes:
             [{
+                name: "Polearm",
                 range: 2,
                 min_range: 2,
                 hands: 2,
@@ -373,9 +391,18 @@ var items = [
                 career: ["Infantry"],
             },
             {
+                name: "Staff",
                 range: 1,
                 hands: 2,
                 type: "Melee",
+                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
+                career: ["Brawler"],
+            },
+            {
+                name: "Grapple",
+                range: 0,
+                hands: 2,
+                type: "Grapple",
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
                 career: ["Brawler"],
             }],
@@ -383,11 +410,12 @@ var items = [
     {
         name: "Pike ",
         description: "A very long spear",
-        image: "",
+        image: "images/icons/weapons/polearms/spear-hooked-blue.webp",
         slot: "longarm",
         wealth: 1,
         weapon_modes:
             [{
+                name: "Stab",
                 range: 3,
                 min_range: 2,
                 hands: 2,
@@ -396,9 +424,19 @@ var items = [
                 career: ["Infantry"],
             },
             {
+                name: "Staff",
                 range: 1,
                 hands: 2,
                 type: "Melee",
+                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
+                career: ["Brawler"],
+
+            },
+            {
+                name: "Grapple",
+                range: 0,
+                hands: 2,
+                type: "Grapple",
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
                 career: ["Brawler"],
             }],
@@ -406,13 +444,14 @@ var items = [
     {
         name: "Long Sword",
         description: "Your classic sword",
-        image: "",
+        image: "images/icons/weapons/swords/sword-guard-brown.webp",
         slot: "sidearm",
         hands: 1,
         wealth: 3,
 
         weapon_modes:
             [{
+                name: "Slice",
                 range: 1,
                 hands: 1,
                 career: ["Paladin", "Cavalry", "Noble"],
@@ -420,6 +459,7 @@ var items = [
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
             },
             {
+                name: "Horseback Charge",
                 range: 1.5,
                 hands: 1,
                 career: ["Paladin", "Cavalry", "Noble"],
@@ -427,9 +467,10 @@ var items = [
                 damage: [{ damage: "2d10", type: "slashing", when: "" }],
             },
             {
+                name: "Pommel",
                 range: 0,
-                type: "Melee",
-                career: ["Paladin", "Cavalry", "Noble", "Brawling"],
+                type: "Grapple",
+                career: ["Paladin", "Cavalry", "Noble", "Brawler"],
                 hands: 1,
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }]
             }],
@@ -437,13 +478,14 @@ var items = [
     {
         name: "BattleAxe",
         description: "Your classic sword",
-        image: "",
+        image: "images/icons/weapons/polearms/halberd-curved-steel.webp",
         slot: "sidearm",
         hands: 1,
         wealth: 3,
 
         weapon_modes:
             [{
+                name: "Chop",
                 range: 1,
                 hands: 1,
                 career: ["Infantry"],
@@ -451,6 +493,7 @@ var items = [
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
             },
             {
+                name: "Horseback Charge",
                 range: 1.5,
                 hands: 1,
                 career: ["Infantry"],
@@ -458,9 +501,10 @@ var items = [
                 damage: [{ damage: "2d10", type: "slashing", when: "" }],
             },
             {
+                name: "Pommel",
                 range: 0,
-                type: "Melee",
-                career: ["Infantry", "Brawling"],
+                type: "Grapple",
+                career: ["Infantry", "Brawler"],
                 hands: 1,
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }]
             }],
@@ -473,6 +517,7 @@ var items = [
         wealth: 2,
         weapon_modes:
             [{
+                name: "Slash",
                 range: 1,
                 type: "Melee",
                 hands: 1,
@@ -480,17 +525,20 @@ var items = [
                 career: ["Pirate", "Cavalry"],
             },
             {
+
+                name: "Horseback Charge",
                 range: 1.5,
-                type: "Horseback Charge",
+                type: "Melee",
                 hands: 1,
                 damage: [{ damage: "2d6+", type: "slashing or piercing", when: "" }],
                 career: ["Cavalry"],
             },
             {
+                name: "Pommel",
                 range: 0,
-                type: "Melee",
+                type: "Grapple",
                 hands: 1,
-                career: ["Pirate", "Brawling"],
+                career: ["Pirate", "Brawler"],
                 damage: [{ damage: "1d6", type: "bludgeoning", when: "" }]
             }
             ],
@@ -504,7 +552,8 @@ var items = [
         weapon_modes:
             [{
                 range: 2,
-                type: "Horseback Charge",
+                name: "Horseback Charge",
+                type: "Melee",
                 hands: 1,
                 damage: [{ damage: "2d12+4", type: "Piercing", when: "" }],
                 career: ["Paladin", "Cavalry"],
@@ -512,6 +561,7 @@ var items = [
             },
             {
                 range: 2,
+                name: "Spear",
                 type: "Melee",
                 hands: 2,
                 damage: [{ damage: "2d8", type: "Piercing", when: "" }],
@@ -525,58 +575,77 @@ var items = [
     {
         name: "Club",
         description: "A basic heavy club",
-        image: "",
+        image: "images/icons/weapons/clubs/club-simple-barbed.webp",
         slot: "longarm",
         wealth: 0,
         weapon_modes:
             [{
+                name: "Swing",
                 range: 1,
                 type: "Melee",
                 hands: 1,
                 damage: [{ damage: "2d4", type: "bludgeoning", when: "" }],
-                career: ["Strength", "Brawling", "Gladiator", "Thug", "Guard"],
+                career: ["Strength", "Brawler", "Gladiator", "Thug", "Guard"],
             },
             ],
     },
     {
         name: "Mace",
-        description: "A basic heavy club",
-        image: "",
+        description: "A heavy metal crusher",
+        image: "images/icons/weapons/maces/mace-spiked-steel-grey.webp",
         slot: "sidearm",
         wealth: 2,
         weapon_modes:
             [{
+                name: "Swing",
                 range: 1,
                 type: "Melee",
                 hands: 1,
                 damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
-                career: ["Strength", "Brawling", "Infantry", "Gladiator"],
+                career: ["Strength", "Brawler", "Infantry", "Gladiator"],
             }],
     },
     {
         name: "Unarmed",
         description: "Kick or fist",
-        image: "",
+        image: "images/icons/skills/melee/unarmed-punch-fist.webp",
         slot: "Always",
         wealth: 0,
         weapon_modes:
             [{
+                name: "Fist",
                 range: 1,
                 type: "Melee",
                 hands: 1,
                 damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
-                career: ["Simple"],
+                career: ["Strength", "Brawler", "Infantry", "Gladiator", "Thug", "Guard", "Cavalry", "Pirate"],
             },
-            ],
+            {
+                name: "Kick",
+                range: 1.5,
+                type: "Melee",
+                hands: 0,
+                damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
+                career: ["Dancer", "Pirate", "Gladiator", "Brawler"],
+            },
+            {
+                name: "Grapple",
+                range: 0,
+                hands: 2,
+                type: "Grapple",
+                damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
+                career: ["Strength", "Brawler", "Infantry", "Gladiator", "Thug", "Guard", "Cavalry", "Pirate"],
+            }],
     },
     {
         name: "Hand Crossbow",
         description: "A small ahistorical crossbow useful as a stand in for pistols in urban adventures",
-        image: "",
+        image: "images/icons/weapons/crossbows/crossbow-simple-brown.webp",
         slot: "sidearm",
         wealth: 3,
         weapon_modes:
             [{
+                name: "Shoot",
                 range: 6,
                 type: "Ranged",
                 hands: 1,
@@ -591,12 +660,13 @@ var items = [
     },
     {
         name: "Crossbow",
-        description: "A heavy crossbow that requires winding up, useful for assassinations or seiges",
-        image: "",
+        description: "A heavy crossbow that requires winding up, useful for assassinations or seiges, takes 3 rounds to wind",
+        image: "images/icons/weapons/crossbows/crossbow-blue.webp",
         slot: "longarm",
         wealth: 3,
         weapon_modes:
             [{
+                name: "Shoot",
                 range: 30,
                 type: "Ranged",
                 hands: 2,
@@ -613,11 +683,12 @@ var items = [
     {
         name: "Longbow",
         description: "A powerful bow",
-        image: "",
+        image: "images/icons/weapons/bows/longbow-leather-green.webp",
         slot: "longarm",
         wealth: 3,
         weapon_modes:
             [{
+                name: "Shoot",
                 range: 30,
                 type: "Ranged",
                 hands: 2,
@@ -633,11 +704,12 @@ var items = [
     {
         name: "Horse Bow",
         description: "A powerful bow, short enough to be used from the saddle",
-        image: "",
+        image: "images/icons/weapons/bows/longbow-recurve-leather-red.webp",
         slot: "longarm",
         wealth: 3,
         weapon_modes:
             [{
+                name: "Shoot",
                 range: 30,
                 type: "Ranged",
                 hands: 2,
@@ -653,11 +725,12 @@ var items = [
     {
         name: "Short Bow",
         description: "A  bow for hunting",
-        image: "",
+        image: "images/icons/weapons/bows/shortbow-recurve.webp",
         slot: "longarm",
         wealth: 3,
         weapon_modes:
             [{
+                name: "Shoot",
                 range: 20,
                 type: "Ranged",
                 hands: 2,
@@ -672,19 +745,21 @@ var items = [
     {
         name: "Rapier",
         description: "A duelling sword",
-        image: "",
+        image: "images/icons/weapons/swords/Rapier.webp",
         slot: "sidearm",
         range: 1.5,
         wealth: 3,
         weapon_modes:
             [{
+                name: "Stab",
                 type: "Melee",
                 range: 1.5,
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
                 career: ["Pirate", "Noble", "Thug"],
             },
             {
-                type: "Melee",
+                name: "Pommel",
+                type: "Grapple",
                 range: 0,
                 damage: [{ damage: "1d4", type: "bludgeoning", when: "" }],
                 career: ["Pirate", "Noble", "Thug"],
@@ -694,18 +769,20 @@ var items = [
     {
         name: "Rapier with spring dagger hilt",
         description: "A duelling sword",
-        image: "",
+        image: "images/icons/weapons/swords/Rapier.webp",
         slot: "sidearm",
         wealth: 4,
         weapon_modes:
             [{
+                name: "Stab",
                 type: "Melee",
                 range: 1.5,
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
                 career: ["Pirate", "Noble", "Thug"],
             },
             {
-                type: "Melee",
+                name: "Pommel",
+                type: "Grapple",
                 range: 0,
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
                 career: ["Pirate", "Noble", "Thug"],
@@ -714,23 +791,26 @@ var items = [
     {
         name: "Throwing dagger",
         description: "A dagger balanced to throw as well as stab",
-        image: "",
+        image: "images/icons/weapons/daggers/dagger-jeweled-purple.webp",
         slot: "pockets",
         wealth: 2,
         weapon_modes:
             [{
+                name: "Stab",
                 type: "Melee",
                 range: 0.5,
                 career: ["Pirate", "Noble", "Thug", "Assassin"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
             },
             {
-                type: "Melee",
+                name: "Grapple",
+                type: "Grapple",
                 range: 0,
                 career: ["Pirate", "Noble", "Thug", "Assassin"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
             },
             {
+                name: "Thrown",
                 type: "Thrown",
                 career: ["Pirate", "Noble", "Thug", "Assassin"],
                 range: 10,
@@ -744,17 +824,19 @@ var items = [
     {
         name: "Hand Axe",
         description: "A hand axe balanced to throw as well as chop, useful as a tool too",
-        image: "",
+        image: "images/icons/weapons/axes/axe-broad-black.webp",
         slot: "pockets",
         wealth: 2,
         weapon_modes:
             [{
+                name: "Chop",
                 type: "Melee",
                 range: 0.5,
                 career: ["Gladiator", "Hunter", "Pirate", "Assassin"],
                 damage: [{ damage: "2d6", type: "slashing", when: "" }],
             },
             {
+                name: "Thrown",
                 type: "Thrown",
                 career: ["Gladiator", "Hunter", "Pirate", "Assassin"],
                 range: 10,
@@ -768,17 +850,19 @@ var items = [
     {
         name: "Javelin",
         description: "A light spear",
-        image: "",
+        image: "images/icons/weapons/polearms/javelin.webp",
         slot: "longarm",
         wealth: 0,
         weapon_modes:
             [{
+                name: "Stab",
                 type: "Melee",
                 range: 1,
                 career: ["Hunter", "Infantry", "Gladiator", "Athlete"],
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
             },
             {
+                name: "Thrown",
                 type: "Thrown",
                 career: ["Hunter", "Infantry", "Gladiator", "Athlete"],
                 range: 10,
@@ -791,21 +875,22 @@ var items = [
     {
         name: "Knife",
         description: "A knife, not primarily intended as a weapon",
-        image: "",
+        image: "images/icons/weapons/polearms/Kobold__knife.webp",
         slot: "pockets",
         wealth: 1,
         weapon_modes:
             [{
+                name: "Stab",
                 type: "Melee",
                 range: 0.5,
                 damage: [{ damage: "1d6", type: "piercing", when: "" }],
-                career: ["Assassin", "Brawling"],
+                career: ["Assassin", "Brawler"],
             },
             {
                 type: "Grapple",
                 range: 0,
                 damage: [{ damage: "1d6", type: "piercing", when: "" }],
-                career: ["Assassin", "Brawling"],
+                career: ["Assassin", "Brawler"],
             },
             {
                 type: "Thrown",
@@ -819,15 +904,23 @@ var items = [
     ,
     {
         name: "Flail",
-        description: "A ball on a chain. A skillful user can try to grapple or disarm opponents. Fails are harder to parry giving a +1 steel to fight versus humanoids who wish to parry, but a critical failure will often indicate self inflicted damage",
-        image: "",
+        description: "A ball on a chain. A skillful user can try to grapple or disarm opponents.",
+        image: "images/icons/weapons/polearms/ouroboros-flail.webp",
         slot: "longarm",
         wealth: 1,
         weapon_modes:
             [{
+                name: "Swing",
                 type: "Melee",
                 range: 1.1,
-                damage: [{ damage: "2d8", type: "bludgeoning", when: "" }],
+                damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
+                career: ["Gladiator", "Paladin"],
+            },
+            {
+                name: "Extended Swing",
+                type: "Melee",
+                range: 1.1,
+                damage: [{ damage: "2d8", type: "bludgeoning", when: "you have time to wind up" }],
                 career: ["Gladiator", "Paladin"],
             }
             ],
@@ -836,25 +929,33 @@ var items = [
     {
         name: "Great Axe",
         description: "A very heavy axe",
-        image: "",
+        image: "images/icons/weapons/polearms/Berserker Axe.jpg",
         slot: "longarm",
         strengthMin: 2,
         wealth: 4,
         weapon_modes:
             [{
+                name: "Chop",
                 type: "Melee",
                 hands: 2,
                 range: 1.1,
                 damage: [{ damage: "2d12", type: "slashing", when: "" }],
                 career: ["Infantry", "Gladiator"],
-            }
+            },
+            {
+                name: "Pommel",
+                type: "Grapple",
+                range: 0,
+                damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                career: ["Brawler", "Gladiator"],
+            },
             ],
 
     },
     {
         name: "Great Club",
         description: "A very heavy club",
-        image: "",
+        image: "images/icons/weapons/polearms/Maul01_01_Regular_White_Thumb.webp",
         slot: "longarm",
         strengthMin: 2,
         wealth: 1,
@@ -865,14 +966,21 @@ var items = [
                 range: 1.1,
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
                 career: ["Infantry", "Gladiator", "Strength"],
-            }
+            },
+            {
+                name: "Pommel",
+                type: "Grapple",
+                range: 0,
+                damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                career: ["Brawler", "Gladiator"],
+            },
             ],
 
     },
     {
         name: "Net",
         description: "A Large or smaller creature hit by a net is restrained until it is freed. A net has no effect on creatures that are formless, or creatures that are Huge or larger.A creature can use its action to make a DC 10 Strength check, freeing itself or another creature within its reach on a success. Dealing 5 slashing damage to the net  also frees the creature without harming it, ending the effect and destroying the net.",
-        image: "",
+        image: "images/icons/weapons/polearms/net.webp",
         slot: "longarm",
         strengthMin: 2,
         wealth: 1,
@@ -890,7 +998,7 @@ var items = [
     {
         name: "Great Sword",
         description: "A very heavy Sword",
-        image: "",
+        image: "images/icons/weapons/polearms/GreatSword.webp",
         slot: "longarm",
         strengthMin: 2,
         wealth: 5,
@@ -901,19 +1009,27 @@ var items = [
                 range: 1.1,
                 damage: [{ damage: "4d6", type: "slashing", when: "" }],
                 career: ["Infantry", "Gladiator", "Paladin"],
-            }
+            },
+            {
+                name: "Pommel",
+                type: "Grapple",
+                range: 0,
+                damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                career: ["Brawler", "Infantry", "Gladiator", "Paladin"],
+            },
             ],
 
     },
     {
         name: "Fireball Wand",
         description: "Opens a temporary rift to the plane of fire, on defense, it could be used in reverse to parry a fire blast",
-        image: "",
+        image: "images/icons/weapons/polearms/Wand of Fireballs.jpg",
         slot: "sidearm",
         wealth: 10,
         weapon_modes:
             [
                 {
+                    name: "Blast",
                     type: "Blast",
                     radius: 2,
                     career: ["Immolator", "Sorcerer"],
@@ -929,11 +1045,12 @@ var items = [
     {
         name: "Acid Vial ",
         description: "A vial of strong acid",
-        image: "",
+        image: "images/icons/weapons/polearms/acid-flask.webp",
         slot: "pockets",
         wealth: 3,
         weapon_modes:
             [{
+                name: "Splattered",
                 range: 4,
                 hands: 1,
                 type: "Thrown",
@@ -947,11 +1064,12 @@ var items = [
     {
         name: "Alchemist's Fire",
         description: "Sticky, adhesive fluid that ignites when exposed to air",
-        image: "",
+        image: "images/icons/weapons/polearms/bottled-sunlight.webp",
         slot: "pockets",
         wealth: 3,
         weapon_modes:
             [{
+                name: "Shatter",
                 range: 4,
                 radius: 1,
                 hands: 1,
@@ -966,11 +1084,12 @@ var items = [
     {
         name: "Bomb",
         description: "As an action, a character can light this bomb and throw it. Each creature within 5 feet of that point must succeed on a DC 12 Dexterity saving throw or take 3d6 fire damage.",
-        image: "",
+        image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
         wealth: 5,
         weapon_modes:
             [{
+                name: "Explode",
                 range: 6,
                 hands: 1,
                 type: "Thrown",
@@ -984,11 +1103,12 @@ var items = [
     {
         name: "Boomerang",
         description: "The boomerang is a ranged weapon, on a miss it returns to your hand. Useful for killing birds.",
-        image: "",
+        image: "images/icons/weapons/polearms/boomerang.webp",
         slot: "pockets",
         wealth: 5,
         weapon_modes:
             [{
+                name: "Thrown",
                 range: 12,
                 hands: 1,
                 type: "Thrown",
@@ -1530,10 +1650,10 @@ var careers = {
         languages: [],
         tools: ""
     },
-    Barbarian: {
-        name: "Barbarian",
-        description: "Living off the lands in a small tribal group, Barbarians are wild and untamed, like the lands they live in. They have natural skills in wilderness lore, survival, beast riding, intimidation, natural instincts, berserk rages, jumping and climbing, and so on.",
-        weapons: ["Tribal"],
+    Viking: {
+        name: "Nord",
+        description: "These warriors hail from the frozen north.",
+        weapons: ["Nord"],
 
         feats: ["Swift",
             "Climber",
@@ -2650,7 +2770,8 @@ for (let item = 0; item < items.length; item++) {
         "source": "Gil",
         "type": "weapon",
         "name": items[item].name,
-        "img": "images/modules/plutonium/media/icon/mighty-force.svg" /// need this
+        "img": items[item].image, /// need this
+        "price": items[item].wealth, /// need this
     };
     writeJsonFileInPublic('Compendium', "tag_" + key, tags);
 
@@ -2659,9 +2780,9 @@ for (let item = 0; item < items.length; item++) {
 }
 
 // note, run convertDnD5e and do not translate feats
-makeTrainingData();
+//makeTrainingData();
 //convertDnD5e();
 //console.log("Converted D&D5e");
-//convertPTBA();
+convertPTBA();
 console.log("Converted convertPTBA");
 

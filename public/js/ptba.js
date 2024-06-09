@@ -314,7 +314,7 @@ var moves = {
         <li> &#x25BA; Lose the initiative</li>\
         <li> &#x25BA; Get your weapon entangled, lose some gear,  are knocked prone or otherwise put into a bad position</li>\
         <li> &#x25BA; Miss instead, since you decided to wait for a better time, stay hiding and not attack now, maybe you can try next turn</li></ul>",
-        "fail": "On a failure you lose the initiative and probably draw the ire of the person you tried to backstab."
+        "fail": "On a failure you lose the initiative and probably the ire of the person you tried to backstab."
     },
     "Gossip": {
         "stat": [
@@ -446,6 +446,7 @@ function showWeaponModes(thing, owner) {
     if (!thing.weapon_modes) return answer;
     for (let i = 0; i < thing.weapon_modes.length; i++) {
         let mode = thing.weapon_modes[i];
+        answer += span(mode.name, "", "bold") + ".  ";
         if (mode.range) answer += (span("range ", mode.range, "italic")) + ".  ";
         if (mode.min_range) answer += (span("minimum range ", mode.min_range, "italic")) + ".  ";
         if (mode.radius) answer += (span("radius range ", mode.radius, "italic")) + ".  ";
@@ -585,7 +586,6 @@ function setSlot(thing, slotExact, item) {
 }
 
 function removeFromSlot(thing, slotExact) {
-    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
 
 
     let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).slots["' + slotExact + '"] = ""';
@@ -605,8 +605,9 @@ function getSlotImage(thing, type, placeholder) {
     if (!slots[type]) return placeholder;
 
     let item = GetRegisteredThing(slots[type]);
-
-    return item.image;
+    if (item)
+        return item.image;
+    return placeholder;
 
 
 }
@@ -1348,6 +1349,44 @@ function GetWeaponsList(thing) {
 
 }
 
+function WeaponMoves(thing, weaponId,) {
+
+    if (!isEquipped(thing.id, weaponId)) return "";
+    let answer = "";
+    let weapon = GetRegisteredThing(weaponId);
+
+    let name = weapon.name;
+    if (weapon.weapon_modes)
+        for (let m = 0; m < weapon.weapon_modes.length; m++) {
+            let mode = weapon.weapon_modes[m];
+            // if (mode.range) answer += div(span("range ", mode.range));
+            // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
+            // if (mode.radius) answer += div(span("radius range ", mode.radius));
+            // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
+            let bonus = FindBestCareerNode(thing, mode);
+
+
+
+            for (let j = 0; j < moves[a].stat.length; j++) {
+                let stat = moves[a].stat[j];
+                answer += "<div>"
+                answer += "<button class=\"padded\" onclick =\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
+                    + "+" +
+                    "</button>";
+                answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
+                    + ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
+                    "</button>";
+                answer += "<button class=\"redtintButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
+                    + "-" +
+                    "</button>";
+                answer += "</div>"
+
+            }
+        }
+    return answer;
+}
+
+
 function PTBAMoves(thing) {
     let answer = "";
     let keys = Object.keys(moves);
@@ -1358,32 +1397,9 @@ function PTBAMoves(thing) {
         if (a == "Attack") {
             let weapons = GetWeaponsList(thing);
             for (let w = 0; w < weapons.length; w++) {
-                let weapon = GetRegisteredThing(weapons[w]);
-                let name = a + " " + weapon.name;
-                if (weapon.weapon_modes)
-                    for (let m = 0; m < weapon.weapon_modes.length; m++) {
-                        let mode = weapon.weapon_modes[m];
-                        // if (mode.range) answer += div(span("range ", mode.range));
-                        // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
-                        // if (mode.radius) answer += div(span("radius range ", mode.radius));
-                        // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
-                        let bonus = FindBestCareerNode(thing, mode);
 
+                answer += WeaponMoves(thing, weapons[w]);
 
-
-                        for (let j = 0; j < moves[a].stat.length; j++) {
-                            let stat = moves[a].stat[j];
-                            answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',1,'" + weapons[w] + "'," + m + ")\">"
-                                + "+" +
-                                "</button>";
-                            answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',0,'" + weapons[w] + "'," + m + ")\">"
-                                + name + ' Steel(' + bonus[0] + ") " + 'r(' + mode.range + ")" + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
-                                "</button>";
-                            answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',-1,'" + weapons[w] + "'," + m + ")\">"
-                                + "-" +
-                                "</button>";
-                        }
-                    }
             }
 
         } else
