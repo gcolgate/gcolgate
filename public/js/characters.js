@@ -291,6 +291,8 @@ async function ChangeName(button) {
 }
 
 
+
+
 function Editable(thing, clause, className, listName) { // thing must be here because the eval might use it
     let t = eval(clause);
 
@@ -485,7 +487,7 @@ function LineOfCareer(owner, thing, notes) {
     if (notes == undefined && owner != undefined)
         return div(
             div(Editable(thing, "thing.name", "itemsetheadershort crit")) +
-            div(span("Level ", Editable(thing, "thing.system.owner_level", "shortwidth coloring basicFont bodyText crit"), "crit")) +
+            div(span("Level ", Editable(thing, "thing.system.owner_level", "npcNum shortwidth"), "crit")) +
             div(span("Feats chosen", " " + sumCareerFeats(thing) + "/" + thing.system.owner_level, "shortwidth coloring basicFont bodyText crit")) +
             div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")) +
             formatRemoveButton(owner.id, thing.id),

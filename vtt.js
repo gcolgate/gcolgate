@@ -23,7 +23,7 @@ const io = sockets(http_io);
 app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from public folder
 
 var passwords, players;
-var folders = { Compendium: [], Favorites: [], Uniques: [], Party: [], Scenes: [], ScenesParsed: [] };
+
 var chats = []; // chats so far
 app.use(fileUpload());
 
@@ -84,7 +84,7 @@ async function doTheUpload(res, req) {
         await file.mv(path.normalize(__dirname + '/public/images/' + tile.texture));
         res.sendStatus(200);
 
-        let scene = folders.ScenesParsed[scene_name];
+        let scene = sheeter.folders.ScenesParsed[scene_name];
         let fixedTile = Scene.addTile(scene, tile);
 
         io.emit('newTile', { scene: scene, tile: fixedTile });
@@ -160,12 +160,12 @@ async function InitialDiskLoad() {
 
     results = await Promise.all(promises);
 
-    folders.Compendium = results[0];
-    folders.Favorites = results[1];
-    folders.Party = results[2];
-    folders.Uniques = results[3];
-    folders.Scenes = results[4];
-    folders.uploadedImages = results[7];
+    sheeter.folders.Compendium = results[0];
+    sheeter.folders.Favorites = results[1];
+    sheeter.folders.Party = results[2];
+    sheeter.folders.Uniques = results[3];
+    sheeter.folders.Scenes = results[4];
+    sheeter.folders.uploadedImages = results[7];
 
     //  await delay(5000);
 
@@ -247,9 +247,9 @@ async function CopyThingFIles(socket, msg) {
         fs.writeFile(dest2, JSON.stringify(msg.from)),
         fs.copyFile(src, dest)
     ]);
-    folders[msg.to].push(msg.from);
+    sheeter.folders[msg.to].push(msg.from);
 
-    socket.emit('updateDir', { id: msg.to, folder: folders[msg.to] });
+    socket.emit('updateDir', { id: msg.to, folder: sheeter.folders[msg.to] });
 
 
 }
@@ -428,9 +428,9 @@ async function NewPlayer(socket, msg) {
         fs.writeFile(dest2, JSON.stringify(newPartyMemberTag)),
 
     ]);
-    folders[dir].push(newPartyMemberTag);
+    sheeter.folders[dir].push(newPartyMemberTag);
 
-    socket.emit('updateDir', { id: dir, folder: folders[dir] });
+    socket.emit('updateDir', { id: dir, folder: sheeter.folders[dir] });
 
 
 }
@@ -440,7 +440,7 @@ async function ChangeName(dir, thingName, newName, io, msg, updateAppearance) {
 
     /// this could be done better with more callbacks instead of async
     let tagDir = dir.slice(0, -5);
-    let folder = folders[tagDir];
+    let folder = sheeter.folders[tagDir];
 
     console.log("Tag dir (" + tagDir + ")");
     let filePath = path.normalize(path.join(__dirname, 'public', dir, sheeter.optionallyAddExt(thingName, ".json")));
@@ -490,25 +490,25 @@ async function ChangeName(dir, thingName, newName, io, msg, updateAppearance) {
     });
 
 
-    io.emit('updateDir', { id: tagDir, folder: folders[tagDir] });
+    io.emit('updateDir', { id: tagDir, folder: sheeter.folders[tagDir] });
 
 }
 
 async function sendScene(name, socket) {
 
     let found = 0;/// todo fix bad form
-    for (i = 0; i < folders.Scenes.length; i++) {
-        //      console.log(folders.Scenes[i], name);
-        if (folders.Scenes[i].name == name) {
+    for (i = 0; i < sheeter.folders.Scenes.length; i++) {
+        //      console.log(sheeter.folders.Scenes[i], name);
+        if (sheeter.folders.Scenes[i].name == name) {
             found = i;
             break;
         }
     }
-    let unparsed = folders.Scenes[found];
+    let unparsed = sheeter.folders.Scenes[found];
 
-    folders.ScenesParsed[name] = jsonHandling.ParseJson(name, unparsed);
+    sheeter.folders.ScenesParsed[name] = jsonHandling.ParseJson(name, unparsed);
 
-    let scene = folders.ScenesParsed[name];
+    let scene = sheeter.folders.ScenesParsed[name];
 
 
     await Scene.loadScene(scene);
@@ -564,7 +564,7 @@ io.on('connection', (socket) => {
 
         let sender = getUser(socket);
         if (sender) {
-            let scene = folders.ScenesParsed[msg.scene];
+            let scene = sheeter.folders.ScenesParsed[msg.scene];
 
             Scene.updateSceneTile(scene, msg.tile);   // change to in place and update
             io.emit('updatedTile', msg);
@@ -578,7 +578,7 @@ io.on('connection', (socket) => {
         console.log("delete file");
         let sender = getUser(socket);
         if (sender) {
-            let scene = folders.ScenesParsed[msg.scene];
+            let scene = sheeter.folders.ScenesParsed[msg.scene];
             console.log("scene");
 
             Scene.removeSceneTile(scene, msg.tile);   // change to in place and update
@@ -591,7 +591,7 @@ io.on('connection', (socket) => {
         console.log("Add token");
         let sender = getUser(socket);
         if (sender) {
-            let scene = folders.ScenesParsed[msg.scene];
+            let scene = sheeter.folders.ScenesParsed[msg.scene];
             console.log("Add token2");
 
             console.log(msg.tile);
@@ -821,14 +821,14 @@ app.get("/Compendium", (req, res) => {
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    res.end(JSON.stringify(folders.Compendium));
+    res.end(JSON.stringify(sheeter.folders.Compendium));
 });
 
 app.get("/Scenes", (req, res) => {
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    res.end(JSON.stringify(folders.Scenes));
+    res.end(JSON.stringify(sheeter.folders.Scenes));
 });
 
 
@@ -839,7 +839,7 @@ app.get("/Favorites", (req, res) => {
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    res.end(JSON.stringify(folders.Favorites));
+    res.end(JSON.stringify(sheeter.folders.Favorites));
 });
 
 
@@ -848,7 +848,7 @@ app.get("/Uniques", (req, res) => {
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    res.end(JSON.stringify(folders.Uniques));
+    res.end(JSON.stringify(sheeter.folders.Uniques));
 });
 
 
@@ -857,7 +857,7 @@ app.get("/Party", (req, res) => {
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    res.end(JSON.stringify(folders.Party));
+    res.end(JSON.stringify(sheeter.folders.Party));
 });
 
 // TO DO: could stringify chats once for multiple players loading at the same time

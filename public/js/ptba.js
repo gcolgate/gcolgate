@@ -709,6 +709,15 @@ function featclicked(cb) {
     });
 }
 
+function tabLinkClass(isActive) {
+
+    if (!isActive) {
+        return 'class="tablinks"';
+    }
+
+    return 'class="selectedTab"';
+}
+
 function tabClass(isActive) {
     if (!isActive) {
         return 'class="tabcontent"';
@@ -755,14 +764,6 @@ function openTab(evt, tabName, button, id) {
         else tabcontent[i].style.display = "block";
     }
 
-    // Get all elements with class="tablinks" and remove the class "active"
-    let tablinks =
-        FindSubELementsByCLassName(sheet, "tablinks");
-    for (let i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-
-    evt.currentTarget.className += " active";
 }
 
 function featCheckBox(feats, i, thing, owner, checked, featSheet) {

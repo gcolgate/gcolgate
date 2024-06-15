@@ -2,12 +2,16 @@
 
 
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'stats', this, '{ thing.id }')">Stats</button>
-        <button class="tablinks" onclick="openTab(event, 'inventory', this,  '{ thing.id }')">Inventory</button>
-        <button class="tablinks" onclick="openTab(event, 'careers',  this, '{ thing.id }')">Careers</button>
-        <button class="tablinks" onclick="openTab(event, 'features', this,  '{ thing.id }')">Features</button>
+        <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="stats" ) ) }
+            onclick="openTab(event, 'stats', this, '{ thing.id }')">Stats</div>
+        <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="inventory" ) ) }
+            onclick="openTab(event, 'inventory', this,  '{ thing.id }')">Inventory</div>
+        <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="careers" ) ) }
+            onclick="openTab(event, 'careers',  this, '{ thing.id }')">Careers</div>
+        <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="features" ) ) }
+            onclick="openTab(event, 'features', this,  '{ thing.id }')">Features</div>
     </div>
-    <p>
+    <p class="basicFont npcTitleInput indented"> Name:
         <input class="itemsetheader npcTitleInput" type="text" data-thingid="{thing.id}" value="{thing.name}"
             onchange="ChangeName(this)">
     </p>
@@ -23,9 +27,9 @@
 
                 <p class="npcBold"><span class="c12">Species: { Editable(thing,
                         "thing.species",
-                        "itemsetheader itemTitleInput", "species") }</span></p>
+                        "itemsetheader itemTitleInput", "species-list") }</span></p>
 
-                <datalist id="species">
+                <datalist id="species-list">
                     <option>Human</option>
                     <option>Elf</option>
                     <option>Dark Troll</option>
@@ -36,8 +40,8 @@
 
                 <p class="npcBold"><span class="c12">Origin: {Editable(thing,
                         "thing.origin",
-                        "itemsetheader itemTitleInput", "places")} </p>
-                <datalist id="places">
+                        "itemsetheader itemTitleInput", "places-list")} </p>
+                <datalist id="places-list">
                     <option>Barony of Lewd Umber</option>
                     <option>Majority City</option>
                     <option>Barony of Orfor</option>
@@ -72,7 +76,7 @@
     <div id="careers" { tabClass( thing.tab && thing?.tab=="careers" ) }>
         <div class=" outlined dragitem">
             <div class="relative_inline_block">
-                <button onclick="dropDownToggle('dropdown_{thing.id}')" class="drop_list_button">Add Career</button>
+                <button onclick="dropDownToggle('dropdown_{thing.id}')" class="blueButton">Add Career</button>
                 <div id="dropdown_{thing.id}" class="dropdown-content itemsetheadershort crit">
                     <input type=" text" placeholder="Search.." id="dropdown_content_{thing.id}"
                         onkeyup="filterDropDown('dropdown_content_{thing.id}','dropdown_{thing.id}')">
@@ -300,7 +304,7 @@
 
         <div id=" columntwo">
             <div>Items</div>
-            <button onclick="dropDownToggle('ddi_{thing.id}')" class="drop_list_button">Buy Item</button>
+            <button onclick="dropDownToggle('ddi_{thing.id}')" class="blueButton">Buy Item</button>
             <div id="ddi_{thing.id}" class="dropdown-content itemsetheadershort crit">
                 <input type=" text" placeholder="Search.." id="ddi_c_{thing.id}"
                     onkeyup="filterDropDown('ddi_c_{thing.id}','ddi_{thing.id}')">

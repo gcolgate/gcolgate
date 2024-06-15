@@ -1,6 +1,7 @@
 <div class="c18 doc-content">
     <div class="twocolumns">
         <div>
+            <div> Portrait</div>
             <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
                 onclick="showPasteAndChoose(event,'portrait_{thing.id}','token_{thing.id}')"></image>
@@ -17,8 +18,7 @@
             </div>
         </div>
         <div>
-
-
+            <div> Token</div>
             <image src="{getAppearanceImage(thing, 'token')}" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'token')}"
                 onclick="showPasteAndChoose(event,'token_{thing.id}','portrait_{thing.id}')"></image>

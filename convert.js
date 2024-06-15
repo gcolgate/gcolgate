@@ -1690,7 +1690,7 @@ var careers = {
 
     Cavalry: {
         name: "Cavalry",
-        description: "Fighting with cavalry weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
+        description: "Raiding and soldiers: Fighting with cavalry weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
         weapons: ["Melee", "Unarmed", "AllMartial"],
 
         feats: [
@@ -1706,7 +1706,7 @@ var careers = {
     },
     HorseArcher: {
         name: "Horse Archer",
-        description: "Fighting with ranged weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
+        description: "Raiders and soldiers: Fighting with ranged weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
         weapons: ["Ranged", "Simple", "AllMartial"],
 
         feats: [
@@ -1826,7 +1826,7 @@ var careers = {
             "Climber",
         ],
         languages: [],
-        tools: "Animals, Animal Traps,Camping, Tracking"
+        tools: "Animals, Animal Traps, Camping, Tracking"
     },
     Immolator: {
         name: "Immolator",
@@ -1860,7 +1860,7 @@ var careers = {
     },
     Archer: {
         name: "Archer",
-        description: "Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
+        description: "A Solider. Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
         weapons: ["Ranged", "Simple", "AllMartial"],
         feats: [
             "Artillery",
