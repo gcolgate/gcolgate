@@ -100,7 +100,7 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
         });
         msg.updateAppearance = updateAppearance;
         io.emit('change', msg);
-        if (updateAppearance && thing.appearance) {
+        if (updateAppearance && thing.appearance && msg.updatePortrait) {
             let fileName = path.basename(thingName);
             let dir = path.dirname(thingName);
             let tagDir = dir.slice(0, -5);

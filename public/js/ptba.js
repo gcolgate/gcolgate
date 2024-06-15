@@ -580,7 +580,7 @@ function setSlot(thing, slotExact, item) {
 
     let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).slots["' + slotExact + '"] = "' + item.id + '"';
 
-    socket.emit("change_appearance", { thing: thing.id, change: evaluation });
+    socket.emit("change_appearance", { thing: thing.id, change: evaluation, updatePortrait: false });
 
 
 }
@@ -590,7 +590,7 @@ function removeFromSlot(thing, slotExact) {
 
     let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).slots["' + slotExact + '"] = ""';
 
-    socket.emit("change_appearance", { thing: thing.id, change: evaluation });
+    socket.emit("change_appearance", { thing: thing.id, change: evaluation, updatePortrait: false });
 
 
 }
@@ -904,7 +904,7 @@ async function UploadAppearanceArt(ev, which, id) {
         console.log('id is ' + id);
         console.log('evaluation is ' + evaluation);
 
-        socket.emit("change_appearance", { thing: id, change: evaluation });
+        socket.emit("change_appearance", { thing: id, change: evaluation, updatePortrait: true });
 
         return true;
 
@@ -991,7 +991,7 @@ function showApperancePopUp(e, id) {
                 console.log('evaluation is ' + evaluation);
 
                 popupMenu.style.display = "none";
-                socket.emit("change_appearance", { thing: id, change: evaluation });
+                socket.emit("change_appearance", { thing: id, change: evaluation, updatePortrait: true });
 
             }
 
@@ -1272,7 +1272,6 @@ function rollMoveStat(ownerId, stat, mv, advantage, weapon_id, weapon_mode) {
     let damage = []
     let bonus = owner.stats[stat];
     if (!weapon_id) {
-        let weapon = GetRegisteredThing(weaponId);
 
         socket.emit('roll', {
             title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + "</li></ul>",
@@ -1442,3 +1441,4 @@ function dragCareersAndItems(thingDragged, evt) {
 
 
 
+console.log("done Parsing ptba.js");

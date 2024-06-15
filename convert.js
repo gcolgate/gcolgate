@@ -1241,7 +1241,7 @@ var feats = {
     },
     Mobile_Archer: {
         name: "Mobile Archer",
-        description: "Can both move and shoot your bow(requires archery choice). Normally all aimed bows and crossbows require you not to move on the turn you are shooting, this lets you skip that.",
+        description: "Can both move and shoot your bow. Normally all aimed bows and crossbows require you not to move on the turn you are shooting, this lets you skip that.",
     },
     Monotheist: {
         name: "Monotheist",
@@ -1429,19 +1429,19 @@ var feats = {
     },
     Mobile_Archer: {
         name: "Mobile Archer",
-        description: "You can both move and shoot, (requires archery choice)",
+        description: "You can both move and shoot",
     },
     Sniper: {
         name: "Sniper",
-        description: "Spend a point (once per roll) to get +1 to ranged ambush rolls,, (requires archery choice)",
+        description: "Spend a point (once per roll) to get +1 to ranged ambush rolls",
     },
     Shield_Master: {
         name: "Shield Master",
-        description: "+1 to resist damage when carrying a shield  (requires armor choice).",
+        description: "+1 to resist damage when carrying a shield.",
     },
     Armor_Master: {
         name: "Armor Master",
-        description: "+1 to resist damage when wearing heavy armor (requires armor choice).",
+        description: "+1 to resist damage when wearing heavy armor.",
     },
     Weapon_Choices: {
         name: "Weapon Choices",
