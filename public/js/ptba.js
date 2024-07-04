@@ -210,8 +210,8 @@ var moves = {
         ],
         "Comments": "It takes a few minutes at least to provide healing, unless provided by a spell of the first magnitude. After each wounding, 1 roll per character who tries to heal, unless a spelll. These do not stack, take the best. Heal also reduces the effect of an injury. Injuries commonly last until all harm is gone, and count as one extra harm you need to heal. Without healing it normally it takes 1 day to heal 1 harm, although infected wounds in bad conditions can get worse, 1 day for 1 harm.",
         "Critical": "",
-        "success": "Heal 3 harm plus you can 3 harm per medicine or mom career point you spend.",
-        "mixed": "Heal 1 harm plus 3 per medicine or mom career point you spend.",
+        "success": "Heal 3 harm plus if you have skill at Medecine or Mom, you can 3 harm per 1 Effort you spend.",
+        "mixed": "Heal 1 harm plusif you have skill at Medecine or Mom,  3 per 1 Effort you spend.",
         "fail": "if you don’t have medicine or other appropriate career , you make things worse cause 1 harm"
     },
     "Calm": {
@@ -732,11 +732,13 @@ function FindSubELementsByCLassName(element, className) {
     function recurse(element, className, foundList) {
         for (var i = 0; i < element.childNodes.length; i++) {
             var el = element.childNodes[i];
-            var classes = el.className != undefined ? el.className.split(" ") : [];
-            for (var j = 0, jl = classes.length; j < jl; j++) {
-                if (classes[j] == className) {
-                    foundList.push(element.childNodes[i]);
+            if (typeof el.className === 'string' || el.className instanceof String) {
+                var classes = el.className.split(" ");
+                for (var j = 0, jl = classes.length; j < jl; j++) {
+                    if (classes[j] == className) {
+                        foundList.push(element.childNodes[i]);
 
+                    }
                 }
             }
 
@@ -816,10 +818,6 @@ function drawCareerFeats(thing, owner, notes) {
 
 
     if (owner) {
-        // text += div('<span class="npcBold">Level </span>' +
-        //     Editable(thing, "thing.system.owner_level", "npcNum"));
-        // text += div('<span class="npcBold">Career Points Spent </span>' +
-        //     Editable(thing, "thing.system.owner_careerPointsSpent", "npcNum"));
 
         if (!notes) {
             text += div(span("Weapons", Editable(thing, "thing.system.weapons", ""))) +
@@ -970,13 +968,13 @@ function showApperancePopUp(e, id) {
     if (thing) {
         ul.replaceChildren();
 
-        let li = document.createElement("li");
-        li.appendChild(document.createTextNode("Edit " + thing.current_appearance));
-        ul.appendChild(li);
+        // let li = document.createElement("li");
+        // li.appendChild(document.createTextNode("Edit " + thing.current_appearance));
+        // ul.appendChild(li);
 
-        li.onclick = function () {
-            showThing(id, "Appearance");
-        }
+        // li.onclick = function () {
+        //     showThing(id, "Appearance");
+        // }
         for (let i = 0; i < thing.appearance.length; i++) {
             let li = document.createElement("li");
             li.appendChild(document.createTextNode(thing.appearance[i].name));
@@ -1016,19 +1014,10 @@ function drawCareerLevel(thing, owner, notes) {
 
 
     if (owner && notes) {
-        text += div('Career Points Spent ' +
-            Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText"), "basicFont coloring bodyText");
-
-    } else if (owner) {
         text += div('<span class="basicFont npcBold bodyText">Level </span>' +
             Editable(thing, "thing.system.owner_level", "shortwidth coloring basicFont bodyText"));
-        text += div('<span class="basicFont coloring bodyText">CP Spent </span>' +
-            Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText")
-        );
-
 
     }
-    text += "";
     return text;
 }
 
@@ -1438,7 +1427,3 @@ function dragCareersAndItems(thingDragged, evt) {
         roll: "1d6"
     });
 }
-
-
-
-console.log("done Parsing ptba.js");

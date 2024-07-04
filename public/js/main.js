@@ -102,7 +102,7 @@ socket.on('addItem', function (msg) {
 
 socket.on('updateDir', function (msg) {
     let f = processDirectory(msg.folder);
-    updateDirectoryWindow(msg.id, f);
+    updateDirectoryWindow(msg.id, f, msg.makeFront);
 
 });
 

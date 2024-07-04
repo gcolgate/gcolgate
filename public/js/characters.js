@@ -309,6 +309,16 @@ function Editable(thing, clause, className, listName) { // thing must be here be
 }
 
 
+
+function MultilineEditText(thing, clause, className, rows, columns) { // thing must be here because the eval might use it
+    let t = eval(clause);
+
+    let id = thing.id;
+    return '<textarea class="' + className + '" type="text"  cols="' + columns + '" rows="' + rows + '" data-clause="' + clause + '"  data-thingid="' + id +
+        '" onchange="changeSheet(this)">' + t + '</textarea>';
+}
+
+
 async function showThing(name, sheet) {
     //  then get the sheet
     let key = SanitizeSlashes(name);
@@ -317,6 +327,17 @@ async function showThing(name, sheet) {
 
 
     displayThing(key, sheet);
+}
+
+function showThingInline(thing, sheet) {
+    //  then get the sheet
+    let key = SanitizeSlashes(name);
+
+    //   EnsureLoaded(sheet, key).then(
+
+
+    return parseSheet(thing, sheet, undefined, undefined);
+
 }
 
 async function UpdateNPC(change) {
@@ -489,7 +510,7 @@ function LineOfCareer(owner, thing, notes) {
             div(Editable(thing, "thing.name", "itemsetheadershort crit")) +
             div(span("Level ", Editable(thing, "thing.system.owner_level", "npcNum shortwidth"), "crit")) +
             div(span("Feats chosen", " " + sumCareerFeats(thing) + "/" + thing.system.owner_level, "shortwidth coloring basicFont bodyText crit")) +
-            div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")) +
+            //  div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")) +
             formatRemoveButton(owner.id, thing.id),
             'class="fourcolumncareers"');
     else
@@ -497,6 +518,6 @@ function LineOfCareer(owner, thing, notes) {
             div("Career:", 'class="basicFont italic"') +
             div(thing.name, "itemsetheadershort") +
             div(span("Level ", thing.system.owner_level, "shortwidth coloring basicFont bodyText crit", "crit")) +
-            div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")),
+            //  div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")),
             'class="fourcolumncareers2"');
 }

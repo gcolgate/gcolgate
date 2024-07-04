@@ -1149,11 +1149,11 @@ var feats = {
     },
     Bardic_Lore: {
         name: "Bardic Lore",
-        description: "Spend a career point to remember a snatch of a song or history that exactly describes the riddle or problem",
+        description: "Spend Effort to remember a snatch of a song or history that exactly describes the riddle or problem",
     },
     Berserk: {
         name: "Berserk",
-        description: "Enter a rage, use career point, +1 forward on offense, -1 forward  on defense while raging",
+        description: "Enter a rage, use Effort, +1 forward on offense, -1 forward  on defense while raging",
     },
     Climber: {
         name: "Climber",
@@ -1169,7 +1169,7 @@ var feats = {
     },
     Critic: {
         name: "Critic",
-        description: "Spend a career point to automatically point out to the DM the weaknesses in your foe’s equipment (from your specialty), and gain an advantage of some kind.",
+        description: "Spend a Effort to automatically point out to the DM the weaknesses in your foe’s equipment (from your specialty), and gain an advantage of some kind.",
     },
     Demonology_And_Cults: {
         name: "Demonology And Cults",
@@ -1177,7 +1177,7 @@ var feats = {
     },
     Disguise_Master: {
         name: "Disguise Master",
-        description: "Spend a career point to make a perfect disguise, or as good as you can with the materials at hand.",
+        description: "Spend a Effort to make a perfect disguise, or as good as you can with the materials at hand.",
     },
     Dynasties: {
         name: "Dynasties",
@@ -1189,7 +1189,7 @@ var feats = {
     },
     Expert_Pickpocket: {
         name: "Expert Pickpocket",
-        description: "Spend a career point to steal something without any sort of roll",
+        description: "Spend Effort to steal something without any sort of roll",
     },
     Extra: {
         name: "Extra",
@@ -1213,7 +1213,7 @@ var feats = {
     },
     Kata: {
         name: "Kata",
-        description: "You dance in a spiritual way.  As you dance, spend a career point to gain 1d6 mana point you can immediately add to your aura (for use in spells)",
+        description: "You dance in a spiritual way.  As you dance, spend Effort to gain 1d6 mana point you can immediately add to your aura (for use in spells)",
     },
     Magical_Performance: {
         name: "Magical Performance",
@@ -1229,7 +1229,7 @@ var feats = {
     },
     Master_of_Stealth: {
         name: "Master of Stealth",
-        description: "Spend a career point to sneak without any sort of roll, you can spend additional points for your friends. Also applies to ‘scout’ rolls",
+        description: "Spend Effort to sneak without any sort of roll, you can spend additional points for your friends. Also applies to ‘scout’ rolls",
     },
     McGuyver: {
         name: "McGuyver",
@@ -1237,7 +1237,7 @@ var feats = {
     },
     Mercy: {
         name: "Mercy! Spare Me!",
-        description: "Spend a career point to not be the target of a creature’s attack.",
+        description: "Spend Effort to not be the target of a creature’s attack.",
     },
     Mobile_Archer: {
         name: "Mobile Archer",
@@ -1261,7 +1261,7 @@ var feats = {
     },
     Poison_Master: {
         name: "Poison Master",
-        description: "Each career point spent after an attack deals an additional + 3 damage, or when introduced into drink can incapacitate or kill one individual. Brewing more poison for a bigger set of targets, like a garrison, requires being industrious and spending supplies and money.You can also spend supplies to get various poisons from the poison list.",
+        description: "Each Effort spent after an attack deals an additional + 3 damage, or when introduced into drink can incapacitate or kill one individual. Brewing more poison for a bigger set of targets, like a garrison, requires being industrious and spending supplies and money.You can also spend supplies to get various poisons from the poison list.",
     },
     Polytheist: {
         name: "Polytheist",
@@ -1277,7 +1277,7 @@ var feats = {
     },
     Ride_By: {
         name: "Ride By",
-        description: "For a career point, gain an extra attack versus a new target that you are moving by",
+        description: "For Effort, gain an extra attack versus a new target that you are moving by",
     },
     Scholars_Guild: {
         name: "Scholars Guild",
@@ -1297,7 +1297,7 @@ var feats = {
     },
     Sniper: {
         name: "Sniper",
-        description: "Spend a career point (once per roll) to get +1 to ranged ambush rolls.",
+        description: "Spend Effort (once per roll) to get +1 to ranged ambush rolls.",
     },
     Sorceror_Kings: {
         name: "Sorceror Kings",
@@ -1365,7 +1365,7 @@ var feats = {
     },
     Wasnt_Here: {
         name: "Wasn't Here",
-        description: "Spend a career point to opt out of a scene at the beginning",
+        description: "Spend Effort to opt out of a scene at the beginning",
     },
     Weapon_Choices: {
         name: "Weapon Choices",
@@ -1377,15 +1377,15 @@ var feats = {
     },
     Whirlwind: {
         name: "Whirlwind",
-        description: "for a career point,  attack another adjacent target, roll again",
+        description: "for Effort,  attack another adjacent target, roll again",
     },
     Wicked_Lie: {
         name: "Wicked Lie",
-        description: "Spend a career point to reroll any deception attempt. Take the best roll.",
+        description: "Spend Effort to reroll any deception attempt. Take the best roll.",
     },
     Wizard: {
         name: "Wizard",
-        description: "You can cast spells outside of your known area of magic, but must use a career point when you do so.",
+        description: "You can cast spells outside of your known area of magic, but must use Effort when you do so.",
     },
     Wrestler: {
         name: "Wrestler",
@@ -1485,7 +1485,7 @@ var feats = {
     },
     Duelist: {
         name: "Duelist",
-        description: "You are skilled with melee weapons, and can use a career point (once per attack) to get +1 to damage with a light sword. Weapon Proficiencies:Light sword, dagger",
+        description: "You are skilled with melee weapons, and can use Effort (once per attack) to get +1 to damage with a light sword. Weapon Proficiencies:Light sword, dagger",
     },
     Devoted_Servant: {
         name: "Devoted Servant",
@@ -1501,7 +1501,7 @@ var feats = {
     },
     Smite: {
         name: "Smite",
-        description: "Spend a career point  to increase damage dealt in melee by 1, 2 vs fiends and undead. Can stack multiple",
+        description: "Spend Effort  to increase damage dealt in melee by 1, 2 vs fiends and undead. Can stack multiple",
         // TODO: for paladins pick oath seperately and index
     },
     Channel_Divinity: {
@@ -1590,7 +1590,7 @@ var feats = {
     },
     Bodyguard: {
         name: "Bodyguard",
-        description: "Bodyguard: for a career point out of sequence react to defend another person",
+        description: "Bodyguard: for Effort out of sequence react to defend another person",
     }
 };
 
@@ -1598,12 +1598,11 @@ var feats = {
 var languages = [
     "Dwarvish",
     "Far Durian",
+    "Pirate Cant",
     "Illyrian",
     "Imperial, Court",
     "Imperial, Low",
     "Low Elvish",
-    "Prittanian, High",
-    "Prittanian, Low",
 ];
 
 var magic_languages = [
@@ -1614,7 +1613,7 @@ var magic_languages = [
     "Firespeech (Magic)",
     "High Elvish (Magic)",
     "Ignos (Firespeech) (Magic)",
-    "Pirate King(Magic) ",
+    "Sea Tongue (Magic) ",
     "Saurian (Magic) ",
     "Windsong (Magic)"
 ];
@@ -1623,7 +1622,7 @@ var tribal_languages = [
     "Cheptian  (Tribal)",
     "Frozen Cost(Tribal) ",
     "Giant (Tribal)",
-    "Orlanthi (Tribal)",
+    "Orc (Tribal)",
     "Pavis (Tribal)",
     "Ratling (Tribal)",
     "Trollish (Tribal)",
@@ -1634,6 +1633,7 @@ var tribal_languages = [
 var careers = {
     Assassin: {
         name: "Assassin",
+        type: "Rogue",
         description: "Blades-for-hire, perhaps agents in the service of the king, spies and assassins make killing and stealing in a discreet manner a way of life. They are adept at sneak attacks, killing, information gathering, disguises, city lore, persuasion, poisons, and lock picking. Their methods involve gathering intelligence on their subject from various (sometimes seedy) sources, circumventing security measures of all types, adopting disguises that allow them to get close to the target, and building up a broad selection of contacts. They are also patient, sometimes hiding out in a single spot for days to await the perfect opportunity to strike. ",
         weapons: ["Ambush", "Simple", "AllMartial"],
         feats: ["Holdout_Weapon", "Wicked_Lie", "Anatomy", "Poison_Master", "Sniper", "Disguise_Master", "Master_of_Stealth"],
@@ -1643,6 +1643,7 @@ var careers = {
     },
     Beggar: {
         name: "Beggar",
+        type: "Rogue",
         description: "Beggars are not usually the career choice of a famous adventurer, but some of the careers like ignoring poor conditions and not needing food can come in handy. Also Beggars are alert to danger and often can pickpocket and steal.\n" +
             "Beggars are vagrants or tramps, aimlessly wandering from place to place. They may do casual work here and there, they may sell a few small trinkets that they carry about in their backpacks, or they may have to beg for a few coins when times are really hard. Some even turn their hands to dishonest pursuits.",
         weapons: [],
@@ -2428,6 +2429,7 @@ async function convertDnD5e() {
                     if (tagsSource.page.startsWith("spell")) { continue; };
                     if (tagsSource.page.startsWith("classFeature")) { continue; };
                     if (tagsSource.page.startsWith("optionalFeatures")) { continue; };
+                    if (tagsSource.page.startsWith("item")) { continue; };
 
                     if (!tagsSource.hash)
                         tagsSource.hash = uuidv4();
@@ -2782,7 +2784,7 @@ for (let item = 0; item < items.length; item++) {
 // note, run convertDnD5e and do not translate feats
 //makeTrainingData();
 //convertDnD5e();
-//console.log("Converted D&D5e");
+console.log("Converted D&D5e");
 convertPTBA();
-console.log("Converted convertPTBA");
+//console.log("Converted convertPTBA");
 

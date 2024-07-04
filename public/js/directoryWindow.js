@@ -47,9 +47,8 @@ function processDirectory(jsonData) {
     for (let i = 0; i < jsonData.length; i++) {
         try {
             jsonData[i] = JSON.parse(jsonData[i]);
-            if (directory == "Party") {
-                console.log(jsonData[i].name);
-            }
+            if (jsonData[i].page == "spell")
+                console.log(jsonData[i]);
         } catch (err) {
 
             console.log("Error in parsing " + i + " " + jsonData[i]);
@@ -185,6 +184,14 @@ function filter(whole, buttons) {
         for (let i = 0; i < whole.length; i++) {
             if (buttons.some(element => element === whole[i].page))
                 filtered.push(whole[i]);
+            else if (whole[i].powers) {
+                for (let k = 0; k < whole[i].powers.length; k++)
+                    if (buttons.some(element => element === whole[i].powers[k])) {
+                        filtered.push(whole[i]);
+                        break;
+                    }
+
+            }
         }
         return filtered;
     }
@@ -290,12 +297,17 @@ function setDragStart(event, name) {
 
 }
 
-async function updateDirectoryWindow(id, updatedFolder) {
+async function updateDirectoryWindow(id, updatedFolder, makeFront) {
 
     folders[id] = updatedFolder;
-    let w = createOrGetDirWindow(id, .2, .6, .2, .2, dirWindowCustomization[id]);
-    bringToFront(w);
+    let windowName = "window_" + id;
+    let w = document.getElementById(windowName);
+
+    if (!w && !makeFront) { return; l }
+    w = createOrGetDirWindow(id, .2, .6, .2, .2, dirWindowCustomization[id]);
+    if (makeFront) bringToFront(w);
     showDirectoryWindow(id, folders[id]);
+
 }
 
 
@@ -418,6 +430,14 @@ function showDirectoryWindow(id, array) {
 
     for (let i = 0; i < array.length; i++) {
         allTypes.add(array[i].page);
+        if (array[i].powers) {
+            for (let k = 0; k < array[i].powers.length; k++) {
+                if (array[i].powers[k])
+                    allTypes.add(array[i].powers[k]);
+
+            }
+
+        }
     }
 
     // title.whiteSpace = "normal";

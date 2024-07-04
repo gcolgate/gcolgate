@@ -132,7 +132,7 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
                             //  console.log(fs.readFileSync("books.txt", "utf8"));
                         }
                     });
-                    io.emit('updateDir', { id: tagDir, folder: folders[tagDir] });
+                    io.emit('updateDir', { id: tagDir, folder: folders[tagDir], makeFront: false });
                     break;
                 }
             }
