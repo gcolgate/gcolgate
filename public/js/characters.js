@@ -290,6 +290,28 @@ async function ChangeName(button) {
     socket.emit('changeName', { dir: split[0], thingName: split[1], newName: newName });
 }
 
+function DrawArray(array) {
+
+    let s = "";
+    if (!array) return s;
+    for (let i = 0; i < array.length; i++) {
+        s += array[i] + " ";
+    }
+    return s;
+
+}
+
+
+function DrawImageArray(dir, array, ext) {
+
+    let s = "";
+    for (let i = 0; i < array.length; i++) {
+        s += ' <image src="' + dir + array[i] + ext + '" width="48" height="48")> </image>'
+
+    }
+    return s;
+
+}
 
 
 
@@ -347,7 +369,16 @@ async function UpdateNPC(change) {
         return; //  NPC has never been opened
     }
     eval(change.change);
-    w = windowShowing(thing.registeredId); // GIL thing.id?
+    let w = windowShowing(thing.registeredId); // GIL thing.id?
+    if (w) {
+        displayThing(thing.registeredId, w.sheet);
+    }
+
+}
+
+async function RedrawWindow(thing) {
+
+    let w = windowShowing(thing.registeredId); // GIL thing.id?
     if (w) {
         displayThing(thing.registeredId, w.sheet);
     }

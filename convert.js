@@ -1129,7 +1129,7 @@ var feats = {
     },
     Animal_Communication: {
         name: "Animal Communication",
-        description: "For a career  point, ‘understand’ an animal and communicate to him your intentions without any sort of roll",
+        description: "For Effort, ‘understand’ an animal and communicate to him your intentions without any sort of roll",
     },
     Animal_Companion: {
         name: "Animal Companion",
@@ -1137,7 +1137,7 @@ var feats = {
     },
     Animal_Influence: {
         name: "Animal Influence",
-        description: "For a career  point, automatically influence an animal.. Calm them, or make them back down due to your superior chest pounding, without any sort of roll",
+        description: "For Effort, automatically influence an animal.. Calm them, or make them back down due to your superior chest pounding, without any sort of roll",
     },
     Armor_Master: {
         name: "Armor Master",
@@ -1153,7 +1153,7 @@ var feats = {
     },
     Berserk: {
         name: "Berserk",
-        description: "Enter a rage, use Effort, +1 forward on offense, -1 forward  on defense while raging",
+        description: "Enter a rage, use 1 Effort, +1 forward on offense, -1 forward  on defense until you decdie to stop raging",
     },
     Climber: {
         name: "Climber",
@@ -1185,7 +1185,7 @@ var feats = {
     },
     Expert_Lockpick: {
         name: "Expert Lockpick",
-        description: " spend a career  point to pick a lock without any sort of roll.",
+        description: "Spend Effort to pick a lock without any sort of roll.",
     },
     Expert_Pickpocket: {
         name: "Expert Pickpocket",
@@ -1193,7 +1193,7 @@ var feats = {
     },
     Extra: {
         name: "Extra",
-        description: "Spend a career  point to pull out a backup or extra gear in your specialty from your pack",
+        description: "Spend Effort to pull out a backup or extra gear in your specialty from your pack",
     },
     God_Talker: {
         name: "God Talker",
@@ -1201,11 +1201,11 @@ var feats = {
     },
     Holdout_Weapon: {
         name: "Holdout Weapon",
-        description: "conceal a small weapon on your person in a way too offensive to consider",
+        description: "conceal a small weapon (or other item) on your person in a way too offensive to consider",
     },
     Home_Field_Advantage: {
         name: "Home Field Advantage",
-        description: " inyour home terrain (pick one, like the Swamps of the Dead, or the Mountains of Fear) you are never surprised , and in similar terrain you can travel through this kind of terrain easily without getting tired and can easily forage.",
+        description: "in your home terrain (pick one, like the Swamps of the Dead, or the Mountains of Fear) you are never surprised , and in similar terrain you can travel through this kind of terrain easily without getting tired and can easily forage.",
     },
     Imbue_Magic: {
         name: "Imbue Magic",
@@ -1213,15 +1213,15 @@ var feats = {
     },
     Kata: {
         name: "Kata",
-        description: "You dance in a spiritual way.  As you dance, spend Effort to gain 1d6 mana point you can immediately add to your aura (for use in spells)",
+        description: "You dance in a spiritual way.  As you dance, spend an action to gain 2 mana point you can immediately add to your aura (for use in spells)",
     },
     Magical_Performance: {
         name: "Magical Performance",
-        description: " You can cast a spell subtly through your performance that only the most alert will notice, well, as long as the spell results aren’t obvious. Spend a career  point to cast a spell by singing it.",
+        description: " You can cast a spell subtly through your performance that only the most alert will notice, well, as long as the spell results aren’t obvious. Spend Effort to cast a spell by singing it.",
     },
     Master_Acrobat: {
         name: "Master Acrobat",
-        description: "Spend a career  point to automatically make a difficult acrobatic move without a roll",
+        description: "Spend Effort to automatically make a difficult acrobatic move without a roll",
     },
     Master_Musician: {
         name: "Master Musician",
@@ -1233,7 +1233,7 @@ var feats = {
     },
     McGuyver: {
         name: "McGuyver",
-        description: "Spend a career  point to use your specialty in a quick manner with improper tools",
+        description: "Spend Effort to use your specialty in a quick manner with improper tools",
     },
     Mercy: {
         name: "Mercy! Spare Me!",
@@ -1249,7 +1249,7 @@ var feats = {
     },
     Musical_Number: {
         name: "Musical Number",
-        description: "Explain to the GM the song,  the dance, the scene, and spend a career  point. Resolve a problem (like building an orphanage, getting past the guards) after a broadway or bollywood sized dancing and musical number where everyone in the scene participates. Each player says how he is contributing or fighting against or sitting out the musical number.  Each player can roll to give you a +1 or a -1  to the result.  Then roll Performance. On a hit it’s what you desire. (Note, no-one dies or gets injured during the musical number, although attitudes might change). A failure may indicate a counter narrative gains control of the scene.",
+        description: "Explain to the GM the song,  the dance, the scene, and spend Effort. Resolve a problem (like building an orphanage, getting past the guards) after a broadway or bollywood sized dancing and musical number where everyone in the scene participates. Each player says how he is contributing or fighting against or sitting out the musical number.  Each player can roll to give you a +1 or a -1  to the result.  Then roll Performance. On a hit it’s what you desire. (Note, no-one dies or gets injured during the musical number, although attitudes might change). A failure may indicate a counter narrative gains control of the scene.",
     },
     Musical_Virtuoso: {
         name: "Musical Virtuoso",
@@ -1271,8 +1271,8 @@ var feats = {
         name: "Reflexes",
         description: "Seize initiative on the first round unless surprised",
     },
-    Religios_Lore: {
-        name: "Religios Lore",
+    Religious_Lore: {
+        name: "Religious Lore",
         description: "You have advantage on questions involving religions",
     },
     Ride_By: {
@@ -1285,15 +1285,15 @@ var feats = {
     },
     Secrets: {
         name: "Secrets",
-        description: "You know the secrets of your religion, the hidden passages behind temple altars, the passwords to get into the chambers, the secrets kept by the masters",
+        description: "You know the secrets of your religion, the hidden passages behind temple altars, the passwords to get into the chambers, the secrets kept by the masters. You may (with table approval) invent secret facts about your religion that give you advantages",
     },
     Shield_Master: {
         name: "Shield Master",
-        description: "+1 to resist damage when carrying a shield(requires armor choice)",
+        description: "+1 to resist damage when carrying a shield",
     },
     Show_Off: {
         name: "Show Off",
-        description: "You can spend a career  point to get +1 (once per roll) on your display of might and power.",
+        description: "You can spend Effort to get +1 (once per roll) on your display of might and power.",
     },
     Sniper: {
         name: "Sniper",
@@ -1337,7 +1337,7 @@ var feats = {
     },
     Swift: {
         name: "Swift",
-        description: "+1 Movement",
+        description: "+1 Movement on foot or swim",
     },
     Taboo: {
         name: "Taboo",
@@ -1345,7 +1345,7 @@ var feats = {
     },
     The_dance_of_the_seven_veils: {
         name: "The dance of the seven veils",
-        description: "Your dancing can cause someone to desire you in an almost magical way. Spend a career  point to reroll your seduction attempt.",
+        description: "Your dancing can cause someone to desire you in an almost magical way. Spend Effort to reroll your seduction attempt.",
     },
     Trade: {
         name: "Trade",
@@ -1353,18 +1353,18 @@ var feats = {
     },
     Tree_bends_in_the_Wind: {
         name: "Tree bends in the Wind",
-        description: "When dodging an enemy, you can use his own force against him, on success or mixed for a career  point you can also  knock them prone, make them collide into each other, or crash into walls, within reason",
+        description: "When dodging an enemy, you can use his own force against him, on success or mixed for Effort you can also  knock them prone, make them collide into each other, or crash into walls, within reason",
     },
     Two_Weapon_Fighting: {
         name: "Two Weapon Fighting",
-        description: "You can fight with both weapons, so you can attack two adjacent foes with one roll, takes a career  point",
+        description: "You can fight with both weapons, so you can attack two adjacent foes with one roll, takes 1 Effort",
     },
     Vicious_Mockery: {
         name: "Vicious Mockery",
-        description: "Spend a career  point to insult another and make them enraged, they will be berserk.",
+        description: "Spend Effort to insult another and make them enraged, they will be berserk, as long as this makes sense",
     },
     Wasnt_Here: {
-        name: "Wasn't Here",
+        name: "I Wasn't Here",
         description: "Spend Effort to opt out of a scene at the beginning",
     },
     Weapon_Choices: {
@@ -1385,7 +1385,7 @@ var feats = {
     },
     Wizard: {
         name: "Wizard",
-        description: "You can cast spells outside of your known area of magic, but must use Effort when you do so.",
+        description: "You can learn spells outside your area of knowledge, and cast spells outside of your known area of magic, but must use Effort when you cast.",
     },
     Wrestler: {
         name: "Wrestler",
@@ -1405,7 +1405,7 @@ var feats = {
     },
     Resist_Fire: {
         name: "Resist Fire",
-        description: "Take half damage from fire, and don’t suffocate from smoke",
+        description: "Take half damage from fire, and don’t suffocate from smoke. If you are the recipeint of a Resist Fire spell, you are immune to fire.",
     },
     By_Fire_Restored: {
         name: "By Fire Restored",
@@ -1413,11 +1413,11 @@ var feats = {
     },
     Fuel: {
         name: "Fuel",
-        description: "Whenever you wound someone or they wound you gain 1d6 mana to your aura.",
+        description: "Whenever you wound someone or they wound you gain 2 mana to your aura.",
     },
     Phalanx: {
         name: "Phalanx",
-        description: "+1 on attacks on a reach defense versus charge. If you also have a shield, you can defend even though you used your reaction for a reach attack, (requires armor choice).",
+        description: "+1 on attacks on a reach defense versus charge. If you also have a shield, you can defend even though you used your reaction for a reach attack.",
     },
     Artillery: {
         name: "Artillery",
@@ -1425,11 +1425,11 @@ var feats = {
     },
     Tough: {
         name: "Tough",
-        description: "Use one career  point to ignore the pain effect of a wound for a scene",
+        description: "Use Effort point to ignore the pain effect of a wound for a scene",
     },
     Mobile_Archer: {
         name: "Mobile Archer",
-        description: "You can both move and shoot",
+        description: "You can both move and shoot, normally when shooting bows you forgo movement that turn",
     },
     Sniper: {
         name: "Sniper",
@@ -1457,7 +1457,7 @@ var feats = {
     },
     Potion_Maker: {
         name: "Potion Maker",
-        description: "Can make other kinds of potions. For a medicine point, and 1 point of supply, have one of the following potions:\n" +
+        description: "Can make other kinds of potions. For  1 point of supply, have one of the following potions:\n" +
             "* Dream Essence: Gives a person a dream\n" +
             "* Aphrodisiac: A love potion\n" +
             "* Depilatory: Removes hair on contact\n" +
@@ -1469,7 +1469,7 @@ var feats = {
     },
     Tough: {
         name: "Tough",
-        description: " Use one career  point to ignore the pain effect of a wound for a scene",
+        description: " Use Effort  point to ignore the pain effect of a wound for a scene",
     },
     Mama_Lion: {
         name: "Mama Lion",
@@ -1477,11 +1477,11 @@ var feats = {
     },
     Guilt_Trip: {
         name: "Guilt Trip",
-        description: " Use one career  point to reroll an attempt to guilt someone into obedience",
+        description: " Use Effort to reroll an attempt to guilt someone into obedience",
     },
     Great_Beauty: {
         name: "Great Beauty",
-        description: "You are beautiful and desirable, and gain advantages where that matters",
+        description: "You are beautiful and desirable, and gain advantages when that matters",
     },
     Duelist: {
         name: "Duelist",
@@ -1497,11 +1497,11 @@ var feats = {
     },
     Lay_On_Hands: {
         name: "Lay On Hands",
-        description: "Spend career  points to cast a first level heal (roll caring),  touch rangel",
+        description: "Spend Effort to cast Heal Wounds (roll caring) with no Mana,  touch range, or get +1 to Heal Wounds Spell for 1 Effort",
     },
     Smite: {
         name: "Smite",
-        description: "Spend Effort  to increase damage dealt in melee by 1, 2 vs fiends and undead. Can stack multiple",
+        description: "Spend 1 Effort to cast Smite Spell",
         // TODO: for paladins pick oath seperately and index
     },
     Channel_Divinity: {
@@ -1542,7 +1542,7 @@ var feats = {
     },
     Sea_Captain: {
         name: "Sea Captain",
-        description: "You have captained  a ship and get the title , and can navigate. Describe your reputation for recruiting crew",
+        description: "You have captained a ship and get the title , and can navigate. Describe your reputation for recruiting crew",
     },
     Diver: {
         name: "Diver",
@@ -1550,7 +1550,15 @@ var feats = {
     },
     Area_of_Magic: {
         name: "Area of Magic",
-        description: "You unlock the power of another area of magic. You may choose this feat more than once",
+        description: "You unlock the power of another area of magic.",
+    },
+    Area_of_Magic2: {
+        name: "Area of Magic 2",
+        description: "You unlock the power of another area of magic.",
+    },
+    Area_of_Magic3: {
+        name: "Area of Magic 3",
+        description: "You unlock the power of another area of magic.",
     },
     Magic_Reserve: {
         name: "Magic Reserve",
@@ -1570,7 +1578,7 @@ var feats = {
     },
     Tough: {
         name: "Tough",
-        description: "Use one career  point to ignore the pain effect of a wound for a scene",
+        description: "Use Effort to ignore the pain effect of a wound for a scene",
     },
     Reach: {
         name: "Reach",
@@ -1578,7 +1586,7 @@ var feats = {
     },
     Invisible_Man: {
         name: "Invisible Man",
-        description: "Use one career  point not to be paid attention to  during the scene as long as you don’t act up",
+        description: "Use Effort not to be paid attention to  during the scene as long as you don’t act up",
     },
     Tracking_Scent: {
         name: "Tracking Scent",
@@ -1586,11 +1594,11 @@ var feats = {
     },
     Human_Communication: {
         name: "Human Communication",
-        description: "For a career  point, ‘understand’ a human and communicate to him your intentions without any sort of roll",
+        description: "For Effort, ‘understand’ a human and communicate to him your intentions without any sort of roll",
     },
     Bodyguard: {
         name: "Bodyguard",
-        description: "Bodyguard: for Effort out of sequence react to defend another person",
+        description: "Bodyguard: for Effort out of sequence react to defend another person even if you have already used your turn",
     }
 };
 
@@ -1678,6 +1686,7 @@ var careers = {
             "Vicious_Mockery",
             "Musical_Virtuoso"],
         languages: [languages, tribal_languages],
+        mana: 1,
         tools: "Musical Instrument"
     },
     Beast: {
@@ -1779,7 +1788,8 @@ var careers = {
         languages: [],
         tools: "Tomes, Religious symbols, Magic Religious Devices",
         mana: 1,
-    }, Dancer: {
+    },
+    Dancer: {
         name: "Dancer", description: "Dancing is an important part of entertainment in the land. Ceremonies and feasts will have dancers or acrobats. Dancers are athletic, showing feats of skill, agility, and coordination. They can dive, tumble, and do acrobatics. Some dancers extend their skills to a few sleight of hand and juggling tricks, and others to exotic techniques using veils to barely conceal their nakedness.",
         weapons: [],
         feats: [
@@ -1790,6 +1800,25 @@ var careers = {
             "Kata",
         ],
         languages: [],
+        mana: 1,
+        tools: ""
+    },
+    Martal_Monk: {
+        name: "Martial Monk", description: "These monks meditate in hidden temples, honing their martial arts powers",
+        weapons: [],
+        feats: [
+            "Swift",
+            "Master_Acrobat",
+            "Tree_bends_in_the_Wind",
+            "Kata",
+            "Tough",
+            "Climber",
+            "Commune",
+            "Brawler",
+            "Wrestler"
+        ],
+        languages: [],
+        mana: 1,
         tools: ""
     },
     Farmer: {
@@ -1882,7 +1911,7 @@ var careers = {
             "Wizard",
             "Demonology_And_Cults",
             "Sorceror_Kings",
-            "Religion",
+            "Religious_Lore",
             "Trade",
             "Dynasties",
             "Artifacts",
@@ -2000,8 +2029,10 @@ var careers = {
         weapons: [],
         feats: [
             "Area_of_Magic",
+            "Area_of_Magic2",
+            "Area_of_Magic3",
             "Magic_Reserve",
-            "Wisdom",],
+            "Wisdom", "Taboo"],
         languages: [magic_languages],
         tools: "Magical Devices",
         mana: 1,

@@ -1,0 +1,37 @@
+<div>
+    <div class="npcheader " ondragenter="ondragenter(event)" ondragover="ondragover(event)"
+        ondragleave="ondragleave(event)" ondrop="ondrop(event)">
+        <img src="{thing.image}" class="alignimagemiddle" width="48" height="48" draggable=true
+            ondragstart="setDragStart(event,'{thing.id}')">
+        </img>
+        <div class="speedline ">
+            <a href="#"> {thing.name }
+                <div class=" body spelltext tooltipcontainer">
+                    <div class="tooltip">
+                        <div class="paragraphText wide">
+                            <div class="npcheader"> {DrawImageArray("images/spells/", thing.Powers, '.jfif') +thing.name
+                                }
+                            </div>
+                            <div> <span class="bold"> Powers:</span>er {DrawArray(thing.Powers)} </div>
+                            <div> <span class="bold">Description: </span>{thing.Description} </div>
+                            <div> <span class="bold"> ManaCost:</span> {getModifiedManaCost(thing)} </div>
+                            <div> <span class="bold"> TimeToCast:</span> {thing.TimeToCast} </div>
+                            <div> <span class="bold"> Concentration:</span> {thing.Concentration ? thing.Concentration :
+                                "N"} </div>
+                            <div> <span class="bold"> Range:</span> {GetSpellModifiedRangeString(thing)} </div>
+                            <div> <span class="bold"> Target:</span> {thing.Target } </div>
+                            <div> <span class="bold"> Move:</span> {thing.Move} </div>
+                            <div> <span class="bold"> Enhancements:</span>
+                                {
+                                DrawArrayEnhancementButtons(thing, owner, thing.PossibleEnhancements)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            { ( owner && additionalParms ? " "
+            +formatRemoveButton(owner.id,
+            additionalParms.file):"") }
+        </div>
+    </div>
+</div>

@@ -700,6 +700,7 @@ function IsInventoryItem(item) {
         case "items": return true;
         case "weapon": return true;
         case "magic_items": return true;
+        case "spell": return false;
         default:
             console.log("Unkown type ", item.page);
             throw ("Uknown type" + item);
@@ -711,6 +712,14 @@ function IsInventoryItem(item) {
 
 function clickinventory(which) {
     alert(which);
+}
+
+function IsSpellItem(item) {
+    switch (item.page) {
+        case "spell": return true;
+    }
+    return false;
+
 }
 
 function IsCareerItem(item) {
@@ -737,12 +746,11 @@ function drawItems(thing, filter, notes) {
 
         if (ItemFiltered(item, filter)) { continue; }
         let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes, { file: item.file }); // no w
-        if (item.page != "careers" && item.page != "weapon")
+        if (item.page != "careers" && item.page != "weapon" && item.page != "spell")
             a += formatRemoveButton(thing.id, item.file);;
         text += div(a);
     }
-    console.log(div(text));
-    return div(text);
+    return (text);
 }
 
 

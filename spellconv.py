@@ -6,7 +6,7 @@ import os
 # with tab separator
 # This function will
 # read data from file
-spells = pd.read_csv("..\Prittania Spells - Spells.tsv", sep="\t", dtype="str")
+spells = pd.read_csv("..\Prittania Spells - Spells(2).tsv", sep="\t", dtype="str")
 
 
 index = 0

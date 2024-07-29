@@ -12,6 +12,8 @@
             onclick="openTab(event, 'inventory', this,  '{ thing.id }')">Inventory</div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="careers" ) ) }
             onclick="openTab(event, 'careers',  this, '{ thing.id }')">Careers</div>
+        <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="spells" ) ) }
+            onclick="openTab(event, 'spells', this,  '{ thing.id }')">Spells</div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="features" ) ) }
             onclick="openTab(event, 'features', this,  '{ thing.id }')">Features</div>
     </div>
@@ -180,6 +182,19 @@
 
 </div>
 <!-- Different tabs here -->
+
+<div id="spells" { tabClass( thing.tab && thing.tab=="spells" )}>
+    <button onclick="dropDownToggle('ddispells_{thing.id}')" class="blueButton">Learn Spell</button>
+    <div id="ddispells_{thing.id}" class="dropdown-content itemsetheadershort crit">
+        <input type=" text" placeholder="Search.." id="ddispells_c_{thing.id}"
+            onkeyup="filterDropDown('ddispells_c_{thing.id}','ddispells_{thing.id}')">
+        { extractFromCompendium(["spell"], thing); }
+    </div>
+
+    <div class="threecolumnsevenfull">
+        { drawItems(thing, IsSpellItem, "full") }
+    </div>
+</div>
 
 <div id="features" { tabClass( thing.tab && thing.tab=="features" )}>
 

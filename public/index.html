@@ -72,6 +72,7 @@
       font-family: sans-serif;
       font-weight: Normal;
       /* Additional positioning, height, width, etc. */
+      top: -40px;
     }
 
     a:hover .tooltip {
@@ -85,14 +86,11 @@
 
     .padded {
 
-      margin-left: 32px;
-      background-color: rgb(165, 255, 210);
+      margin-left: 0px;
 
     }
 
-    .padded:hover {
-      background-color: rgb(28, 254, 133)
-    }
+
 
     .redtintButton {
 
@@ -104,6 +102,20 @@
 
       background-color: rgb(240, 44, 44);
 
+    }
+
+    .greentintButton {
+
+      background-color: rgb(165, 255, 210);
+
+    }
+
+    .greentintButton:hover {
+      background-color: rgb(28, 254, 133)
+    }
+
+    .middleButton {
+      border-radius: 5px;
     }
 
     .window {
@@ -228,6 +240,13 @@
       background-color: beige;
     }
 
+    .threecolumnsevenfull {
+      display: grid;
+      grid-template-columns: 30% 30% 30%;
+      background-color: rgb(15, 181, 101);
+
+    }
+
     .diceexpression {
       text-align: center;
       font-style: italic;
@@ -322,6 +341,14 @@
 
     }
 
+    .alignimagemiddle {
+      vertical-align: middle;
+    }
+
+    .paddedBottom {
+      padding: 70px 0;
+    }
+
     .statline {
       display: flex;
       justify-content: space-around
@@ -364,6 +391,7 @@
       font-variant-alternates: normal;
       font-variant-east-asian: normal;
       font-variant-ligatures: normal;
+      font-variant-caps: normal;
       font-variant-numeric: normal;
       font-variant-position: normal;
       font-weight: 300;
@@ -372,6 +400,7 @@
       /* line-height: 22px; */
       margin-left: 10px;
       margin-right: 10px;
+      text-transform: none;
       /* margin-top: -10px; */
       /* width: 600px; */
     }
@@ -475,6 +504,24 @@
       text-transform: capitalize;
 
     }
+
+    .spelltext {
+      box-sizing: border-box;
+      color: rgb(84, 44, 38);
+      background-color: rgb(248, 228, 205);
+      color-scheme: light dark;
+      font-size: 12px;
+      margin-left: 0px;
+      margin-right: 0px;
+      border: none;
+      width: 800px;
+
+    }
+
+    .wide {
+      width: 740px;
+    }
+
 
     .itemsetbkg {
       box-sizing: border-box;
@@ -1060,6 +1107,10 @@
     /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
     .show {
       display: block;
+    }
+
+    .roundbutton {
+      border-radius: 50%;
     }
   </style>
   </style>

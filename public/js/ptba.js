@@ -1359,13 +1359,13 @@ function WeaponMoves(thing, weaponId,) {
             for (let j = 0; j < moves[a].stat.length; j++) {
                 let stat = moves[a].stat[j];
                 answer += "<div>"
-                answer += "<button class=\"padded\" onclick =\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
+                answer += "<button class=\"greentintButton roundbutton \" onclick =\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
                     + "+" +
                     "</button>";
-                answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
+                answer += "<button class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
                     + ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
                     "</button>";
-                answer += "<button class=\"redtintButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
+                answer += "<button class=\"redtintButton roundbutton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
                     + "-" +
                     "</button>";
                 answer += "</div>"
@@ -1386,23 +1386,21 @@ function PTBAMoves(thing) {
         if (a == "Attack") {
             let weapons = GetWeaponsList(thing);
             for (let w = 0; w < weapons.length; w++) {
-
                 answer += WeaponMoves(thing, weapons[w]);
-
             }
 
         } else
             for (let j = 0; j < moves[a].stat.length; j++) {
                 let stat = moves[a].stat[j];
-                answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',1)\">"
+                answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',1)\">"
                     + "+" +
                     "</button>";
-                answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',0)\">"
+                answer += "<button  class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',0)\">"
                     + a + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
                     "</button>";
-                answer += "<button  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',-1)\">"
+                answer += "<button class=\"redtintButton roundbutton\"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',-1)\">"
                     + "-" +
-                    "</button>";
+                    "</button></div>";
             }
     }
     return answer;
@@ -1426,4 +1424,94 @@ function dragCareersAndItems(thingDragged, evt) {
         style: "dual",
         roll: "1d6"
     });
+}
+
+function getModifiedManaCost(thing) {
+
+    let a = Number(thing.BaseManaCost);
+    if (!thing.owner_modified_Range) {
+        return a;
+    }
+
+    return a + Number(thing.owner_modified_Range);
+
+}
+
+function GetSpellModifiedRangeString(thing) {
+
+    if (!thing.owner_modified_Range) {
+        return thing.Range;
+    }
+    let baseRange = 0;
+
+
+    let r = thing.Range.substr(0, 2);
+    if (!isNaN(r)) {
+        r /= 10;
+        baseRange = Math.log2(r);
+
+        baseRange += thing.owner_modified_Range;
+
+        if (baseRange < 0) return "Touch";
+        return ((1 << r) * 10) + " yards";
+
+
+
+    }
+}
+
+
+function DrawArrayEnhancementButtons(thing, owner, array) {
+
+    let s = "";
+    if (!array) return s;
+    for (let i = 0; i < array.length; i++) {
+        let stat = array[i];
+        s += '<button class="greentintButton roundbutton" onclick ="ChangeSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\',1)">'
+            + "+" +
+            "</button>";
+        s += '<button class="middleButton" onclick="ZeroSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\')">'
+            + ' ' + (thing['owner_modified_' + stat] ? "(" + thing['owner_modified_' + stat] + ") " : "") + stat +
+            "</button>";
+        s += '<button class="redtintButton roundbutton" onclick ="ChangeSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\',-1)">'
+            + "-" +
+            "</button>";
+    }
+    return s;
+
+}
+
+
+function ChangeSpell(thingId, ownerId, stat, amt) {
+    let thing = GetRegisteredThing(thingId);
+
+    let res = 0;
+    if (thing['owner_modified_' + stat] != undefined) {
+        res = thing['owner_modified_' + stat]
+    }
+    res += amt;
+    thing['owner_modified_' + stat] = res;
+    evaluation = 'thing.owner_modified_' + stat + '=' + res;
+    socket.emit('change', {
+        change: evaluation,
+        thing: thingId
+    })
+    let owner = GetRegisteredThing(ownerId);
+    RedrawWindow(owner)
+}
+
+
+function ZeroSpell(thingId, ownerId, stat) {
+    let thing = GetRegisteredThing(thingId);
+
+    let res = 0;
+    thing['owner_modified_' + stat] = res;
+    evaluation = 'thing.owner_modified_' + stat + '=' + res;
+    socket.emit('change', {
+        change: evaluation,
+        thing: thingId
+    })
+    let owner = GetRegisteredThing(ownerId);
+    RedrawWindow(owner)
+
 }
