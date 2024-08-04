@@ -38,46 +38,86 @@ var moves = {
             "bravery"
         ],
         "Comments": "Swing your weapon",
-        "Critical": "You hit your foe, do double damage, and can choose 1:\
-        <ul><li> &#x25BA; You hit him in a vulnerable spot. Add another x1 damage, and he is bleeding or stunned</li>\
+        "Critical": 'You hit your foe, do double damage,  :\
+        <a href="#">and GM can choose 1 \
+         <div class="tooltipcontainer">\
+                <div class="tooltip">\
+       <ul><li> &#x25BA; You hit him in a vulnerable spot. Add another x1 damage, and he is bleeding or stunned</li>\
         <li> &#x25BA; You can immediately act again, maybe attacking a different foed</li>\
-        <li> &#x25BA; You are very strong. Add your Strength x4 more damage, foe is prone (Str Save), and get a free action (display of might and power) to intimidate all enemies</li></ul>",
-        "success": "You hit your foe and do damage to him, and the DM will allow you to choose from 1 or 2 of these<ul><li> &#x25BA; Knock him back</li>\
+        <li> &#x25BA; You are very strong. Add your Strength x4 more damage, foe is prone (Str Save), and get a free action (display of might and power) to intimidate all enemies</li></ul> \
+        </div>\
+        </div>\
+        </a>',
+        "success": 'You hit your foe and do damage to him, and the  \
+         <a href="#">and GM can let you choose 1=2 of these \
+            <div class="tooltipcontainer">\
+                <div class="tooltip">\
+        <ul><li> &#x25BA; Knock him back</li>\
         <li> &#x25BA; Make him prone (Str Save)</li><li> &#x25BA; Get +1 on your next roll</li>\
         <li> &#x25BA; Force him to retreat and you advance</li>\
         \<li> &#x25BA; Give your ally ( who is adjacent to the enemy)  initiative</li>\
-        <li> &#x25BA; Retreat away after, free move</li></ul>",
+        <li> &#x25BA; Retreat away after, free move</li></ul> </ul>\
+                 </div>\
+            </div>\
+            </a>',
         "mixed": ": You hit your foe, but lose the initiative",
-        "fail": " You miss, lose the initiative, and GM can choose 1:\
-        <ul>\
-        <li> &#x25BA; Weapon entangled or stuck</li>\
-        <li> &#x25BA; Foe retaliates </li>\
-        <li> &#x25BA; lose some gear, perhaps it falls off</li>\
-        <li> &#x25BA; 1d3 hexes in a bad direction</li>\
-        <li> &#x25BA; Take -1 on your next roll</li></ul>"
+        "fail": ' You miss, lose the initiative, \
+        <a href="#">and GM can choose 1 \
+            <div class="tooltipcontainer">\
+                <div class="tooltip">\
+                <ul>\
+                <li> &#x25BA; Weapon entangled or stuck</li>\
+                <li> &#x25BA; Foe retaliates </li>\
+                <li> &#x25BA; lose some gear, perhaps it falls off</li>\
+                <li> &#x25BA; 1d3 hexes in a bad direction</li>\
+                <li> &#x25BA; Take -1 on your next roll</li>\
+                </ul>\
+                 </div>\
+            </div>\
+            </a>',
+
     },
     "Wrestle (offense)": {
         "stat": [
             "bravery"
         ],
         "Comments": "Wrestle someone",
-        "Critical": "You wrestle your foe and can choose 1:</li>\
+        "Critical": 'You wrestle your foe  <a href="#">and you can choose 2 \
+            <div class="tooltipcontainer">\
+      <ul>\
         <li> &#x25BA; You injure him. Do 2 + your strength stat damage </li>\
         <li> &#x25BA; You can throw you foe at another, doing 1 damage to each and knocking both prone</li>\
         <li> &#x25BA; You have your foe helpless</li>\
         <li> &#x25BA; You disarm your foe</li>\
-        <li> &#x25BA; You also keep the initiative and you can can keep the foe  wrestled unless you throw him",
-        "success": "You wrestle your foe and choose two</li>\
+        <li> &#x25BA; You also keep the initiative and you can can keep the foe  wrestled unless you throw him</div>\
+            </ul>\
+            </div>\
+            </a>',
+        "success": 'You wrestle your foe   <a href="#">and you can choose 1 \
+            <div class="tooltipcontainer">\
+      <ul>\
         <li> &#x25BA; You disarm your foe</li>\
         <li> &#x25BA; You keep your foe wrestled</li>\
         <li> &#x25BA; You keep the initiative</li>\
-        <li> &#x25BA; You add +2 on you next wrestling move  ",
-        "mixed": "You wrestle  and choose one </li>\
+        <li> &#x25BA; You add +2 on you next wrestling move  " </ul>\
+            </div>\
+            </a>',
+        "mixed": 'You wrestle   <a href="#">and you  choose 1 \
+            <div class="tooltipcontainer">\
+      <ul>\ </li>\
         <li> &#x25BA; You disarm your foe</li>\
         <li> &#x25BA; You keep your foe wrestled</li>\
-        <li> &#x25BA; You keep the initiative ",
+        <li> &#x25BA; You keep the initiative    </ul>\
+                 </ul>\
+            </div>\
+            </a>',
         "fail": "You miss, lose the initiative, and are stabbed  or punched "
     },
+    // bugs: attack grapple should be wrestle
+    // defenses should be on stat page
+    // metacurrency to combat swingyness
+    // Multiple attacks and initiative
+    // 
     "Wrestle (defense)": {
         "stat": [
             "bravery",
@@ -102,7 +142,7 @@ var moves = {
         "Comments": "Parry with weapon or shield",
         "Critical": "gain the initiative, block your foe, and counterattack: damage your foe.",
         "success": "You block your foe and gain the initiative",
-        "mixed": "You block your foe but you either<ul>\
+        "mixed": "You block your foe but you either don't gain the initiative or gm chooses:<ul>\
         <li> &#x25BA; Take some damage anyway 1 pt</li>\
         <li> &#x25BA; Don’t get the initiative </li>\
         <li> &#x25BA; Your weapon, shield, or armor piece is damaged or knocked away</li>\
@@ -408,6 +448,166 @@ var tribal_languages = [
 
 ];
 
+function HasFeat(thingId, featName) {
+
+    let owner = GetRegisteredThing(thingId);
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "careers") {
+            let career = GetRegisteredThing(item.file).system;
+            if (career.owner_featsChosen[featName]) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function getStrength(owner) {
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "careers") {
+            let career = GetRegisteredThing(item.file).system;
+
+            if (career.name == "Strength") {
+                return Number(career.owner_level);
+            }
+        }
+    }
+    return 0;
+}
+
+function getMaxMageLevel(owner) {
+    let answer = 0;
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "careers") {
+            let career = GetRegisteredThing(item.file).system;
+
+            if (career.mana) {
+                answer = Math.max(Number(career.owner_level), answer);
+            }
+        }
+    }
+    return answer;
+}
+
+function getMaxHealth(owner) {
+    return 6 + getStrength(owner);
+}
+
+function isArmorProficient(owner_id, thingId) {
+
+    let thing = GetRegisteredThing(thingId);
+    if (!thing.armor) return false;
+
+    let owner = GetRegisteredThing(owner_id);
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "careers") {
+
+            for (j = 0; j < thing.armor.career.length; j++) {
+                if (thing.armor.career[j] == item.name) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
+function getArmor(owner, damageType) {
+
+    let strbonus = getStrength(owner) - 1;
+    let brave = Number(owner.stats.bravery);
+    let bonus = Math.max(strbonus, brave);
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "weapon" && isEquipped(owner.id, item.file)) {
+            let weapon = GetRegisteredThing(item.file);
+            if (!isNaN(weapon?.armor?.bonus) &&
+                isArmorProficient(owner.id, item.file))
+                bonus += weapon.armor.bonus;
+
+        }
+
+    }
+
+    return bonus;
+}
+
+var takeDamageMove = {
+    "stat": [
+        "none"
+    ],
+    "Comments": "Resisting damage",
+    "Critical": "You escape scott free!",
+    "success": 'You are fine, but in the case of overwhelming attacks like a huge explosion or a giant’s club the GM might <a href="#">choose 1 \
+         <div class="tooltipcontainer"> \
+                <div class="tooltip"> \
+                <ul> \
+                  <li>● You lose your footing. </li> \
+                  <li>● You lose your grip on whatever you’re holding. </li> \
+                  <li>● You lose track of someone or something you’re attending to.  </li>\
+                  <li>● You miss noticing something important.  </li>\
+                  <li>● You take 1 wound.</li> \
+                  <li>● You take a level of exhaustion.  </li>\
+                 </ul> \
+                 </div></div></a>',
+
+    "mixed": 'Take one wound and <a href="#">choose 1 GM chooses 1: \
+     <div class="tooltipcontainer">\
+                <div class="tooltip">\
+                 <ul> \
+                    <li>● You lose your footing. </li> \
+                    <li>● You lose your grip on whatever you’re holding.</li> \
+                    <li>● You lose track of someone or something you’re attending to</li> \
+                    <li>● You miss noticing something important.</li> \
+                    <li>● You lose 1 more wound.</li>\
+                    <li>● You take a level of exhaustion. \
+                 </ul> \
+                </div></div></a>',
+
+    "fail": 'Take 2 wounds and the 1  <a href="#"> choose 1 GM chooses chooses 1 \
+            <div class="tooltipcontainer">\
+                <div class="tooltip">\
+                 <ul> \
+                    <li>● You’re out of action: unconscious, trapped, incoherent or panicked.</li> \
+                    <li>● It’s worse than it seemed. Lose 2 more health. </li>\
+                    <li>● You have an injury, like a hurt leg (slowed), bleeding (lose additional damage with a chance each round, \
+                          each 6 for light bleeding or greater than 1 for heavy), a hurt arm (-1 with actions from that arm),\
+                          partial blindness (-3 to steel, many actions become more difficult) Certain weapons get bonuses to some kinds of injuries, so if you get struck by those you might be in worse shape. \
+                    <li>● You are stunned, for a moment you can’t do anything. </li>\
+                 </ul> \
+            </div></div></a>',
+};
+
+function takeDamageAmt(owner, damage, damageType, advantage) {
+
+    let armor = getArmor(owner, damageType);
+    let mod_damage = (-(damage - 3) + armor * 2) / 2;
+
+
+    socket.emit('roll', {
+        title: owner.name + "<ul><li> Resist Damage </li><li>" + damage + " armor " + armor + " mod " + mod_damage + "</li></ul>",
+        style: "dual-move",
+        advantage: advantage,
+        roll: baseDice + (mod_damage >= 0 ? "+" + mod_damage : mod_damage),
+        resultsTable: takeDamageMove
+    });
+
+}
+
+function takeDamage(thingId) {
+
+    let thing = GetRegisteredThing(thingId);
+    let damage = prompt("Amount of Damage", "0");
+    if (!isNaN(damage))
+        takeDamageAmt(thing, damage);
+
+}
+
 
 function FindBestCareerNode(owner, node) {
 
@@ -604,16 +804,34 @@ function getSlotImage(thing, type, placeholder) {
 
     if (!slots[type]) return placeholder;
 
+    if (isAllExpended(slots[type])) {
+        return "images/icons/all_empty.webp";
+    }
     let item = GetRegisteredThing(slots[type]);
-    if (item)
+    if (item) {
+
+
         return item.image;
+    }
     return placeholder;
 
 
 }
 
-function isEquipped(owner_id, thing_id) {
-    let thing = GetRegisteredThing(thing_id);
+function getSlotItem(owner_id, slot) {
+
+    let owner = GetRegisteredThing(owner_id);
+    let answer = findInNamedArray(owner.appearance, owner.current_appearance);
+    if (!answer) return false;
+    let slots = answer['slots'];
+    if (!slots) return false;
+    return slots[slot];
+
+}
+
+
+function isEquipped(owner_id, thingId) {
+    let thing = GetRegisteredThing(thingId);
     if (thing.slot == "Always") return true;
     let owner = GetRegisteredThing(owner_id);
     let answer = findInNamedArray(owner.appearance, owner.current_appearance);
@@ -621,15 +839,49 @@ function isEquipped(owner_id, thing_id) {
     let slots = answer['slots'];
     if (!slots) return false;
     for (const [key, value] of Object.entries(slots)) {
-        if (value == thing_id)
+        if (value == thingId)
             return true;
     }
     return false;
 }
 
-function ToggleEquip(owner_id, thing_id) {
 
-    let thing = GetRegisteredThing(thing_id);
+function isAllExpended(thingId) {
+    let thing = GetRegisteredThing(thingId);
+    if (!thing.counters) return false;
+    for (let i = 0; i < thing.counters.length; i++) {
+        if (thing.counters[i].cur > 0) return false;
+    }
+    return true;
+}
+
+function isExpended(thingId, weaponMode) {
+    let thing = GetRegisteredThing(thingId);
+    if (!thing.counters) return false;
+
+    if (thing.counters[weaponMode].cur > 0) return false;
+
+    return true;
+}
+
+function Expend(thingId, weapon_mode) {
+    // returns true if expended status has changed
+    let thing = GetRegisteredThing(thingId);
+
+    if (!thing.counters) return false;
+    let newUses = (thing.counters[weapon_mode].cur - 1)
+    if (newUses < 0) return false;
+    thing.counters[weapon_mode] = newUses;
+    socket.emit('change', {
+        change: 'thing.counters[ ' + weapon_mode + '].cur = ' + newUses,
+        thing: thingId
+    });
+    return newUses <= 0;
+}
+
+function ToggleEquip(owner_id, thingId) {
+
+    let thing = GetRegisteredThing(thingId);
     if (thing.slot == "Always") return;
     let owner = GetRegisteredThing(owner_id);
     let answer = findInNamedArray(owner.appearance, owner.current_appearance);
@@ -638,7 +890,7 @@ function ToggleEquip(owner_id, thing_id) {
     if (!slots) return false;
     // turn it off
     for (const [key, value] of Object.entries(slots)) {
-        if (value == thing_id) {
+        if (value == thingId) {
             removeFromSlot(owner, key);
             return;
         }
@@ -655,9 +907,10 @@ function ToggleEquip(owner_id, thing_id) {
                 // find a blank one
                 for (let j = 0; j < slotList[i].num; j++) {
 
-                    if (!slots[thing.slot + j])
-                        setSlot(owner, thing.slot, thing);
-                    return;
+                    if (!slots[thing.slot + j]) {
+                        setSlot(owner, thing.slot + j, thing);
+                        return;
+                    }
                 }
 
                 setSlot(owner, thing.slot + '1', thing);
@@ -672,15 +925,15 @@ function ToggleEquip(owner_id, thing_id) {
 
 }
 
-function EquippedCheckBox(owner_id, thing_id) {
-    let e = isEquipped(owner_id, thing_id);
+function EquippedCheckBox(owner_id, thingId) {
+    let e = isEquipped(owner_id, thingId);
     console.log("e " + e);
 
-    console.log('<input type="checkbox" id="' + owner_id + "_" + thing_id + '" name="Equipped"' + (e ? ' checked="true"' : "") + '"' +
-        ' onChange= "ToggleEquip(' + "'" + owner_id + "'" + thing_id + "')" + '  ">');
+    console.log('<input type="checkbox" id="' + owner_id + "_" + thingId + '" name="Equipped"' + (e ? ' checked="true"' : "") + '"' +
+        ' onChange= "ToggleEquip(' + "'" + owner_id + "'" + thingId + "')" + '  ">');
 
-    return '<input type="checkbox" id="' + owner_id + "_" + thing_id + '" name="Equipped"' + (e ? ' checked="true"' : "") + '"' +
-        ' onChange= "ToggleEquip(' + "'" + owner_id + "','" + thing_id + "')" + '  ">';
+    return '<input type="checkbox" id="' + owner_id + "_" + thingId + '" name="Equipped"' + (e ? ' checked="true"' : "") + '"' +
+        ' onChange= "ToggleEquip(' + "'" + owner_id + "','" + thingId + "')" + '  ">';
 
 }
 function FetchStyleFromAppearanceArray(thing, type) {
@@ -1255,6 +1508,42 @@ function languagesButtons(thing) {
     return answer;
 }
 
+function showInventoryTooltip(evt, thing_id, slot) {
+
+    let tooltip = document.getElementById("InventoryTooltip_" + thing_id);
+    tooltip.innerHTML = slot;
+    let thing = GetRegisteredThing(thing_id);
+    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
+    let slots = answer['slots'];
+    if (!slots) return;
+
+    if (!slots[slot]) return;
+    let windowName = "window_" + thing_id;
+    let w = document.getElementById(windowName);
+    let topWPos = w.getBoundingClientRect().top + window.scrollY;
+    let leftWPos = w.getBoundingClientRect().left + window.scrollX;
+
+    let parent = evt.target.parentNode;
+    let topPos = parent.getBoundingClientRect().top + window.scrollY;
+    let leftPos = parent.getBoundingClientRect().left + window.scrollX;
+
+    // this needs to be fixed, the calculation of the tooltip wrong
+    let weapon = GetRegisteredThing(slots[slot]);
+    tooltip.innerHTML = weapon.description + '(' + weapon.slot + ')';
+    tooltip.style.display = "block";
+    tooltip.style.left = (10 + leftPos - leftWPos) + 'px';
+    tooltip.style.top = (10 + topPos - topWPos) + 'px';
+
+    tooltip.style.zIndex = 10000;
+
+}
+
+function hideInventoryTooltip(thingId) {
+    let tooltip = document.getElementById("InventoryTooltip_" + thingId);
+    tooltip.style.display = "none";
+
+}
+
 
 function rollMoveStat(ownerId, stat, mv, advantage, weapon_id, weapon_mode) {
     let owner = GetRegisteredThing(ownerId);
@@ -1273,6 +1562,9 @@ function rollMoveStat(ownerId, stat, mv, advantage, weapon_id, weapon_mode) {
         let weapon = GetRegisteredThing(weapon_id);
         if (!weapon) throw ("err");
         let mode = weapon.weapon_modes[weapon_mode];
+        if (Expend(weapon_id, weapon_mode)) {
+            RedrawWindow(owner)
+        }
         socket.emit('roll', {
             title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + weapon.name + "</li></ul>",
             style: "dual-move",
@@ -1347,6 +1639,7 @@ function WeaponMoves(thing, weaponId,) {
     let name = weapon.name;
     if (weapon.weapon_modes)
         for (let m = 0; m < weapon.weapon_modes.length; m++) {
+            if (isExpended(weaponId, m)) continue;
             let mode = weapon.weapon_modes[m];
             // if (mode.range) answer += div(span("range ", mode.range));
             // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
@@ -1374,6 +1667,46 @@ function WeaponMoves(thing, weaponId,) {
         }
     return answer;
 }
+
+
+function WeaponParries(thing, weaponId,) {
+
+    if (!isEquipped(thing.id, weaponId)) return "";
+    let answer = "";
+    let weapon = GetRegisteredThing(weaponId);
+
+    let name = weapon.name;
+    if (weapon.weapon_defenses)
+        for (let m = 0; m < weapon.weapon_defenses.length; m++) {
+            if (isExpended(weaponId, m)) continue;
+            let mode = weapon.weapon_defenses[m];
+            // if (mode.range) answer += div(span("range ", mode.range));
+            // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
+            // if (mode.radius) answer += div(span("radius range ", mode.radius));
+            // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
+            let bonus = FindBestCareerNode(thing, mode);
+
+
+            let stats = ["Bravery", "Avoid"];
+            for (let j = 0; j < stats.length; j++) {
+                let stat = stats[j];
+                answer += "<div>"
+                answer += "<button class=\"greentintButton roundbutton \" onclick =\"rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',1,'" + weaponId + "'," + m + ")\">"
+                    + "+" +
+                    "</button>";
+                answer += "<button class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',0,'" + weaponId + "'," + m + ")\">"
+                    + ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + "(" + stat + ")" +
+                    "</button>";
+                answer += "<button class=\"redtintButton roundbutton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',-1,'" + weaponId + "'," + m + ")\">"
+                    + "-" +
+                    "</button>";
+                answer += "</div>"
+
+            }
+        }
+    return answer;
+}
+
 
 
 function PTBAMoves(thing) {
@@ -1405,6 +1738,38 @@ function PTBAMoves(thing) {
     }
     return answer;
 }
+
+function PTBADefenses(thing) {
+    let answer = "";
+    let keys = Object.keys(moves);
+
+    keys.sort();
+    for (let i = 0; i < keys.length; i++) {
+        let a = keys[i];
+        if (a == "Attack") {
+            let weapons = GetWeaponsList(thing);
+            for (let w = 0; w < weapons.length; w++) {
+                answer += WeaponParries(thing, weapons[w]);
+            }
+
+        }
+    }
+    let a = "Dodge";
+    let stat = "Avoid";
+    answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',1)\">"
+        + "+" +
+        "</button>";
+    answer += "<button  class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',0)\">"
+        + a + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
+        "</button>";
+    answer += "<button class=\"redtintButton roundbutton\"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',-1)\">"
+        + "-" +
+        "</button></div>";
+
+
+    return answer;
+}
+
 
 
 function dragCareersAndItems(thingDragged, evt) {
@@ -1514,4 +1879,146 @@ function ZeroSpell(thingId, ownerId, stat) {
     let owner = GetRegisteredThing(ownerId);
     RedrawWindow(owner)
 
+}
+
+
+let maxExhaustion = 12;
+function addMana(thingId, amt) {
+    let thing = GetRegisteredThing(thingId);
+    amt = Number(amt);
+    let newMana = (Number(thing.counters.manaInAura) + (amt));
+    sendChat("Added " + amt + " mana   now " + newMana);
+    socket.emit('change', {
+        change: 'thing.counters.manaInAura = ' + (newMana),
+        thing: thingId
+    });
+}
+function exhaust(thingId, amt) {
+    socket.emit('change', {
+        change: 'thing.counters.exhaustion = Number(thing.counters.exhaustion)+ Number(' + amt + ')',
+        thing: thingId
+    }); thingId
+    let thing = GetRegisteredThing(thingId);
+
+    switch (thing.counters.exhaustion + amt) { // add since emit not processed yet
+
+        default:
+            sendChat("Exhaustion now " + (Number(thing.counters.exhaustion) + Number(amt)));
+            break;
+        case 11:
+            sendChat("You are suffering from fatigue");
+            break;
+        case 12:
+            sendChat("You are fall unconcious");
+            break;
+        case 13:
+            sendChat("You die");
+
+    }
+
+}
+
+function addManaOncePerTurn(button, thingId) {
+    addMana(thingId, 1);
+    button.disabled = true; // not eorking
+}
+
+
+function addManaExhaust(button, thingId) {
+    let thing = GetRegisteredThing(thingId);
+    if (thing.counters.exhaustion <= 11) {
+        exhaust(thingId, 1);
+
+        addMana(thingId, 1);
+
+    } else {
+
+        sendChat("Too exhausted");
+    }
+}
+
+
+
+function weapon_is_sharp(sidearm) {
+
+    let sharp = false;
+    let s = sidearm.weapon_modes;
+    for (let i = 0; i < s.length; i++) {
+        let w = s[i];
+        if (w.damage)
+            for (let j = 0; j < w.damage.length; j++) {
+                if (w.damage[j].type == "piercing" || w.damage[j].type == "slashing" || w.damage[j].type == "piercing or slashing") {
+                    return true;
+                }
+            }
+    }
+    return false;
+}
+
+
+/// should reverse this and calculate this on equip unequip
+//// having a key value pair of variables like roll20 does
+function addManaStab(button, thingId) {
+
+
+    let s = getSlotItem(thingId, 'sidearm');
+
+    if (!s) {
+        sendChat("No sidearm equipped. ");
+        return;
+    }
+    let sidearm = GetRegisteredThing(s);
+    if (!sidearm.weapon_modes) {
+        sendChat("No dangerous sidearm equipped. ");
+        return;
+    }
+    if (!weapon_is_sharp(sidearm)) {
+        sendChat("Not equipped with sharp sidearm. ");
+        return;
+    }
+
+    let mana = 3;
+    if (HasFeat(thingId, "Fuel")) mana += 2;
+    let advantage = 0;
+    if (HasFeat(thingId, "Blood_Sacrifice")) advantage = 1;
+    let thing = GetRegisteredThing(thingId);
+
+    takeDamageAmt(thing, 1, 'slashing', advantage)
+    addMana(thingId, mana);
+}
+
+function addManaStabAnother(button, thingId) {
+    let mana = 1;
+    if (HasFeat(thingId, "Fuel")) mana += 2;
+    addMana(thingId, mana);
+}
+
+
+function addManaGetHurtd(button, thingId) {
+    let mana = 1;
+    if (HasFeat(thingId, "Fuel")) mana += 2;
+    addMana(thingId, mana);
+}
+
+function addManaSpendIngredients(button, thingId) {
+    addMana(thingId, 1);
+}
+
+function AddManaWorldsOfPower(button, thingId) {
+    addMana(thingId, 1);
+}
+
+function AddManaPLanarFOrces(button, thingId) {
+    addMana(thingId, 1);
+}
+
+function AddManaGotCritOrFumble(button, thingId) {
+    addMana(thingId, 1);
+}
+
+function resetManaButtons(parent) {
+    for (let i = 0; i < parent.children.length; i++) {
+        parent.children[i].disabled = false;
+
+    }
 }

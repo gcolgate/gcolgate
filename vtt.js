@@ -392,7 +392,7 @@ async function NewPlayer(socket, msg) {
         current_appearance: "armed", name: baseName,
         species: "Human", origin: "Majority City", wealth: 2,
         stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0 },
-        counters: { supplies: 2, hurt: 0, manspent: 0, exhaustion: 0 },
+        counters: { supplies: 2, hurt: 0, manaInAura: 0, exhaustion: 0 },
         languages: { FarDuric: true, Dwarvish: false, Firespeech: false, PrittanianLow: false, ImperialCourt: false },
         items: [], tab: "stats"
 
@@ -663,12 +663,13 @@ io.on('connection', (socket) => {
     function ptbaResult(nat, r, resultsTable) {
 
         console.log(resultsTable);
+        console.log(resultsTable.Critical);
         if (nat == 2) return ptbaFormat(resultsTable.fail);
         if (nat == 20) return ptbaFormat(resultsTable.Critical.empty() ? resultsTable.success : resultsTable.Critical);
         if (r < 10) return ptbaFormat(resultsTable.fail);
         if (r < 16) return ptbaFormat(resultsTable.mixed);
         if (r < 23) return ptbaFormat(resultsTable.success);
-        return ptbaFormat(resultsTable.Critical.empty() ? resultsTable.success : resultsTable.Critical);
+        return ptbaFormat(resultsTable.Critical == "" ? resultsTable.success : resultsTable.Critical);
     }
 
     function processRoll(m) {

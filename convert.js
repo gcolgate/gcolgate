@@ -303,6 +303,13 @@ var items = [
         image: "",
         slot: "armor",
         wealth: 2,
+        weapon_defenses: [{
+            name: "Parry",
+            range: 1,
+            hands: 1,
+            type: "Melee",
+            career: ["Infantry", "Cavalry", "Gladiator"],
+        }],
         armor: {
             type: ["bludgeoning", "piercing", "slashing", "fire"],
             bonus: 1,
@@ -316,6 +323,13 @@ var items = [
         image: "",
         slot: "armor",
         wealth: 2,
+        weapon_defenses: [{
+            name: "Parry",
+            range: 1,
+            hands: 1,
+            type: "Melee",
+            career: ["Infantry", "Cavalry", "Gladiator"],
+        }],
         armor: {
             type: ["bludgeoning", "piercing", "slashing", "fire"],
             bonus: 1,
@@ -332,6 +346,13 @@ var items = [
         image: "images/icons/weapons/polearms/spear-flared-worn-grey.webp",
         slot: "longarm",
         wealth: 1,
+        weapon_defenses: [{
+            name: "Quaterstaff Block",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            career: ["Infantry", "Gladiator", "Brawler"],
+        }],
         weapon_modes:
             [{
                 name: "Stab",
@@ -340,15 +361,14 @@ var items = [
                 type: "Melee",
                 damage: [{ damage: "2d8", type: "piercing", when: "" }],
                 career: ["Infantry", "Gladiator"],
-            },
-            {
-                name: "Grapple",
-                range: 0,
+            }, {
+                name: "Staff",
+                range: 1,
                 hands: 2,
-                type: "Grapple",
-                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawler"],
-            }],
+                type: "Melee",
+                damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
+                career: ["Infantry", "Hunter", "Gladiator"],
+            }]
     },
     {
         name: "Quarterstaff",
@@ -356,6 +376,13 @@ var items = [
         image: "images/icons/skills/melee/hand-grip-staff-blue.webp",
         slot: "longarm",
         wealth: 0,
+        weapon_defenses: [{
+            name: "Quaterstaff Block",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            career: ["Infantry", "Hunter", "Gladiator", "Brawler"],
+        }],
         weapon_modes:
             [{
                 name: "Staff",
@@ -380,6 +407,13 @@ var items = [
         image: "images/icons/weapons/polearm/halberd-crescent-glowing.webp",
         slot: "longarm",
         wealth: 3,
+        weapon_defenses: [{
+            name: "Quaterstaff Block",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            career: ["Infantry", "Brawler"],
+        }],
         weapon_modes:
             [{
                 name: "Polearm",
@@ -413,6 +447,13 @@ var items = [
         image: "images/icons/weapons/polearms/spear-hooked-blue.webp",
         slot: "longarm",
         wealth: 1,
+        weapon_defenses: [{
+            name: "Quaterstaff Block",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            career: ["Infantry", "Brawler"],
+        }],
         weapon_modes:
             [{
                 name: "Stab",
@@ -448,7 +489,13 @@ var items = [
         slot: "sidearm",
         hands: 1,
         wealth: 3,
-
+        weapon_defenses: [{
+            name: "Parry",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            career: ["Paladin", "Cavalry", "Noble"],
+        }],
         weapon_modes:
             [{
                 name: "Slice",
@@ -482,7 +529,13 @@ var items = [
         slot: "sidearm",
         hands: 1,
         wealth: 3,
-
+        weapon_defenses: [{
+            name: "Parry",
+            range: 1,
+            hands: 1,
+            type: "Melee",
+            career: ["Infantry"],
+        }],
         weapon_modes:
             [{
                 name: "Chop",
@@ -515,6 +568,13 @@ var items = [
         image: "images/cutlass.jpg",
         slot: "sidearm",
         wealth: 2,
+        weapon_defenses: [{
+            name: "Parry",
+            range: 1,
+            hands: 1,
+            type: "Melee",
+            career: ["Pirate", "Cavalry"],
+        }],
         weapon_modes:
             [{
                 name: "Slash",
@@ -530,7 +590,7 @@ var items = [
                 range: 1.5,
                 type: "Melee",
                 hands: 1,
-                damage: [{ damage: "2d6+", type: "slashing or piercing", when: "" }],
+                damage: [{ damage: "2d6+", type: "piercing or slashing", when: "" }],
                 career: ["Cavalry"],
             },
             {
@@ -549,6 +609,13 @@ var items = [
         image: "",
         slot: "longarm",
         wealth: 2,
+        weapon_defenses: [{
+            name: "Quaterstaff Block",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            career: ["Infantry", "Gladiator", "Brawler"],
+        }],
         weapon_modes:
             [{
                 range: 2,
@@ -578,6 +645,7 @@ var items = [
         image: "images/icons/weapons/clubs/club-simple-barbed.webp",
         slot: "longarm",
         wealth: 0,
+        weapon_defenses: [],
         weapon_modes:
             [{
                 name: "Swing",
@@ -595,6 +663,7 @@ var items = [
         image: "images/icons/weapons/maces/mace-spiked-steel-grey.webp",
         slot: "sidearm",
         wealth: 2,
+        weapon_defenses: [],
         weapon_modes:
             [{
                 name: "Swing",
@@ -611,6 +680,14 @@ var items = [
         image: "images/icons/skills/melee/unarmed-punch-fist.webp",
         slot: "Always",
         wealth: 0,
+        weapon_defenses: [{
+            name: "Hand Block",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            notes: "Disadvantage vs armed opponents",
+            career: ["Strength", "Brawler", "Infantry", "Gladiator", "Thug", "Guard", "Cavalry", "Pirate"],
+        }],
         weapon_modes:
             [{
                 name: "Fist",
@@ -749,6 +826,14 @@ var items = [
         slot: "sidearm",
         range: 1.5,
         wealth: 3,
+
+        weapon_defenses: [{
+            name: "Parry",
+            range: 1,
+            hands: 1,
+            type: "Melee",
+            career: ["Pirate", "Noble", "Thug"],
+        }],
         weapon_modes:
             [{
                 name: "Stab",
@@ -772,6 +857,13 @@ var items = [
         image: "images/icons/weapons/swords/Rapier.webp",
         slot: "sidearm",
         wealth: 4,
+        weapon_defenses: [{
+            name: "Parry",
+            range: 1,
+            hands: 1,
+            type: "Melee",
+            career: ["Pirate", "Noble", "Thug"],
+        }],
         weapon_modes:
             [{
                 name: "Stab",
@@ -933,6 +1025,13 @@ var items = [
         slot: "longarm",
         strengthMin: 2,
         wealth: 4,
+        weapon_defenses: [{
+            name: "Block",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            career: ["Infantry", "Gladiator"],
+        }],
         weapon_modes:
             [{
                 name: "Chop",
@@ -984,6 +1083,13 @@ var items = [
         slot: "longarm",
         strengthMin: 2,
         wealth: 1,
+        weapon_defenses: [{
+            name: "Block",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            career: ["Hunter", "Gladiator"],
+        }],
         weapon_modes:
             [{
                 type: "Ranged",
@@ -1002,6 +1108,13 @@ var items = [
         slot: "longarm",
         strengthMin: 2,
         wealth: 5,
+        weapon_defenses: [{
+            name: "Parry",
+            range: 1,
+            hands: 2,
+            type: "Melee",
+            career: ["Infantry", "Gladiator", "Paladin"],
+        }],
         weapon_modes:
             [{
                 type: "Melee",
@@ -1081,21 +1194,61 @@ var items = [
             }],
         counters: [{ name: "vials", max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
     },
+
+
     {
-        name: "Bomb",
-        description: "As an action, a character can light this bomb and throw it. Each creature within 5 feet of that point must succeed on a DC 12 Dexterity saving throw or take 3d6 fire damage.",
+        name: "Arcane Ingredients, Common",
+        description: "As an action, a character expend this which will grant him mana to his aura",
         image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
-        wealth: 5,
-        weapon_modes:
+        wealth: 2,
+        use:
             [{
-                name: "Explode",
-                range: 6,
+                name: "Use",
+                range: 1,
                 hands: 1,
-                type: "Thrown",
-                damage: [{ damage: "6d6", type: "fire", when: "DC 12 Saving throw failed" }, { condition: "aflame", type: "fire", when: "flammable" }],
-                career: ["Assassin"],
+                type: "Ingrediant",
+                career: ["Scholar", "Sorceror"],
                 charges: 1,
+                mana: 2,
+                no_strength: true,
+            }],
+        counters: [{ max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
+    },
+    {
+        name: "Arcane Ingredients, Rare",
+        description: "As an action, a character expend this which will grant him mana to his aura",
+        image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
+        slot: "pockets",
+        wealth: 4,
+        use:
+            [{
+                name: "Use",
+                range: 1,
+                hands: 1,
+                type: "Ingrediant",
+                career: ["Scholar", "Sorceror"],
+                charges: 1,
+                mana: 4,
+                no_strength: true,
+            }],
+        counters: [{ max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
+    },
+    {
+        name: "Arcane Ingredients, Legendary",
+        description: "As an action, a character expend this which will grant him mana to his aura",
+        image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
+        slot: "pockets",
+        wealth: 8,
+        use:
+            [{
+                name: "Use",
+                range: 1,
+                hands: 1,
+                type: "Ingrediant",
+                career: ["Scholar", "Sorceror"],
+                charges: 1,
+                mana: 10,
                 no_strength: true,
             }],
         counters: [{ max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
@@ -1560,9 +1713,9 @@ var feats = {
         name: "Area of Magic 3",
         description: "You unlock the power of another area of magic.",
     },
-    Magic_Reserve: {
-        name: "Magic Reserve",
-        description: "Get +6 base mana",
+    Blood_Sacrifice: {
+        name: "Blood Sacrifice",
+        description: "You have advantage resisting damage from self harm for casting magic",
     },
     Wisdom: {
         name: "Wisdom",
@@ -1805,7 +1958,7 @@ var careers = {
     },
     Martal_Monk: {
         name: "Martial Monk", description: "These monks meditate in hidden temples, honing their martial arts powers",
-        weapons: [],
+        weapons: ["Unarmed"],
         feats: [
             "Swift",
             "Master_Acrobat",
@@ -2031,7 +2184,7 @@ var careers = {
             "Area_of_Magic",
             "Area_of_Magic2",
             "Area_of_Magic3",
-            "Magic_Reserve",
+            "Blood_Sacrifice",
             "Wisdom", "Taboo"],
         languages: [magic_languages],
         tools: "Magical Devices",
@@ -2791,27 +2944,27 @@ function convertPTBA() {
 
         writeJsonFileInPublic('CompendiumFiles', key, item);
     });
+
+
+    for (let item = 0; item < items.length; item++) {
+
+        let key = items[item].name.split(' ').join('_');
+        console.log(items[item].name);
+        tags = {
+            "file": "CompendiumFiles/" + key,
+            "page": "weapon",
+            "source": "Gil",
+            "type": "weapon",
+            "name": items[item].name,
+            "img": items[item].image, /// need this
+            "price": items[item].wealth, /// need this
+        };
+        writeJsonFileInPublic('Compendium', "tag_" + key, tags);
+
+
+        writeJsonFileInPublic('CompendiumFiles', key, items[item]);
+    }
 }
-
-for (let item = 0; item < items.length; item++) {
-
-    let key = items[item].name.split(' ').join('_');
-    console.log(items[item].name);
-    tags = {
-        "file": "CompendiumFiles/" + key,
-        "page": "weapon",
-        "source": "Gil",
-        "type": "weapon",
-        "name": items[item].name,
-        "img": items[item].image, /// need this
-        "price": items[item].wealth, /// need this
-    };
-    writeJsonFileInPublic('Compendium', "tag_" + key, tags);
-
-
-    writeJsonFileInPublic('CompendiumFiles', key, items[item]);
-}
-
 // note, run convertDnD5e and do not translate feats
 //makeTrainingData();
 //convertDnD5e();

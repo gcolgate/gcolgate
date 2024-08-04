@@ -722,12 +722,23 @@ function IsSpellItem(item) {
 
 }
 
+function IsSpellIngredient(item) {
+    if (IsInventoryItem(item)) {
+        let o = GetRegisteredThing(item.file);
+        if (o && o.use) {
+            for (let i = 0; i < o.use.length; i++)
+                if (o.use[i].mana) {
+                    return true;
+                }
+        }
+    }
+    return false;
+}
+
 function IsCareerItem(item) {
 
     switch (item.page) {
         case "careers": return true;
-
-
     }
     return false;
 }

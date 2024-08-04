@@ -1,1 +1,29 @@
-{"name":"Dancer","type":"career","img":"images/careers/Dancer.avif","system":{"name":"Dancer","description":{"value":" <div class=\"rd__b  rd__b--3\"><p>Dancing is an important part of entertainment in the land. Ceremonies and feasts will have dancers or acrobats. Dancers are athletic, showing feats of skill, agility, and coordination. They can dive, tumble, and do acrobatics. Some dancers extend their skills to a few sleight of hand and juggling tricks, and others to exotic techniques using veils to barely conceal their nakedness.</p></div>"},"weapons":[],"feats":["Swift","Master_Acrobat","Tree_bends_in_the_Wind","The_dance_of_the_seven_veils","Kata"],"languages":[],"mana":1,"tools":"","owner_level":"2","owner_careerPointsSpent":0,"owner_featsChosen":{"Kata":true,"Tree_bends_in_the_Wind":true},"source":"GilPTBA"}}
+{
+    "name": "Dancer",
+    "type": "career",
+    "img": "images/careers/Dancer.avif",
+    "system": {
+        "name": "Dancer",
+        "description": {
+            "value": " <div class=\"rd__b  rd__b--3\"><p>Dancing is an important part of entertainment in the land. Ceremonies and feasts will have dancers or acrobats. Dancers are athletic, showing feats of skill, agility, and coordination. They can dive, tumble, and do acrobatics. Some dancers extend their skills to a few sleight of hand and juggling tricks, and others to exotic techniques using veils to barely conceal their nakedness.</p></div>"
+        },
+        "weapons": [],
+        "feats": [
+            "Swift",
+            "Master_Acrobat",
+            "Tree_bends_in_the_Wind",
+            "The_dance_of_the_seven_veils",
+            "Kata"
+        ],
+        "languages": [],
+        "mana": 1,
+        "tools": "",
+        "owner_level": "2",
+        "owner_careerPointsSpent": 0,
+        "owner_featsChosen": {
+            "Kata": true,
+            "Tree_bends_in_the_Wind": true
+        },
+        "source": "GilPTBA"
+    }
+}

@@ -1,1 +1,34 @@
-{"name":"Archer","type":"career","img":"images/careers/Archer.avif","system":{"name":"Archer","description":{"value":" <div class=\"rd__b  rd__b--3\"><p>Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.</p></div>"},"weapons":["Ranged","Simple","AllMartial"],"feats":["Artillery","Tough","Mobile_Archer","Sniper","Weapon_Choices"],"languages":[],"tools":"Camping","owner_level":"3","owner_careerPointsSpent":0,"owner_featsChosen":{"Sniper":true,"Mobile_Archer":true,"Weapon_Choices":true,"Artillery":true},"source":"GilPTBA"}}
+{
+    "name": "Archer",
+    "type": "career",
+    "img": "images/careers/Archer.avif",
+    "system": {
+        "name": "Archer",
+        "description": {
+            "value": " <div class=\"rd__b  rd__b--3\"><p>Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.</p></div>"
+        },
+        "weapons": [
+            "Ranged",
+            "Simple",
+            "AllMartial"
+        ],
+        "feats": [
+            "Artillery",
+            "Tough",
+            "Mobile_Archer",
+            "Sniper",
+            "Weapon_Choices"
+        ],
+        "languages": [],
+        "tools": "Camping",
+        "owner_level": "3",
+        "owner_careerPointsSpent": 0,
+        "owner_featsChosen": {
+            "Sniper": true,
+            "Mobile_Archer": true,
+            "Weapon_Choices": true,
+            "Artillery": true
+        },
+        "source": "GilPTBA"
+    }
+}

@@ -135,7 +135,6 @@ function svgDragOver(event) {
 
 
                 if (myRects[i].slot == thingDragged.slot) {
-                    console.log("Addubg available" + myRects[i].slot);
                     myRects[i].classList.add("inventoryitemDragAvailable");
                 }
             }

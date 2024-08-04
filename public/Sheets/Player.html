@@ -21,9 +21,9 @@
         <input class="itemsetheader npcTitleInput" type="text" data-thingid="{thing.id}" value="{thing.name}"
             onchange="ChangeName(this)">
     </p>
-    <!-- Include Initiative, Health/Max Health, Conditions, Exhaustion, Effort, take Damage, be healed, and Mana on the title
+    <!-- Include Initiative, Health/Max Health, Conditions, Exhaustion, take Damage, be healed, and Mana on the title
     bar
-    remove Efforts, use effort instead -->
+    -->
 
     <!-- Different tabs here -->
     <div id="goals" { tabClass( !thing.tab || (thing.tab && thing.tab=="goals" ) ) }>
@@ -105,6 +105,20 @@
                     font-weight: 400">
                     { PTBAAbilities(thing); }
                 </div>
+
+                <div> Defenses
+                    <div> { PTBADefenses(thing) } </div>
+                </div>
+
+                <button onclick="takeDamage('{thing.id}')" class="blueButton">Take Damage</button>
+
+                <p class="npcBold"><span class="c12">Wounds Taken: { Editable(thing,
+                        "thing.counters.hurt",
+                        "itemsetheader numberinput") } of { getMaxHealth(thing) }</span></p>
+                <p class="npcBold"><span class="c12">Exhaustion Suffered: { Editable(thing,
+                        "thing.counters.exhaustion",
+                        "itemsetheader numberinput") } of 12</span></p>
+
             </div>
         </div>
     </div>
@@ -184,6 +198,22 @@
 <!-- Different tabs here -->
 
 <div id="spells" { tabClass( thing.tab && thing.tab=="spells" )}>
+
+    <p class="npcBold"><span class="c12">Mana in aura: { Editable(thing,
+            "thing.counters.manaInAura",
+            "itemsetheader numberinput") } of { (getMaxMageLevel(thing)+1) }</span></p>
+    <p class="npcBold"> Raise Mana </p>
+
+    <button onclick="addManaOncePerTurn(this,'{thing.id}')">Once Per turn</button>
+    <button onclick="addManaExhaust(this,'{thing.id}')">From Exhaustion</button>
+    <button onclick="addManaStab(this,'{thing.id}')">Action: Cut yourself (blood magic) </button>
+    <button onclick="addManaStabAnother(this,'{thing.id}')">Action: Stab another </button>
+    <button onclick="addManaSpendIngredients(this,'{thing.id}')">Action: Spend ingredients</button>
+    <button onclick="AddManaWorldsOfPower(this,'{thing.id}')">Bonus Action: Say Words of Power</button>
+    <button onclick="AddManaPLanarFOrces(this,'{thing.id}')">Bonus Action: call on Planar Forces</button>
+    <button onclick="AddManaGotCritOrFumble(this,'{thing.id}')">Got a crit or fumble</button>
+    { drawItems(thing, IsSpellIngredient, undefined) }
+    <button onclick="resetManaButtons(this.parentElement,'{thing.id}')">reset turn</button>
     <button onclick="dropDownToggle('ddispells_{thing.id}')" class="blueButton">Learn Spell</button>
     <div id="ddispells_{thing.id}" class="dropdown-content itemsetheadershort crit">
         <input type=" text" placeholder="Search.." id="ddispells_c_{thing.id}"
@@ -213,6 +243,9 @@
 -->
 
 <div id="inventory" { tabClass( thing.tab && thing.tab=="inventory" )}>
+    <div id="{'InventoryTooltip_' + thing.id}" class="tooltip">
+    </div>
+
     <div class="twocolumnsuneven">
         <div class="imageWrapper">
             <!-- <img class="overlayImage" src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
@@ -250,7 +283,9 @@
                 <g slot="head">
                     <image href='{ getSlotImage(thing,"head","assets/helm.webp")}' x=01% y="1%" width="11.25%"
                         height="7.03125%" />
-                    <rect x=1% y="1%" width="11.25%" height="7.03125%" slot="head" class="inventoryitem">
+                    <rect x=1% y="1%" width="11.25%" height="7.03125%" slot="head" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Headgear</title>
                     </rect>
                 </g>
@@ -258,28 +293,36 @@
                 <g slot="cloak">
                     <image href=' { getSlotImage(thing,"cloak","assets/cloak.webp")}' , x=1% y="11%" width="11.25%"
                         height="7.03125%"" />
-                    <rect x=1% y=" 11%" width="11.25%" height="7.03125%" slot="cloak" class="inventoryitem">
+                    <rect x=1% y=" 11%" width="11.25%" height="7.03125%" slot="cloak" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Cloak</title>
                         </rect>
                 </g>
                 <g slot="armor">
                     <image href=' {getSlotImage(thing,"armor","assets/armor.webp")}' x=01% y="21%" width="11.25%"
                         height="7.03125%" />
-                    <rect x=1% y="21%" width="11.25%" height="7.03125%" slot="armor" class="inventoryitem">
+                    <rect x=1% y="21%" width="11.25%" height="7.03125%" slot="armor" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Armor</title>
                     </rect>
                 </g>
                 <g slot="glove">
                     <image href=' {getSlotImage(thing,"glove","assets/glove.webp")}' x=01% y="31%" width="11.25%"
                         height="7.03125%" />
-                    <rect x=1% y="31%" width="11.25%" height="7.03125%" slot="glove" class="inventoryitem">
+                    <rect x=1% y="31%" width="11.25%" height="7.03125%" slot="glove" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Gloves</title>
                     </rect>
                 </g>
                 <g slot="feet">
                     <image href=' {getSlotImage(thing,"feet","assets/feet.webp")}' x=01% y="41%" width="11.25%"
                         height="7.03125%" />
-                    <rect x=1% y="41%" width="11.25%" height="7.03125%" slot="foot" class="inventoryitem">
+                    <rect x=1% y="41%" width="11.25%" height="7.03125%" slot="foot" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Shoes</title>
                     </rect>
                 </g>
@@ -287,70 +330,90 @@
                 <g slot="longarm">
                     <image href=' {getSlotImage(thing,"longarm","assets/longarm.webp")}' x=01% y="51%" width="9%"
                         height="18%" />
-                    <rect x=1% y="51%" width="9%" slot="longarm" height="18%" class="inventoryitem">
+                    <rect x=1% y="51%" width="9%" slot="longarm" height="18%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>LongArm</title>
                     </rect>
                 </g>
                 <g slot="sidearm">
                     <image href=' {getSlotImage(thing,"sidearm", "assets/sidearm.webp")}' x="1%" y="81%" width="11.25%"
                         height="7.03125%" />
-                    <rect x="1%" y="81%" width="11.25%" height="7.03125%" slot="sidearm" class="inventoryitem">
+                    <rect x="1%" y="81%" width="11.25%" height="7.03125%" slot="sidearm" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>sideArm</title>
                     </rect>
                 </g>
                 <g slot="shield">
                     <image href=' {getSlotImage(thing,"shield", "assets/shield.webp")}' x="15%" y="81%" width="11.25%"
                         height="7.03125%" />
-                    <rect x="15%" y="81%" width="11.25%" height="7.03125%" slot="shield" class="inventoryitem">
+                    <rect x="15%" y="81%" width="11.25%" height="7.03125%" slot="shield" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>LeftArm</title>
                     </rect>
                 </g>
                 <g slot="pendant">
                     <image href=' {getSlotImage(thing,"pendant","assets/pendant.webp")}' x="78%" y="1%" width="11.25%"
                         height="7.03125%" />
-                    <rect x="78%" y="1%" width="11.25%" height="7.03125%" slot="pendant" class="inventoryitem">
+                    <rect x="78%" y="1%" width="11.25%" height="7.03125%" slot="pendant" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>pendant</title>
                     </rect>
                 </g>
                 <g slot="ring">
                     <image href='{getSlotImage(thing,"ring0","assets/ring.webp")}' x="75%" y="11%" width="9%"
                         height="5.625%" />
-                    <rect x="75%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem">
+                    <rect x="75%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Ring 1</title>
                     </rect>
                 </g>
                 <g slot="ring">
                     <image href='{getSlotImage(thing,"ring1","assets/ring.webp")}' x="85%" y="11%" width="9%"
                         height="5.625%" />
-                    <rect x="85%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem">
+                    <rect x="85%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Ring 2</title>
                     </rect>
                 </g>
                 <g slot="pockets">
                     <image href='{getSlotImage(thing,"pockets0","assets/bag.webp")}' x="75%" y="21%" width="9%"
                         height="5.625%" />
-                    <rect x="75%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                    <rect x="75%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}','pockets0');"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Pockets 1</title>
                     </rect>
                 </g>
                 <g slot="pockets">
                     <image href='{getSlotImage(thing,"pockets1","assets/bag.webp")}' x="85%" y="21%" width="9%"
                         height="5.625%" />
-                    <rect x="85%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                    <rect x="85%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}','pockets1');"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Pockets 2</title>
                     </rect>
                 </g>
                 <g slot="pockets">
                     <image href='{getSlotImage(thing,"pockets2","assets/bag.webp")}' x="75%" y="31%" width="9%"
                         height="5.625%" />
-                    <rect x="75%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                    <rect x="75%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'pockets2');"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Pockets 3</title>
                     </rect>
                 </g>
                 <g slot="pockets">
                     <image href='{getSlotImage(thing,"pockets3","assets/bag.webp")}' x="85%" y="31%" width="9%"
                         height="5.625%" />
-                    <rect x="85%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                    <rect x="85%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'pockets3');"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Pockets 4</title>
                     </rect>
                 </g>
@@ -358,7 +421,9 @@
                     <image href='{getSlotImage(thing,"pockets4","assets/bag.webp")}' x="75%" y="41%" width="9%"
                         height="5.625%" />
 
-                    <rect x="75%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                    <rect x="75%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}','pockets4');"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Pockets 5</title>
                     </rect>
                 </g>
@@ -366,21 +431,27 @@
                     <image href='{getSlotImage(thing,"pockets5","assets/bag.webp")}' x="85%" y="41%" width="9%"
                         height="5.625%" />
 
-                    <rect x="85%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem">
+                    <rect x="85%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'pockets5');"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Pockets 6</title>
                     </rect>
                 </g>
                 <g slot="potion">
                     <image href='{getSlotImage(thing,"potion1","assets/potion.webp")}' x="80%" y="51%" width="9%"
                         height="5.625%" />
-                    <rect x="80%" y="51%" width="9%" slot="potion" height="5.625%" class="inventoryitem">
+                    <rect x="80%" y="51%" width="9%" slot="potion" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'potion1');"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Potion 1</title>
                     </rect>
                 </g>
                 <g slot="potion">
                     <image href='{getSlotImage(thing,"potion2","assets/potion.webp")}' x="80%" y="61%" width="9%"
                         height="5.625%" />
-                    <rect x="80%" y="61%" width="9%" slot="potion" height="5.625%" class="inventoryitem">
+                    <rect x="80%" y="61%" width="9%" slot="potion" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'potion2');"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Potion 2</title>
                     </rect>
                 </g>
@@ -388,7 +459,9 @@
                     <image href='{getSlotImage(thing,"potion3","assets/potion.webp")}' x="80%" y="71%" width="9%"
                         height="5.625%" />
 
-                    <rect x="80%" y="71%" width="9%" slot="potion" height="5.625%" class="inventoryitem">
+                    <rect x="80%" y="71%" width="9%" slot="potion" height="5.625%" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'potion3');"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
                         <title>Potion 3</title>
                     </rect>
                 </g>
