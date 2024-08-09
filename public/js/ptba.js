@@ -1862,7 +1862,11 @@ function ChangeSpell(thingId, ownerId, stat, amt) {
         thing: thingId
     })
     let owner = GetRegisteredThing(ownerId);
+    // hack around redrawing keeping the tooltip as open
+    owner.openSpell = thing.name;
     RedrawWindow(owner)
+    owner.openSpell = "";
+
 }
 
 
@@ -1877,7 +1881,10 @@ function ZeroSpell(thingId, ownerId, stat) {
         thing: thingId
     })
     let owner = GetRegisteredThing(ownerId);
+    // hack around redrawing keeping the tooltip as open
+    owner.openSpell = thing.name;
     RedrawWindow(owner)
+    owner.openSpell = "";
 
 }
 

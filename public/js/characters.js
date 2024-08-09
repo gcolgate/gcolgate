@@ -552,3 +552,11 @@ function LineOfCareer(owner, thing, notes) {
             //  div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")),
             'class="fourcolumncareers2"');
 }
+
+
+// recover tooltip that has been refreshed from the server while the tooltup
+// was opened and been reassigned 'tooltip_open" class
+function hidebogusTooltip(elem) {
+
+    elem.className = "tooltip";;
+}

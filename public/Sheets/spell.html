@@ -7,12 +7,18 @@
         <div class="speedline ">
             <a href="#"> {thing.name }
                 <div class=" body spelltext tooltipcontainer">
-                    <div class="tooltip">
+                    <div { (owner.openSpell==thing.name ? 'class = "tooltip_open" onmouseleave="hidebogusTooltip(this)"'
+                        : 'class="tooltip"' ) }>
                         <div class="paragraphText wide">
                             <div class="npcheader"> {DrawImageArray("images/spells/", thing.Powers, '.jfif') +thing.name
                                 }
                             </div>
-                            <div> <span class="bold"> Powers:</span>er {DrawArray(thing.Powers)} </div>
+
+                            <div> <span class="bold"> Powers:</span> {DrawArray(thing.Powers)} </div>
+                            <div> <span class="bold"> Enhancements:</span>
+                                {
+                                DrawArrayEnhancementButtons(thing, owner, thing.PossibleEnhancements)}
+                            </div>
                             <div> <span class="bold">Description: </span>{thing.Description} </div>
                             <div> <span class="bold"> ManaCost:</span> {getModifiedManaCost(thing)} </div>
                             <div> <span class="bold"> TimeToCast:</span> {thing.TimeToCast} </div>
@@ -21,10 +27,7 @@
                             <div> <span class="bold"> Range:</span> {GetSpellModifiedRangeString(thing)} </div>
                             <div> <span class="bold"> Target:</span> {thing.Target } </div>
                             <div> <span class="bold"> Move:</span> {thing.Move} </div>
-                            <div> <span class="bold"> Enhancements:</span>
-                                {
-                                DrawArrayEnhancementButtons(thing, owner, thing.PossibleEnhancements)}
-                            </div>
+
                         </div>
                     </div>
                 </div>
