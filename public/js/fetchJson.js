@@ -1,4 +1,4 @@
-async function fetchJson(file) {
+export async function fetchJson(file) {
 
     let raw = await fetch(file, {
         method: 'GET',
@@ -9,4 +9,3 @@ async function fetchJson(file) {
     return await raw.json();
 
 }
-

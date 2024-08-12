@@ -1,12 +1,13 @@
 import pandas as pd
 import os
+import re
 
 # Passing the TSV file to
 # read_csv() function
 # with tab separator
 # This function will
 # read data from file
-spells = pd.read_csv("..\Prittania Spells - Spells(2).tsv", sep="\t", dtype="str")
+spells = pd.read_csv("..\Prittania Spells - Spells(6).tsv", sep="\t", dtype="str")
 
 
 index = 0
@@ -49,6 +50,7 @@ for row in spells.index:
     f.write("{")
     f.write('"image": "images/questionMark.png"')
     for col in spells.columns:
+        print(col)
         if pd.isna(spells[col][row]) == False:
             if col == "Powers" or col == "PossibleEnhancements":
                 pieces = str(spells[col][row]).split(",")
@@ -59,11 +61,50 @@ for row in spells.index:
                 f.write(" ,".join(pieces))
                 f.write("]")
 
-            else:
-                if col == "Name":
-                    f.write(', "name": "' + str(spells[col][row]) + '"')
+                if col == "PossibleEnhancements":
+                    f.write(',"owner_modified":')
+                    f.write("{")
+                    comma = False
+                    for index in range(0, len(pieces)):
+                        if comma:
+                            f.write(",")
+                        comma = True
+                        f.write(str(pieces[index]).strip() + ":0")
+                    f.write("}")
+
+            elif col == "Name":
+                f.write(', "name": "' + str(spells[col][row]) + '"')
+            elif col == "Damage":
+                s = str(spells[col][row])
+                print(" Damage " + s)
+                if "*" not in s:
+                    f.write(', "' + "DamageEffect" + '": "' + s + '"')
                 else:
-                    f.write(', "' + col + '": "' + str(spells[col][row]) + '"')
+                    pieces = s.split("*")
+                    f.write(',  "Damage" : [')
+                    comma = False
+                    for piece in pieces:
+                        print(" piece " + piece)
+                        if piece == "":
+                            continue
+                        if comma:
+                            f.write(",")
+                        f.write("{")
+                        comma = True
+                        p = re.split("\s+", piece)
+                        if len(p) > 0:
+                            f.write(' "damage": "' + p[0] + '"')
+                            p.pop(0)
+                        if len(p) > 0:
+                            f.write(', "type": "' + p[0] + '"')
+                            p.pop(0)
+                        if len(p) > 0:
+                            f.write(', "when": "' + " ".join(p) + '"')
+                        f.write("}")
+                    f.write("]")
+
+            else:
+                f.write(', "' + col + '": "' + str(spells[col][row]) + '"')
 
     f.write("}")
     f.close()

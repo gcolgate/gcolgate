@@ -1,0 +1,40 @@
+{
+    "image": "images/questionMark.png",
+    "name": "Call of the Comet",
+    "BaseManaCost": "5",
+    "Powers": [
+        "Otherworld"
+    ],
+    "Description": "Must roll Int check to aim at the desired location, on mixed scatters 1d10 yards. Can only be used outside at night",
+    "TimeToCast": "Action",
+    "Concentration": "Y",
+    "Range": "100 yards",
+    "Damage": [
+        {
+            "Damage": "2d8",
+            "type": "radiant",
+            "when": ""
+        },
+        {
+            "Damage": "2d8",
+            "type": "necrotic",
+            "when": ""
+        },
+        {
+            "Damage": "2d8",
+            "type": "bludgeoning"
+        }
+    ],
+    "Target": "*Blast",
+    "PossibleEnhancements": [
+        "Blast",
+        "Intensity",
+        "Range"
+    ],
+    "owner_modified": {
+        ""Blast"": 0,
+        ""Intensity"": 0,
+        ""Range"": 0
+    },
+    "Move": "Artillery"
+}

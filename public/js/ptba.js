@@ -1,4 +1,10 @@
-var moves = {
+import { slotList } from './drag.js';
+import { sendChat } from './chat.js';
+import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, MakeAvailableToParser, MakeAvailableToHtml } from './characters.js'
+import { socket } from './main.js';
+
+
+export const moves = {
     "Confront": {
         "stat": [
             "bravery"
@@ -75,6 +81,18 @@ var moves = {
                  </div>\
             </div>\
             </a>',
+
+    },
+    "Artillery": {
+        "stat": [
+            "intelligence"
+        ],
+        "Comments": "Operate artillery",
+        "Critical": 'You hit your target forcefully, Foes cannot avoid damage',
+        "success": 'You hit your target. Those hit can reduce damage with Avoid/Dex saving throws',
+        "mixed": 'You miss by 1d6 yards per 10 yards, in a random direction. All hit can make saving throws. Lose intiative',
+        "fail": 'If using a spell, you release the mana in a random way. If using artillery, you are taking a long time to set up your shot. Lose the initiative and try again next time',
+
 
     },
     "Wrestle (offense)": {
@@ -491,10 +509,13 @@ function getMaxMageLevel(owner) {
     }
     return answer;
 }
+MakeAvailableToParser('getMaxMageLevel', getMaxMageLevel);
 
 function getMaxHealth(owner) {
     return 6 + getStrength(owner);
 }
+MakeAvailableToHtml('getMaxHealth', getMaxHealth);
+
 
 function isArmorProficient(owner_id, thingId) {
 
@@ -506,7 +527,7 @@ function isArmorProficient(owner_id, thingId) {
         let item = owner.items[i];
         if (item.page == "careers") {
 
-            for (j = 0; j < thing.armor.career.length; j++) {
+            for (let j = 0; j < thing.armor.career.length; j++) {
                 if (thing.armor.career[j] == item.name) {
                     return true;
                 }
@@ -624,7 +645,7 @@ function FindBestCareerNode(owner, node) {
             if (career.owner_level > bonus) {
                 for (let cw = 0; cw < career.weapons.length; cw++) {
                     let career_wt = career.weapons[cw];
-                    for (w2 = 0; w2 < node.career.length; w2++) {
+                    for (let w2 = 0; w2 < node.career.length; w2++) {
                         if (career.name == node.career[w2] || career_wt == node.career[w2]) {
                             bonus = career.owner_level;
                             career_string = career.name;
@@ -665,6 +686,7 @@ function showWeaponModes(thing, owner) {
     }
     return div(answer);
 }
+MakeAvailableToParser('showWeaponModes', showWeaponModes);
 
 
 function showArmorBenefit(thing, owner) {
@@ -686,6 +708,7 @@ function showArmorBenefit(thing, owner) {
 
     return div(answer);
 }
+MakeAvailableToParser('showArmorBenefit', showArmorBenefit);
 
 // function validateCareer(thing, owner) {
 //     if (!owner) return;
@@ -710,44 +733,16 @@ function showArmorBenefit(thing, owner) {
 
 // }
 
-function getLine(offset) {
-    var stack = new Error().stack.split('\n'),
-        line = stack[offset + 1].split(':');
-    return parseInt(line[line.length - 2], 10);
-}
-
-
-function div(x, s) {
-    if (s === undefined) { s = ""; }
+// function getLine(offset) {
+//     var stack = new Error().stack.split('\n'),
+//         line = stack[offset + 1].split(':');
+//     return parseInt(line[line.length - 2], 10);
+// }
+// MakeAvailableToParser('getLine', getLine);
 
 
 
-    let divfront = x.toString().split("<div");;
-    let divback = x.toString().split("</div>");;
 
-    if (divfront?.length != divback?.length) {
-        console.log("Error, div_front " + divfront?.length + " vs div_back " + divback?.length);
-        return "Error  div_front + " + divfront?.length + " vs div_back " + divback?.length;;
-
-    }
-
-    return "<div " + s + ">" + x + "</div> ";
-}
-
-function chkDiv(x, s) {
-
-
-
-    let divfront = x.toString().split("<div");;
-    let divback = x.toString().split("</div>");;
-
-    if (divfront?.length != divback?.length) {
-        console.log("Error, div_front " + divfront?.length + " vs div_back " + divback?.length);
-        return "Error  div_front + " + divfront?.length + " vs div_back " + divback?.length;;
-    }
-
-    return x;
-}
 
 function findInNamedArray(array, name) {
 
@@ -763,7 +758,7 @@ function findInNamedArray(array, name) {
 
 var missingImage = "images/questionMark.png";
 
-function getAppearanceImage(thing, type) {
+export function getAppearanceImage(thing, type) {
 
     let answer = findInNamedArray(thing.appearance, thing.current_appearance);
     if (!answer) return missingImage;
@@ -772,9 +767,10 @@ function getAppearanceImage(thing, type) {
     return answer.image ? answer.image : missingImage;
 
 }
+MakeAvailableToHtml('getAppearanceImage', getAppearanceImage);
 
 
-function setSlot(thing, slotExact, item) {
+export function setSlot(thing, slotExact, item) {
     let answer = findInNamedArray(thing.appearance, thing.current_appearance);
 
 
@@ -817,6 +813,7 @@ function getSlotImage(thing, type, placeholder) {
 
 
 }
+MakeAvailableToParser('getSlotImage', getSlotImage);
 
 function getSlotItem(owner_id, slot) {
 
@@ -936,6 +933,8 @@ function EquippedCheckBox(owner_id, thingId) {
         ' onChange= "ToggleEquip(' + "'" + owner_id + "','" + thingId + "')" + '  ">';
 
 }
+MakeAvailableToParser('EquippedCheckBox', EquippedCheckBox);
+
 function FetchStyleFromAppearanceArray(thing, type) {
 
 
@@ -950,6 +949,7 @@ function FetchStyleFromAppearanceArray(thing, type) {
     }
     return parms;
 }
+MakeAvailableToParser('FetchStyleFromAppearanceArray', FetchStyleFromAppearanceArray);
 
 function featclicked(cb) {
     console.log("Clicked, new value = " + cb.checked);
@@ -961,6 +961,7 @@ function featclicked(cb) {
         thing: cb.dataset.thingid
     });
 }
+MakeAvailableToHtml('featclicked', featclicked);
 
 function tabLinkClass(isActive) {
 
@@ -970,6 +971,8 @@ function tabLinkClass(isActive) {
 
     return 'class="selectedTab"';
 }
+MakeAvailableToParser('tabLinkClass', tabLinkClass);
+
 
 function tabClass(isActive) {
     if (!isActive) {
@@ -978,10 +981,11 @@ function tabClass(isActive) {
 
     return 'class="selectedtabcontent"';
 }
+MakeAvailableToParser('tabClass', tabClass);
 
 function FindSubELementsByCLassName(element, className) {
 
-    foundList = [];
+    let foundList = [];
     function recurse(element, className, foundList) {
         for (var i = 0; i < element.childNodes.length; i++) {
             var el = element.childNodes[i];
@@ -1020,12 +1024,14 @@ function openTab(evt, tabName, button, id) {
     }
 
 }
+MakeAvailableToParser('openTab', openTab);
+
 
 function featCheckBox(feats, i, thing, owner, checked, featSheet) {
 
 
     let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
-    text = "<li> &#x25BA;"
+    let text = "<li> &#x25BA;"
     text += '<input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"'
         + '"  data-owner="' + owner.id + '" '
         + '" data-clause="' + clause
@@ -1038,8 +1044,9 @@ function featCheckBox(feats, i, thing, owner, checked, featSheet) {
     return text;
 }
 
+MakeAvailableToParser('featCheckBox', featCheckBox);
 
-function sumCareerFeats(thing) {
+export function sumCareerFeats(thing) {
 
 
     let feats = thing.system.feats;
@@ -1122,6 +1129,7 @@ function drawCareerFeats(thing, owner, notes) {
     console.log(text); return text;
 }
 
+MakeAvailableToParser('drawCareerFeats', drawCareerFeats);
 
 // Hide the popup menu when clicking anywhere in the document
 document.addEventListener("mouseup", (event) => {
@@ -1135,10 +1143,10 @@ document.addEventListener("mouseup", (event) => {
 
 // input is drag and drop file
 async function UploadAppearanceArt(ev, which, id) {
+    let file = ev.target.files[0];
     try {
         let url = new URL(window.location.href).origin + '/uploadFromButton';
 
-        let file = ev.target.files[0];
 
         let formData = new FormData()
         formData.append('file', file);
@@ -1165,6 +1173,7 @@ async function UploadAppearanceArt(ev, which, id) {
         return false;
     }
 }
+MakeAvailableToHtml('UploadAppearanceArt', UploadAppearanceArt);
 
 function showPasteAndChoose(e, show, hide) {
 
@@ -1175,6 +1184,8 @@ function showPasteAndChoose(e, show, hide) {
     toHide.style.visibility = "hidden";
 
 }
+MakeAvailableToHtml('showPasteAndChoose', showPasteAndChoose);
+
 function dropDownToggle(elem) {
     let toShow = document.getElementById(elem);
     if (toShow.style.visibility == "visible")
@@ -1185,15 +1196,17 @@ function dropDownToggle(elem) {
 
     }
 }
+MakeAvailableToHtml('dropDownToggle', dropDownToggle);
+
 
 function filterDropDown(input, dropdown) {
     var input, filter, ul, li, a, i;
     input = document.getElementById(input);
     filter = input.value.toUpperCase();
-    div = document.getElementById(dropdown);
+    let div = document.getElementById(dropdown);
     a = div.getElementsByTagName("p");
     for (i = 0; i < a.length; i++) {
-        txtValue = a[i].textContent || a[i].innerText;
+        let txtValue = a[i].textContent || a[i].innerText;
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
             a[i].style.display = "";
         } else {
@@ -1201,6 +1214,7 @@ function filterDropDown(input, dropdown) {
         }
     }
 }
+MakeAvailableToHtml('filterDropDown', filterDropDown);
 
 function ChangeW(e, show, hide) {
 
@@ -1211,6 +1225,7 @@ function ChangeW(e, show, hide) {
     toHide.style.visibility = "hidden";
 
 }
+MakeAvailableToHtml('ChangeW', ChangeW);
 
 function showApperancePopUp(e, id) {
 
@@ -1257,81 +1272,82 @@ function showApperancePopUp(e, id) {
     }
 
 }
+MakeAvailableToHtml('showApperancePopUp', showApperancePopUp);
 
-function drawCareerLevel(thing, owner, notes) {
-    let text = "";
-    // let career = validateCareer(thing, owner);
-
-
-
+// function drawCareerLevel(thing, owner, notes) {
+//     let text = "";
+//     // let career = validateCareer(thing, owner);
 
 
-    if (owner && notes) {
-        text += div('<span class="basicFont npcBold bodyText">Level </span>' +
-            Editable(thing, "thing.system.owner_level", "shortwidth coloring basicFont bodyText"));
-
-    }
-    return text;
-}
 
 
-var weaponProf = {
-    Ambush: "Ambush, skilled in all weapons during a surprise attack, otherwise, daggers",
-    TribalWeapons: "Your tribe's weapons,  also Unarmed combat.",
-    Pirate: "Sword, Dagger, Slings, unarmed",
-    Melee: "Melee Weapons, Lance, Shield, Armor, also unarmed Combat",
-    Ranged: "Bow, dagger, spear",
-    Gladiator: "Melee weapons, shield, exotic, impractical and exotic wepaons, Unarmed, theatrical wrestling",
-    Immolator: "Conjured Fire",
-    Strong: "unarmed, swung weapons, wrestling"
 
-};
+//     if (owner && notes) {
+//         text += div('<span class="basicFont npcBold bodyText">Level </span>' +
+//             Editable(thing, "thing.system.owner_level", "shortwidth coloring basicFont bodyText"));
+
+//     }
+//     return text;
+// }
 
 
-var itemTags = {
-    Area: "It hits or effects everything in an area. ",
-    Armor: "Provides a bonus to your react to harm roll ",
-    Awkward: "It’s unwieldy and tough to wield or use appropriately. ",
-    Clumsy: "It’s unwieldy to use. ",
-    Dangerous: "Unsafe; take the proper precautions when using it or the GM may freely invoke the consequences on failed rolls",
-    Distinctive: "It has an obvious and unique sound, appearance or impression when used. ",
-    Fiery: "It painfully burns, sears, and causes things to catch fire. Hot to the touch. Inflicts Firey Damage. ",
-    Forceful: "It inflicts powerful, crushing blows that knock targets back and down. ",
-    Heavy: "It requires two hands to wield properly.",
-    Infinite: "Too many to keep count. Throw one away, and you have another one.",
-    Messy: "It harms foes in a particularly destructive way, ripping people and things apart.",
-    Piercing: "Inflicts Piercing Damage ",
-    Bludgeoning: "Inflicts Bludgeoning Damage",
-    Slashing: "Inflicts Slashing Damage ",
-    Silvered: "Hurts magical things too",
-    Blessed: "Hurts magical things and does double damage versus fiends and undead",
-    Reload: "You have to take time to reload it between uses",
-    Slow_Reload: "It takes at least one round to reload, and you have to be still to relaod it",
-    Slow: "It takes a while to use - at least a minute, if not more. ",
-    Unbreakable: "It can’t be broken or destroyed by normal means. ",
-    Valuable: "It’s worth Wealth to the right person. ",
-    Vicious: "It harms foes in an especially cruel way, its wounds inflicting debilitating pain",
-    Concealable: "Easily Concealable",
-    Armor_Piercing: "Reduces Armor",
-    Cheap: "May break",
-    Weak: "Won't penetrate proper armor",
-    LuckySave: "Once per game session can prevent all damage from one attack",
-    Knockback: "May knock foes back"
-}
+// var weaponProf = {
+//     Ambush: "Ambush, skilled in all weapons during a surprise attack, otherwise, daggers",
+//     TribalWeapons: "Your tribe's weapons,  also Unarmed combat.",
+//     Pirate: "Sword, Dagger, Slings, unarmed",
+//     Melee: "Melee Weapons, Lance, Shield, Armor, also unarmed Combat",
+//     Ranged: "Bow, dagger, spear",
+//     Gladiator: "Melee weapons, shield, exotic, impractical and exotic wepaons, Unarmed, theatrical wrestling",
+//     Immolator: "Conjured Fire",
+//     Strong: "unarmed, swung weapons, wrestling"
 
-var itemRanges = {
-    Intimate: 0,
-    Close: 1,
-    Reach: 2,
-    Near: 10,
-    Far: 40
-};
+// };
 
-var weaponType = {
-    backup: 0,
-    sheathed: 1,
-    longarm: 2
-};
+
+// var itemTags = {
+//     Area: "It hits or effects everything in an area. ",
+//     Armor: "Provides a bonus to your react to harm roll ",
+//     Awkward: "It’s unwieldy and tough to wield or use appropriately. ",
+//     Clumsy: "It’s unwieldy to use. ",
+//     Dangerous: "Unsafe; take the proper precautions when using it or the GM may freely invoke the consequences on failed rolls",
+//     Distinctive: "It has an obvious and unique sound, appearance or impression when used. ",
+//     Fiery: "It painfully burns, sears, and causes things to catch fire. Hot to the touch. Inflicts Firey Damage. ",
+//     Forceful: "It inflicts powerful, crushing blows that knock targets back and down. ",
+//     Heavy: "It requires two hands to wield properly.",
+//     Infinite: "Too many to keep count. Throw one away, and you have another one.",
+//     Messy: "It harms foes in a particularly destructive way, ripping people and things apart.",
+//     Piercing: "Inflicts Piercing Damage ",
+//     Bludgeoning: "Inflicts Bludgeoning Damage",
+//     Slashing: "Inflicts Slashing Damage ",
+//     Silvered: "Hurts magical things too",
+//     Blessed: "Hurts magical things and does double damage versus fiends and undead",
+//     Reload: "You have to take time to reload it between uses",
+//     Slow_Reload: "It takes at least one round to reload, and you have to be still to relaod it",
+//     Slow: "It takes a while to use - at least a minute, if not more. ",
+//     Unbreakable: "It can’t be broken or destroyed by normal means. ",
+//     Valuable: "It’s worth Wealth to the right person. ",
+//     Vicious: "It harms foes in an especially cruel way, its wounds inflicting debilitating pain",
+//     Concealable: "Easily Concealable",
+//     Armor_Piercing: "Reduces Armor",
+//     Cheap: "May break",
+//     Weak: "Won't penetrate proper armor",
+//     LuckySave: "Once per game session can prevent all damage from one attack",
+//     Knockback: "May knock foes back"
+// }
+
+// var itemRanges = {
+//     Intimate: 0,
+//     Close: 1,
+//     Reach: 2,
+//     Near: 10,
+//     Far: 40
+// };
+
+// var weaponType = {
+//     backup: 0,
+//     sheathed: 1,
+//     longarm: 2
+// };
 
 // var weapons = [
 //     {
@@ -1469,15 +1485,15 @@ var weaponType = {
 
 const baseDice = "2d10";
 
-function rollptbadice(dice) {
-    let rolls = []
-    rolls.push(
-        {
-            title: dice,
-            roll: dice,
-        }
-    ); socket.emit('rolls', rolls);
-}
+// function rollptbadice(dice) {
+//     let rolls = []
+//     rolls.push(
+//         {
+//             title: dice,
+//             roll: dice,
+//         }
+//     ); socket.emit('rolls', rolls);
+// }
 
 function selectLanguage(id, event, name) {
     let thing = GetRegisteredThing(id);
@@ -1580,6 +1596,31 @@ function rollMoveStat(ownerId, stat, mv, advantage, weapon_id, weapon_mode) {
 
 }
 
+/// TODO rearrange data so this isn';t a seprate function
+function rollSpellMoveStat(ownerId, stat, mv, advantage, spell_id, spell_node) {
+    let owner = GetRegisteredThing(ownerId);
+    let damage = []
+    let bonus = owner.stats[stat];
+    let spell = GetRegisteredThing(spell_id);
+    if (!spell) throw ("err");
+    // let mode = weapon.weapon_modes[weapon_mode];
+    // if (Expend(weapon_id, weapon_mode)) {
+    //     RedrawWindow(owner)
+    // }
+    socket.emit('roll', {
+        title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + spell.name + "</li></ul>",
+        style: "dual-move",
+        advantage: advantage,
+        roll: baseDice + signed(bonus),
+        damage: GetModifiedDamageString(spell),
+        damage_bonus: 0, //FindBestCareerNode(owner, mode)[0],
+        resultsTable: moves[mv]
+    });
+
+
+}
+
+
 
 
 function rollPTBAStat(ownerId, stat, isSave) {
@@ -1614,6 +1655,7 @@ function PTBAAbilities(thing) {
     }
     return answer;
 }
+MakeAvailableToParser('PTBAAbilities', PTBAAbilities);
 
 function GetWeaponsList(thing) {
     let result = [];
@@ -1648,15 +1690,15 @@ function WeaponMoves(thing, weaponId,) {
             let bonus = FindBestCareerNode(thing, mode);
 
 
-
-            for (let j = 0; j < moves[a].stat.length; j++) {
-                let stat = moves[a].stat[j];
+            let key = "Attack";
+            for (let j = 0; j < moves[key].stat.length; j++) {
+                let stat = moves[key].stat[j];
                 answer += "<div>"
                 answer += "<button class=\"greentintButton roundbutton \" onclick =\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
                     + "+" +
                     "</button>";
                 answer += "<button class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
-                    + ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
+                    + ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + (moves[key].stat.length > 1 ? "(" + stat + ")" : "") +
                     "</button>";
                 answer += "<button class=\"redtintButton roundbutton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
                     + "-" +
@@ -1668,6 +1710,7 @@ function WeaponMoves(thing, weaponId,) {
     return answer;
 }
 
+MakeAvailableToParser('WeaponMoves', WeaponMoves);
 
 function WeaponParries(thing, weaponId,) {
 
@@ -1715,29 +1758,30 @@ function PTBAMoves(thing) {
 
     keys.sort();
     for (let i = 0; i < keys.length; i++) {
-        a = keys[i];
-        if (a == "Attack") {
+        let key = keys[i];
+        if (key == "Attack") {
             let weapons = GetWeaponsList(thing);
             for (let w = 0; w < weapons.length; w++) {
                 answer += WeaponMoves(thing, weapons[w]);
             }
 
         } else
-            for (let j = 0; j < moves[a].stat.length; j++) {
-                let stat = moves[a].stat[j];
-                answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',1)\">"
+            for (let j = 0; j < moves[key].stat.length; j++) {
+                let stat = moves[key].stat[j];
+                answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',1)\">"
                     + "+" +
                     "</button>";
-                answer += "<button  class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',0)\">"
-                    + a + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
+                answer += "<button  class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',0)\">"
+                    + key + (moves[key].stat.length > 1 ? "(" + stat + ")" : "") +
                     "</button>";
-                answer += "<button class=\"redtintButton roundbutton\"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',-1)\">"
+                answer += "<button class=\"redtintButton roundbutton\"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',-1)\">"
                     + "-" +
                     "</button></div>";
             }
     }
     return answer;
 }
+MakeAvailableToParser('PTBAMoves', PTBAMoves);
 
 function PTBADefenses(thing) {
     let answer = "";
@@ -1769,10 +1813,11 @@ function PTBADefenses(thing) {
 
     return answer;
 }
+MakeAvailableToParser('PTBADefenses', PTBADefenses);
 
 
 
-function dragCareersAndItems(thingDragged, evt) {
+export function dragCareersAndItems(thingDragged, evt) {
 
     if (!this.items)
         return;
@@ -1794,17 +1839,47 @@ function dragCareersAndItems(thingDragged, evt) {
 function getModifiedManaCost(thing) {
 
     let a = Number(thing.BaseManaCost);
-    if (!thing.owner_modified_Range) {
-        return a;
-    }
 
-    return a + Number(thing.owner_modified_Range);
+    let numbers = Object.values(thing.owner_modified);
+    for (let i = 0; i < numbers.length; i++) {
+        a += numbers[i];
+    }
+    return a;
 
 }
+MakeAvailableToParser('getModifiedManaCost', getModifiedManaCost);
+
+function AddDiceToExpression(damage, amt) {
+    let pieces = damage.split("d");
+    let dice = parseInt(pieces[0]);
+    dice += amt;
+    pieces[0] = dice;
+    return pieces.join("d");
+}
+
+function GetModifiedDamageString(thing) {
+    if (!thing.Damage) return "";
+    if (thing.Damage.length > 0) {
+        let answer = "";
+        let intensity = (thing.owner_modified.Intensity);
+        if (!intensity) intensity = 0;
+        intensity = Number(intensity);
+
+        for (let i = 0; i < thing.Damage.length; i++) {
+            let a = AddDiceToExpression(thing.Damage[i].damage, intensity);
+            a += " " + thing.Damage[i].type + ' ';
+            if (thing.Damage[i].when) a += thing.Damage[i].when + " ";
+            answer += a;
+        }
+        return answer;
+    }
+    return thing.Damage;
+}
+MakeAvailableToParser('GetModifiedDamageString', GetModifiedDamageString);
 
 function GetSpellModifiedRangeString(thing) {
 
-    if (!thing.owner_modified_Range) {
+    if (!thing.owner_modified?.Range) {
         return thing.Range;
     }
     let baseRange = 0;
@@ -1815,7 +1890,7 @@ function GetSpellModifiedRangeString(thing) {
         r /= 10;
         baseRange = Math.log2(r);
 
-        baseRange += thing.owner_modified_Range;
+        baseRange += thing.owner_modified.Range;
 
         if (baseRange < 0) return "Touch";
         return ((1 << r) * 10) + " yards";
@@ -1825,6 +1900,7 @@ function GetSpellModifiedRangeString(thing) {
     }
 }
 
+MakeAvailableToParser('GetSpellModifiedRangeString', GetSpellModifiedRangeString);
 
 function DrawArrayEnhancementButtons(thing, owner, array) {
 
@@ -1836,7 +1912,7 @@ function DrawArrayEnhancementButtons(thing, owner, array) {
             + "+" +
             "</button>";
         s += '<button class="middleButton" onclick="ZeroSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\')">'
-            + ' ' + (thing['owner_modified_' + stat] ? "(" + thing['owner_modified_' + stat] + ") " : "") + stat +
+            + ' ' + (thing.owner_modified[stat] ? "(" + thing.owner_modified[stat] + ") " : "") + stat +
             "</button>";
         s += '<button class="redtintButton roundbutton" onclick ="ChangeSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\',-1)">'
             + "-" +
@@ -1846,17 +1922,18 @@ function DrawArrayEnhancementButtons(thing, owner, array) {
 
 }
 
+MakeAvailableToParser('DrawArrayEnhancementButtons', DrawArrayEnhancementButtons);
 
 function ChangeSpell(thingId, ownerId, stat, amt) {
     let thing = GetRegisteredThing(thingId);
 
     let res = 0;
-    if (thing['owner_modified_' + stat] != undefined) {
-        res = thing['owner_modified_' + stat]
+    if (thing.owner_modified[stat] != undefined) {
+        res = thing.owner_modified[stat];
     }
     res += amt;
-    thing['owner_modified_' + stat] = res;
-    evaluation = 'thing.owner_modified_' + stat + '=' + res;
+    thing.owner_modified[stat] = res;
+    let evaluation = 'thing.owner_modified[' + stat + '] =' + res;
     socket.emit('change', {
         change: evaluation,
         thing: thingId
@@ -1869,13 +1946,13 @@ function ChangeSpell(thingId, ownerId, stat, amt) {
 
 }
 
+MakeAvailableToHtml('ChangeSpell', ChangeSpell);
 
 function ZeroSpell(thingId, ownerId, stat) {
     let thing = GetRegisteredThing(thingId);
 
-    let res = 0;
-    thing['owner_modified_' + stat] = res;
-    evaluation = 'thing.owner_modified_' + stat + '=' + res;
+    thing.owner_modified[stat] = 0;
+    let evaluation = 'thing.owner_modified[' + stat + ']=0';
     socket.emit('change', {
         change: evaluation,
         thing: thingId
@@ -1887,6 +1964,7 @@ function ZeroSpell(thingId, ownerId, stat) {
     owner.openSpell = "";
 
 }
+MakeAvailableToHtml('ZeroSpell', ZeroSpell);
 
 
 let maxExhaustion = 12;
@@ -1904,7 +1982,7 @@ function exhaust(thingId, amt) {
     socket.emit('change', {
         change: 'thing.counters.exhaustion = Number(thing.counters.exhaustion)+ Number(' + amt + ')',
         thing: thingId
-    }); thingId
+    });
     let thing = GetRegisteredThing(thingId);
 
     switch (thing.counters.exhaustion + amt) { // add since emit not processed yet
@@ -1930,6 +2008,7 @@ function addManaOncePerTurn(button, thingId) {
     button.disabled = true; // not eorking
 }
 
+MakeAvailableToHtml('addManaOncePerTurn', addManaOncePerTurn);
 
 function addManaExhaust(button, thingId) {
     let thing = GetRegisteredThing(thingId);
@@ -1944,6 +2023,7 @@ function addManaExhaust(button, thingId) {
     }
 }
 
+MakeAvailableToHtml('addManaExhaust', addManaExhaust);
 
 
 function weapon_is_sharp(sidearm) {
@@ -1993,6 +2073,7 @@ function addManaStab(button, thingId) {
     takeDamageAmt(thing, 1, 'slashing', advantage)
     addMana(thingId, mana);
 }
+MakeAvailableToHtml('addManaStab', addManaStab);
 
 function addManaStabAnother(button, thingId) {
     let mana = 1;
@@ -2000,28 +2081,34 @@ function addManaStabAnother(button, thingId) {
     addMana(thingId, mana);
 }
 
+MakeAvailableToHtml('addManaStabAnother', addManaStabAnother);
 
 function addManaGetHurtd(button, thingId) {
     let mana = 1;
     if (HasFeat(thingId, "Fuel")) mana += 2;
     addMana(thingId, mana);
 }
+MakeAvailableToHtml('addManaGetHurtd', addManaGetHurtd);
 
 function addManaSpendIngredients(button, thingId) {
     addMana(thingId, 1);
 }
+MakeAvailableToHtml('addManaSpendIngredients', addManaSpendIngredients);
 
 function AddManaWorldsOfPower(button, thingId) {
     addMana(thingId, 1);
 }
+MakeAvailableToHtml('AddManaWorldsOfPower', AddManaWorldsOfPower);
 
 function AddManaPLanarFOrces(button, thingId) {
     addMana(thingId, 1);
 }
+MakeAvailableToHtml('AddManaPLanarFOrces', AddManaPLanarFOrces);
 
 function AddManaGotCritOrFumble(button, thingId) {
     addMana(thingId, 1);
 }
+MakeAvailableToHtml('AddManaGotCritOrFumble', AddManaGotCritOrFumble);
 
 function resetManaButtons(parent) {
     for (let i = 0; i < parent.children.length; i++) {
@@ -2029,3 +2116,106 @@ function resetManaButtons(parent) {
 
     }
 }
+MakeAvailableToHtml('resetManaButtons', resetManaButtons);
+
+
+function CastSpell(thingId, ownerId, advantage) {
+
+    let thing = GetRegisteredThing(thingId);
+    let owner = GetRegisteredThing(ownerId);
+    let cost = getModifiedManaCost(thing);
+    if (cost <= Number(owner.counters.manaInAura)) {
+        addMana(ownerId, -getModifiedManaCost(thing));
+        let a = parseSheet(thing, "spell_chat", undefined, owner, undefined, undefined); // no w
+
+        sendChat(a);
+
+        let mv = thing.attackOrAmbushResult;
+        if (mv) {
+            let bonus;
+            let stat;
+            if (mv == "Attack") {
+                bonus = owner.stats.bravery;
+                stat = "Bravery";
+            }
+            else {
+                bonus = owner.stats.cunning;
+                stat = "Cunning";
+            }
+
+            socket.emit('roll', {
+                title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + thing.name + "</li></ul>",
+                style: "dual-move",
+                advantage: advantage,
+                roll: baseDice + signed(bonus),
+                damage: thing.Damage,
+                damage_bonus: 0,
+                resultsTable: moves[mv]
+            });
+
+        } else if (moves[thing.Move]) {
+            let stat = moves[thing.Move].stat[0]; // todo pick best for player
+            let bonus = owner.stats[stat];
+            socket.emit('roll', {
+                title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + thing.name + "</li></ul>",
+                style: "dual-move",
+                advantage: advantage,
+                roll: baseDice + signed(bonus),
+                damage: thing.Damage,
+                damage_bonus: 0,
+                resultsTable: moves[mv]
+            });
+
+
+        }
+
+
+
+    } else {
+
+        sendChat("Not Enough mana in your aura to cast this spell. ");
+
+    }
+
+
+
+
+}
+MakeAvailableToHtml('CastSpell', CastSpell);
+
+function changeAttackMode(thingId, toWhat) {
+
+    socket.emit('change', {
+        change: 'thing.attackOrAmbushResult = "' + toWhat + '"',
+        thing: thingId
+    });
+}
+
+function AttackOrAmbushButton(thing, owner) {
+    if (thing.Move != "Attack or Ambush") return "";
+
+    if (!thing.attackOrAmbushResult) {
+
+        if (owner.stats.bravery > owner.stats.cunning) {
+            thing.attackOrAmbushResult = "Attack";
+        } else {
+            thing.attackOrAmbushResult = "Ambush";
+        }
+        changeAttackMode(thing.id, thing.attackOrAmbushResult);
+    }
+    let attackChecked = "";
+    let ambushChecked = "";
+    if (thing.attackOrAmbushResult == "Attack") {
+        attackChecked = 'checked="checked"';
+    } else {
+        ambushChecked = 'checked="checked"';
+
+    }
+    let id = thing.id + '_' + owner.id + '_attackOrAmbush';
+    return '<input type="radio" id="' + id + '_attack" name="Attack_Mode' + id + '" value="Attack"' + attackChecked + 'onclick=changeAttackMode(thing.id,  "Attack")>' +
+        '<label for="' + id + '_attack">Attack</label>  ' +
+        '<input type="radio" id="id+ambush" name="Attack_Mode' + id + '" value="Ambush"' + ambushChecked + 'onclick=changeAttackMode(thing.id,  "Ambush")>' +
+        '<label for="' + id + '_ambush">Ambush</label>';
+}
+
+MakeAvailableToHtml('AttackOrAmbushButton', AttackOrAmbushButton);

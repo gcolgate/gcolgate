@@ -3,25 +3,33 @@
 // metaTag.content = "user-scalable=0";
 // document.getElementsByTagName("head")[0].appendChild(metaTag);
 
-var windows = [];
+import { MakeAvailableToHtml } from "./characters.js";
+import { socket } from './main.js';
+import { setThingDragged } from './drag.js';
 
 
+export function windowsInit() {
+    window.windows = [];
+}
 
-function bringToFront(w) {
+console.log("window.WIndows %o", window.windows);
+
+export function bringToFront(w) {
     // this is not entirely up to code but it probably works
     // well enough
-    // front window is zindex 9+number of windows.
-    // other windows are behind but in an uncertain arrangement
-    // I could sort the windows in the window variable and then
+    // front window is zindex 9+number of window.windows.
+    // other window.windows are behind but in an uncertain arrangement
+    // I could sort the window.windows in the window variable and then
     // assign them in the order, which would be correct
+    console.log("window.WIndows %o", window.windows);
 
-    if (w.style.zIndex == windows.length + 9) { return; }
-    for (let i = 0; i < windows.length; i++) {
-        if (windows[i].style.zIndex == windows.length + 9) {
-            windows[i].style.zIndex = window.length + 8;
+    if (w.style.zIndex == window.windows.length + 9) { return; }
+    for (let i = 0; i < window.windows.length; i++) {
+        if (window.windows[i].style.zIndex == window.windows.length + 9) {
+            window.windows[i].style.zIndex = window.length + 8;
         }
     }
-    w.style.zIndex = windows.length + 9;
+    w.style.zIndex = window.windows.length + 9;
 }
 
 
@@ -29,18 +37,18 @@ function clickToBringWindowIntoFocus(evt) {
     bringToFront(evt.currentTarget);
 }
 
-function getWindowId(element) {
+// function getWindowId(element) {
 
-    do {
-        if (element.className === "window") {
-            return element.id;
-        }
-        element = element.parentElement;
-    } while (element);
-    return null;
-}
+//     do {
+//         if (element.className === "window") {
+//             return element.id;
+//         }
+//         element = element.parentElement;
+//     } while (element);
+//     return null;
+// }
 
-function windowShowing(name) {
+export function windowShowing(name) {
     let windowName = "window_" + name;
     let w = document.getElementById(windowName);
     return w;
@@ -94,7 +102,7 @@ function CreateWindowTitle(w, windowName, Title, closes = true, newButton = unde
 
 }
 
-function createOrGetWindow(id, width, height, left, top) {
+export function createOrGetWindow(id, width, height, left, top) {
 
     let windowName = "window_" + id;
     let w = document.getElementById(windowName);
@@ -127,8 +135,9 @@ function createOrGetWindow(id, width, height, left, top) {
         w.style.borderStyle = "solid";
         w.style.borderWidth = "5px";
 
+        console.log("window.WIndows %o", window.windows);
 
-        w.style.zIndex = 9 + windows.length;
+        w.style.zIndex = 9 + window.windows.length;
         w.style.backgroundColor = "#ffffff";
 
 
@@ -151,7 +160,9 @@ function createOrGetWindow(id, width, height, left, top) {
             } else
                 console.log("WTF");
         });
-        windows.push(w);
+        console.log("window.WIndows %o", window.windows);
+        window.windows.push(w);
+        console.log("window.WIndows %o", window.windows);
 
 
         w.resizeObserver.observe(body);
@@ -163,7 +174,7 @@ function createOrGetWindow(id, width, height, left, top) {
 
 }
 
-function createOrGetChatWindow(id, width, height, left, top) {
+export function createOrGetChatWindow(id, width, height, left, top) {
 
     let windowName = "window_" + id;
     let w = document.getElementById(windowName);
@@ -200,7 +211,7 @@ function createOrGetChatWindow(id, width, height, left, top) {
         // variable styles
         w.style.top = top + "px";
         w.style.left = left + "px";
-        w.style.zIndex = 9 + windows.length;
+        w.style.zIndex = 9 + window.windows.length;
         w.style.backgroundColor = "#ffffff";
         w.style.width = width + "px";
         w.style.height = height + "px";
@@ -210,7 +221,7 @@ function createOrGetChatWindow(id, width, height, left, top) {
         w.addEventListener('mousedown', clickToBringWindowIntoFocus);
 
 
-        windows.push(w);
+        window.windows.push(w);
     }
 
 
@@ -220,9 +231,9 @@ function createOrGetChatWindow(id, width, height, left, top) {
 }
 
 
+// move to dir window?
 
-
-function createOrGetDirWindow(id, width, height, left, top, customization) {
+export function createOrGetDirWindow(id, width, height, left, top, customization) {
 
     let windowName = "window_" + id;
     let w = document.getElementById(windowName);
@@ -258,19 +269,20 @@ function createOrGetDirWindow(id, width, height, left, top, customization) {
         // w.appendChild(body);
 
 
+        console.log("window.WIndows %o", window.windows);
 
 
         // some variable parameters
         w.style.top = top + "px";
         w.style.left = left + "px";
-        w.style.zIndex = 9 + windows.length;
+        w.style.zIndex = 9 + window.windows.length;
         w.style.width = width + "px";
         w.style.height = height + "px";
         // Event listener for clicks
         w.addEventListener('mousedown', clickToBringWindowIntoFocus);
 
 
-        windows.push(w);
+        window.windows.push(w);
     }
 
 
@@ -287,11 +299,10 @@ function clickOne(selected) {
         listArray[i].classList.remove('selected');
     }
     selected.classList.add('selected');
-
-
 }
+MakeAvailableToHtml('clickOne', clickOne);
 
-function createOrGetLoginWindow(width, height, left, top, players) {
+export function createOrGetLoginWindow(width, height, left, top, players) {
 
     let id = "Login";
 
@@ -309,6 +320,7 @@ function createOrGetLoginWindow(width, height, left, top, players) {
         left *= window.innerWidth;
         top *= window.innerHeight;
 
+        console.log("window.WIndows %o", window.windows);
 
 
         w.contentHeight = height;
@@ -321,10 +333,11 @@ function createOrGetLoginWindow(width, height, left, top, players) {
         w.appendChild(ul);
         group.appendChild(w);
 
+        console.log("window.WIndows %o", window.windows);
 
         w.style.top = top + "px";
         w.style.left = left + "px";
-        w.style.zIndex = 9 + windows.length;
+        w.style.zIndex = 9 + window.windows.length;
         w.style.backgroundColor = "#ffffff";
         w.style.width = width + "px";
         w.style.height = height + "px";
@@ -398,7 +411,7 @@ function createOrGetLoginWindow(width, height, left, top, players) {
             else { alert("Please select a player"); }
         }
 
-        windows.push(w);
+        window.windows.push(w);
     }
 
 
@@ -444,11 +457,11 @@ function dragElement(elmnt, header) {
         // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
-        thingDragged = null;
+        setThingDragged(null);
     }
 }
 
-function fadeIn(elmnt) {
+export function fadeIn(elmnt) {
     elmnt.style.opacity = 0;
     elmnt.style.display = "initial";
     if (elmnt.classList.contains("fade")) {
@@ -469,7 +482,7 @@ function fadeIn(elmnt) {
 
 }
 
-function fadeOut(elmnt) {
+export function fadeOut(elmnt) {
     if (elmnt.classList.contains("fade")) {
         var opacity = 1;
         var timer = setInterval(function () {
@@ -484,10 +497,10 @@ function fadeOut(elmnt) {
     } else {
         //elmnt.style.display = "none";
         elmnt.style.opacity = 100;
-        for (let i = 0; i < windows.length; i++) {
-            if (windows[i] === elmnt) {
+        for (let i = 0; i < window.windows.length; i++) {
+            if (window.windows[i] === elmnt) {
                 elmnt.remove();
-                windows.splice(i, 1);
+                window.windows.splice(i, 1);
                 break;
             }
         }
@@ -495,6 +508,3 @@ function fadeOut(elmnt) {
 
     }
 }
-
-
-

@@ -1,5 +1,9 @@
+import { setSlot } from './ptba.js';
+export var thingDragged = null;
 
-var thingDragged = null;
+export function setThingDragged(t) {
+    thingDragged = t;
+}
 
 function svgFindFirstOverlapping(svg, pt) {
 
@@ -44,7 +48,7 @@ function svgCleanUp(svg) {
 
 
 // todo this table and the SVG are in cahoots, TODO: build svg from this table instead
-var slotList = [
+export var slotList = [
     { slot: "head", num: 1 },
     { slot: "cloak", num: 1 },
     { slot: "armor", num: 1 },
@@ -168,7 +172,7 @@ function svgDragOut(event) {
 
 
 
-function dragDrop(elem, listeners) {
+export function ddragDrop(elem, listeners) {
     if (typeof elem === 'string') {
         const selector = elem;
         elem = window.document.querySelector(elem)

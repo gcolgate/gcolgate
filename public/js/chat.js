@@ -1,21 +1,25 @@
-const chat_window_name = "window_chat";
+import { bringToFront, createOrGetChatWindow, fadeIn } from './window.js';
+import { socket } from './main.js';
+
+
+
 
 var login;
 
-function sendChat(msg) {
+export function sendChat(msg) {
     socket.emit('chat', msg);
     let formatted = '<div class="chatsender">' + 'user:' + login + '</div> <div class="chattext">' + msg + '</div>';
 
     addChat(formatted);
 }
 
-function setLogin(name) {
+export function setLogin(name) {
     login = name;
 }
 
 
-function showChatWindow(array) {
-
+export function showChatWindow(array) {
+    const chat_window_name = "window_chat";
     let w = createOrGetChatWindow("chat", .2, .9, .8, 0);
     bringToFront(w);
     let ul = document.getElementById(chat_window_name + "_list");
@@ -55,7 +59,8 @@ function showChatWindow(array) {
 
 }
 
-function addChat(text) {
+export function addChat(text) {
+    const chat_window_name = "window_chat";
     let ul = document.getElementById(chat_window_name + "_list");
 
     var li = document.createElement("div");
@@ -68,3 +73,5 @@ function addChat(text) {
     li.scrollIntoView();
 
 }
+
+

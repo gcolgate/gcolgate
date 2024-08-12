@@ -1,13 +1,20 @@
 
 
-import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, setSocket, three_replaceScene } from "./three_support.js";
-
+import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
+import { GetMainDirectories, processDirectory, updateDirectoryWindow } from './directoryWindow.js';
+import { createOrGetLoginWindow, windowsInit } from './window.js';
+import { showChatWindow, setLogin, addChat } from './chat.js';
+import { UpdateNPC, RemoveFromNPC, AddItemToNPC } from "./characters.js";
+import { fetchJson } from './fetchJson.js';
+import { thingDragged } from './drag.js';
 ///////// 
+
+windowsInit();
 let players = { hero: "" };
 
 
 ////////
-
+export var socket = window.socket;
 // add windows which are lists for the different buttons, hooking up logic
 // each kind of window will make a request of the server, and have an endpoint
 // sheets will be descriptions of display of json
@@ -337,8 +344,6 @@ three_renderer.domElement.ondrop = function (e) {
 
 
 
-setSocket(socket);
 
 three_animate();
-
 

@@ -1,10 +1,16 @@
+import { createOrGetWindow, windowShowing } from './window.js';
+import { ddragDrop } from './drag.js';
+import { dragCareersAndItems, sumCareerFeats } from './ptba.js';
+import { socket } from './main.js';
+
+
 /// todo: need to clean these out as you close windows
 var registeredThings = {};
 
-function GetRegisteredThing(path) {
+export function GetRegisteredThing(path) {
     return registeredThings[SanitizeSlashes(path)];
 }
-function SetRegisteredThing(path, thing) {
+export function SetRegisteredThing(path, thing) {
     let index = SanitizeSlashes(path);
     registeredThings[index] = thing;
     thing.registeredId = index;
@@ -12,11 +18,19 @@ function SetRegisteredThing(path, thing) {
 }
 
 
+export function MakeAvailableToHtml(fnName, fn) {
+    window[fnName] = fn;
+}
+
+export function MakeAvailableToParser(fnName, fn) { // for now use window, soon make array
+    window[fnName] = fn;
+}
+
 var registeredSheets = {};
 var sheetDependencies = null;
 // preload
 ensureSheetLoaded("itemSummary");
-
+ensureSheetLoaded("spell_chat");
 
 function ClickCollapsible(evt) {
 
@@ -34,6 +48,7 @@ function ClickCollapsible(evt) {
     }
 
 }
+MakeAvailableToHtml('ClickCollapsible', ClickCollapsible);
 
 function Collapsible(text, shown) {
     let a = '<button class=lbl-collapsible-toggle  onclick="ClickCollapsible(event)">' + text + ' </button>';
@@ -41,7 +56,6 @@ function Collapsible(text, shown) {
 
     return a;
 }
-
 function EndCollapsible() {
     return '</div>';
 }
@@ -62,13 +76,13 @@ function cyrb53(str, seed = 0) {
     return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
-function constructInnocuousId(prefix, s) {
+// function constructInnocuousId(prefix, s) {
 
-    return '"' + prefix + cyrb53(s).toString() + '"';
-}
+//     return '"' + prefix + cyrb53(s).toString() + '"';
+// }
 
 // format a number as +N or -N
-function signed(num) {
+export function signed(num) {
     let n = Number(num);
     if (n > 0)
         return "+" + n;
@@ -77,7 +91,7 @@ function signed(num) {
     else return "+0";  // you can have -0
 }
 
-function details(s) {
+export function details(s) {
     let array = [];
     let keys = Object.keys(s);
 
@@ -90,7 +104,7 @@ function details(s) {
     return array;
 }
 
-function commaString(array) {
+export function commaString(array) {
     let text = "";
     let first = true;
     for (let i = 0; i < array.length; i++) {
@@ -101,7 +115,7 @@ function commaString(array) {
     }
     return chkDiv(text);
 }
-function span(title, contents, classname) {
+export function span(title, contents, classname) {
     if (!classname)
         return "<span>" + title + "</span>" + contents;
     return "<span class=" + classname + "> " + title + "</span > " + contents;
@@ -131,7 +145,7 @@ function construct_fetch_path(thingName, ext) {
     return s;
 }
 
-async function ensureThingLoaded(thingName) {
+export async function ensureThingLoaded(thingName) {
 
     let file;
     if (!GetRegisteredThing(thingName)) {
@@ -139,7 +153,7 @@ async function ensureThingLoaded(thingName) {
 
         console.log(file);
         try {
-            response = await fetch(file);
+            let response = await fetch(file);
             console.log("Fetched " + file);
             const thing = await response.json();
             console.log("json " + file);
@@ -267,9 +281,6 @@ function changeSheet(button) {
     // do do this displayThing should be called after network round trip
     // server should not do eval so server update has to be different, or it could evaluate the incoming thing
     // to be only characters and dots
-
-
-
 }
 
 
@@ -315,7 +326,7 @@ function DrawImageArray(dir, array, ext) {
 
 
 
-function Editable(thing, clause, className, listName) { // thing must be here because the eval might use it
+export function Editable(thing, clause, className, listName) { // thing must be here because the eval might use it
     let t = eval(clause);
 
     let id = thing.id;
@@ -329,7 +340,7 @@ function Editable(thing, clause, className, listName) { // thing must be here be
         return '<input class="' + className + '" type="text" data-clause="' + clause + '"  data-thingid="' + id + '" value="' + t +
             '" onchange="changeSheet(this)">';
 }
-
+MakeAvailableToParser('Editable', Editable);
 
 
 function MultilineEditText(thing, clause, className, rows, columns) { // thing must be here because the eval might use it
@@ -341,7 +352,7 @@ function MultilineEditText(thing, clause, className, rows, columns) { // thing m
 }
 
 
-async function showThing(name, sheet) {
+export async function showThing(name, sheet) {
     //  then get the sheet
     let key = SanitizeSlashes(name);
 
@@ -362,7 +373,7 @@ function showThingInline(thing, sheet) {
 
 }
 
-async function UpdateNPC(change) {
+export async function UpdateNPC(change) {
 
     let thing = GetRegisteredThing(change.thing);
     if (!thing) {
@@ -376,7 +387,7 @@ async function UpdateNPC(change) {
 
 }
 
-async function RedrawWindow(thing) {
+export async function RedrawWindow(thing) {
 
     let w = windowShowing(thing.registeredId); // GIL thing.id?
     if (w) {
@@ -385,7 +396,7 @@ async function RedrawWindow(thing) {
 
 }
 
-async function AddItemToNPC(change) {
+export async function AddItemToNPC(change) {
 
     let thing = GetRegisteredThing(change.thing);
     if (!thing) {
@@ -393,7 +404,7 @@ async function AddItemToNPC(change) {
     }
     thing.items.push(change.item); // GIL thing.id?
     console.log("Add item to npc");
-    w = windowShowing(thing.registeredId);
+    let w = windowShowing(thing.registeredId);
     if (w) {
         await EnsureLoaded(w.sheet, thing.registeredId);
 
@@ -402,7 +413,7 @@ async function AddItemToNPC(change) {
 
 }
 
-async function RemoveFromNPC(change) {
+export async function RemoveFromNPC(change) {
     let thing = GetRegisteredThing(change.thingId);
     if (!thing) {
         return; //  NPC has never been opened
@@ -417,7 +428,7 @@ async function RemoveFromNPC(change) {
         }
     }
 
-    w = windowShowing(thing.registeredId);
+    let w = windowShowing(thing.registeredId);
     if (w) {
         displayThing(thing.registeredId, w.sheet);
     }
@@ -430,7 +441,7 @@ function isToken(text, i, token) {
     return (tok == token)
 }
 
-function parseSheet(thing, sheetName, w, owner, notes, additionalParms) { // thing and w and owner are  required by evals, w or owner can be undefined
+export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) { // thing and w and owner are  required by evals, w or owner can be undefined
     let text = `${registeredSheets[sheetName]}`; // makes a copy to destroy the copy,  TODO: maybe should make structure context
     let newText = "";
     let state = 0;
@@ -506,9 +517,6 @@ function parseSheet(thing, sheetName, w, owner, notes, additionalParms) { // thi
 async function displayThing(fullthingname, sheetName) {
 
     /// TODO: needs to save and restore any scrolling or window resizing
-
-
-
     fullthingname = SanitizeSlashes(fullthingname);
     let w = createOrGetWindow(fullthingname, 0.6, 0.4, 0.3, 0.3); // todo better window placement
 
@@ -522,7 +530,7 @@ async function displayThing(fullthingname, sheetName) {
 
     let draggables = body.getElementsByClassName("dragitem");
     for (let i = 0; i < draggables.length; i++) {
-        dragDrop(draggables.item(i), {});
+        ddragDrop(draggables.item(i), {});
         draggables.item(i).acceptDrag = (thingDragged, event) => {
             if (thing.acceptDrag) {
                 thing.acceptDrag(thingDragged, event);
@@ -531,7 +539,7 @@ async function displayThing(fullthingname, sheetName) {
     }
 }
 
-function formatRemoveButton(ownerid, itemid) {
+export function formatRemoveButton(ownerid, itemid) {
     return "<img class='image-holder' src='Sheets/trashcan.png' width='16' height='16' onclick=RemoveItemFromThing('" + ownerid + "','" + itemid + "')  </img>";
 }
 
@@ -559,4 +567,38 @@ function LineOfCareer(owner, thing, notes) {
 function hidebogusTooltip(elem) {
 
     elem.className = "tooltip";;
+}
+MakeAvailableToHtml('hidebogusTooltip', hidebogusTooltip);
+
+
+export function chkDiv(x, s) {
+
+
+
+    let divfront = x.toString().split("<div");;
+    let divback = x.toString().split("</div>");;
+
+    if (divfront?.length != divback?.length) {
+        console.log("Error, div_front " + divfront?.length + " vs div_back " + divback?.length);
+        return "Error  div_front + " + divfront?.length + " vs div_back " + divback?.length;;
+    }
+
+    return x;
+}
+
+export function div(x, s) {
+    if (s === undefined) { s = ""; }
+
+
+
+    let divfront = x.toString().split("<div");;
+    let divback = x.toString().split("</div>");;
+
+    if (divfront?.length != divback?.length) {
+        console.log("Error, div_front " + divfront?.length + " vs div_back " + divback?.length);
+        return "Error  div_front + " + divfront?.length + " vs div_back " + divback?.length;;
+
+    }
+
+    return "<div " + s + ">" + x + "</div> ";
 }

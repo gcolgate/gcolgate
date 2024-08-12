@@ -115,16 +115,6 @@
             "type": "weapon",
             "name": "BattleAxe",
             "img": "images/icons/weapons/polearms/halberd-curved-steel.webp"
-        },
-        {
-            "file": "PartyFiles/anodor_Animal_Friendship_d1dc3478-a6f7-401b-8eaf-080caa50e310.json",
-            "page": "spell",
-            "type": "spell",
-            "name": "Animal Friendship",
-            "powers": [
-                "Nature"
-            ],
-            "img": "images/questionMark.png"
         }
     ],
     "tab": "spells"

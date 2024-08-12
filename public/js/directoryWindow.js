@@ -1,3 +1,11 @@
+import { chkDiv } from "./characters.js";
+import { thingDragged, ddragDrop, setThingDragged } from "./drag.js";
+import { bringToFront, createOrGetDirWindow, fadeIn } from './window.js';
+import { MakeAvailableToHtml, GetRegisteredThing, MakeAvailableToParser, showThing, SetRegisteredThing } from './characters.js';
+import { socket } from './main.js';
+
+
+
 var folders = {
     Compendium: {},
     Party: {},
@@ -12,7 +20,7 @@ var dirWindowCustomization = {
     Uniques: {},
     Scenes: {},
 };
-function GetMainDirectories() {
+export function GetMainDirectories() {
     GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
     GetDirectory('Party').then((c) => { folders.Party = c; });
     GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
@@ -42,7 +50,7 @@ function createDirWindow(buttonName) {
     }
 }
 
-function processDirectory(jsonData) {
+export function processDirectory(jsonData) {
 
     for (let i = 0; i < jsonData.length; i++) {
         try {
@@ -88,6 +96,8 @@ async function addToPlayerFromDropdown(thing_file, ownerid) {
 
     // dropDownToggle('dropdown_' + ownerid);
 }
+MakeAvailableToHtml('addToPlayerFromDropdown', addToPlayerFromDropdown);
+
 
 function extractFromCompendium(filter_array, thing) {
 
@@ -126,6 +136,7 @@ function extractFromCompendium(filter_array, thing) {
     answer += "</ul>";
     return chkDiv(answer);
 }
+MakeAvailableToParser('extractFromCompendium', extractFromCompendium);
 
 function clickOnThing(event) {
 
@@ -276,10 +287,10 @@ function refreshDirectoryWindow(id, whole) {
         li.appendChild(text);
         li.references = array[i];
         li.draggable = true;
-        li.onmousedown = function (event) { clickOne(this); };
+        li.onmousedown = function (event) { window.clickOne(this); };
         li.ondblclick = clickOnThing;
         li.ondragstart = function (event) {
-            thingDragged = this.references;
+            setThingDragged(this.references);
             thingDragged.windowId = id;
 
         }
@@ -291,19 +302,19 @@ function refreshDirectoryWindow(id, whole) {
 
 function setDragStart(event, name) {
     let thing = GetRegisteredThing(name);
-    thingDragged = thing;
+    setThingDragged(thing);
     thingDragged.windowId = null;
     console.log(thing);
 
 }
 
-async function updateDirectoryWindow(id, updatedFolder, makeFront) {
+export async function updateDirectoryWindow(id, updatedFolder, makeFront) {
 
     folders[id] = updatedFolder;
     let windowName = "window_" + id;
     let w = document.getElementById(windowName);
 
-    if (!w && !makeFront) { return; l }
+    if (!w && !makeFront) { return; }
     w = createOrGetDirWindow(id, .2, .6, .2, .2, dirWindowCustomization[id]);
     if (makeFront) bringToFront(w);
     showDirectoryWindow(id, folders[id]);
@@ -351,11 +362,6 @@ class searchInDirectory {
 
 };
 
-class filterDirectory {
-
-
-
-}
 
 
 function showDirectoryWindow(id, array) {
@@ -371,7 +377,7 @@ function showDirectoryWindow(id, array) {
     if (!window.inited) {
 
         window.inited = true;
-        dragDrop(ul, {
+        d(ul, {
             onDrop: (files, pos, fileList, directories) => {
                 console.log('Here are the dropped files', files)
                 console.log('Dropped at coordinates', pos.x, pos.y)

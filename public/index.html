@@ -79,6 +79,26 @@
       display: block;
     }
 
+
+    .tooltip_open {
+      display: block;
+      position: absolute;
+      border-radius: 5px;
+      color: black;
+      border-color: #2d240c;
+      background-color: white;
+      border-style: outset;
+      font-family: sans-serif;
+      font-weight: Normal;
+      /* Additional positioning, height, width, etc. */
+      top: -40px;
+    }
+
+    :hover .tooltip_open {
+      display: block;
+    }
+
+
     * {
       box-sizing: border-box;
     }
@@ -520,6 +540,10 @@
 
     .wide {
       width: 740px;
+    }
+
+    .skinny {
+      width: 200px;
     }
 
 
@@ -1125,15 +1149,14 @@
     }
   </script>
   <script type="text/javascript" src="./js/socket.io/client-dist/socket.io.js"></script>
-  <script type="text/javascript" src="./js/fetchJson.js"></script>
-  <script type="text/javascript" src="./js/window.js"></script>
-  <script type="text/javascript" src="./js/characters.js"></script>
-  <script type="text/javascript" src="./js/chat.js"></script>
-  <script type="text/javascript" src="./js/style.js"></script>
-  <script type="text/javascript" src="./js/drag.js"></script>
-  <script type="text/javascript" src="./js/directoryWindow.js"></script>
-  <script type="text/javascript" src="./js/dnd5e.js"></script>
-  <script type="text/javascript" src="./js/ptba.js"></script>
+  <script type="module" src="./js/fetchJson.js"></script>
+  <script type="module" src="./js/drag.js"></script>
+  <script type="module" src="./js/window.js"></script>
+  <script type="module" src="./js/characters.js"></script>
+  <script type="module" src="./js/chat.js"></script>
+  <script type="module" src="./js/directoryWindow.js"></script>
+  <script type="module" src="./js/dnd5e.js"></script>
+  <script type="module" src="./js/ptba.js"></script>
   <script type="module" src="./js/three_support.js"></script>
 
 

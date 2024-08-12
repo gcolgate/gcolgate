@@ -1,3 +1,5 @@
+import { socket } from './main.js';
+import { parseSheet, details, Editable, MakeAvailableToHtml, chkDiv, div, GetRegisteredThing, MakeAvailableToParser, signed, span, commaString, formatRemoveButton } from './characters.js';
 
 
 
@@ -8,6 +10,7 @@ function ItemArmor(thing) {
     }
     return "";
 };
+MakeAvailableToParser('ItemArmor', ItemArmor);
 
 function rolldice(dice) {
     let rolls = []
@@ -22,6 +25,9 @@ function rolldice(dice) {
 
     socket.emit('rolls', rolls);
 }
+MakeAvailableToHtml('rolldice', rolldice);
+
+
 function MaybeDescription(description) {
 
     if (description.startsWith("Melee Weapon Attack:")) return "";
@@ -86,6 +92,7 @@ function MaybeDescription(description) {
     outDescription += "</div>";
     return outDescription;
 }
+MakeAvailableToParser('MaybeDescription', MaybeDescription);
 
 function findBestCareer(owner, thing) {
 
@@ -100,7 +107,7 @@ function findBestCareer(owner, thing) {
             if (career.owner_level > bonus) {
                 for (let cw = 0; cw < career.weapons.length; cw++) {
                     let career_wt = career.weapons[cw];
-                    for (wt2 = 0; wt2 < thing.types.length; wt2++) {
+                    for (let wt2 = 0; wt2 < thing.types.length; wt2++) {
                         if (career_wt == thing.types[wt2]) {
                             bonus = career.owner_level;
                             career_string = career.name;
@@ -118,6 +125,8 @@ function findBestCareer(owner, thing) {
 
 
 function ItemWeapon(thing, owner, full) {
+    let career_value;
+    let career_string;
 
     let s = thing.system;
     let atk = s.attackBonus;
@@ -151,12 +160,13 @@ function ItemWeapon(thing, owner, full) {
             + " " + s.range.units);
 
     }
-    if (owner && owner.isptba) {
+    if (career_value) {
         answer = answer.split("@mod").join(career_value + " ");
     }
 
     return chkDiv(answer);
 }
+MakeAvailableToParser('ItemWeapon', ItemWeapon);
 
 function SpellIsAreaEffect(thing, owner) {
 
@@ -305,12 +315,13 @@ function ItemSpellOrFeat(thing, owner, spell) {
     // }
 
     return answer;
-};
+}
+MakeAvailableToParser('ItemSpellOrFeat', ItemSpellOrFeat);
 
-function ItemMaybe(x, stringo) {
-    if (x) return stringo;
-    else return "";
-};
+// function ItemMaybe(x, stringo) {
+//     if (x) return stringo;
+//     else return "";
+// };
 
 function niceMiscName(s) {
     if (s == "resources.legres.value") {
@@ -322,6 +333,7 @@ function niceMiscName(s) {
     return s
 
 }
+MakeAvailableToParser('niceMiscName', niceMiscName);
 
 
 // create support for sheet
@@ -350,12 +362,12 @@ function GetProficiency(owner) {
 
 // support functions, store globally in window maybe later elsewhere
 // we should store these in a template sheet
-dndNiceStatNames = {
+var dndNiceStatNames = {
     str: "Strength", int: "Intelligence", con: "Constitution",
     dex: "Dexterity", cha: "Charisma", wis: "Wisdom"
 }
 
-dndNiceSkillNames = {
+var dndNiceSkillNames = {
     acr: "Acrobatics",
     ani: "Animal Handling",
     arc: "Arcana",
@@ -379,8 +391,6 @@ dndNiceSkillNames = {
 function rollStat(ownerId, stat, isSave) {
 
     let owner = GetRegisteredThing(ownerId);
-
-
     let bonus = DndAbilityBonus(owner, owner.system.abilities[stat].value);
 
     // should check if proficient here
@@ -404,6 +414,7 @@ function rollStat(ownerId, stat, isSave) {
         });
     }
 }
+MakeAvailableToParser('rollStat', rollStat);
 
 
 function DndAbility(thing, stat) {
@@ -430,6 +441,7 @@ function DnDAbilities(thing) {
     }
     return answer;
 }
+MakeAvailableToParser('DnDAbilities', DnDAbilities);
 
 function rollSkill(ownerId, skillid) {
     let owner = GetRegisteredThing(ownerId);
@@ -443,6 +455,7 @@ function rollSkill(ownerId, skillid) {
         roll: "1d20" + signed(statBonus) + signed(prof)
     });
 }
+MakeAvailableToHtml('rollSkill', rollSkill);
 
 
 function DndSkill(thing, skillid) {
@@ -465,6 +478,8 @@ function DndSkill(thing, skillid) {
     return answer;
 
 }
+
+
 function DnDSkills(thing, showDefault) {
     let answer = "";
     let keys = Object.keys(thing.system.skills);
@@ -479,12 +494,15 @@ function DnDSkills(thing, showDefault) {
     }
     return answer;
 }
+MakeAvailableToParser('DnDSkills', DnDSkills);
 
 function DndSpeed(title, thing, ability, units) {
     if (!eval(ability)) return "";
     let value = Editable(thing, ability, "numberinput");
     return '<li class="speedline"><span class="npcBold">' + title + '</span>' + value + units + '</li>';
 }
+MakeAvailableToParser('DndSpeed', DndSpeed);
+
 
 function rollDamage(ownerId, weaponId, bonus, rolls) {
     let weapon = GetRegisteredThing(weaponId);
@@ -514,6 +532,7 @@ function rollWeaponDamage(ownerId, weaponId, bonus) {
     socket.emit('rolls', rolls);
 
 }
+MakeAvailableToParser('rollWeaponDamage', rollWeaponDamage);
 
 function rollWeapon(ownerId, weaponId) {
 
@@ -548,51 +567,52 @@ function rollWeapon(ownerId, weaponId) {
 
     socket.emit('rolls', rolls);
 }
+MakeAvailableToHtml('rollWeapon', rollWeapon);
 
 
-function rollSpell(ownerId, spellId) {
+// function rollSpell(ownerId, spellId) {
 
-    let owner = GetRegisteredThing(ownerId);
-    let spell = GetRegisteredThing(spellId);
-
-
-    let bonus = DndAbilityBonus(owner, owner.system.abilities[spell.system.ability].value);
-    if (weapon?.properties?.fin) {
-        let dex = DndAbilityBonus(owner, owner.system.abilities.dex.value);
-        if (dex > bonus) {
-            bonus = dex;
-        }
-    }
-    // should check if proficient here
-    let prof = owner.system.attributes.prof;
-    let atk = weapon.system.attackBonus;
-
-    let rolls = [];
-
-    rolls.push({
-        title: owner.name + "'s " + weapon.name,
-        style: "dual",
-        roll: "1d20" + signed(prof) + signed(bonus) + signed(atk)
-
-    });
-
-    for (let i = 0; i < weapon.system.damage.parts.length; i++) {
-        let damage = [...weapon.system.damage.parts[i]];
-        let damageDice = damage[0].replace('@mod', bonus);
-        damage.shift();
-        let t = commaString(damage);
+//     let owner = GetRegisteredThing(ownerId);
+//     let spell = GetRegisteredThing(spellId);
 
 
-        rolls.push(
-            {
-                title: weapon.name + " " + t + " damage",
-                roll: damageDice
-            }
-        );
-    }
-    socket.emit('rolls', rolls);
+//     let bonus = DndAbilityBonus(owner, owner.system.abilities[spell.system.ability].value);
+//     if (weapon?.properties?.fin) {
+//         let dex = DndAbilityBonus(owner, owner.system.abilities.dex.value);
+//         if (dex > bonus) {
+//             bonus = dex;
+//         }
+//     }
+//     // should check if proficient here
+//     let prof = owner.system.attributes.prof;
+//     let atk = weapon.system.attackBonus;
 
-};
+//     let rolls = [];
+
+//     rolls.push({
+//         title: owner.name + "'s " + weapon.name,
+//         style: "dual",
+//         roll: "1d20" + signed(prof) + signed(bonus) + signed(atk)
+
+//     });
+
+//     for (let i = 0; i < weapon.system.damage.parts.length; i++) {
+//         let damage = [...weapon.system.damage.parts[i]];
+//         let damageDice = damage[0].replace('@mod', bonus);
+//         damage.shift();
+//         let t = commaString(damage);
+
+
+//         rolls.push(
+//             {
+//                 title: weapon.name + " " + t + " damage",
+//                 roll: damageDice
+//             }
+//         );
+//     }
+//     socket.emit('rolls', rolls);
+
+// };
 
 function GetArmorClass(thing) {
 
@@ -631,6 +651,7 @@ function GetArmorClass(thing) {
     return Math.max(ac, ac2);
 
 };
+MakeAvailableToParser('GetArmorClass', GetArmorClass);
 
 
 function rollSpellSaveAsWeaponAsAttackHomebrew(ownerId, spellId) {
@@ -667,6 +688,7 @@ function rollSpellSaveAsWeaponAsAttackHomebrew(ownerId, spellId) {
     socket.emit('rolls', rolls);
 
 };
+MakeAvailableToHtml('rollSpellSaveAsWeaponAsAttackHomebrew', rollSpellSaveAsWeaponAsAttackHomebrew);
 
 
 function get5eDetails(thing) {
@@ -683,12 +705,16 @@ function get5eDetails(thing) {
     }
     return "";
 };
+MakeAvailableToParser('get5eDetails', get5eDetails);
 
-function RemoveItemFromThing(thingId, itemId) {
+export function RemoveItemFromThing(thingId, itemId) {
 
     socket.emit("RemoveItemFromThing", { thingId: thingId, itemId: itemId });
 
 }
+
+MakeAvailableToHtml('RemoveItemFromThing', RemoveItemFromThing);
+
 
 function IsInventoryItem(item) {
 
@@ -707,12 +733,8 @@ function IsInventoryItem(item) {
 
 
     }
-    return false;
 }
-
-function clickinventory(which) {
-    alert(which);
-}
+MakeAvailableToParser("IsInventoryItem", IsInventoryItem);
 
 function IsSpellItem(item) {
     switch (item.page) {
@@ -721,6 +743,7 @@ function IsSpellItem(item) {
     return false;
 
 }
+MakeAvailableToParser("IsSpellItem", IsSpellItem);
 
 function IsSpellIngredient(item) {
     if (IsInventoryItem(item)) {
@@ -734,6 +757,7 @@ function IsSpellIngredient(item) {
     }
     return false;
 }
+MakeAvailableToParser("IsSpellIngredient", IsSpellIngredient);
 
 function IsCareerItem(item) {
 
@@ -742,6 +766,9 @@ function IsCareerItem(item) {
     }
     return false;
 }
+MakeAvailableToParser("IsCareerItem", IsCareerItem);
+
+
 function ItemFiltered(item, filter) {
     if (!filter) return false;
     return !(filter(item));
@@ -763,10 +790,8 @@ function drawItems(thing, filter, notes) {
     }
     return (text);
 }
+MakeAvailableToParser("drawItems", drawItems);
 
-
-
-// create support for sheet
 
 
 function Spell(thing) {
@@ -804,5 +829,6 @@ function Spell(thing) {
     }
     return answer;
 }
+MakeAvailableToHtml("Spell", Spell);
 
 

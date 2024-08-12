@@ -1,7 +1,11 @@
 
 import * as THREE from 'three';
-
+import { ddragDrop, setThingDragged } from './drag.js';
 /////// TODO put in seperate file
+import { socket } from './main.js';
+import { ensureThingLoaded, GetRegisteredThing, showThing } from './characters.js';
+import { getAppearanceImage } from './ptba.js';
+
 
 let kGridSize = 100;
 class InfiniteGrid extends THREE.Mesh {
@@ -219,10 +223,7 @@ function three_getLayer(n) {
 
 var selection = [];
 
-var socket;
-export function setSocket(s) {
-    socket = s;
-}
+
 
 function fixTile(tile) {
 
@@ -841,11 +842,11 @@ three_renderer.domElement.onmouseup = function (event) {
     //     break;
     // }
     // three_lastMouse = pointer;
-    thingDragged = null;
+    setThingDragged(null);
 
 };
 
-dragDrop(three_renderer.domElement, {
+ddragDrop(three_renderer.domElement, {
     onDrop: (files, pos, fileList, directories) => {
         console.log('Here are the dropped files', files)
         console.log('Dropped at coordinates', pos.x, pos.y)
@@ -910,3 +911,4 @@ three_renderer.domElement.acceptDrag = function (thingDragged, event) {
 
 
 }
+
