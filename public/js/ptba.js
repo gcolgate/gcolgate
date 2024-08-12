@@ -2154,16 +2154,17 @@ function CastSpell(thingId, ownerId, advantage) {
             });
 
         } else if (moves[thing.Move]) {
-            let stat = moves[thing.Move].stat[0]; // todo pick best for player
+            let mv = moves[thing.Move];
+            let stat = mv.stat[0]; // todo pick best for player
             let bonus = owner.stats[stat];
             socket.emit('roll', {
-                title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + thing.name + "</li></ul>",
+                title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + thing.Move + ' ' + thing.name + "</li></ul>",
                 style: "dual-move",
                 advantage: advantage,
                 roll: baseDice + signed(bonus),
                 damage: thing.Damage,
                 damage_bonus: 0,
-                resultsTable: moves[mv]
+                resultsTable: mv
             });
 
 

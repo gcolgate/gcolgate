@@ -601,14 +601,17 @@ export function three_mouseMove(event) {
 
                 card.src = getPortrait(o);
                 let dim = three_renderer_dimensions()
-
+                card.style.display = 'block';
                 card.style.top = (dim.height - 300) + "px";
                 card.style.width = "auto";
                 card.style.height = "300px";
-            }
+
+            } else if (card)
+                card.style.display = 'none';
 
 
-        }
+        } else if (card)
+            card.style.display = 'none';
 
     }
 
