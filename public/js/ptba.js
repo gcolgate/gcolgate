@@ -619,7 +619,6 @@ function takeDamageAmt(owner, damage, damageType, advantage) {
     });
 
 }
-
 function takeDamage(thingId) {
 
     let thing = GetRegisteredThing(thingId);
@@ -628,7 +627,7 @@ function takeDamage(thingId) {
         takeDamageAmt(thing, damage);
 
 }
-
+MakeAvailableToParser("takeDamage", takeDamage);
 
 function FindBestCareerNode(owner, node) {
 
@@ -1553,12 +1552,15 @@ function showInventoryTooltip(evt, thing_id, slot) {
     tooltip.style.zIndex = 10000;
 
 }
+MakeAvailableToParser('showInventoryTooltip', showInventoryTooltip);
+
 
 function hideInventoryTooltip(thingId) {
     let tooltip = document.getElementById("InventoryTooltip_" + thingId);
     tooltip.style.display = "none";
 
 }
+MakeAvailableToParser('hideInventoryTooltip', hideInventoryTooltip);
 
 
 function rollMoveStat(ownerId, stat, mv, advantage, weapon_id, weapon_mode) {
@@ -1595,6 +1597,7 @@ function rollMoveStat(ownerId, stat, mv, advantage, weapon_id, weapon_mode) {
     }
 
 }
+MakeAvailableToParser("rollMoveStat", rollMoveStat);
 
 /// TODO rearrange data so this isn';t a seprate function
 function rollSpellMoveStat(ownerId, stat, mv, advantage, spell_id, spell_node) {
@@ -1634,7 +1637,7 @@ function rollPTBAStat(ownerId, stat, isSave) {
     });
 
 }
-
+MakeAvailableToParser("rollPTBAStat", rollPTBAStat);
 
 function PTBAAbility(thing, stat) {
     let answer = Editable(thing, " thing.stats['" + stat + "'] ", "npcNum") +
@@ -1933,7 +1936,7 @@ function ChangeSpell(thingId, ownerId, stat, amt) {
     }
     res += amt;
     thing.owner_modified[stat] = res;
-    let evaluation = 'thing.owner_modified[' + stat + '] =' + res;
+    let evaluation = 'thing.owner_modified["' + stat + '"] =' + res;
     socket.emit('change', {
         change: evaluation,
         thing: thingId

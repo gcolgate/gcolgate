@@ -172,7 +172,7 @@ function svgDragOut(event) {
 
 
 
-export function ddragDrop(elem, listeners) {
+export function dragDrop(elem, listeners) {
     if (typeof elem === 'string') {
         const selector = elem;
         elem = window.document.querySelector(elem)

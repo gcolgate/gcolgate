@@ -1,6 +1,6 @@
 
 import * as THREE from 'three';
-import { ddragDrop, setThingDragged } from './drag.js';
+import { dragDrop, setThingDragged } from './drag.js';
 /////// TODO put in seperate file
 import { socket } from './main.js';
 import { ensureThingLoaded, GetRegisteredThing, showThing } from './characters.js';
@@ -285,7 +285,7 @@ async function three_setTileImage(tile, plane) {
 }
 
 export function three_addTile(tile) {
-    fixTile(tile);
+    fixTile(tile); // if I used protobufs this would not happen
     const plane = new THREE.Mesh(plane_geometry, baseMaterial);
 
 
@@ -849,7 +849,7 @@ three_renderer.domElement.onmouseup = function (event) {
 
 };
 
-ddragDrop(three_renderer.domElement, {
+dragDrop(three_renderer.domElement, {
     onDrop: (files, pos, fileList, directories) => {
         console.log('Here are the dropped files', files)
         console.log('Dropped at coordinates', pos.x, pos.y)

@@ -1,8 +1,3 @@
-{
-if(!thing.system && thing.data) {
-thing.system = thing.data;
-}
-} @
 <div>
   <div class="body">
     <div>
@@ -21,9 +16,11 @@ thing.system = thing.data;
           margin:8px;
           line-height: 26.1333px;
           text-transform: lowercase">
-      {thing.system.traits ? thing.system.traits.size : "medium" }<span> {get5eDetails(thing)} </span></div>
+      {thing.system.traits ? thing.system.traits.size : "medium" }<span> {get5eDetails(thing)} </span>
+    </div>
     <div class="grid-container">
-
+      <div> <span class="npcBold">Steel </span>{ Number(thing.system.attributes.prof) - 1 }
+      </div>
       <div><span class="npcBold">Armor Class
         </span>
         {GetArmorClass(thing) +

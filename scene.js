@@ -89,7 +89,7 @@ async function loadScene(scene) {
         let result = (await fs.readFile(path.join(__dirname, 'public', 'SceneFiles',
             scene.directory, dir[i]))).toString();
         let tile = jsonHandling.ParseJson(dir[i], result); // for eval to work we need a thing
-        tile.tile_id = cleanTileId(dir[i]);
+        tile.tile_id = (dir[i]);
 
         scene.tiles[tile.tile_id] = tile;
     }
@@ -135,14 +135,18 @@ function generateNewTileId(scene, tile) {
     // it will have the name of the first texture used
 
     tile.tile_id = cleanTileId(tile.texture + "_" + uuidv4());
+    tile.tile_json = path.join(__dirname, 'public', 'SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
     console.log("Tile id ", tile.tile_id);
 }
 
-function getTileFileName(scene, tile) {
-    if (tile.tile_id.endsWith("json")) {
-        return path.join(__dirname, 'public', 'SceneFiles', scene.directory, tile.tile_id);
+function getTileFileJsonFileName(scene, tile) {
+
+    if (!tile.tile_json) {
+        tile.tile_id = cleanTileId(tile.texture + "_" + uuidv4());
+        tile.tile_json = path.join(__dirname, 'public', 'SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
     }
-    return path.join(__dirname, 'public', 'SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json"); // this is a bad pattern
+
+    return tile.tile_json;
 }
 
 function addTile(scene, tile) {
@@ -156,7 +160,8 @@ function addTile(scene, tile) {
     if (!tile.scale) tile.scale = { x: 1, y: 1, z: 1 };
     if (!tile.guiLayer) tile.guiLayer = "tile";
     scene.tiles[tile.tile_id] = tile;
-    let name = getTileFileName(scene, tile);
+    let name = getTileFileJsonFileName(scene, tile);
+    console.log(tile.tile_id);
     console.log("Write tile ", name, tile);
     jsonHandling.writeJsonFile(name, tile);
 
@@ -170,7 +175,8 @@ function updateSceneTile(scene, tile) {
     }
     else {
         scene.tiles[tile.tile_id] = tile;
-        let name = getTileFileName(scene, tile);
+        console.log(tile.tile_id);
+        let name = getTileFileJsonFileName(scene, tile);
         jsonHandling.writeJsonFile(name, tile);
     }
 
@@ -178,11 +184,12 @@ function updateSceneTile(scene, tile) {
 
 function removeSceneTile(scene, tile) {
 
+    console.log("removeSceneTile");
     if (!scene.tiles[tile.tile_id]) {
         console.log("Trying to delete empty tile");
     }
     else {
-        let name = getTileFileName(scene, tile);
+        let name = getTileFileJsonFileName(scene, tile);
         console.log("Deleting " + name);
         fs.unlink(name);
         delete scene.tiles[tile.tile_id];

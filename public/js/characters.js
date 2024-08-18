@@ -1,5 +1,5 @@
 import { createOrGetWindow, windowShowing } from './window.js';
-import { ddragDrop } from './drag.js';
+import { dragDrop } from './drag.js';
 import { dragCareersAndItems, sumCareerFeats } from './ptba.js';
 import { socket } from './main.js';
 
@@ -282,7 +282,7 @@ function changeSheet(button) {
     // server should not do eval so server update has to be different, or it could evaluate the incoming thing
     // to be only characters and dots
 }
-
+MakeAvailableToParser('changeSheet', changeSheet);
 
 
 async function ChangeName(button) {
@@ -530,7 +530,7 @@ async function displayThing(fullthingname, sheetName) {
 
     let draggables = body.getElementsByClassName("dragitem");
     for (let i = 0; i < draggables.length; i++) {
-        ddragDrop(draggables.item(i), {});
+        dragDrop(draggables.item(i), {});
         draggables.item(i).acceptDrag = (thingDragged, event) => {
             if (thing.acceptDrag) {
                 thing.acceptDrag(thingDragged, event);

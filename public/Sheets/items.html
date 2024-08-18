@@ -1,8 +1,3 @@
-{
-if(!thing.system && thing.data) {
-thing.system = thing.data;
-}
-} @
 <div>
   <div class="body">
     <div class=" itemsetheader">
@@ -23,11 +18,10 @@ thing.system = thing.data;
       {thing.type +" "+ maybe(thing.system.consumableType) +" "+
       maybe(thing.system.attunement, "Requires Attunement ") +
       maybe(thing.system.rarity)
-      } </div>
+      }
+    </div>
     <div>{thing.system.description.value}</div>
     <div> {( thing.type == "weapon" ? ItemWeapon(thing,owner,true) : "")}</div>
     <div> {ItemArmor(thing,owner) } </div>
-
-
   </div>
 </div>overflow-y

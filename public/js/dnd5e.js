@@ -164,7 +164,7 @@ function ItemWeapon(thing, owner, full) {
         answer = answer.split("@mod").join(career_value + " ");
     }
 
-    return chkDiv(answer);
+    return div(answer);
 }
 MakeAvailableToParser('ItemWeapon', ItemWeapon);
 

@@ -1,5 +1,5 @@
 import { chkDiv } from "./characters.js";
-import { thingDragged, ddragDrop, setThingDragged } from "./drag.js";
+import { thingDragged, dragDrop, setThingDragged } from "./drag.js";
 import { bringToFront, createOrGetDirWindow, fadeIn } from './window.js';
 import { MakeAvailableToHtml, GetRegisteredThing, MakeAvailableToParser, showThing, SetRegisteredThing } from './characters.js';
 import { socket } from './main.js';
@@ -53,14 +53,15 @@ function createDirWindow(buttonName) {
 export function processDirectory(jsonData) {
 
     for (let i = 0; i < jsonData.length; i++) {
-        try {
-            jsonData[i] = JSON.parse(jsonData[i]);
-            if (jsonData[i].page == "spell")
-                console.log(jsonData[i]);
-        } catch (err) {
+        if (jsonData[i])
+            try {
+                jsonData[i] = JSON.parse(jsonData[i]);
+                if (jsonData[i].page == "spell")
+                    console.log(jsonData[i]);
+            } catch (err) {
 
-            console.log("Error in parsing " + i + " " + jsonData[i]);
-        }
+                console.log("Error in parsing " + i + " " + jsonData[i]);
+            }
     }
     return jsonData;
 }
@@ -287,7 +288,7 @@ function refreshDirectoryWindow(id, whole) {
         li.appendChild(text);
         li.references = array[i];
         li.draggable = true;
-        li.onmousedown = function (event) { window.clickOne(this); };
+        li.onmousedown = function (event) { clickOne(this); };
         li.ondblclick = clickOnThing;
         li.ondragstart = function (event) {
             setThingDragged(this.references);
@@ -377,7 +378,7 @@ function showDirectoryWindow(id, array) {
     if (!window.inited) {
 
         window.inited = true;
-        d(ul, {
+        dragDrop(ul, {
             onDrop: (files, pos, fileList, directories) => {
                 console.log('Here are the dropped files', files)
                 console.log('Dropped at coordinates', pos.x, pos.y)
