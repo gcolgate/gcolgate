@@ -1,6 +1,6 @@
 {
-if(!thing.system && thing.data) {
-thing.system = thing.data;
+if(!thing && thing.data) {
+thing = thing.data;
 }
 } @
 <div>
@@ -20,11 +20,11 @@ thing.system = thing.data;
           margin:8px;
           line-height: 26.1333px;
           text-transform: lowercase">
-      {thing.type +" "+ maybe(thing.system.consumableType) +" "+
-      maybe(thing.system.attunement, "Requires Attunement ") +
-      maybe(thing.system.rarity)
+      {thing.type +" "+ maybe(thing.consumableType) +" "+
+      maybe(thing.attunement, "Requires Attunement ") +
+      maybe(thing.rarity)
       } </div>
-    <div>{thing.system.description.value}</div>
+    <div>{thing.description.value}</div>
     <div> { ( thing.type == "weapon" ?ItemWeapon(thing,owner,true) : "")}</div>
     <div> {ItemArmor(thing,owner) } </div>
 

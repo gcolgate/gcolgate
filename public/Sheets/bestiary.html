@@ -16,42 +16,42 @@
           margin:8px;
           line-height: 26.1333px;
           text-transform: lowercase">
-      {thing.system.traits ? thing.system.traits.size : "medium" }<span> {get5eDetails(thing)} </span>
+      {thing.traits ? thing.traits.size : "medium" }<span> {get5eDetails(thing)} </span>
     </div>
     <div class="grid-container">
-      <div> <span class="npcBold">Steel </span>{ Number(thing.system.attributes.prof) - 1 }
+      <div> <span class="npcBold">Steel </span>{ Number(thing.attributes.prof) - 1 }
       </div>
       <div><span class="npcBold">Armor Class
         </span>
         {GetArmorClass(thing) +
-        (thing.system.attributes.ac.flat ? " " +thing.system.attributes.ac.calc +" "+ Editable(thing,
-        "thing.system.attributes.ac.flat",
+        (thing.attributes.ac.flat ? " " +thing.attributes.ac.calc +" "+ Editable(thing,
+        "thing.attributes.ac.flat",
         "numberinput"): "")}
       </div>
 
       <div><span class="npcBold">Hit Points </span>{Editable(thing,
-        "thing.system.attributes.hp.max",
+        "thing.attributes.hp.max",
         "numberinput")}</div>
 
       <div><span class="npcBold">Cur Hit Points </span>{Editable(thing,
-        "thing.system.attributes.hp.value",
+        "thing.attributes.hp.value",
         "numberinput")}
       </div>
       <div class="grid-container">
         <div>
-          { DndSpeed( "burrow", thing, "thing.system.attributes.movement.burrow",
-          thing.system.attributes.movement.units)
+          { DndSpeed( "burrow", thing, "thing.attributes.movement.burrow",
+          thing.attributes.movement.units)
           }</div>
-        <div>{ DndSpeed( "Climb", thing, "thing.system.attributes.movement.climb",
-          thing.system.attributes.movement.units) }
+        <div>{ DndSpeed( "Climb", thing, "thing.attributes.movement.climb",
+          thing.attributes.movement.units) }
         </div>
-        <div>{ DndSpeed( "Swim", thing, "thing.system.attributes.movement.swim",
-          thing.system.attributes.movement.units) }
+        <div>{ DndSpeed( "Swim", thing, "thing.attributes.movement.swim",
+          thing.attributes.movement.units) }
         </div>
-        <div>{ DndSpeed( "Walk", thing, "thing.system.attributes.movement.walk",
-          thing.system.attributes.movement.units) }
+        <div>{ DndSpeed( "Walk", thing, "thing.attributes.movement.walk",
+          thing.attributes.movement.units) }
         </div>
-        {thing.system.attributes.movement.hover ? '<div>Can Hover</div>' : ""}
+        {thing.attributes.movement.hover ? '<div>Can Hover</div>' : ""}
       </div>
       { drawItems(thing) }
       <div>

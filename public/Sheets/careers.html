@@ -17,9 +17,9 @@ LineOfCareer(owner, thing, notes)
           text-transform: lowercase">
   {Collapsible("Description",false) }
 
-  <div> { notes!=undefined ? "" : thing.system.description.value } </div>
-  <!-- <span class="npcBold">Weapons </span>{ thing.system.weapons } -->
-  <!-- <span class="npcBold">Tools </span>{ thing.system.tools } -->
+  <div> { notes!=undefined ? "" : thing.description.value } </div>
+  <!-- <span class="npcBold">Weapons </span>{ thing.weapons } -->
+  <!-- <span class="npcBold">Tools </span>{ thing.tools } -->
 
   <div> { drawCareerFeats(thing,owner, notes) } </div>
   {EndCollapsible()}

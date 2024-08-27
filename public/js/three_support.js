@@ -502,17 +502,23 @@ var card = null;
 export function three_mouseMove(event) {
     //  event.preventDefault();
 
-    if (document.elementFromPoint(event.clientX, event.clientY).nodeName != "CANVAS") return;
-
+    if (mouseMode == "scrolling") {
+        console.log("Scroll");
+        if (!mouseButtonsDown[scrollButton]) {
+            mouseMode = "none";
+            return;
+        }
+    } else {
+        let elem = document.elementFromPoint(event.clientX, event.clientY);
+        if (!elem || (elem.nodeName != "CANVAS")) {
+            return;
+        }
+    }
     let newMouse = three_mousePositionToWorldPosition(event);
 
     if (mouseButtonsDown[mainButton]) {
         switch (mouseMode) {
-            // case "scrolling":
-            //     if (!mouseButtonsDown[0]) {
-            //         mouseMode = "none";
-            //         break;
-            //     }
+
 
             //     three_camera.position.x -= (newMouse.x - three_lastMouse.x);
             //     three_camera.position.y -= (newMouse.y - three_lastMouse.y);
@@ -543,6 +549,7 @@ export function three_mouseMove(event) {
     }
     if (mouseButtonsDown[scrollButton]) {
         // if (three_camera.isOrthographicCamera) {
+        console.log("Scroll");
         let dim = three_renderer_dimensions()
 
         let zoomMulipleX = three_camera.right / (dim.width / 2);
@@ -552,68 +559,68 @@ export function three_mouseMove(event) {
 
         //    console.log(event.timeStamp, "x " + (newMouse.x - three_lastMouse.x) + " y " + (newMouse.y - three_lastMouse.y));
     }
-
-    if (!mouseButtonsDown[mainButton] && !mouseButtonsDown[scrollButton]) {
-
-
-        let pointer = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1,
-            -(event.clientY / window.innerHeight) * 2 + 1);
-        three_rayCaster.setFromCamera(pointer, three_camera);
-
-        let intersect = three_intersect(event);
-        //  console.log(intersect);
-        if (intersect?.object) {
-            let o = intersect.object?.tile?.reference;
-            if (o) {
-
-                let screenPos = worldToScreen(intersect.object.position);
-
-                if (!hud) {
-                    hud = document.createElement("div");
-                    hud.id = "hud";
-                    hud.style.zIndex = 2;
-                    hud.className = "hud";
-                    //  hud.style.position = "absolute";
-                    //  hud.style.textAlign = "center";
-                    // hud.style.zIndex = "200";
-                    //  hud.style.display = "block";
-                    //  hud.style.width = "256px";
-                    document.body.appendChild(hud);
+    else
+        if (!mouseButtonsDown[mainButton]) {
 
 
-                }
+            let pointer = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1,
+                -(event.clientY / window.innerHeight) * 2 + 1);
+            three_rayCaster.setFromCamera(pointer, three_camera);
 
-                hud.style.left = Math.trunc(screenPos.x) + "px";
-                hud.style.top = Math.trunc(screenPos.y) + "px";
-                hud.innerHTML = o.name;
+            let intersect = three_intersect(event);
+            //  console.log(intersect);
+            if (intersect?.object) {
+                let o = intersect.object?.tile?.reference;
+                if (o) {
+
+                    let screenPos = worldToScreen(intersect.object.position);
+
+                    if (!hud) {
+                        hud = document.createElement("div");
+                        hud.id = "hud";
+                        hud.style.zIndex = 2;
+                        hud.className = "hud";
+                        //  hud.style.position = "absolute";
+                        //  hud.style.textAlign = "center";
+                        // hud.style.zIndex = "200";
+                        //  hud.style.display = "block";
+                        //  hud.style.width = "256px";
+                        document.body.appendChild(hud);
 
 
-                if (!card) {
-                    card = document.createElement("img");
-                    card.id = "card";
-                    card.className = "card";
-                    card.style.zIndex = 1;
+                    }
 
-                    document.body.appendChild(card);
+                    hud.style.left = Math.trunc(screenPos.x) + "px";
+                    hud.style.top = Math.trunc(screenPos.y) + "px";
+                    hud.innerHTML = o.name;
 
 
-                }
+                    if (!card) {
+                        card = document.createElement("img");
+                        card.id = "card";
+                        card.className = "card";
+                        card.style.zIndex = 1;
 
-                card.src = getPortrait(o);
-                let dim = three_renderer_dimensions()
-                card.style.display = 'block';
-                card.style.top = (dim.height - 300) + "px";
-                card.style.width = "auto";
-                card.style.height = "300px";
+                        document.body.appendChild(card);
+
+
+                    }
+
+                    card.src = getPortrait(o);
+                    let dim = three_renderer_dimensions()
+                    card.style.display = 'block';
+                    card.style.top = (dim.height - 300) + "px";
+                    card.style.width = "auto";
+                    card.style.height = "300px";
+
+                } else if (card)
+                    card.style.display = 'none';
+
 
             } else if (card)
                 card.style.display = 'none';
 
-
-        } else if (card)
-            card.style.display = 'none';
-
-    }
+        }
 
     three_lastRawMouse = { x: event.clientX, y: event.clientY };
     three_lastMouse = newMouse;
@@ -808,11 +815,11 @@ async function GetImageFor(thing) {
 }
 
 
-three_renderer.domElement.onmouseup = function (event) {
+window.onmouseup = function (event) {
 
     mouseButtonsDown[event.button] = false;
 
-    if (!mouseButtonsDown[0]) {
+    if (!mouseButtonsDown[mainButton]) {
 
         for (let i = 0; i < selection.length; i++) {
 

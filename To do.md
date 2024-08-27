@@ -1,121 +1,66 @@
 To do 
 
-pain :
-
- Pain points include sloppy input data from the srd
-    Awkward HTML formatting
-
-
-Deal with awkard HTML formatting
-HTML formatting use colums/grid
-    Title
-    Small title
-    Sub title 
-    border on windows
+pain : 
  
-Need to be able to POP OUT sub windows
+ This sounds like it will take some days to work out:
+Need to be able to POP OUT sub windows and scale them smaller/bigger. Lots of work on appearance.
+https://stackoverflow.com/questions/21671218/window-opener-not-working-in-chrome
+Need to access globals through this? probaly window.opener is working now
+https://stackoverflow.com/questions/17493027/can-i-open-a-new-window-and-populate-it-with-a-string-variable
+https://daily-dev-tips.com/posts/javascript-sending-data-between-windows/
 
-Reorganization: Consider putting items physically inside folders adjacent to the character , only for characters
+Working 30%
 
-Consider having directories only for lists
- 
+Appearance window doesn't work 
+dragging doesn't work: these might be the same as the bluebutton fix
 
+Bug when dragging the name gets changed
+
+
+Reorganization: 
+1. Each sheet will have 2 objects, front and template. Data in front overrides template. DONE for subitems, not for players (need editing test)
+2. When dragging from compendium, list original template in main file. Do not copy it like we do now file. Front file is blank Done for subitems. Not for monsters.
+3. When editing, change front file. Need to test
+4. For each field, when using, check front, if blank, check template. Not needed
+5. reorganize bestiary and monsters to be simpler and better. Do this after getting image server working
+Bugs: 
+    Can we get rid of tag files completely? Or necc for compendiums for quick loading
 Instances:
 
 Bug: selecting more than one in directory window
  
-
-Images:
-All images need size representation before loading somehow (pipeline)
-Editing for images
-    Setting size for display in corner
-    Cutting out tokens with nice edges
-    Layering
-Costumes -- easy to choose
-    token, avatar, 
-    Hud display
-
+ 
 
 2. For items, classify them more so they can be searched with more buttons
-    magic/not 
-    price below, above, range 
-    part of body
-        armor  
-        off hand
-        main  hand
-        both hands
-        head
-        feet
-        rings
-        backpack
-        pouch
-        sheath
-        bandolier
-        quiver
-        mount
-        pack animal
-        bag of holding
-        owned elsewhere
-
- 2.5 For spells, same
-    level
-    class
-    etc.
-
-3. translation sheet that converts 5e mechanics into Prittanian mechanics
-
-
-    for player sheet : Maybe only support Prittanian sheet first
-        a. Choose elements from drop downs that correspond to items with their own sheets
-        b. Roll moves that give output
-        c. Compute steel for outfits
-        d. allow adding counters that can be refreshed on long rest, short rest, restock, healed as moves
-        e. transaction sheet for money and log
-        Equipment for costumes
-             Equipment list for costumes, lists encumberance level too, distributes equipment
-
-        equipment location
-            equipped
-            bag 
-            bag of holding
-            saddlebags
-            caravan
-            ship
-            home
-            lost/stolen
-
+    Add mount and bag of holding areas on inventory screen
+    Add elsewhere areas with a column for where (servant, home, ship, safe, bank)
     
+ 
+3. Reoganize editing. 
+    Add RAW DATA editor where each field of a json is individually changeable and random fields change. 1/2 done. To do: put on sub objects in player inventories, remember to use template properly
+    Add edit button to on each sheet to allow editing of things, may require some sheet reoganization
 
-    for d&d
-        allow selecting the various proficiencies (expertise, half expertise, etc) on skills
-        allow equiping parts of bodies, showing relevant lists, capped by player coin 
-        allow credit and gold currencies
-        allow selecting feats
-        allow selecting classes and levels
-            automatically add things based on level to class feats
-        allow adding spells
-        allow adding counters that can be refreshed on long rest, short rest, restock, healed
-            automatically add counters for some things, like ammo and feats
-            spell slots are counters
-            also spell points
-        add long rest, short rest, death save, restock buttons
-        compute proficiency
-        future: provide Transactions tag where all transactions are recorded, with running total of money
+     
+future: provide Transactions tag where all transactions are recorded, with running total of money
 
+3. Improve rolling
+    Allow dice to be rerolled once they are in the chat as advantage/disadvantate +bonus -bonus
+    Allow editing of rolls on sheet to set bonus before rolling 
 
 3. Image library required on server
  
-    default scene is full vision lights don't apply, these are toggleable  
-    show hex grid (shader) 
+    LIGHTS deprioritized. default scene is full vision lights don't apply, these are toggleable  
+    show hex grid (shader) right now only square grid
     set priorities, front/behind/use Z
     set z in 2d
     set hud.....simple like roll20?
-    lights: gm placeable lights
-    lights: attach lights to different objects, when equipped by a player they show light
-    darkvision, infravision, low light vision, true sight, etc.
-    set condition: add icon and fx
+    lights: gm placeable lights. Deprioritized
+    lights: attach lights to different objects, when equipped by a player they show light Deprioritized
+    darkvision, infravision, low light vision, true sight, etc. Deprioritized
+    set condition: add icon and fx. Include all the results from moves
     allow different images for theatre of the mind, 2d map, ortho map, 3d map
-      pull out templates when casting a spell based for area effects
+      pull out templates when casting a spell based for area effects. Use the effect size on the spell
+    Add a tokenizer
 
    
   
@@ -131,7 +76,7 @@ Costumes -- easy to choose
        2  Trusted Player -- restricted to party, partyMinions
        3 Rando Player -- restricted to his own sheet (default)
     Auto limit costume for NPCs based on player info level
-
+    Security: reduce passing javascript to more strict approaches
 
 5. FX
     underwater effect
@@ -146,6 +91,10 @@ Costumes -- easy to choose
     spell templates
 
     6. General tools
-        CVS to entities : convert CSV files with entities, where column is entity name
+        CVS to entities : convert CSV files with entities, where column is entity name. Did for spells
         entities to CSV : reverse of that
         
+
+        7. add 3d modes for map
+
+8. Audio: Chat received sound, roll dice sound. Good thing Dave hates music when playing or I do that

@@ -118,7 +118,7 @@ function extractFromCompendium(filter_array, thing) {
 
         let quote = '"';
 
-        answer += "<li   onmousedown='addToPlayerFromDropdown("
+        answer += "<li   onmousedown='htmlContext.addToPlayerFromDropdown("
             + JSON.stringify(searched[i]) + "," + quote + thing.id + quote + ")'>";
         answer += '<img src="' + searched[i].img + '" width="32" height="32"></img>';
         answer += searched[i].name;
@@ -308,6 +308,7 @@ function setDragStart(event, name) {
     console.log(thing);
 
 }
+MakeAvailableToHtml("setDragStart", setDragStart);
 
 export async function updateDirectoryWindow(id, updatedFolder, makeFront) {
 

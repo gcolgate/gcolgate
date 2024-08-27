@@ -2,14 +2,15 @@
     <div class="npcheader " ondragenter="ondragenter(event)" ondragover="ondragover(event)"
         ondragleave="ondragleave(event)" ondrop="ondrop(event)">
         <img src="{thing.image}" class="alignimagemiddle" width="48" height="48" draggable=true
-            ondragstart="setDragStart(event,'{thing.id}')">
+            ondragstart="htmlContext.setDragStart(event,'{thing.id}')">
         </img>
         <div class="speedline ">
             <a href="#"> {thing.name }
                 <div class=" body spelltext tooltipcontainer">
                     <div class="tooltip ">
                         <div class="paragraphText skinny">
-                            <div class="npcheader"> {DrawImageArray("images/spells/", thing.Powers, '.jfif') +thing.name
+                            <div class="npcheader"> {htmlContext.DrawImageArray("images/spells/", thing.Powers, '.jfif')
+                                +thing.name
                                 }
                                 <!-- <button onclick={'CastSpell("' + thing.id + '","' + owner.id +'")'}> Cast
                                 </button> -->

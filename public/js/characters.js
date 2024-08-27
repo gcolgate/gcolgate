@@ -20,6 +20,13 @@ export function SetRegisteredThing(path, thing) {
 
 export function MakeAvailableToHtml(fnName, fn) {
     window[fnName] = fn;
+    htmlContext[fnName] = fn;
+}
+
+export function MakeAvailableToPopup(fName, fn) {
+
+    popupContent[fnName] = fn;
+
 }
 
 export function MakeAvailableToParser(fnName, fn) { // for now use window, soon make array
@@ -51,7 +58,7 @@ function ClickCollapsible(evt) {
 MakeAvailableToHtml('ClickCollapsible', ClickCollapsible);
 
 function Collapsible(text, shown) {
-    let a = '<button class=lbl-collapsible-toggle  onclick="ClickCollapsible(event)">' + text + ' </button>';
+    let a = '<button class=lbl-collapsible-toggle  onclick="htmlContext.ClickCollapsible(event)">' + text + ' </button>';
     a += (shown ? '<div style="max-height:100%" visibility:visible>' : '<div style="max-height:0px; visibility:hidden">');
 
     return a;
@@ -155,9 +162,16 @@ export async function ensureThingLoaded(thingName) {
         try {
             let response = await fetch(file);
             console.log("Fetched " + file);
-            const thing = await response.json();
+            let thing = await response.json();
             console.log("json " + file);
             thing.id = (thingName);
+
+            if (thing.template) {
+                let response = await fetch(thing.template);
+                const t = await response.json();
+                thing.origValue = t;
+                thing = { ...t, ...thing };
+            }
 
 
             SetRegisteredThing(thingName, thing);
@@ -187,10 +201,10 @@ export async function ensureThingLoaded(thingName) {
             }
 
         }
-        if (thing?.system?.feats != undefined) { // should combine with items
-            for (let i = 0; i < thing.system.feats.length; i++) {
-                console.log("Adding feat" + i + " " + thing.system.feats[i]);
-                promises.push(EnsureLoaded("items", "CompendiumFiles/" + thing.system.feats[i]));
+        if (thing?.feats != undefined) { // should combine with items
+            for (let i = 0; i < thing.feats.length; i++) {
+                console.log("Adding feat" + i + " " + thing.feats[i]);
+                promises.push(EnsureLoaded("items", "CompendiumFiles/" + thing.feats[i]));
             }
 
         }
@@ -255,8 +269,11 @@ async function EnsureLoaded(sheetName, thingName) {
 
 function changeSheet(button) {
     let id = button.dataset.thingid; // the window id is window_fullthingname
+    console.log(id);
     let clause = button.dataset.clause; // the window id is window_fullthingname
     let evaluation = clause + " = '" + button.value + "'";
+    console.log(clause);
+    console.log(evaluation);
 
     socket.emit('change', {
         change: evaluation,
@@ -283,6 +300,7 @@ function changeSheet(button) {
     // to be only characters and dots
 }
 MakeAvailableToParser('changeSheet', changeSheet);
+MakeAvailableToHtml('changeSheet', changeSheet);
 
 
 async function ChangeName(button) {
@@ -300,6 +318,7 @@ async function ChangeName(button) {
 
     socket.emit('changeName', { dir: split[0], thingName: split[1], newName: newName });
 }
+MakeAvailableToHtml('ChangeName', ChangeName);
 
 function DrawArray(array) {
 
@@ -312,6 +331,7 @@ function DrawArray(array) {
 
 }
 
+MakeAvailableToHtml('DrawArray', DrawArray);
 
 function DrawImageArray(dir, array, ext) {
 
@@ -324,21 +344,23 @@ function DrawImageArray(dir, array, ext) {
 
 }
 
+MakeAvailableToHtml('DrawImageArray', DrawImageArray);
 
 
 export function Editable(thing, clause, className, listName) { // thing must be here because the eval might use it
+    console.log("clause " + clause);
     let t = eval(clause);
 
     let id = thing.id;
 
     if (listName != undefined) {
         return '<input list="' + listName + '" class="' + className + '" data-clause="' + clause + '"  data-thingid="' + id + '" value="' + t +
-            '" onchange="changeSheet(this)">';
+            '" onchange="htmlContext.changeSheet(this)">';
 
 
     } else
         return '<input class="' + className + '" type="text" data-clause="' + clause + '"  data-thingid="' + id + '" value="' + t +
-            '" onchange="changeSheet(this)">';
+            '" onchange="htmlContext.changeSheet(this)">';
 }
 MakeAvailableToParser('Editable', Editable);
 
@@ -348,7 +370,7 @@ function MultilineEditText(thing, clause, className, rows, columns) { // thing m
 
     let id = thing.id;
     return '<textarea class="' + className + '" type="text"  cols="' + columns + '" rows="' + rows + '" data-clause="' + clause + '"  data-thingid="' + id +
-        '" onchange="changeSheet(this)">' + t + '</textarea>';
+        '" onchange="htmlContext.changeSheet(this)">' + t + '</textarea>';
 }
 
 
@@ -451,8 +473,9 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
 
         switch (state) {
             case 0:
+                let nextOne = text[i];
                 // remove these characters they cause problems down the line
-                if (text[i] == '\n' || text[i] == '\r') {
+                if (nextOne == '\n' || nextOne == '\r') {
                     newText += ' ';
                     break;
                 }
@@ -462,18 +485,27 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
                 }
                 else {
                     // I don't remember why these are bad, I didn't comment before
-                    if (text[i] == '@') {
-                        newText = ""; break;
-                    }
+                    // if (nextOne == '@') {
+                    //     newText = ""; break;
+                    // }
+                    // let nextTwo = text.substring(i, i + 1);
+                    // if (nextTwo == "{{") {
+                    //     newText += '{';
+                    //     break;
+                    // }
+                    // if (nextTwo == "}}") {
+                    //     newText += '}';
+                    //     break;
+                    // }
                     // if it is code we want to execute, got to steate 1
-                    if (text[i] == '{') {
+                    if (nextOne == '{') {
                         state = 1; code = "";
                     }
                     // assert for mismatched }
-                    else if (text[i] == '}') {
+                    else if (nextOne == '}') {
                         throw new Error("Mismatched '} fileSOFar: " + newText + "\ncodeBeingEvaluated " + code);
                     }
-                    else newText += text[i];
+                    else newText += nextOne;
                 }
                 break;
             case -1:
@@ -513,6 +545,74 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
     return newText;
 }
 
+var realWindows = [];
+
+
+function closeAllWindows() {
+
+    for (let i = 0; i < realWindows.length; i++) {
+
+        if (!realWindows[i].window.closed) {
+            realWindows[i].window.close();
+        }
+    }
+
+}
+
+addEventListener("unload", (event) => { // does not reliably work on mobile and may be decprecated
+
+    closeAllWindows();
+});
+
+// addEventListener("visibilitychange", (event) => { // This unfortunately treats going to another tab the same as quitting
+//     closeAllWindows();
+// });
+function fetchRealWindow(name) {
+
+    for (let i = 0; i < realWindows.length; i++) {
+
+        if (realWindows[i].window.closed) {
+            realWindows.splice(i, 1);
+            console.log("Remvoed");
+            i--;
+            continue;
+        }
+        if (realWindows[i].name == name) {
+            console.log("found");
+            return realWindows[i].window;
+        }
+    }
+    return null;
+}
+
+function createOrGetRealWindow(name) {
+    let w = fetchRealWindow(name);
+
+    if (w) return w;
+
+    w = window.open("about:blank", "", "_blank");
+    realWindows.push({ name: name, window: w });
+
+
+    return w;
+}
+
+
+onunload
+
+export function windowSetElemVisible(thing_id, elemId, style) {
+
+
+    let w = fetchRealWindow(thing_id);
+    if (!w) return;
+
+    let toShow = w.document.getElementById(elemId);
+
+    if (toShow) toShow.style.visibility = style;
+
+}
+
+
 
 async function displayThing(fullthingname, sheetName) {
 
@@ -537,27 +637,38 @@ async function displayThing(fullthingname, sheetName) {
             }
         };
     }
+
+    var wnd = createOrGetRealWindow(fullthingname);
+    wnd.IsPopUpWindow = true;
+    wnd.document.open()
+    wnd.document.write('<html><head><title>' + fullthingname + '</title><link rel="stylesheet" type="text/css" href="/Css/site.css"></head><body>');
+
+    wnd.document.write(body.innerHTML);
+    wnd.document.write('</body></html>');
+    wnd.window.htmlContext = window.htmlContext;
+
+    wnd.document.close();
 }
 
 export function formatRemoveButton(ownerid, itemid) {
-    return "<img class='image-holder' src='Sheets/trashcan.png' width='16' height='16' onclick=RemoveItemFromThing('" + ownerid + "','" + itemid + "')  </img>";
+    return "<img class='image-holder' src='Sheets/trashcan.png' width='16' height='16' onclick=htmlContext.RemoveItemFromThing('" + ownerid + "','" + itemid + "')  </img>";
 }
 
 function LineOfCareer(owner, thing, notes) {
     if (notes == undefined && owner != undefined)
         return div(
             div(Editable(thing, "thing.name", "itemsetheadershort crit")) +
-            div(span("Level ", Editable(thing, "thing.system.owner_level", "npcNum shortwidth"), "crit")) +
-            div(span("Feats chosen", " " + sumCareerFeats(thing) + "/" + thing.system.owner_level, "shortwidth coloring basicFont bodyText crit")) +
-            //  div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")) +
+            div(span("Level ", Editable(thing, "thing.owner_level", "npcNum shortwidth"), "crit")) +
+            div(span("Feats chosen", " " + sumCareerFeats(thing) + "/" + thing.owner_level, "shortwidth coloring basicFont bodyText crit")) +
+            //  div(span("CP spent", Editable(thing, "thing.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")) +
             formatRemoveButton(owner.id, thing.id),
             'class="fourcolumncareers"');
     else
         return div(
             div("Career:", 'class="basicFont italic"') +
             div(thing.name, "itemsetheadershort") +
-            div(span("Level ", thing.system.owner_level, "shortwidth coloring basicFont bodyText crit", "crit")) +
-            //  div(span("CP spent", Editable(thing, "thing.system.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")),
+            div(span("Level ", thing.owner_level, "shortwidth coloring basicFont bodyText crit", "crit")) +
+            //  div(span("CP spent", Editable(thing, "thing.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")),
             'class="fourcolumncareers2"');
 }
 

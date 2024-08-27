@@ -175,7 +175,6 @@ function updateSceneTile(scene, tile) {
     }
     else {
         scene.tiles[tile.tile_id] = tile;
-        console.log(tile.tile_id);
         let name = getTileFileJsonFileName(scene, tile);
         jsonHandling.writeJsonFile(name, tile);
     }

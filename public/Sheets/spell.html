@@ -10,13 +10,14 @@
                     <div { (owner.openSpell==thing.name ? 'class = "tooltip_open" onmouseleave="hidebogusTooltip(this)"'
                         : 'class="tooltip"' ) }>
                         <div class="paragraphText wide">
-                            <div class="npcheader"> {DrawImageArray("images/spells/", thing.Powers, '.jfif') +thing.name
+                            <div class="npcheader"> {htmlContext.DrawImageArray("images/spells/", thing.Powers, '.jfif')
+                                +thing.name
                                 }
                                 <button onclick={'CastSpell("' + thing.id + '","' + owner.id +'",0)'}> Cast
                                 </button>
 
                             </div>
-                            <div> <span class="bold"> Powers:</span> {DrawArray(thing.Powers)} </div>
+                            <div> <span class="bold"> Powers:</span> {htmlContext.DrawArray(thing.Powers)} </div>
                             <div> <span class="bold"> Enhancements:</span>
                                 {
                                 DrawArrayEnhancementButtons(thing, owner, thing.PossibleEnhancements)}

@@ -4,7 +4,7 @@ import { parseSheet, details, Editable, MakeAvailableToHtml, chkDiv, div, GetReg
 
 
 function ItemArmor(thing) {
-    let s = thing.system;
+    let s = thing;
     if (s.armor && s.armor.type && s.armor.value) {
         return span(s.armor.type + "Armor", s.armor.value);
     }
@@ -29,6 +29,7 @@ MakeAvailableToHtml('rolldice', rolldice);
 
 
 function MaybeDescription(description) {
+    if (!description) return "";
 
     if (description.startsWith("Melee Weapon Attack:")) return "";
     if (description.startsWith("Ranged Weapon Attack:")) return "";
@@ -74,7 +75,7 @@ function MaybeDescription(description) {
                         state--;
                         if (state < 0) {
                             state = "normal";
-                            outDescription += "<button  onclick=\"rolldice('" + roll.substring(2) + "')\">" + roll.substring(2) + "</button>";
+                            outDescription += "<button  onclick=\"htmlContext.rolldice('" + roll.substring(2) + "')\">" + roll.substring(2) + "</button>";
                             roll = "";
                         }
                         continue;
@@ -103,7 +104,7 @@ function findBestCareer(owner, thing) {
 
         let item = owner.items[i];
         if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file).system;
+            let career = GetRegisteredThing(item.file);
             if (career.owner_level > bonus) {
                 for (let cw = 0; cw < career.weapons.length; cw++) {
                     let career_wt = career.weapons[cw];
@@ -128,17 +129,17 @@ function ItemWeapon(thing, owner, full) {
     let career_value;
     let career_string;
 
-    let s = thing.system;
+    let s = thing;
     let atk = s.attackBonus;
     let damage = s.damage.parts;
     if (!atk) { atk = 0; }
     let answer = '';
     if (owner != undefined && !owner.isptba) {
-        answer += "<button  onclick=\"rollWeapon('" + owner.id + "','" + thing.id + "')\">Damage</button>";
+        answer += "<button  onclick=\"htmlContext.rollWeapon('" + owner.id + "','" + thing.id + "')\">Damage</button>";
         //  include applydamage button on roll need to decide who is target
     } else if (owner) {
         [career_value, career_string] = findBestCareer(owner, thing);
-        answer += chkDiv("<button  onclick=\"rollWeaponDamage('" + owner.id + "','" + thing.id + "'," + career_value + ")\">Damage</button>");
+        answer += chkDiv("<button  onclick=\"htmlContext.rollWeaponDamage('" + owner.id + "','" + thing.id + "'," + career_value + ")\">Damage</button>");
         answer += div(career_string);
 
     }
@@ -170,7 +171,7 @@ MakeAvailableToParser('ItemWeapon', ItemWeapon);
 
 function SpellIsAreaEffect(thing, owner) {
 
-    let area = thing.system?.target?.value;
+    let area = thing?.target?.value;
 
     return (typeof area == "number" && area > 1);
 }
@@ -178,10 +179,10 @@ function SpellIsAreaEffect(thing, owner) {
 
 function SpellSaveDC(thing, owner) {
 
-    if (thing.system.actionType != "save" || !thing.system.save) {
+    if (thing.actionType != "save" || !thing.save) {
         return undefined;
     }
-    let save = thing.system.save;
+    let save = thing.save;
 
     if (save.dc != null) { // hadcoded save
         return save.dc
@@ -194,22 +195,22 @@ function SpellSaveDC(thing, owner) {
 
 function DisplaySpellSaveDC(thing, owner) {
 
-    if (thing.system.actionType != "save" || !thing.system.save) {
+    if (thing.actionType != "save" || !thing.save) {
         return "";
     }
-    let save = thing.system.save;
+    let save = thing.save;
     let answer = String(save.ability).toUpperCase() + " save  DC ";
     if (save.dc != null) { // hadcoded save
         answer += save.dc + " hardcoded";
         if (owner != undefined) {
-            answer += "<button  onclick=\"rollSpellSaveAsWeaponAsAttackHomebrew('" + owner.id + "','" + thing.id + "')\">Attack</button>";
+            answer += "<button  onclick=\"htmlContext.rollSpellSaveAsWeaponAsAttackHomebrew('" + owner.id + "','" + thing.id + "')\">Attack</button>";
 
         }
     }
     else {
         answer += (8 + GetStatSpellPowerBonus(owner) + GetProficiency(owner));
         if (owner != undefined) {
-            answer += "<button  onclick=\"rollSpellSaveAsWeaponAsAttackHomebrew('" + owner.id + "','" + thing.id + "')\">Attack</button>";
+            answer += "<button  onclick=\"htmlContext.rollSpellSaveAsWeaponAsAttackHomebrew('" + owner.id + "','" + thing.id + "')\">Attack</button>";
 
         }
     }
@@ -224,68 +225,68 @@ function ItemSpellOrFeat(thing, owner, spell) {
     let circle = " &#x25EF; "
 
     if (spell)
-        answer += "level " + thing.system.level + circle + thing.system.school + circle;
+        answer += "level " + thing.level + circle + thing.school + circle;
 
 
-    if (thing.system?.school?.components) {
+    if (thing?.school?.components) {
         let space = false;
-        if (thing.system.school.components.vocal) { answer += space + "V"; space = true; }
-        if (thing.system.school.components.somatic) { answer += space + "S"; space = true; }
-        if (thing.system.school.components.material) { answer += space + "M"; space = true; }
+        if (thing.school.components.vocal) { answer += space + "V"; space = true; }
+        if (thing.school.components.somatic) { answer += space + "S"; space = true; }
+        if (thing.school.components.material) { answer += space + "M"; space = true; }
         if (space) answer += " ";
-        if (thing.system.school.components.ritual) answer += "ritual "
-        if (thing.system.school.components.comcentration) answer += "conc. "
+        if (thing.school.components.ritual) answer += "ritual "
+        if (thing.school.components.comcentration) answer += "conc. "
         answer += circle;
     }
-    if (thing.system?.activation?.type) {
-        answer += thing.system.activation.type + " ";;
-        if (thing.system.activation.cost > 1) {
-            answer += thing.system.activation.cost + " ";;
+    if (thing?.activation?.type) {
+        answer += thing.activation.type + " ";;
+        if (thing.activation.cost > 1) {
+            answer += thing.activation.cost + " ";;
         }
-        if (thing.system.activation.condition) {
-            answer += thing.system.activation.condition + " ";;
+        if (thing.activation.condition) {
+            answer += thing.activation.condition + " ";;
         }
         answer += circle;
     }
 
     if (SpellIsAreaEffect(thing, owner)) {
-        answer += "Area Effect " + thing.system.target.value + " ";;
+        answer += "Area Effect " + thing.target.value + " ";;
         answer += circle;
 
     } else {
-        if (thing.system?.target?.value == 1)
+        if (thing?.target?.value == 1)
             answer += "1 Target ";
         answer += circle;
     }
-    if (thing.system?.range?.value) {
-        answer += "Range " + thing.system.range.value + " " + thing.system.range.units;
+    if (thing?.range?.value) {
+        answer += "Range " + thing.range.value + " " + thing.range.units;
         answer += circle;
 
     }
 
-    if (thing.system?.duration?.value > 0) {
-        answer += "Duration " + thing.system.duration.value + " " + thing.system.duration.units;
+    if (thing?.duration?.value > 0) {
+        answer += "Duration " + thing.duration.value + " " + thing.duration.units;
         answer += circle;
 
     }
-    if (thing.system?.uses?.value) {
+    if (thing?.uses?.value) {
         // should add a counter instead
-        answer += "Uses " + thing.system.uses.value + "/" + thing.system.uses.max;
-        if (thing.system.uses.recovery) answer += " per " + thing.system.uses.recovery;
+        answer += "Uses " + thing.uses.value + "/" + thing.uses.max;
+        if (thing.uses.recovery) answer += " per " + thing.uses.recovery;
         answer += circle;
 
     }
-    if (thing.system?.consume?.type) {
+    if (thing?.consume?.type) {
         // should add a counter instead, also fix in converter
-        let path = "owner.system." + thing.system.consume.target;
+        let path = "owner." + thing.consume.target;
         path = path.substring(0, path.lastIndexOf("."));
-        answer += "Consumes " + niceMiscName(thing.system.consume.target) + " " + thing.system.consume.amount + " of " + eval(path + ".value") + "/" + eval(path + ".max")
+        answer += "Consumes " + niceMiscName(thing.consume.target) + " " + thing.consume.amount + " of " + eval(path + ".value") + "/" + eval(path + ".max")
 
         answer += circle;
 
     }
     answer += DisplaySpellSaveDC(thing, owner);
-    // let s = thing.system;
+    // let s = thing;
     // let atk = s.attackBonus;
     // let damage = s.damage.parts;
     // if (!atk) { atk = 0; }
@@ -345,16 +346,16 @@ function DndAbilityBonus(thing, ability) {
 }
 
 function GetStatSpellPowerBonus(owner) {
-    let stat = owner.system.attributes.spellcasting;
+    let stat = owner.attributes.spellcasting;
     if (stat) {
-        return DndAbilityBonus(owner, owner.system.abilities[stat].value);
+        return DndAbilityBonus(owner, owner.abilities[stat].value);
     }
     return -4;
 }
 
 function GetProficiency(owner) {
-    if (owner.system.attributes.prof) {
-        return owner.system.attributes.prof;
+    if (owner.attributes.prof) {
+        return owner.attributes.prof;
     }
     return 0;
 }
@@ -391,14 +392,14 @@ var dndNiceSkillNames = {
 function rollStat(ownerId, stat, isSave) {
 
     let owner = GetRegisteredThing(ownerId);
-    let bonus = DndAbilityBonus(owner, owner.system.abilities[stat].value);
+    let bonus = DndAbilityBonus(owner, owner.abilities[stat].value);
 
     // should check if proficient here
     let prof = 0;
 
     if (isSave) {
-        if (owner.system.abilities[stat].proficient)
-            prof = owner.system.attributes.prof;
+        if (owner.abilities[stat].proficient)
+            prof = owner.attributes.prof;
         socket.emit('roll', {
             title: owner.name + ' ' + dndNiceStatNames[stat] + " Save ",
             style: "dual",
@@ -406,7 +407,7 @@ function rollStat(ownerId, stat, isSave) {
         });
 
     } else {
-        prof = owner.system.attributes.prof;
+        prof = owner.attributes.prof;
         socket.emit('roll', {
             title: owner.name + ' ' + dndNiceStatNames[stat] + " Check ",
             style: "dual",
@@ -415,22 +416,23 @@ function rollStat(ownerId, stat, isSave) {
     }
 }
 MakeAvailableToParser('rollStat', rollStat);
+MakeAvailableToHtml('rollStat', rollStat);
 
 
 function DndAbility(thing, stat) {
-    let answer = Editable(thing, thing.system.abilities[stat].value, "npcNum") +
-        " (" + DndAbilityBonus(thing, thing.system.abilities[stat].value)
-        + ')<input type ="checkbox"' + (thing.system.abilities[stat].proficient != 0 ? " checked " : "") + " > Prof</input > "; // todo use label not text word prof
+    let answer = Editable(thing, thing.abilities[stat].value, "npcNum") +
+        " (" + DndAbilityBonus(thing, thing.abilities[stat].value)
+        + ')<input type ="checkbox"' + (thing.abilities[stat].proficient != 0 ? " checked " : "") + " > Prof</input > "; // todo use label not text word prof
 
-    answer += "<button  onclick=\"rollStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
-    answer += "<button  onclick=\"rollStat('" + thing.id + "','" + stat + "', true)\">Save</button>";
+    answer += "<button  onclick=\"htmlContext.rollStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
+    answer += "<button  onclick=\"htmlContext.rollStat('" + thing.id + "','" + stat + "', true)\">Save</button>";
     return answer;
 
 }
 
 function DnDAbilities(thing) {
     let answer = "";
-    let keys = Object.keys(thing.system.abilities);
+    let keys = Object.keys(thing.abilities);
     for (let i = 0; i < keys.length; i++) {
         answer += '<div class=outlined style = "font-weight: 700;display: inline-block">';
         answer += '<span>' + keys[i].toUpperCase() + '</span><br>';
@@ -445,10 +447,10 @@ MakeAvailableToParser('DnDAbilities', DnDAbilities);
 
 function rollSkill(ownerId, skillid) {
     let owner = GetRegisteredThing(ownerId);
-    let skill = owner.system.skills[skillid];
+    let skill = owner.skills[skillid];
     let stat = skill.ability;
-    let statBonus = DndAbilityBonus(owner, owner.system.abilities[stat].value);
-    let prof = (skill.value != 0 ? owner.system.attributes.prof : 0);
+    let statBonus = DndAbilityBonus(owner, owner.abilities[stat].value);
+    let prof = (skill.value != 0 ? owner.attributes.prof : 0);
     socket.emit('roll', {
         title: owner.name + ' ' + dndNiceStatNames[stat] + " Check ",
         style: "dual",
@@ -459,19 +461,19 @@ MakeAvailableToHtml('rollSkill', rollSkill);
 
 
 function DndSkill(thing, skillid) {
-    let skill = thing.system.skills[skillid];
+    let skill = thing.skills[skillid];
     let stat = skill.ability;
-    let statBonus = DndAbilityBonus(thing, thing.system.abilities[stat].value);
-    let prof = (skill.value != 0 ? thing.system.attributes.prof : 0);
+    let statBonus = DndAbilityBonus(thing, thing.abilities[stat].value);
+    let prof = (skill.value != 0 ? thing.attributes.prof : 0);
     let answer = "<div class=outlined>";
     answer += '<span class=npcBold>' + dndNiceSkillNames[skillid] + '</span><br>';
 
     answer += signed(statBonus + prof);
 
 
-    // let answer = Editable(thing, thing.system.abilities[stat].value, "npcNum") +
+    // let answer = Editable(thing, thing.abilities[stat].value, "npcNum") +
     //     " (" +
-    //     + ')<input type ="checkbox"' + (thing.system.abilities[stat].proficient != 0 ? " checked " : "") + " > Prof</input > "; // todo use label not text word prof
+    //     + ')<input type ="checkbox"' + (thing.abilities[stat].proficient != 0 ? " checked " : "") + " > Prof</input > "; // todo use label not text word prof
 
     answer += "<button  onclick=\"rollSkill('" + thing.id + "','" + skillid + "', false)\">Check</button>";
     answer += "</div>";
@@ -482,10 +484,10 @@ function DndSkill(thing, skillid) {
 
 function DnDSkills(thing, showDefault) {
     let answer = "";
-    let keys = Object.keys(thing.system.skills);
+    let keys = Object.keys(thing.skills);
 
     for (let i = 0; i < keys.length; i++) {
-        if (showDefault || thing.system.skills[keys[i]].value) {
+        if (showDefault || thing.skills[keys[i]].value) {
 
             answer += DndSkill(thing, keys[i]);
 
@@ -508,8 +510,8 @@ function rollDamage(ownerId, weaponId, bonus, rolls) {
     let weapon = GetRegisteredThing(weaponId);
 
 
-    for (let i = 0; i < weapon.system.damage.parts.length; i++) {
-        let damage = [...weapon.system.damage.parts[i]];
+    for (let i = 0; i < weapon.damage.parts.length; i++) {
+        let damage = [...weapon.damage.parts[i]];
         let damageDice = damage[0].replace('@mod', bonus);
         damage.shift();
         let t = commaString(damage);
@@ -542,16 +544,16 @@ function rollWeapon(ownerId, weaponId) {
 
 
 
-    let bonus = DndAbilityBonus(owner, owner.system.abilities[weapon.system.ability].value);
+    let bonus = DndAbilityBonus(owner, owner.abilities[weapon.ability].value);
     if (weapon?.properties?.fin) {
-        let dex = DndAbilityBonus(owner, owner.system.abilities.dex.value);
+        let dex = DndAbilityBonus(owner, owner.abilities.dex.value);
         if (dex > bonus) {
             bonus = dex;
         }
     }
     // should check if proficient here
-    let prof = owner.system.attributes.prof;
-    let atk = weapon.system.attackBonus;
+    let prof = owner.attributes.prof;
+    let atk = weapon.attackBonus;
 
 
     let rolls = [];
@@ -576,16 +578,16 @@ MakeAvailableToHtml('rollWeapon', rollWeapon);
 //     let spell = GetRegisteredThing(spellId);
 
 
-//     let bonus = DndAbilityBonus(owner, owner.system.abilities[spell.system.ability].value);
+//     let bonus = DndAbilityBonus(owner, owner.abilities[spell.ability].value);
 //     if (weapon?.properties?.fin) {
-//         let dex = DndAbilityBonus(owner, owner.system.abilities.dex.value);
+//         let dex = DndAbilityBonus(owner, owner.abilities.dex.value);
 //         if (dex > bonus) {
 //             bonus = dex;
 //         }
 //     }
 //     // should check if proficient here
-//     let prof = owner.system.attributes.prof;
-//     let atk = weapon.system.attackBonus;
+//     let prof = owner.attributes.prof;
+//     let atk = weapon.attackBonus;
 
 //     let rolls = [];
 
@@ -596,8 +598,8 @@ MakeAvailableToHtml('rollWeapon', rollWeapon);
 
 //     });
 
-//     for (let i = 0; i < weapon.system.damage.parts.length; i++) {
-//         let damage = [...weapon.system.damage.parts[i]];
+//     for (let i = 0; i < weapon.damage.parts.length; i++) {
+//         let damage = [...weapon.damage.parts[i]];
 //         let damageDice = damage[0].replace('@mod', bonus);
 //         damage.shift();
 //         let t = commaString(damage);
@@ -618,7 +620,7 @@ function GetArmorClass(thing) {
 
     let ac = 0;
 
-    if (thing.system.attributes.ac.flat) { ac = thing.system.attributes.ac.flat; }
+    if (thing.attributes.ac.flat) { ac = thing.attributes.ac.flat; }
     // assumes default calculation
     let startingAc = 10;
     let adds = 0;
@@ -627,25 +629,25 @@ function GetArmorClass(thing) {
     if (thing.items) for (let i = 0; i < thing.items.length; i++) {
         let item = GetRegisteredThing(thing.items[i].file);
         if (!item) console.log("Error fetching " + thing.items[i].file);
-        if (item && item.system.equipped && item.system.armor && item.system.armor.value) {
+        if (item && item.equipped && item.armor && item.armor.value) {
 
-            switch (item.system.armor.type) {
+            switch (item.armor.type) {
                 case "light": case "medium": case "heavy":
-                    startingAc = item.system.armor.value;
+                    startingAc = item.armor.value;
                     break;
                 case "shield":
                 default:
-                    adds += item.system.armor.value;
+                    adds += item.armor.value;
                     break;
             }
-            if (item.system.armor.dex) {
-                if (item.system.armor.dex < dexMax) {
-                    dexMax = item.system.dex;
+            if (item.armor.dex) {
+                if (item.armor.dex < dexMax) {
+                    dexMax = item.dex;
                 }
             }
         }
     }
-    let dexBonus = DndAbilityBonus(thing, thing.system.abilities.dex.value);
+    let dexBonus = DndAbilityBonus(thing, thing.abilities.dex.value);
     if (dexBonus > dexMax) dexBonus = dexMax;
     let ac2 = startingAc + adds + dexBonus;
     return Math.max(ac, ac2);
@@ -667,12 +669,12 @@ function rollSpellSaveAsWeaponAsAttackHomebrew(ownerId, spellId) {
     rolls.push({
         title: owner.name + "'s " + spell.name + " roll or constant " + (bonus + 10),
         style: "dual",
-        roll: "1d20" + signed(bonus) + " vs " + spell.system.save.ability
+        roll: "1d20" + signed(bonus) + " vs " + spell.save.ability
 
     });
 
-    for (let i = 0; i < spell.system.damage.parts.length; i++) {
-        let damage = [...spell.system.damage.parts[i]];
+    for (let i = 0; i < spell.damage.parts.length; i++) {
+        let damage = [...spell.damage.parts[i]];
         let damageDice = damage[0].replace('@mod', stat);
         damage.shift();
         let t = commaString(damage);
@@ -693,16 +695,16 @@ MakeAvailableToHtml('rollSpellSaveAsWeaponAsAttackHomebrew', rollSpellSaveAsWeap
 
 function get5eDetails(thing) {
     // founddry 5e is poor, maybe write foudry cleaner and ahve cleaner sheets
-    if (thing.system) {
-        let array = thing.system.details.type ? details(thing.system.details.type) :
-            [thing.system.details.background,]
-            ;
+    // if (thing) {
+    //     let array = thing.details.type ? details(thing.details.type) :
+    //         [thing.details.background,]
+    //         ;
 
-        if (thing.system.details.alignment) { array.push(thing.system.details.alignment); }
-        if (thing.system.details.race) { array.push(thing.system.details.race); }
-        return commaString(array);
-    } else {
-    }
+    //     if (thing.details.alignment) { array.push(thing.details.alignment); }
+    //     if (thing.details.race) { array.push(thing.details.race); }
+    //     return commaString(array);
+    // } else {
+    // }
     return "";
 };
 MakeAvailableToParser('get5eDetails', get5eDetails);
@@ -796,7 +798,7 @@ MakeAvailableToParser("drawItems", drawItems);
 
 function Spell(thing) {
 
-    let s = thing.system;
+    let s = thing;
     let damage = s.damage.parts;
 
 

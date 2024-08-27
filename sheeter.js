@@ -17,6 +17,14 @@ function uuidv4() {
     );
 }
 
+function ensureExists(thing, field) {
+
+    if (thing[field] == undefined) {
+        thing[field] = {};
+    }
+}
+global.ensureExists = ensureExists;
+
 function findInNamedArray(array, name) {
 
     if (name) {
@@ -85,8 +93,13 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
         let result = await fs.readFile(filePath);
         let thing = jsonHandling.ParseJson(filePath, result); // for eval to work we need a thing
         // console.log(thing);
-        console.log(replacement);
+        console.log("rep" + replacement);
+        if (replacement.indexOf("]") >= 0) {
+
+            console.log("Do something");
+        }
         eval(replacement); // actually change the thing
+        console.log(thing);
 
         //  console.log('writeFile ', filePath);
         await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
@@ -251,7 +264,22 @@ async function AddItem(thingName, item_tag, io, msg) {
 
         let item_filePath = path.normalize(path.join(__dirname, 'public', item_tag.file + ".json"));
         let out_item_filePath = path.normalize(path.join(__dirname, 'public', (thingName) + "_" + baseItemName + "_" + uuid + ".json"));
-        promises.push(fs.copyFile(item_filePath, out_item_filePath));
+        // promises.push(fs.copyFile(item_filePath, out_item_filePath));
+
+
+        let outPutFile = { template: item_tag.file + ".json" };
+
+        promises.push(fs.writeFile(out_item_filePath, JSON.stringify(outPutFile), (err) => {
+            {
+                if (err)
+                    console.log(err);
+                else {
+                    console.log("File written successfully\n");
+                    console.log("The written has the following contents:");
+                    //  console.log(fs.readFileSync("books.txt", "utf8"));
+                }
+            }
+        }));
 
 
 

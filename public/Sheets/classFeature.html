@@ -1,6 +1,6 @@
 {
-if(!thing.system && thing.data) {
-thing.system = thing.data;
+if(!thing && thing.data) {
+thing = thing.data;
 }
 } @
 <div>
@@ -22,7 +22,7 @@ thing.system = thing.data;
           line-height: 26.1333px;
           text-transform: lowercase">
     </div>
-    <div>Requirements { thing.system.requirements }</div>
-    <div>{thing.system.description.value}</div>
+    <div>Requirements { thing.requirements }</div>
+    <div>{thing.description.value}</div>
   </div>
 </div>

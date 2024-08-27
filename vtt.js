@@ -394,7 +394,8 @@ async function NewPlayer(socket, msg) {
         stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0 },
         counters: { supplies: 2, hurt: 0, manaInAura: 0, exhaustion: 0 },
         languages: { FarDuric: true, Dwarvish: false, Firespeech: false, PrittanianLow: false, ImperialCourt: false },
-        items: [], tab: "stats"
+        items: [], tab: "stats",
+        featsChosen: {}
 
     };
 

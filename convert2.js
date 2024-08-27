@@ -205,8 +205,8 @@ async function doit() {
                      tagsSource.hash = tagsSource.hash.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
                      tagsSource.page = path.parse(tagsSource.page).name;
                      let name = json.name;
-                     if (json.system.requirements) {
-                         name += " : " + json.system.requirements;
+                     if (json.requirements) {
+                         name += " : " + json.requirements;
                      } else {
                          name += " (" + tagsSource.page + ")";
                      }

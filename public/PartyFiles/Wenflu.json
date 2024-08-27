@@ -76,6 +76,7 @@
     "name": "Wenflu",
     "species": "Human",
     "origin": "Majority City",
+    "featsChosen": {},
     "wealth": 2,
     "stats": {
         "avoidance": 0,

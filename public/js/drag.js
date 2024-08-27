@@ -1,4 +1,5 @@
-import { setSlot } from './ptba.js';
+import { MakeAvailableToHtml, GetRegisteredThing } from './characters.js';
+import { setSlot, findInNamedArray, isEquipped } from './ptba.js';
 export var thingDragged = null;
 
 export function setThingDragged(t) {
@@ -121,6 +122,7 @@ function svgDragDrop(event) {
     svgCleanUp(svg);
 
 }
+MakeAvailableToHtml("svgDragDrop", svgDragDrop);
 
 
 function svgDragOver(event) {
@@ -160,6 +162,7 @@ function svgDragOver(event) {
     }
 
 }
+MakeAvailableToHtml("svgDragOver", svgDragOver);
 
 
 function svgDragOut(event) {
@@ -169,6 +172,7 @@ function svgDragOut(event) {
     svgCleanUp(svg);
 }
 
+MakeAvailableToHtml("svgDragOut", svgDragOut);
 
 
 

@@ -3,23 +3,25 @@
 
     <div class="tab">
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="goals" ) ) }
-            onclick="openTab(event, 'goals', this, '{ thing.id }')">Goals</div>
+            onclick="htmlContext.openTab(event, 'goals', this, '{ thing.id }')">Goals</div>
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="appearance" ) ) }
-            onclick="openTab(event, 'appearance', this, '{ thing.id }')">Image</div>
+            onclick="htmlContext.openTab(event, 'appearance', this, '{ thing.id }')">Image</div>
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="stats" ) ) }
-            onclick="openTab(event, 'stats', this, '{ thing.id }')">Stats</div>
+            onclick="htmlContext.openTab(event, 'stats', this, '{ thing.id }')">Stats</div>
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="inventory" ) ) }
-            onclick="openTab(event, 'inventory', this,  '{ thing.id }')">Inventory</div>
+            onclick="htmlContext.openTab(event, 'inventory', this,  '{ thing.id }')">Inventory</div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="careers" ) ) }
-            onclick="openTab(event, 'careers',  this, '{ thing.id }')">Careers</div>
+            onclick="htmlContext.openTab(event, 'careers',  this, '{ thing.id }')">Careers</div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="spells" ) ) }
-            onclick="openTab(event, 'spells', this,  '{ thing.id }')">Spells</div>
+            onclick="htmlContext.openTab(event, 'spells', this,  '{ thing.id }')">Spells</div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="features" ) ) }
-            onclick="openTab(event, 'features', this,  '{ thing.id }')">Features</div>
+            onclick="htmlContext.openTab(event, 'features', this,  '{ thing.id }')">Features</div>
+        <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="raw" ) ) }
+            onclick="htmlContext.openTab(event, 'raw', this,  '{ thing.id }')">Raw</div>
     </div>
     <p class="basicFont npcTitleInput indented"> Name:
         <input class="itemsetheader npcTitleInput" type="text" data-thingid="{thing.id}" value="{thing.name}"
-            onchange="ChangeName(this)">
+            onchange="htmlContext.ChangeName(this)">
     </p>
     <!-- Include Initiative, Health/Max Health, Conditions, Exhaustion, take Damage, be healed, and Mana on the title
     bar
@@ -30,7 +32,7 @@
         <div class=" twocolumnsuneven">
             <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                onclick="showApperancePopUp(event,'{thing.id}')"></image>
+                onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"></image>
             <div id="columntwo">
                 Meeting your goals is usually the only way to advance.
 
@@ -57,7 +59,7 @@
         <div class=" twocolumnsuneven">
             <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                onclick="showApperancePopUp(event,'{thing.id}')"></image>
+                onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"></image>
             <div id="columntwo">
 
                 <p class="npcBold"><span class="c12">Species: { Editable(thing,
@@ -110,7 +112,7 @@
                     <div> { PTBADefenses(thing) } </div>
                 </div>
 
-                <button onclick="takeDamage('{thing.id}')" class="blueButton">Take Damage</button>
+                <button onclick="htmlContext.takeDamage('{thing.id}')" class="blueButton">Take Damage</button>
 
                 <p class="npcBold"><span class="c12">Wounds Taken: { Editable(thing,
                         "thing.counters.hurt",
@@ -130,12 +132,14 @@
 
         <div class="twocolumns">
             <div>
-                <div class="npcheader" onclick="showApperancePopUp(event,'{thing.id}')"> { thing.current_appearance }
+                <div class="npcheader" onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"> {
+                    thing.current_appearance }
                 </div>
                 <div> Portrait</div>
                 <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
                     style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                    onclick="showPasteAndChoose(event,'portrait_{thing.id}','token_{thing.id}')"></image>
+                    onclick="htmlContext.showPasteAndChoose(event, window, 'portrait_{thing.id}','token_{thing.id}')">
+                </image>
                 <div id="portrait_{thing.id}" class="hiddenButton">
                     <button>Paste</button>
                     <form action="/uploadFromButton" method="POST" enctype="multipart/form-data"
@@ -152,7 +156,8 @@
                 <div> Token</div>
                 <image src="{getAppearanceImage(thing, 'token')}" alt="{thing.name}"
                     style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'token')}"
-                    onclick="showPasteAndChoose(event,'token_{thing.id}','portrait_{thing.id}')"></image>
+                    onclick="htmlContext.showPasteAndChoose(event, window, 'token_{thing.id}','portrait_{thing.id}')">
+                </image>
                 <div id="token_{thing.id}" class="hiddenButton">
                     <button>Paste</button>
                     <form action="/uploadFromButton" method="POST" enctype="multipart/form-data"
@@ -172,7 +177,9 @@
     <div id="careers" { tabClass( thing.tab && thing?.tab=="careers" ) }>
         <div class=" outlined dragitem">
             <div class="relative_inline_block">
-                <button onclick="dropDownToggle('dropdown_{thing.id}')" class="blueButton">Add Career</button>
+                <button onclick="htmlContext.dropDownToggle('dropdown_{thing.id}', window.document)"
+                    class="blueButton">Add
+                    Career</button>
                 <div id="dropdown_{thing.id}" class="dropdown-content itemsetheadershort crit">
                     <input type=" text" placeholder="Search.." id="dropdown_content_{thing.id}"
                         onkeyup="filterDropDown('dropdown_content_{thing.id}','dropdown_{thing.id}')">
@@ -204,20 +211,21 @@
             "itemsetheader numberinput") } of { (getMaxMageLevel(thing)+1) }</span></p>
     <p class="npcBold"> Raise Mana </p>
 
-    <button onclick="addManaOncePerTurn(this,'{thing.id}')">Once Per turn</button>
-    <button onclick="addManaExhaust(this,'{thing.id}')">From Exhaustion</button>
-    <button onclick="addManaStab(this,'{thing.id}')">Action: Cut yourself (blood magic) </button>
-    <button onclick="addManaStabAnother(this,'{thing.id}')">Action: Stab another </button>
-    <button onclick="addManaSpendIngredients(this,'{thing.id}')">Action: Spend ingredients</button>
-    <button onclick="AddManaWorldsOfPower(this,'{thing.id}')">Bonus Action: Say Words of Power</button>
-    <button onclick="AddManaPLanarFOrces(this,'{thing.id}')">Bonus Action: call on Planar Forces</button>
-    <button onclick="AddManaGotCritOrFumble(this,'{thing.id}')">Got a crit or fumble</button>
+    <button onclick="htmlContext.addManaOncePerTurn(this,'{thing.id}')">Once Per turn</button>
+    <button onclick="htmlContext.addManaExhaust(this,'{thing.id}')">From Exhaustion</button>
+    <button onclick="htmlContext.addManaStab(this,'{thing.id}')">Action: Cut yourself (blood magic) </button>
+    <button onclick="htmlContext.addManaStabAnother(this,'{thing.id}')">Action: Stab another </button>
+    <button onclick="htmlContext.addManaSpendIngredients(this,'{thing.id}')">Action: Spend ingredients</button>
+    <button onclick="htmlContext.AddManaWorldsOfPower(this,'{thing.id}')">Bonus Action: Say Words of Power</button>
+    <button onclick="htmlContext.AddManaPLanarFOrces(this,'{thing.id}')">Bonus Action: call on Planar Forces</button>
+    <button onclick="htmlContext.AddManaGotCritOrFumble(this,'{thing.id}')">Got a crit or fumble</button>
     { drawItems(thing, IsSpellIngredient, undefined) }
-    <button onclick="resetManaButtons(this.parentElement,'{thing.id}')">reset turn</button>
-    <button onclick="dropDownToggle('ddispells_{thing.id}')" class="blueButton">Learn Spell</button>
+    <button onclick="htmlContext.resetManaButtons(this.parentElement,'{thing.id}')">reset turn</button>
+    <button onclick="htmlContext.dropDownToggle('ddispells_{thing.id}',window.document)" class="blueButton">Learn
+        Spell</button>
     <div id="ddispells_{thing.id}" class="dropdown-content itemsetheadershort crit">
         <input type=" text" placeholder="Search.." id="ddispells_c_{thing.id}"
-            onkeyup="filterDropDown('ddispells_c_{thing.id}','ddispells_{thing.id}')">
+            onkeyup="htmlContext.filterDropDown('ddispells_c_{thing.id}','ddispells_{thing.id}')">
         { extractFromCompendium(["spell"], thing); }
     </div>
 
@@ -233,6 +241,16 @@
     <div class="outlined dragitem">
         { drawItems(thing, IsCareerItem, "full") }
     </div>
+</div>
+
+
+
+<div id="raw" { tabClass( thing.tab && thing.tab=="raw" )}>
+
+    <div> {
+        RawEditor(thing, thing, "")
+        } </div>
+
 </div>
 <!-- Different tabs here onclick="showApperancePopUp(event,'{thing.id}')" 
 
@@ -273,7 +291,8 @@
                 </defs>
 
                 <image href="{getAppearanceImage(thing, 'portrait')}" width="75%" height="80%" y="05%" x="10%"
-                    title="image" preserveAspectRatio="xMidYMid meet" onclick="showApperancePopUp(event,'{thing.id}')">
+                    title="image" preserveAspectRatio="xMidYMid meet"
+                    onclick="htmlContext.showApperancePopUp(event,'{thing.id}')">
                 </image>/>
 
                 <rect x="0%" y="0%" width="20%" height="100%" fill="url(#darktolight)"></rect>
@@ -472,7 +491,8 @@
 
         <div id=" columntwo">
             <div>Items</div>
-            <button onclick="dropDownToggle('ddi_{thing.id}')" class="blueButton">Buy Item</button>
+            <button onclick="htmlContext.dropDownToggle('ddi_{thing.id}',window.document)" class="blueButton">Buy
+                Item</button>
             <div id="ddi_{thing.id}" class="dropdown-content itemsetheadershort crit">
                 <input type=" text" placeholder="Search.." id="ddi_c_{thing.id}"
                     onkeyup="filterDropDown('ddi_c_{thing.id}','ddi_{thing.id}')">

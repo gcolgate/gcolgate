@@ -1,6 +1,6 @@
 import { slotList } from './drag.js';
 import { sendChat } from './chat.js';
-import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, MakeAvailableToParser, MakeAvailableToHtml } from './characters.js'
+import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, MakeAvailableToParser, MakeAvailableToPopup, MakeAvailableToHtml, windowSetElemVisible } from './characters.js'
 import { socket } from './main.js';
 
 
@@ -18,6 +18,60 @@ export const moves = {
         "success": "You get your way",
         "mixed": "Inconclusive, or get your way but take some pain",
         "fail": "You definitely lose the confrontation, taking pain"
+    },
+    "Extinguish Fire": {
+        "stat": [
+            "caring"
+        ],
+        "Comments": "<ul>\
+        <li> &#x25BA;  When your friend is on fire </li>\
+        <li> &#x25BA;  Note, doing things like jumping in a lake </li>\
+        <li> &#x25BA;  will not require a roll. </li></li></ul>",
+        "Critical": "The fire is out, and it takes you no time and will not affect initiative",
+        "success": 'You get the fire out, but <a href="#">choose 1\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; You lose the intiative</li>\
+                    <li> &#x25BA; They take damage from the fire</li>\
+                </div >\
+            </div ></a >',
+        "mixed": 'Choose <a href="#">you lose the initiative\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; You get the intiative</li>\
+                    <li> &#x25BA; They don\'t take damage from the fire</li>\
+                    <li> &#x25BA; You get the fire out</li>\
+                </div>\
+            </div ></a>',
+        "fail": "You lose the initiative and they take damage from the fire",
+        "fumble": "You catch yourself on fire too."
+    },
+    "On Fire": {
+        "stat": [
+            "avoid", "caring"
+        ],
+        "Comments": "<ul>\
+        <li> &#x25BA;  When you are on fire </li>\
+        <li> &#x25BA;  Note, doing things like jumping in a lake </li>\
+        <li> &#x25BA;  will not require a roll. </li></li></ul>",
+        "Critical": "The fire is out, and it takes you no time and will not affect initiative",
+        "success": 'You get the fire out, but <a href="#">choose 1\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; You lose the intiative</li>\
+                    <li> &#x25BA; You take damage from the fire</li>\
+                </div >\
+            </div ></a >',
+        "mixed": 'Choose <a href="#">you lose the initiative\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; You get the intiative</li>\
+                    <li> &#x25BA; You don\'t take damage from the fire</li>\
+                    <li> &#x25BA; You get the fire out</li>\
+                </div>\
+            </div ></a>',
+        "fail": "You lose the initiative and take damage from the fire",
+        "fumble": "You spread the fire to a nearby object."
     },
     "Display of Might and Power": {
         "stat": [
@@ -472,7 +526,7 @@ function HasFeat(thingId, featName) {
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
         if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file).system;
+            let career = GetRegisteredThing(item.file);
             if (career.owner_featsChosen[featName]) {
                 return true;
             }
@@ -485,7 +539,7 @@ function getStrength(owner) {
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
         if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file).system;
+            let career = GetRegisteredThing(item.file);
 
             if (career.name == "Strength") {
                 return Number(career.owner_level);
@@ -500,7 +554,7 @@ function getMaxMageLevel(owner) {
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
         if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file).system;
+            let career = GetRegisteredThing(item.file);
 
             if (career.mana) {
                 answer = Math.max(Number(career.owner_level), answer);
@@ -628,6 +682,7 @@ function takeDamage(thingId) {
 
 }
 MakeAvailableToParser("takeDamage", takeDamage);
+MakeAvailableToHtml("takeDamage", takeDamage);
 
 function FindBestCareerNode(owner, node) {
 
@@ -640,7 +695,7 @@ function FindBestCareerNode(owner, node) {
 
         let item = owner.items[i];
         if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file).system;
+            let career = GetRegisteredThing(item.file);
             if (career.owner_level > bonus) {
                 for (let cw = 0; cw < career.weapons.length; cw++) {
                     let career_wt = career.weapons[cw];
@@ -663,23 +718,27 @@ function FindBestCareerNode(owner, node) {
 
 function showWeaponModes(thing, owner) {
     let answer = "";
+    return "";
     if (!thing.weapon_modes) return answer;
     for (let i = 0; i < thing.weapon_modes.length; i++) {
         let mode = thing.weapon_modes[i];
-        answer += span(mode.name, "", "bold") + ".  ";
-        if (mode.range) answer += (span("range ", mode.range, "italic")) + ".  ";
-        if (mode.min_range) answer += (span("minimum range ", mode.min_range, "italic")) + ".  ";
-        if (mode.radius) answer += (span("radius range ", mode.radius, "italic")) + ".  ";
-        answer += span(mode.type + " ", (mode.hands > 1 ? " Two Handed. " : ""), "italic");
-        let bonus = FindBestCareerNode(owner, mode);
-        for (let d = 0; d < mode.damage.length; d++) {
-            if (mode.damage) {
-                let damage = mode.damage[d];
-                answer += span("damage ", "", "italic") + damage.damage + "+" + bonus[0] + " " + damage.type + " " + damage.when + ". ";
-                bonus = 0;
-            } else if (mode.condition) {
-                let damage = mode.damage[d];
-                answer += span("condition", "", "italic") + damage.damage + " " + damage.type + " " + damage.when + ". ";
+        for (let mv = 0; mv < mode.moves.length; mv++) {
+            let move = mode.moves[mv];
+            answer += span(mode.name + " " + moves[move].name, "", "bold") + ".  ";
+            if (mode.range) answer += (span("range ", mode.range, "italic")) + ".  ";
+            if (mode.min_range) answer += (span("minimum range ", mode.min_range, "italic")) + ".  ";
+            if (mode.radius) answer += (span("radius range ", mode.radius, "italic")) + ".  ";
+            answer += span(mode.type + " ", (mode.hands > 1 ? " Two Handed. " : ""), "italic");
+            let bonus = FindBestCareerNode(owner, mode, move);
+            for (let d = 0; d < mode.damage.length; d++) {
+                if (mode.damage) {
+                    let damage = mode.damage[d];
+                    answer += span("damage ", "", "italic") + damage.damage + "+" + bonus[0] + " " + damage.type + " " + damage.when + ". ";
+                    bonus = 0;
+                } else if (mode.condition) {
+                    let damage = mode.damage[d];
+                    answer += span("condition", "", "italic") + damage.damage + " " + damage.type + " " + damage.when + ". ";
+                }
             }
         }
     }
@@ -743,7 +802,7 @@ MakeAvailableToParser('showArmorBenefit', showArmorBenefit);
 
 
 
-function findInNamedArray(array, name) {
+export function findInNamedArray(array, name) {
 
     if (name) {
         for (let i = 0; i < array.length; i++) {
@@ -754,6 +813,8 @@ function findInNamedArray(array, name) {
     }
     return undefined;
 }
+MakeAvailableToParser('findInNamedArray', findInNamedArray);
+
 
 var missingImage = "images/questionMark.png";
 
@@ -766,7 +827,7 @@ export function getAppearanceImage(thing, type) {
     return answer.image ? answer.image : missingImage;
 
 }
-MakeAvailableToHtml('getAppearanceImage', getAppearanceImage);
+MakeAvailableToParser('getAppearanceImage', getAppearanceImage);
 
 
 export function setSlot(thing, slotExact, item) {
@@ -798,7 +859,7 @@ function getSlotImage(thing, type, placeholder) {
     if (!slots) return placeholder;
 
     if (!slots[type]) return placeholder;
-
+    console.log(slots[type]);
     if (isAllExpended(slots[type])) {
         return "images/icons/all_empty.webp";
     }
@@ -826,8 +887,10 @@ function getSlotItem(owner_id, slot) {
 }
 
 
-function isEquipped(owner_id, thingId) {
+export function isEquipped(owner_id, thingId) {
     let thing = GetRegisteredThing(thingId);
+    console.log(thing);
+    console.log(thing.slot);
     if (thing.slot == "Always") return true;
     let owner = GetRegisteredThing(owner_id);
     let answer = findInNamedArray(owner.appearance, owner.current_appearance);
@@ -917,19 +980,18 @@ function ToggleEquip(owner_id, thingId) {
 
 
     }
-
-
 }
+MakeAvailableToHtml("ToggleEquip", ToggleEquip);
 
 function EquippedCheckBox(owner_id, thingId) {
     let e = isEquipped(owner_id, thingId);
     console.log("e " + e);
 
     console.log('<input type="checkbox" id="' + owner_id + "_" + thingId + '" name="Equipped"' + (e ? ' checked="true"' : "") + '"' +
-        ' onChange= "ToggleEquip(' + "'" + owner_id + "'" + thingId + "')" + '  ">');
+        ' onChange= "htmlContext.ToggleEquip(' + "'" + owner_id + "'" + thingId + "')" + '  ">');
 
     return '<input type="checkbox" id="' + owner_id + "_" + thingId + '" name="Equipped"' + (e ? ' checked="true"' : "") + '"' +
-        ' onChange= "ToggleEquip(' + "'" + owner_id + "','" + thingId + "')" + '  ">';
+        ' onChange= "htmlContext.ToggleEquip(' + "'" + owner_id + "','" + thingId + "')" + '  ">';
 
 }
 MakeAvailableToParser('EquippedCheckBox', EquippedCheckBox);
@@ -1024,21 +1086,22 @@ function openTab(evt, tabName, button, id) {
 
 }
 MakeAvailableToParser('openTab', openTab);
+MakeAvailableToHtml('openTab', openTab);
 
 
 function featCheckBox(feats, i, thing, owner, checked, featSheet) {
 
 
-    let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
+    let clause = "ensureExists(thing, 'owner_featsChosen'); thing.owner_featsChosen['" + feats[i] + "']"
     let text = "<li> &#x25BA;"
     text += '<input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"'
         + '"  data-owner="' + owner.id + '" '
         + '" data-clause="' + clause
         + '"  data-thingid="' + thing.id
         + '" ' + (checked ? " checked " : "")
-        + ' onchange="featclicked(this);"'
+        + ' onchange="htmlContext.featclicked(this);"'
         + ' /><label for="' + feats[i] + '"> <span class=npcBold>' +
-        featSheet.name + ':</span>' + featSheet.system.description.value + '</li > ';
+        featSheet.name + ':</span>' + featSheet.description.value + '</li > ';
 
     return text;
 }
@@ -1048,15 +1111,15 @@ MakeAvailableToParser('featCheckBox', featCheckBox);
 export function sumCareerFeats(thing) {
 
 
-    let feats = thing.system.feats;
+    let feats = thing.feats;
 
-    if (!thing.system?.owner_featsChosen) return 0;
+    if (!thing?.owner_featsChosen) return 0;
     let count = 0;
 
     for (let i = 0; i < feats.length; i++) {
         let name = "CompendiumFiles/" + feats[i];
 
-        let checked = thing.system.owner_featsChosen[feats[i]];
+        let checked = thing.owner_featsChosen[feats[i]];
 
         if (checked) count++;
 
@@ -1073,18 +1136,18 @@ function drawCareerFeats(thing, owner, notes) {
     // let career = validateCareer(thing, owner);
 
 
-    let feats = thing.system.feats;
+    let feats = thing.feats;
 
 
     if (owner) {
 
         if (!notes) {
-            text += div(span("Weapons", Editable(thing, "thing.system.weapons", ""))) +
-                div(span("Tools", Editable(thing, "thing.system.tools", "")));
+            text += div(span("Weapons", Editable(thing, "thing.weapons", ""))) +
+                div(span("Tools", Editable(thing, "thing.tools", "")));
         } else {
 
-            text += div(span("Weapons", thing.system.weapons, 'class="bold"')) +
-                div(span("Tools", thing.system.tools, 'class="bold"'));
+            text += div(span("Weapons", thing.weapons, 'class="bold"')) +
+                div(span("Tools", thing.tools, 'class="bold"'));
 
         }
 
@@ -1095,7 +1158,7 @@ function drawCareerFeats(thing, owner, notes) {
         for (let i = 0; i < feats.length; i++) {
             let name = "CompendiumFiles/" + feats[i];
 
-            let checked = thing.system.owner_featsChosen[feats[i]];
+            let checked = thing.owner_featsChosen[feats[i]];
 
             if (notes && !checked) continue;
 
@@ -1103,11 +1166,11 @@ function drawCareerFeats(thing, owner, notes) {
 
             text += featCheckBox(feats, i, thing, owner, checked, featSheet);
 
-            // let clause = "thing.system.owner_featsChosen['" + feats[i] + "']"
+            // let clause = "thing.owner_featsChosen['" + feats[i] + "']"
             // text += '<li> &#x25BA; <input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
             //     + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
             //     ' onchange="featclicked(this);" /><label for="' + feats[i] + '"> <span class=npcBold>' +
-            //     featSheet.name + ':</span>' + featSheet.system.description.value + '</label></li > ';
+            //     featSheet.name + ':</span>' + featSheet.description.value + '</label></li > ';
 
         }
         text += '</ul> </div>';
@@ -1116,7 +1179,7 @@ function drawCareerFeats(thing, owner, notes) {
 
     for (let i = 0; i < feats.length; i++) {
 
-        if (owner && !thing.system.owner_featsChosen[feats[i]]) continue;
+        if (owner && !thing.owner_featsChosen[feats[i]]) continue;
 
         let name = "CompendiumFiles/" + feats[i];
         text += "<div>";
@@ -1174,10 +1237,10 @@ async function UploadAppearanceArt(ev, which, id) {
 }
 MakeAvailableToHtml('UploadAppearanceArt', UploadAppearanceArt);
 
-function showPasteAndChoose(e, show, hide) {
+function showPasteAndChoose(e, w, show, hide) {
 
-    let toShow = document.getElementById(show);
-    let toHide = document.getElementById(hide);
+    let toShow = w.document.getElementById(show);
+    let toHide = w.document.getElementById(hide);
 
     toShow.style.visibility = "visible";
     toHide.style.visibility = "hidden";
@@ -1185,8 +1248,9 @@ function showPasteAndChoose(e, show, hide) {
 }
 MakeAvailableToHtml('showPasteAndChoose', showPasteAndChoose);
 
-function dropDownToggle(elem) {
-    let toShow = document.getElementById(elem);
+function dropDownToggle(elemId, doc) {
+
+    let toShow = doc.getElementById(elemId);
     if (toShow.style.visibility == "visible")
         toShow.style.visibility = "hidden";
     else {
@@ -1194,7 +1258,10 @@ function dropDownToggle(elem) {
         toShow.style.display = "block";
 
     }
+
+
 }
+
 MakeAvailableToHtml('dropDownToggle', dropDownToggle);
 
 
@@ -1283,7 +1350,7 @@ MakeAvailableToHtml('showApperancePopUp', showApperancePopUp);
 
 //     if (owner && notes) {
 //         text += div('<span class="basicFont npcBold bodyText">Level </span>' +
-//             Editable(thing, "thing.system.owner_level", "shortwidth coloring basicFont bodyText"));
+//             Editable(thing, "thing.owner_level", "shortwidth coloring basicFont bodyText"));
 
 //     }
 //     return text;
@@ -1508,17 +1575,17 @@ function languagesButtons(thing) {
     let answer = ""; for (let i = 0; i < languages.length; i++) {
         let name = (languages[i]);
         answer += '<input type="checkbox" id="' + name + '" name="' + name + ((!!thing.languages[name]) ? '" checked="true"' : "") + '"' +
-            ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
+            ' onChange= "htmlContext.selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
     }
     for (let i = 0; i < tribal_languages.length; i++) {
         let name = (tribal_languages[i]);
         answer += '<input type="checkbox" id="' + name + '" name="' + name + ((!!thing.languages[name]) ? '" checked="true"' : "") + '"' +
-            ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
+            ' onChange= "htmlContext.selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
     }
     for (let i = 0; i < magic_languages.length; i++) {
         let name = (magic_languages[i]);
         answer += '<input type="checkbox" id="' + name + '" name="' + name + ((!!thing.languages[name]) ? '" checked="true"' : "") + '"' +
-            ' onChange= "selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
+            ' onChange= "htmlContext.selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
     }
     return answer;
 }
@@ -1597,7 +1664,9 @@ function rollMoveStat(ownerId, stat, mv, advantage, weapon_id, weapon_mode) {
     }
 
 }
+
 MakeAvailableToParser("rollMoveStat", rollMoveStat);
+MakeAvailableToHtml("rollMoveStat", rollMoveStat);
 
 /// TODO rearrange data so this isn';t a seprate function
 function rollSpellMoveStat(ownerId, stat, mv, advantage, spell_id, spell_node) {
@@ -1638,10 +1707,11 @@ function rollPTBAStat(ownerId, stat, isSave) {
 
 }
 MakeAvailableToParser("rollPTBAStat", rollPTBAStat);
+MakeAvailableToHtml("rollPTBAStat", rollPTBAStat);
 
 function PTBAAbility(thing, stat) {
     let answer = Editable(thing, " thing.stats['" + stat + "'] ", "npcNum") +
-        "<button onclick=\"rollPTBAStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
+        "<button onclick=\"htmlContext.rollPTBAStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
     return answer;
 }
 
@@ -1666,7 +1736,7 @@ function GetWeaponsList(thing) {
         if (thing.items[i].page == "weapon") {
             result.push(thing.items[i].file);
             //  if (!item) console.log("Error fetching " + thing.items[i].file);
-            //    if (item && item.system.equipped && item.system.armor && item.system.armor.value) {
+            //    if (item && item.equipped && item.armor && item.armor.value) {
 
 
         }
@@ -1697,13 +1767,13 @@ function WeaponMoves(thing, weaponId,) {
             for (let j = 0; j < moves[key].stat.length; j++) {
                 let stat = moves[key].stat[j];
                 answer += "<div>"
-                answer += "<button class=\"greentintButton roundbutton \" onclick =\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
+                answer += "<button class=\"greentintButton roundbutton \" onclick =\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
                     + "+" +
                     "</button>";
-                answer += "<button class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
+                answer += "<button class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
                     + ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + (moves[key].stat.length > 1 ? "(" + stat + ")" : "") +
                     "</button>";
-                answer += "<button class=\"redtintButton roundbutton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
+                answer += "<button class=\"redtintButton roundbutton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
                     + "-" +
                     "</button>";
                 answer += "</div>"
@@ -1737,13 +1807,13 @@ function WeaponParries(thing, weaponId,) {
             for (let j = 0; j < stats.length; j++) {
                 let stat = stats[j];
                 answer += "<div>"
-                answer += "<button class=\"greentintButton roundbutton \" onclick =\"rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',1,'" + weaponId + "'," + m + ")\">"
+                answer += "<button class=\"greentintButton roundbutton \" onclick =\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',1,'" + weaponId + "'," + m + ")\">"
                     + "+" +
                     "</button>";
-                answer += "<button class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',0,'" + weaponId + "'," + m + ")\">"
+                answer += "<button class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',0,'" + weaponId + "'," + m + ")\">"
                     + ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + "(" + stat + ")" +
                     "</button>";
-                answer += "<button class=\"redtintButton roundbutton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',-1,'" + weaponId + "'," + m + ")\">"
+                answer += "<button class=\"redtintButton roundbutton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',-1,'" + weaponId + "'," + m + ")\">"
                     + "-" +
                     "</button>";
                 answer += "</div>"
@@ -1771,13 +1841,13 @@ function PTBAMoves(thing) {
         } else
             for (let j = 0; j < moves[key].stat.length; j++) {
                 let stat = moves[key].stat[j];
-                answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',1)\">"
+                answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',1)\">"
                     + "+" +
                     "</button>";
-                answer += "<button  class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',0)\">"
+                answer += "<button  class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',0)\">"
                     + key + (moves[key].stat.length > 1 ? "(" + stat + ")" : "") +
                     "</button>";
-                answer += "<button class=\"redtintButton roundbutton\"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',-1)\">"
+                answer += "<button class=\"redtintButton roundbutton\"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',-1)\">"
                     + "-" +
                     "</button></div>";
             }
@@ -1803,13 +1873,13 @@ function PTBADefenses(thing) {
     }
     let a = "Dodge";
     let stat = "Avoid";
-    answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',1)\">"
+    answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',1)\">"
         + "+" +
         "</button>";
-    answer += "<button  class=\"middleButton\" onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',0)\">"
+    answer += "<button  class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',0)\">"
         + a + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
         "</button>";
-    answer += "<button class=\"redtintButton roundbutton\"  onclick=\"rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',-1)\">"
+    answer += "<button class=\"redtintButton roundbutton\"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',-1)\">"
         + "-" +
         "</button></div>";
 
@@ -2010,7 +2080,6 @@ function addManaOncePerTurn(button, thingId) {
     addMana(thingId, 1);
     button.disabled = true; // not eorking
 }
-
 MakeAvailableToHtml('addManaOncePerTurn', addManaOncePerTurn);
 
 function addManaExhaust(button, thingId) {
@@ -2216,9 +2285,9 @@ function AttackOrAmbushButton(thing, owner) {
 
     }
     let id = thing.id + '_' + owner.id + '_attackOrAmbush';
-    return '<input type="radio" id="' + id + '_attack" name="Attack_Mode' + id + '" value="Attack"' + attackChecked + 'onclick=changeAttackMode(thing.id,  "Attack")>' +
+    return '<input type="radio" id="' + id + '_attack" name="Attack_Mode' + id + '" value="Attack"' + attackChecked + 'onclick=htmlContext.changeAttackMode(thing.id,  "Attack")>' +
         '<label for="' + id + '_attack">Attack</label>  ' +
-        '<input type="radio" id="id+ambush" name="Attack_Mode' + id + '" value="Ambush"' + ambushChecked + 'onclick=changeAttackMode(thing.id,  "Ambush")>' +
+        '<input type="radio" id="id+ambush" name="Attack_Mode' + id + '" value="Ambush"' + ambushChecked + 'onclick=htmlContext.changeAttackMode(thing.id,  "Ambush")>' +
         '<label for="' + id + '_ambush">Ambush</label>';
 }
 

@@ -52,13 +52,13 @@ function ComputePage(json, page) {
     }
 
     if (json.attunment != undefined && json.attunment != "0") { return "magic_items"; }
-    if (json.system.price === null) { return "magic_items"; }
+    if (json.price === null) { return "magic_items"; }
     if (json.name.startsWith("+")) { return "magic_items"; }
-    if (json.system.price && json.system.price > 1000) { return "expensive"; }
-    if (json.system.weight && json.system.weight > 60) { return "heavy"; }
+    if (json.price && json.price > 1000) { return "expensive"; }
+    if (json.weight && json.weight > 60) { return "heavy"; }
     if (json.type == "weapon") return "weapons";
-    if (json.system.consumableType == "poison") return "poison";
-    if (json.system.armor && json.system.armor.value > 10) return "armor";
+    if (json.consumableType == "poison") return "poison";
+    if (json.armor && json.armor.value > 10) return "armor";
     return "items";
 
 
@@ -534,6 +534,7 @@ var items = [
             range: 1,
             hands: 1,
             type: "Melee",
+            move: ["Parry"],
             career: ["Infantry"],
         }],
         weapon_modes:
@@ -561,6 +562,27 @@ var items = [
                 hands: 1,
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }]
             }],
+    },
+
+    {
+        name: "Cavalry Horse",
+        description: "A horse used to battle",
+        image: "images/assets/srd5e/img/MM/Riding_Horse.png",
+        slot: "mount",
+        hands: 0,
+        wealth: 4,
+        saddlebags: 12,
+        weapon_defenses: [{
+            name: "Fast Avoid Missiles",
+            range: 0,
+            hands: 0,
+            advantage: 1,
+            type: "Melee",
+            move: ["Avoid"],
+            career: ["Cavalry", "HorseArcher"],
+        }],
+        weapon_modes:
+            [],
     },
     {
         name: "Cutlass",
@@ -2539,19 +2561,19 @@ function convert_weapons(input) {
     let output = {};
     output.name = input.name;
     output.type = input.type;
-    output.system = {};
-    output.system.description = input.system.description;
+    output = {};
+    output.description = input.description;
     output.range = {};
     output.range = input.range;
     output.types = [];
     console.log(input.name);
-    console.log(input.system.range?.long);
-    console.log(input?.system.range?.long);
+    console.log(input.range?.long);
+    console.log(input?.range?.long);
 
     if (input.name == "Longbow")
         console.log(input);
 
-    if (input?.system.range?.long && input.system.range.long > 0)
+    if (input?.range?.long && input.range.long > 0)
         output.types.push("Ranged");
 
     // else if (output.range.long > 0 && output.comsume.type == "") {
@@ -2561,17 +2583,17 @@ function convert_weapons(input) {
     else
         output.types.push("Melee");
 
-    if (input.system?.properties.fin) output.types.push("Finesse");
-    if (input.system?.properties.lgt) output.types.push("Light");
-    if (input.systems?.properties.thr) {
+    if (input?.properties?.fin) output.types.push("Finesse");
+    if (input?.properties?.lgt) output.types.push("Light");
+    if (input?.properties?.thr) {
         output.types.push("Thrown");
         output.types.push("Melee");
     }
-    if (input.system?.properties.mgc) output.types.push("Magic");
+    if (input?.properties?.mgc) output.types.push("Magic");
 
-    output.system.damage = input.system.damage;
-    output.system.range = input.system.range;
-    output.system.attackBonus = input.system.attackBonus;
+    output.damage = input.damage;
+    output.range = input.range;
+    output.attackBonus = input.attackBonus;
 
 
     return output;
@@ -2594,7 +2616,7 @@ async function convertDnD5e() {
         let subfiles = [];
         let oneEntry = "";
         let quoted = "";
-        badNews = false;
+        let badNews = false;
         let test = false;
         for (let i = 0; i < text.length; i++) {
             oneEntry += text[i];
@@ -2641,7 +2663,7 @@ async function convertDnD5e() {
         for (let fileIndex = 0; fileIndex < subfiles.length; fileIndex++) {
             if (fileIndex > last + 50) { console.log(fileIndex + " of " + subfiles.length); last = fileIndex; audit = true; }
             {//   try {
-                json = JSON.parse(subfiles[fileIndex]);
+                let json = JSON.parse(subfiles[fileIndex]);
                 if (!json.flags) { console.log("PRESKipping " + json.name); continue; }
 
 
@@ -2701,6 +2723,13 @@ async function convertDnD5e() {
                     });
 
                     json.current_appearance = "normal";
+                    console.log(json);
+
+                    if (json.system) {
+                        let swap = json.system;
+                        delete json.system;
+                        json = { ...json, ...swap };
+                    }
 
                     tagsSource.hash = cleanFileName(tagsSource.hash);
 
@@ -2712,8 +2741,8 @@ async function convertDnD5e() {
                     tagsSource.prototypeToken = json.protoTypeToken;
                     json.protoTypeToken = undefined;
                     let name = json.name;
-                    if (json.system.requirements) {
-                        name += " : " + json.system.requirements;
+                    if (json.requirements) {
+                        name += " : " + json.requirements;
                     } else {
                         name += " (" + tagsSource.page + ")";
                     }
@@ -2934,13 +2963,13 @@ function convertPTBA() {
 
         item = {
             name: feat.name,
-            system: {
-                description: {
-                    value: "<div class=\"rd__b  rd__b--3\"> " +
-                        feat.description + " ></div>",
-                },
-                source: "GilPTBA",
+
+            description: {
+                value: "<div class=\"rd__b  rd__b--3\"> " +
+                    feat.description + " ></div>",
             },
+            source: "GilPTBA",
+
             type: "feat",
             "img": "images/careers/" + key + ".avif" /// need this
 
@@ -2959,7 +2988,7 @@ function convertPTBA() {
 
         let career = careers[key];
         console.log(career);
-        tags = {
+        let tags = {
             "file": "CompendiumFiles/" + key,
             "page": "careers",
             "source": "Gil",
@@ -2970,20 +2999,19 @@ function convertPTBA() {
 
         career.owner_level = 0;
         career.owner_careerPointsSpent = 0;
-        career.owner_featsChosen = {};;
+        career.owner_featsChosen = {};
 
-        item = {
+        let item = {
             name: career.name,
             type: "career",
             "img": "images/careers/" + key + ".avif" /// need this
-
         };
+
         career.description = {
             value: " <div class=\"rd__b  rd__b--3\"><p>" +
                 career.description + "</p></div>",
-        },
-            career.source = "GilPTBA",
-            item.system = career;
+        };
+        item = career;
 
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
 
@@ -2996,7 +3024,7 @@ function convertPTBA() {
 
         let key = items[item].name.split(' ').join('_');
         console.log(items[item].name);
-        tags = {
+        let tags = {
             "file": "CompendiumFiles/" + key,
             "page": "weapon",
             "source": "Gil",
@@ -3013,8 +3041,8 @@ function convertPTBA() {
 }
 // note, run convertDnD5e and do not translate feats
 //makeTrainingData();
-//convertDnD5e();
-console.log("Converted D&D5e");
+// convertDnD5e();
+// console.log("Converted D&D5e");
 convertPTBA();
-//console.log("Converted convertPTBA");
+console.log("Converted convertPTBA");
 
