@@ -15,7 +15,7 @@
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="spells" ) ) }
             onclick="htmlContext.openTab(event, 'spells', this,  '{ thing.id }')">Spells</div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="features" ) ) }
-            onclick="htmlContext.openTab(event, 'features', this,  '{ thing.id }')">Features</div>
+            onclick="htmlContext.openTab(event, 'features', this,  '{ thing.id }')">All Moves</div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="raw" ) ) }
             onclick="htmlContext.openTab(event, 'raw', this,  '{ thing.id }')">Raw</div>
     </div>
@@ -112,8 +112,26 @@
                     <div> { PTBADefenses(thing) } </div>
                 </div>
 
-                <button onclick="htmlContext.takeDamage('{thing.id}')" class="blueButton">Take Damage</button>
 
+                <div class="padded speedline">
+                    <button class="greentintButton roundbutton"
+                        onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),1)">
+                        +</button>
+                    <button class="middleButton "
+                        onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),0)">
+                        Take Damage
+                    </button>
+
+                    <div class="speedline"> Damage: {Editable(thing, 'thing.counters.damageToTakeAmt' , "npcNum")}
+
+                        type: {Editable(thing, 'thing.counters.damageToTakeType' , "npcNum")}
+                    </div>
+
+                    <button class="redtintButton roundbutton"
+                        onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),-1)">-</button>
+
+
+                </div>
                 <p class="npcBold"><span class="c12">Wounds Taken: { Editable(thing,
                         "thing.counters.hurt",
                         "itemsetheader numberinput") } of { getMaxHealth(thing) }</span></p>
@@ -217,7 +235,8 @@
     <button onclick="htmlContext.addManaStabAnother(this,'{thing.id}')">Action: Stab another </button>
     <button onclick="htmlContext.addManaSpendIngredients(this,'{thing.id}')">Action: Spend ingredients</button>
     <button onclick="htmlContext.AddManaWorldsOfPower(this,'{thing.id}')">Bonus Action: Say Words of Power</button>
-    <button onclick="htmlContext.AddManaPLanarFOrces(this,'{thing.id}')">Bonus Action: call on Planar Forces</button>
+    <button onclick="htmlContext.AddManaPLanarFOrces(this,'{thing.id}')">Bonus Action: call on Planar
+        Forces</button>
     <button onclick="htmlContext.AddManaGotCritOrFumble(this,'{thing.id}')">Got a crit or fumble</button>
     { drawItems(thing, IsSpellIngredient, undefined) }
     <button onclick="htmlContext.resetManaButtons(this.parentElement,'{thing.id}')">reset turn</button>
@@ -238,9 +257,7 @@
 
     <div> { PTBAMoves(thing) } </div>
 
-    <div class="outlined dragitem">
-        { drawItems(thing, IsCareerItem, "full") }
-    </div>
+
 </div>
 
 

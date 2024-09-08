@@ -5,11 +5,11 @@ const path = require('path');
 const jsonHandling = require('./json_handling.js');
 var folders = { Compendium: [], Favorites: [], Uniques: [], Party: [], Scenes: [], ScenesParsed: [] };
 
-function SanitizeThing(text) {
-    text.replace(/\s|\"|\'|\(|\)/g, '');
-    if (!text.startsWith('thing.')) { return null; }
-    return text;
-}
+// function SanitizeThing(text) {
+//     text.replace(/\s|\"|\'|\(|\)/g, '');
+//     if (!text.startsWith('thing.')) { return null; }
+//     return text;
+// }
 
 function uuidv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -17,10 +17,17 @@ function uuidv4() {
     );
 }
 
-function ensureExists(thing, field) {
-
+function ensureExists(thing, template, field) {
     if (thing[field] == undefined) {
-        thing[field] = {};
+        if (template) {
+            if (template[field]) {
+                thing[field] = template[field];
+            } else
+                thing[field] = {}; // adding a temp field
+        }
+        else {
+            thing[field] = {};
+        }
     }
 }
 global.ensureExists = ensureExists;
@@ -93,6 +100,12 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
         let result = await fs.readFile(filePath);
         let thing = jsonHandling.ParseJson(filePath, result); // for eval to work we need a thing
         // console.log(thing);
+        let template = undefined;
+        if (thing.template && replacement.indexOf("template" >= 0)) {
+            let filePath = path.normalize(path.join(__dirname, 'public', optionallyAddExt(thing.template, ".json")));
+            let result = await fs.readFile(filePath);
+            template = jsonHandling.ParseJson(filePath, result);
+        }
         console.log("rep" + replacement);
         if (replacement.indexOf("]") >= 0) {
 

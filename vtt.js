@@ -141,8 +141,6 @@ async function InitialDiskLoad() {
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Uniques'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Scenes'))); // TODO: use file cache
 
-    promises.push(fs.readdir(path.join(__dirname, 'public', 'images/uploaded'))); // TODO: use file cache
-
     let results = await Promise.all(promises);
     passwords = jsonHandling.ParseJson('passwords.json', results[0]);
     players = jsonHandling.ParseJson('players.json', results[1]);
@@ -154,8 +152,6 @@ async function InitialDiskLoad() {
     promises.push(jsonHandling.fillDirectoryTable("Party", results[4]));
     promises.push(jsonHandling.fillDirectoryTable("Uniques", results[5]));
     promises.push(jsonHandling.fillDirectoryTable("Scenes", results[6]));
-    promises.push(jsonHandling.fillDirectoryTable("images/uploaded", results[7]));
-
 
 
     results = await Promise.all(promises);
@@ -392,7 +388,11 @@ async function NewPlayer(socket, msg) {
         current_appearance: "armed", name: baseName,
         species: "Human", origin: "Majority City", wealth: 2,
         stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0 },
-        counters: { supplies: 2, hurt: 0, manaInAura: 0, exhaustion: 0 },
+        counters: {
+            supplies: 2, hurt: 0, manaInAura: 0, exhaustion: 0,
+            "damageToTakeAmt": 0,
+            "damageToTakeType": "bludgeoning"
+        },
         languages: { FarDuric: true, Dwarvish: false, Firespeech: false, PrittanianLow: false, ImperialCourt: false },
         items: [], tab: "stats",
         featsChosen: {}
@@ -589,32 +589,39 @@ io.on('connection', (socket) => {
     });
     socket.on("add_token", (msg) => {
 
-        console.log("Add token");
         let sender = getUser(socket);
         if (sender) {
             let scene = sheeter.folders.ScenesParsed[msg.scene];
-            console.log("Add token2");
 
             console.log(msg.tile);
             let ref = msg.tile.reference;
             if (ref.windowId == "Compendium" || ref.windowId === "Favorites") {
-                console.log("Add token3");
                 let instance = path.join('SceneFiles', msg.scene, path.basename(ref.file) + Scene.uuidv4());
 
                 fs.copyFile(path.join(__dirname, "public", ref.file + '.json'),
                     path.join(__dirname, "public", instance + '.json')
                 );
-                console.log(msg.tile.tile_id);
                 ref.file = (instance);
                 msg.tile.sheet = ref;
                 ref.file = msg.tile.sheet.file = path.join(instance + '.json');
 
             }
 
-            console.log("Add token4");
             msg.scene = { name: msg.scene };
             Scene.updateSceneTile(scene, msg.tile);
-            console.log("EMitting", msg);
+            io.emit('newTile', msg);
+        }
+
+    });
+
+    socket.on("add_tile", (msg) => {
+
+        let sender = getUser(socket);
+        if (sender) {
+            let scene = sheeter.folders.ScenesParsed[msg.scene];
+
+            msg.scene = { name: msg.scene };
+            Scene.updateSceneTile(scene, msg.tile);
             io.emit('newTile', msg);
         }
 
@@ -685,6 +692,7 @@ io.on('connection', (socket) => {
         let r = dice(m.roll);
 
         if (m.style == "dual-move") {
+            console.log("dual-move");
             console.log(r);
 
             switch (m.advantage) {
@@ -696,7 +704,7 @@ io.on('connection', (socket) => {
                     outmsg += div("diceexpression", r.expression) +
                         div("twocolumns",
                             div("oneroll", strong(r.val) + ' ' + parens(r.rolls) + ' ' + d1 +
-                                div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls) + ' ' + d2)));
+                                div("oneroll", strong(r2.val) + parens(r2.rolls) + ' ' + d2)));
                     outmsg += div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable));
                     if (d1 != d2)
                         outmsg += div("outlined", strong(d2) + ' ' + ptbaResult(r2.rolls, r2.val, m.resultsTable));
@@ -705,7 +713,7 @@ io.on('connection', (socket) => {
                     outmsg += div("centeredtext rolltitle", "normal");
                     let d1 = ptbaDescr(r.rolls, r.val);
                     outmsg += div("diceexpression", r.expression) +
-                        div("oneroll", strong(r.val) + ' ' + parens(r.rolls) + ' ' + d1 +
+                        div("oneroll", strong(r.val) + parens(r.rolls) + ' ' + d1 +
                             div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable)));
 
                 } break;
@@ -715,7 +723,7 @@ io.on('connection', (socket) => {
                     let d1 = ptbaDescr(r.rolls, r.val);
                     let d2 = ptbaDescr(r2.rolls, r2.val);
                     outmsg += div("diceexpression", r.expression) +
-                        div("oneroll", (r.val > r2.val ? strong(r.val) : r.val) + ' ' + parens(r.rolls) + ' vs ' +
+                        div("oneroll", (r.val > r2.val ? strong(r.val) : r.val) + parens(r.rolls) + ' vs ' +
                             (r.val < r2.val ? strong(r2.val) : r2.val) + ' ' + parens(r2.rolls));
                     if (r.val > r2.val)
                         outmsg += div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable));
@@ -728,7 +736,7 @@ io.on('connection', (socket) => {
                     let d1 = ptbaDescr(r.rolls, r.val);
                     let d2 = ptbaDescr(r2.rolls, r2.val);
                     outmsg += div("diceexpression", r.expression);
-                    outmsg += div("oneroll", (r.val < r2.val ? strong(r.val) : r.val) + ' ' + parens(r.rolls) + ' vs ' +
+                    outmsg += div("oneroll", (r.val < r2.val ? strong(r.val) : r.val) + parens(r.rolls) + ' vs ' +
                         (r.val > r2.val ? strong(r2.val) : r2.val) + '   ' + parens(r2.rolls));
                     if (r.val < r2.val) {
                         outmsg += div("outlined", strong(d1) + ' ' + ptbaResult(r.rolls, r.val, m.resultsTable));
@@ -745,15 +753,15 @@ io.on('connection', (socket) => {
                 let r2 = dice(m.roll);
                 outmsg += div("diceexpression", r.expression) +
                     div("twocolumns",
-                        div("oneroll", strong(r.val) + ' ' + parens(r.rolls)) +
-                        div("oneroll", strong(r2.val) + ' ' + parens(r2.rolls)));
+                        div("oneroll", strong(r.val) + parens(r.rolls)) +
+                        div("oneroll", strong(r2.val) + parens(r2.rolls)));
 
 
             } else {
                 outmsg +=
                     div("twocolumns",
                         div("diceexpression", r.expression) +
-                        div("oneroll", strong(r.val) + ' ' + parens(r.rolls)));
+                        div("oneroll", strong(r.val) + parens(r.rolls)));
             }
         if (m.damage) {
             let damageString = "";
@@ -761,7 +769,10 @@ io.on('connection', (socket) => {
             for (let d = 0; d < m.damage.length; d++) {
                 let dam = m.damage[d];
                 let r = dice(dam.damage + (d == 0 ? "+" + m.damage_bonus : ""));
-                damageString += div("oneroll", "Damage " + strong(r.val) + ' ' + parens(r.rolls) + dam.type + " " + (dam.when ? dam.when : ""));
+                damageString += div("oneroll", "Damage " + strong(r.val)
+                    + (r.rolls ? parens(r.rolls) : "")
+                    + (dam.condition ? dam.condition : "")
+                    + dam.type + " " + (dam.when ? dam.when : ""));
 
 
             }
@@ -833,8 +844,56 @@ app.get("/Scenes", (req, res) => {
     res.end(JSON.stringify(sheeter.folders.Scenes));
 });
 
+function fixImageFileName(file) {
 
+    let stemIndex = file.indexOf("public") + "public".length;
+    let stem = file.substring(stemIndex);
+    return stem.replaceAll('\\', '/');
 
+}
+
+async function recurseReadImageDir(dir) {
+
+    let results = [];
+    let list = await fs.readdir(dir);
+
+    for (let i = 0; i < list.length; i++) {
+
+        let file = list[i];
+        if (!file) {
+            console.log("Error with element " + i + " of " + dir);
+            return results;
+        }
+        file = path.resolve(dir, file);
+
+        let stat = await fs.stat(file);
+
+        if (stat && stat.isDirectory()) {
+            let res = await recurseReadImageDir(file);
+            file = fixImageFileName(file);
+            results.push({ name: file, img: "", dir: res, type: "dir" });
+
+        } else {
+            file = fixImageFileName(file);
+            results.push({ name: file, img: file, type: "tile" });
+
+        }
+    }
+    return results;
+}
+app.get("/Images", (req, res) => {
+
+    // Error here need to bulletproof server not being ready?
+    console.log("Images");
+    res.setHeader("Content-Type", "application/json");
+    res.writeHead(200);
+    recurseReadImageDir(path.join(__dirname, 'public', 'images')).then((answer) => {
+        console.log(answer);
+        res.end(JSON.stringify(answer));
+        console.log(JSON.stringify(answer));
+    });
+
+});
 
 app.get("/Favorites", (req, res) => {
 

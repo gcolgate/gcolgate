@@ -8,6 +8,8 @@ import { socket } from './main.js';
 import { setThingDragged } from './drag.js';
 
 
+var realWindows = [];
+
 export function windowsInit() {
     window.windows = [];
 }
@@ -37,16 +39,94 @@ function clickToBringWindowIntoFocus(evt) {
     bringToFront(evt.currentTarget);
 }
 
-// function getWindowId(element) {
 
-//     do {
-//         if (element.className === "window") {
-//             return element.id;
-//         }
-//         element = element.parentElement;
-//     } while (element);
-//     return null;
-// }
+function Popout(fullthingname) {
+
+
+    let w = createOrGetWindow(fullthingname, 0.6, 0.4, 0.3, 0.3); // todo better window placement
+    let body = document.getElementById("window_" + fullthingname + "_body");
+
+    let s = w.style;
+    s.visibility = "hidden";
+
+    var wnd = createOrGetRealWindow(fullthingname);
+    wnd.IsPopUpWindow = true;
+    wnd.document.open()
+    wnd.document.write('<html><head><title>' + fullthingname + '</title><link rel="stylesheet" type="text/css" href="/Css/site.css"></head><body>');
+
+    wnd.document.write(body.innerHTML);
+    wnd.document.write('</body></html>');
+    wnd.window.htmlContext = window.htmlContext;
+
+    wnd.document.close();
+
+}
+
+
+function closeAllWindows() {
+
+    for (let i = 0; i < realWindows.length; i++) {
+
+        if (!realWindows[i].window.closed) {
+            realWindows[i].window.close();
+        }
+    }
+
+}
+
+
+addEventListener("unload", (event) => { // does not reliably work on mobile and may be decprecated
+
+    closeAllWindows();
+});
+
+// addEventListener("visibilitychange", (event) => { // This unfortunately treats going to another tab the same as quitting
+//     closeAllWindows();
+// });
+export function fetchRealWindow(name) {
+
+    for (let i = 0; i < realWindows.length; i++) {
+
+        if (realWindows[i].window.closed) {
+            realWindows.splice(i, 1);
+            console.log("Remvoed");
+            i--;
+            continue;
+        }
+        if (realWindows[i].name == name) {
+            console.log("found");
+            return realWindows[i].window;
+        }
+    }
+    return null;
+}
+
+
+export function windowSetElemVisible(thing_id, elemId, style) {
+
+
+    let w = fetchRealWindow(thing_id);
+    if (!w) return;
+
+    let toShow = w.document.getElementById(elemId);
+
+    if (toShow) toShow.style.visibility = style;
+
+}
+
+
+function createOrGetRealWindow(name) {
+    let w = fetchRealWindow(name);
+
+    if (w) return w;
+
+    w = window.open("about:blank", "", "_blank");
+    realWindows.push({ name: name, window: w });
+
+
+    return w;
+}
+
 
 export function windowShowing(name) {
     let windowName = "window_" + name;
@@ -57,6 +137,7 @@ export function windowShowing(name) {
 
 let ButtonTitles = {
     newPlayer: "New Player",
+    popout: "PopOut",
 };
 
 function DoButton(id) {
@@ -70,7 +151,7 @@ function DoButton(id) {
 
 }
 
-function CreateWindowTitle(w, windowName, Title, closes = true, newButton = undefined) {
+function CreateWindowTitle(w, windowName, Title, closes = true, has_popout = false, newButton = undefined) {
     w.id = windowName;
     w.className = "window";
     let title = document.createElement("div");
@@ -84,6 +165,7 @@ function CreateWindowTitle(w, windowName, Title, closes = true, newButton = unde
             fadeOut(w);
         };
     }
+
     if (newButton) {
         let createButton = document.createElement("button");
         createButton.textContent = ButtonTitles[newButton];
@@ -92,6 +174,16 @@ function CreateWindowTitle(w, windowName, Title, closes = true, newButton = unde
             DoButton(newButton);
         };
         title.appendChild(createButton);
+    }
+    if (has_popout) {
+        let createButton = document.createElement("button");
+        createButton.textContent = "pop-out";
+        createButton.className = "blueButton";
+        createButton.onclick = function () {
+            Popout(Title);
+        };
+        title.appendChild(createButton)
+
     }
     let text = document.createTextNode(Title);
     title.appendChild(text);
@@ -102,7 +194,7 @@ function CreateWindowTitle(w, windowName, Title, closes = true, newButton = unde
 
 }
 
-export function createOrGetWindow(id, width, height, left, top) {
+export function createOrGetWindow(id, width, height, left, top, pop_Up) {
 
     let windowName = "window_" + id;
     let w = document.getElementById(windowName);
@@ -119,7 +211,7 @@ export function createOrGetWindow(id, width, height, left, top) {
 
         w.contentHeight = height;
 
-        let title = CreateWindowTitle(w, windowName, id, true);
+        let title = CreateWindowTitle(w, windowName, id, true, pop_Up);
 
         w.windowTitle = title;
 
@@ -253,7 +345,7 @@ export function createOrGetDirWindow(id, width, height, left, top, customization
 
 
 
-        CreateWindowTitle(w, windowName, id, true, customization.newButton);
+        CreateWindowTitle(w, windowName, id, true, false, customization.newButton);
 
 
         let list = document.createElement("ul");

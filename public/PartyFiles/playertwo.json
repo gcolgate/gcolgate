@@ -92,7 +92,9 @@
         "supplies": 2,
         "hurt": 0,
         "manaInAura": 33,
-        "exhaustion": "2"
+        "exhaustion": "2",
+        "damageToTakeAmt": 0,
+        "damageToTakeType": "bludgeoning"
     },
     "languages": {
         "Far Duric": true,

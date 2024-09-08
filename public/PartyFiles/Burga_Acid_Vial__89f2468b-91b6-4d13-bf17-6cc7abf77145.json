@@ -1,1 +1,1 @@
-{"template":"CompendiumFiles/Acid_Vial_.json","name":"http://localhost:8000/images/icons/weapons/polearms/acid-flask.webpAcid Vial "}
+{"template":"CompendiumFiles/Acid_Vial_.json","name":"Acid Vial ","counters":[{"max":1,"cur":0,"regen_when":"Shopping","regen_amount":"1"}]}

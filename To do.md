@@ -9,27 +9,57 @@ Need to access globals through this? probaly window.opener is working now
 https://stackoverflow.com/questions/17493027/can-i-open-a-new-window-and-populate-it-with-a-string-variable
 https://daily-dev-tips.com/posts/javascript-sending-data-between-windows/
 
-Working 30%
+Issue: if closing main window window copy screws up, add button to make main window hide and copy window open. When closing copy window make copy main window visible
 
-Appearance window doesn't work 
+Working 30%
+Finish image server
+Fix non-fighty characters dancer based had no weapons
+Appearance window doesn't work: buttons work but changin the image does not change it. It is responsive though to the normal window.You can't change mode
 dragging doesn't work: these might be the same as the bluebutton fix
+Make armor proficiencies more known not verified
 
 Bug when dragging the name gets changed
+CHange  and include hover of entire thing including bonuses not verified
+Remember camera position, a little more complicated because it is camera position per player per scene
+Find token from sheet button
+group things to scroll
+every so often moving things becomes unresponvive
+buy item is broken  not verified
+large creatures scaled tokens 
 
+Game:
+1. Damage on players maybe too variable. Added Supremacy mechanic
+2. Damage on monsters not variable enough , inflicting conditions
+3. Mount required
 
-Reorganization: 
-1. Each sheet will have 2 objects, front and template. Data in front overrides template. DONE for subitems, not for players (need editing test)
-2. When dragging from compendium, list original template in main file. Do not copy it like we do now file. Front file is blank Done for subitems. Not for monsters.
-3. When editing, change front file. Need to test
-4. For each field, when using, check front, if blank, check template. Not needed
+Reorganization:    
 5. reorganize bestiary and monsters to be simpler and better. Do this after getting image server working
 Bugs: 
     Can we get rid of tag files completely? Or necc for compendiums for quick loading
 Instances:
 
+Bug: Weapon proficiencies should be seen on weapons in buy list somehow 
 Bug: selecting more than one in directory window
+Bug: popping out should be option on window panel
+Bug: Would like to pop out chat window
+Bug: Finish spell casting. Use moves. Also add in areas of power.
+Bug: spells need 'show description' button not just cast. All objects do
  
- 
+Bug: All rolls need modifiers doable afterwards
+Bug: Changes to inventory etc should be printed out to chat
+Seems to break if left alone for a while
+Careers should show feats chosen without opening panel. feats should hover
+
+alternate layout that doesn't show image and window is smaller for players
+Tighten space for players sheets
+
+Layout: Spell window has lots of wasted space, Features too
+
+Feature: All windows pop out
+
+Game: Is mana generating fun?
+Game: maybe cursor keys scroll map. Maybe control also controls map.
+
 
 2. For items, classify them more so they can be searched with more buttons
     Add mount and bag of holding areas on inventory screen
@@ -47,7 +77,7 @@ future: provide Transactions tag where all transactions are recorded, with runni
     Allow dice to be rerolled once they are in the chat as advantage/disadvantate +bonus -bonus
     Allow editing of rolls on sheet to set bonus before rolling 
 
-3. Image library required on server
+3. Image library required on server 50%
  
     LIGHTS deprioritized. default scene is full vision lights don't apply, these are toggleable  
     show hex grid (shader) right now only square grid

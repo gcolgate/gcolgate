@@ -1,9 +1,13 @@
-import { createOrGetWindow, windowShowing } from './window.js';
+import { createOrGetWindow, windowShowing, fetchRealWindow } from './window.js';
 import { dragDrop } from './drag.js';
 import { dragCareersAndItems, sumCareerFeats } from './ptba.js';
 import { socket } from './main.js';
 
+function SanitizeNonAlphanumeric(id) {
 
+    return id.replace(/[^a-z0-9]/gi, '');
+
+}
 /// todo: need to clean these out as you close windows
 var registeredThings = {};
 
@@ -23,11 +27,11 @@ export function MakeAvailableToHtml(fnName, fn) {
     htmlContext[fnName] = fn;
 }
 
-export function MakeAvailableToPopup(fName, fn) {
+// export function MakeAvailableToPopup(fName, fn) {
 
-    popupContent[fnName] = fn;
+//     popupContent[fnName] = fn;
 
-}
+// }
 
 export function MakeAvailableToParser(fnName, fn) { // for now use window, soon make array
     window[fnName] = fn;
@@ -39,7 +43,7 @@ var sheetDependencies = null;
 ensureSheetLoaded("itemSummary");
 ensureSheetLoaded("spell_chat");
 
-function ClickCollapsible(evt) {
+function ClickCollapsible(evt, ownerid, id) {
 
 
     let s = evt.currentTarget.nextSibling.style;
@@ -47,25 +51,43 @@ function ClickCollapsible(evt) {
     if (s.maxHeight === "0px") {
         s.maxHeight = "100%";
         s.visibility = "visible";
+        socket.emit('change', {
+            change: 'ensureExists (thing, template, "notCollapsed"); thing.notCollapsed[ "' + id + '"] = true',
+            thing: ownerid
+        });
 
     } else {
         s.maxHeight = "0px";
         s.visibilitiy = false;
         s.visibility = "hidden";
+        socket.emit('change', {
+            change: 'ensureExists (thing, template, "notCollapsed"); thing.notCollapsed[ "' + id + '"] = false',
+            thing: ownerid
+        });
     }
 
 }
 MakeAvailableToHtml('ClickCollapsible', ClickCollapsible);
 
-function Collapsible(text, shown) {
-    let a = '<button class=lbl-collapsible-toggle  onclick="htmlContext.ClickCollapsible(event)">' + text + ' </button>';
+function Collapsible(text, owner, thing) {
+    let shown = false;
+    let id = SanitizeNonAlphanumeric(thing.id);
+
+    if (owner.notCollapsed)
+        shown = owner.notCollapsed[id];
+
+    let a = '<button class=lbl-collapsible-toggle ' +
+        ' onclick="htmlContext.ClickCollapsible(event, \'' + owner.id + '\',\'' + id + '\')">' + text + ' </button>';
     a += (shown ? '<div style="max-height:100%" visibility:visible>' : '<div style="max-height:0px; visibility:hidden">');
 
     return a;
 }
+MakeAvailableToParser('Collapsible', Collapsible);
+
 function EndCollapsible() {
     return '</div>';
 }
+MakeAvailableToParser('EndCollapsible', EndCollapsible);
 
 
 function cyrb53(str, seed = 0) {
@@ -395,18 +417,32 @@ function showThingInline(thing, sheet) {
 
 }
 
+function ParentId(id) {
+    // todo, using _ in names would break this
+    let index = id.indexOf("_");
+    return id.substring(0, index);
+
+}
+
 export async function UpdateNPC(change) {
 
     let thing = GetRegisteredThing(change.thing);
     if (!thing) {
         return; //  NPC has never been opened
     }
+    let template = null; // todo fix
     eval(change.change);
     let w = windowShowing(thing.registeredId); // GIL thing.id?
     if (w) {
+        await EnsureLoaded(w.sheet, thing.registeredId);
         displayThing(thing.registeredId, w.sheet);
     }
-
+    let parentId = ParentId(thing.registeredId);
+    w = windowShowing(parentId); // GIL thing.id?
+    if (w) {
+        await EnsureLoaded(w.sheet, parentId);
+        displayThing(parentId, w.sheet);
+    }
 }
 
 export async function RedrawWindow(thing) {
@@ -545,84 +581,16 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
     return newText;
 }
 
-var realWindows = [];
-
-
-function closeAllWindows() {
-
-    for (let i = 0; i < realWindows.length; i++) {
-
-        if (!realWindows[i].window.closed) {
-            realWindows[i].window.close();
-        }
-    }
-
-}
-
-addEventListener("unload", (event) => { // does not reliably work on mobile and may be decprecated
-
-    closeAllWindows();
-});
-
-// addEventListener("visibilitychange", (event) => { // This unfortunately treats going to another tab the same as quitting
-//     closeAllWindows();
-// });
-function fetchRealWindow(name) {
-
-    for (let i = 0; i < realWindows.length; i++) {
-
-        if (realWindows[i].window.closed) {
-            realWindows.splice(i, 1);
-            console.log("Remvoed");
-            i--;
-            continue;
-        }
-        if (realWindows[i].name == name) {
-            console.log("found");
-            return realWindows[i].window;
-        }
-    }
-    return null;
-}
-
-function createOrGetRealWindow(name) {
-    let w = fetchRealWindow(name);
-
-    if (w) return w;
-
-    w = window.open("about:blank", "", "_blank");
-    realWindows.push({ name: name, window: w });
-
-
-    return w;
-}
-
-
-onunload
-
-export function windowSetElemVisible(thing_id, elemId, style) {
-
-
-    let w = fetchRealWindow(thing_id);
-    if (!w) return;
-
-    let toShow = w.document.getElementById(elemId);
-
-    if (toShow) toShow.style.visibility = style;
-
-}
-
-
-
 async function displayThing(fullthingname, sheetName) {
 
     /// TODO: needs to save and restore any scrolling or window resizing
     fullthingname = SanitizeSlashes(fullthingname);
-    let w = createOrGetWindow(fullthingname, 0.6, 0.4, 0.3, 0.3); // todo better window placement
+    let w = createOrGetWindow(fullthingname, 0.6, 0.4, 0.3, 0.3, true, true); // todo better window placement
 
     w.sheet = sheetName;
-
-
+    let rw = fetchRealWindow(fullthingname);
+    if (!rw)
+        w.style.visibility = "visible";
 
     let thing = GetRegisteredThing(fullthingname);
     let body = document.getElementById("window_" + fullthingname + "_body");
@@ -638,16 +606,7 @@ async function displayThing(fullthingname, sheetName) {
         };
     }
 
-    var wnd = createOrGetRealWindow(fullthingname);
-    wnd.IsPopUpWindow = true;
-    wnd.document.open()
-    wnd.document.write('<html><head><title>' + fullthingname + '</title><link rel="stylesheet" type="text/css" href="/Css/site.css"></head><body>');
 
-    wnd.document.write(body.innerHTML);
-    wnd.document.write('</body></html>');
-    wnd.window.htmlContext = window.htmlContext;
-
-    wnd.document.close();
 }
 
 export function formatRemoveButton(ownerid, itemid) {
@@ -671,6 +630,7 @@ function LineOfCareer(owner, thing, notes) {
             //  div(span("CP spent", Editable(thing, "thing.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")),
             'class="fourcolumncareers2"');
 }
+MakeAvailableToHtml('LineOfCareer', LineOfCareer);
 
 
 // recover tooltip that has been refreshed from the server while the tooltup

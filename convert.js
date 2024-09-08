@@ -196,7 +196,7 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 1,
             bonus: 2,
-            career: ["Infantry", "Gladiator", "Cavalry"],
+            career: ["LightArmor"],
         },
     },
     {
@@ -209,12 +209,12 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 2,
             bonus: 3,
-            career: ["Infantry", "Gladiator"],
+            career: ["HeavyArmor"],
         },
     },
     {
         name: "Knights Armor",
-        description: "Knightly Armor",
+        description: "Knightly Armor, reduces movement by 1 on foot",
         image: "",
         slot: "armor",
         wealth: 3,
@@ -222,7 +222,7 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 2,
             bonus: 3,
-            career: ["Cavalry"],
+            career: ["HeavyAmor"],
             movement: -1
         },
     },
@@ -236,7 +236,7 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 1,
             bonus: 2,
-            career: ["Viking", "Guard"],
+            career: ["HeavyArmor"],
             movement: -1
         },
     },
@@ -250,7 +250,7 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 1,
             bonus: 1,
-            career: ["AllMartial"],
+            career: ["LightArmor"],
             movement: -1
         },
     },
@@ -264,7 +264,7 @@ var items = [
             type: ["bludgeoning", "slashing"],
             sacrifice: 1,
             bonus: 1,
-            career: ["AllMartial"],
+            career: ["LightArmor"],
             movement: -1
         },
     },
@@ -278,20 +278,20 @@ var items = [
             type: ["bludgeoning", "slashing"],
             bonus: 1,
             sacrifice: 1,
-            career: ["Cavalry", "Infantry", "Gladiator"],
+            career: ["LightArmor"],
 
         },
     },
     {
         name: "Closed Helmet",
-        description: "Open faced helmet",
+        description: "Closed faced helmet",
         image: "",
         slot: "head",
         wealth: 2,
         armor: {
             type: ["bludgeoning", "piercing", "slashing"],
             bonus: 1,
-            career: ["Infantry", "Cavalry"],
+            career: ["HeavyArmor"],
             sacrifice: 2,
             notes: "Hard to see out of",
         },
@@ -308,12 +308,12 @@ var items = [
             range: 1,
             hands: 1,
             type: "Melee",
-            career: ["Infantry", "Cavalry", "Gladiator"],
+            career: ["HeavyArmor"],
         }],
         armor: {
             type: ["bludgeoning", "piercing", "slashing", "fire"],
             bonus: 1,
-            career: ["Infantry", "Cavalry", "Gladiator"],
+            career: ["HeavyArmor"],
             sacrifice: 12
         },
     },
@@ -328,12 +328,12 @@ var items = [
             range: 1,
             hands: 1,
             type: "Melee",
-            career: ["Infantry", "Cavalry", "Gladiator"],
+            career: ["HeavyArmor"],
         }],
         armor: {
             type: ["bludgeoning", "piercing", "slashing", "fire"],
             bonus: 1,
-            career: ["Infantry", "Gladiator"],
+            career: ["HeavyArmor"],
             sacrifice: 2,
             movement: -1,
         },
@@ -351,23 +351,25 @@ var items = [
             range: 1,
             hands: 2,
             type: "Melee",
-            career: ["Infantry", "Gladiator", "Brawler"],
+            career: ["Infantry", "Gladiator", "Brawling"],
         }],
         weapon_modes:
             [{
                 name: "Stab",
                 range: 2,
                 hands: 1,
+                move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "2d8", type: "piercing", when: "" }],
-                career: ["Infantry", "Gladiator"],
+                career: ["Martial"],
             }, {
                 name: "Staff",
                 range: 1,
                 hands: 2,
+                move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
-                career: ["Infantry", "Hunter", "Gladiator"],
+                career: ["Brawling"],
             }]
     },
     {
@@ -379,26 +381,29 @@ var items = [
         weapon_defenses: [{
             name: "Quaterstaff Block",
             range: 1,
+            move: ["Attack", "Ambush"],
             hands: 2,
             type: "Melee",
-            career: ["Infantry", "Hunter", "Gladiator", "Brawler"],
+            career: ["Brawling"],
         }],
         weapon_modes:
             [{
                 name: "Staff",
                 range: 1,
                 hands: 2,
+                move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
-                career: ["Infantry", "Hunter", "Gladiator"],
+                career: ["Brawling"],
             },
             {
                 name: "Grapple",
                 range: 0,
                 hands: 2,
+                move: ["Attack", "Ambush"],
                 type: "Grapple",
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawler"],
+                career: ["Brawling"],
             }],
     },
     {
@@ -412,7 +417,7 @@ var items = [
             range: 1,
             hands: 2,
             type: "Melee",
-            career: ["Infantry", "Brawler"],
+            career: ["Martial", "Brawling"],
         }],
         weapon_modes:
             [{
@@ -420,25 +425,28 @@ var items = [
                 range: 2,
                 min_range: 2,
                 hands: 2,
+                move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "2d10", type: "piercing or slashing", when: "" }],
-                career: ["Infantry"],
+                career: ["Martial"],
             },
             {
                 name: "Staff",
                 range: 1,
                 hands: 2,
+                move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawler"],
+                career: ["Brawling"],
             },
             {
                 name: "Grapple",
                 range: 0,
                 hands: 2,
+                move: ["Attack", "Ambush"],
                 type: "Grapple",
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawler"],
+                career: ["Brawling"],
             }],
     },
     {
@@ -452,7 +460,7 @@ var items = [
             range: 1,
             hands: 2,
             type: "Melee",
-            career: ["Infantry", "Brawler"],
+            career: ["Martial", "Brawling"],
         }],
         weapon_modes:
             [{
@@ -460,17 +468,19 @@ var items = [
                 range: 3,
                 min_range: 2,
                 hands: 2,
+                move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "2d10", type: "piercing or slashing", when: "" }],
-                career: ["Infantry"],
+                career: ["Martial"],
             },
             {
                 name: "Staff",
                 range: 1,
                 hands: 2,
+                move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawler"],
+                career: ["Brawling"],
 
             },
             {
@@ -478,8 +488,9 @@ var items = [
                 range: 0,
                 hands: 2,
                 type: "Grapple",
+                move: ["Attack", "Ambush"],
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawler"],
+                career: ["Brawling"],
             }],
     },
     {
@@ -494,14 +505,15 @@ var items = [
             range: 1,
             hands: 2,
             type: "Melee",
-            career: ["Paladin", "Cavalry", "Noble"],
+            career: ["Paladin", "Martial", "Noble"],
         }],
         weapon_modes:
             [{
                 name: "Slice",
                 range: 1,
                 hands: 1,
-                career: ["Paladin", "Cavalry", "Noble"],
+                career: ["Paladin", "Martial", "Noble"],
+                move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
             },
@@ -509,7 +521,8 @@ var items = [
                 name: "Horseback Charge",
                 range: 1.5,
                 hands: 1,
-                career: ["Paladin", "Cavalry", "Noble"],
+                career: ["Mounted"],
+                move: ["Attack"],
                 type: "Melee",
                 damage: [{ damage: "2d10", type: "slashing", when: "" }],
             },
@@ -517,14 +530,15 @@ var items = [
                 name: "Pommel",
                 range: 0,
                 type: "Grapple",
-                career: ["Paladin", "Cavalry", "Noble", "Brawler"],
+                career: ["Brawling"],
+                move: ["Attack", "Ambush"],
                 hands: 1,
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }]
             }],
     },
     {
         name: "BattleAxe",
-        description: "Your classic sword",
+        description: "A big axe",
         image: "images/icons/weapons/polearms/halberd-curved-steel.webp",
         slot: "sidearm",
         hands: 1,
@@ -535,32 +549,17 @@ var items = [
             hands: 1,
             type: "Melee",
             move: ["Parry"],
-            career: ["Infantry"],
+            career: ["Martial"],
         }],
         weapon_modes:
             [{
                 name: "Chop",
                 range: 1,
                 hands: 1,
-                career: ["Infantry"],
+                career: ["Martial"],
                 type: "Melee",
+                move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
-            },
-            {
-                name: "Horseback Charge",
-                range: 1.5,
-                hands: 1,
-                career: ["Infantry"],
-                type: "Melee",
-                damage: [{ damage: "2d10", type: "slashing", when: "" }],
-            },
-            {
-                name: "Pommel",
-                range: 0,
-                type: "Grapple",
-                career: ["Infantry", "Brawler"],
-                hands: 1,
-                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }]
             }],
     },
 
@@ -579,7 +578,7 @@ var items = [
             advantage: 1,
             type: "Melee",
             move: ["Avoid"],
-            career: ["Cavalry", "HorseArcher"],
+            career: ["Mounted"],
         }],
         weapon_modes:
             [],
@@ -595,7 +594,7 @@ var items = [
             range: 1,
             hands: 1,
             type: "Melee",
-            career: ["Pirate", "Cavalry"],
+            career: ["Martial", "Pirate"],
         }],
         weapon_modes:
             [{
@@ -603,8 +602,9 @@ var items = [
                 range: 1,
                 type: "Melee",
                 hands: 1,
+                move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d6", type: "slashing", when: "" }],
-                career: ["Pirate", "Cavalry"],
+                career: ["Martial"],
             },
             {
 
@@ -612,6 +612,7 @@ var items = [
                 range: 1.5,
                 type: "Melee",
                 hands: 1,
+                move: ["Attack"],
                 damage: [{ damage: "3d6", type: "piercing or slashing", when: "" }],
                 career: ["Cavalry"],
             },
@@ -620,7 +621,8 @@ var items = [
                 range: 0,
                 type: "Grapple",
                 hands: 1,
-                career: ["Pirate", "Brawler"],
+                move: ["Attack", "Ambush"],
+                career: ["Brawling"],
                 damage: [{ damage: "1d6", type: "bludgeoning", when: "" }]
             }
             ],
@@ -637,7 +639,7 @@ var items = [
             hands: 2,
             type: "Melee",
             move: ["Parry"],
-            career: ["Infantry", "Gladiator", "Brawler"],
+            career: ["Brawling"],
         }],
         weapon_modes:
             [{
@@ -655,7 +657,7 @@ var items = [
                 type: "Melee",
                 hands: 2,
                 damage: [{ damage: "2d8", type: "Piercing", when: "" }],
-                career: ["Infantry"],
+                career: ["Martial"],
                 move: ["Attack", "Ambush"],
             }],
         counters: [{ max: 1, cur: 1, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 1 },] }],
@@ -675,7 +677,7 @@ var items = [
                 type: "Melee",
                 hands: 1,
                 damage: [{ damage: "2d4", type: "bludgeoning", when: "" }],
-                career: ["Strength", "Brawler", "Gladiator", "Thug", "Guard"],
+                career: ["Martial", "Brawling"],
                 move: ["Attack", "Ambush"],
             },
             ],
@@ -694,7 +696,7 @@ var items = [
                 type: "Melee",
                 hands: 1,
                 damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
-                career: ["Strength", "Brawler", "Infantry", "Gladiator"],
+                career: ["Martial", "Brawling"],
                 move: ["Attack", "Ambush"],
             }],
     },
@@ -710,7 +712,7 @@ var items = [
             hands: 2,
             type: "Melee",
             notes: "Disadvantage vs armed opponents",
-            career: ["Strength", "Brawler", "Infantry", "Gladiator", "Thug", "Guard", "Cavalry", "Pirate"],
+            career: ["Brawling"],
             move: ["Parry"],
         }],
         weapon_modes:
@@ -720,7 +722,7 @@ var items = [
                 type: "Melee",
                 hands: 1,
                 damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
-                career: ["Strength", "Brawler", "Infantry", "Gladiator", "Thug", "Guard", "Cavalry", "Pirate"],
+                career: ["Brawling"],
                 move: ["Attack", "Ambush"],
             },
             {
@@ -729,7 +731,7 @@ var items = [
                 type: "Melee",
                 hands: 0,
                 damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
-                career: ["Dancer", "Pirate", "Gladiator", "Brawler"],
+                career: ["Dancer", "Brawling"],
                 move: ["Attack", "Ambush"],
             },
             {
@@ -739,7 +741,7 @@ var items = [
                 type: "Grapple",
                 move: ["Wrestle"],
                 damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
-                career: ["Strength", "Brawler", "Infantry", "Gladiator", "Thug", "Guard", "Cavalry", "Pirate"],
+                career: ["Brawling"],
             }],
     },
     {
@@ -825,7 +827,7 @@ var items = [
                 armor_piercing: 1,
                 move: ["Ambush", "Attack"],
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
-                career: ["HorseArcher"],
+                career: ["HorseArcher", "Archer"],
                 charges: 1,
             },
             ],
@@ -866,7 +868,7 @@ var items = [
             hands: 1,
             type: "Melee",
             move: ["Parry"],
-            career: ["Pirate", "Noble", "Thug"],
+            career: ["Pirate", "Noble", "Urban"],
         }],
         weapon_modes:
             [{
@@ -875,15 +877,24 @@ var items = [
                 range: 1.5,
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
                 move: ["Attack", "Ambush"],
-                career: ["Pirate", "Noble", "Thug"],
+                career: ["Noble", "Urban"],
+            },
+
+            {
+                name: "Feint",
+                range: 1,
+                hands: 1,
+                type: "Melee",
+                move: ["Feint"],
+                career: ["Noble", "Urban"],
             },
             {
-                name: "Grapple",
+                name: "Pommel",
                 type: "Melee",
                 range: 0,
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "1d4", type: "bludgeoning", when: "" }],
-                career: ["Pirate", "Noble", "Thug"],
+                career: ["Brawling"],
             }],
     }
     ,
@@ -899,7 +910,7 @@ var items = [
             hands: 1,
             type: "Melee",
             move: ["Parry"],
-            career: ["Pirate", "Noble", "Thug"],
+            career: ["Noble", "Urban"],
         }],
         weapon_modes:
             [{
@@ -908,15 +919,23 @@ var items = [
                 range: 1.5,
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
-                career: ["Pirate", "Noble", "Thug"],
+                career: ["Noble", "Urban"],
             },
+
             {
+                name: "Feint",
+                range: 1,
+                hands: 1,
+                type: "Melee",
+                move: ["Feint"],
+                career: ["Noble", "Assassin", "Urban"],
+            }, {
                 name: "Pommel Stab",
                 type: "Grapple",
                 range: 0,
                 move: ["Ambush", "Attack"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
-                career: ["Pirate", "Noble", "Thug"],
+                career: ["Noble", "Assassin", "Urban"],
             }],
     },
     {
@@ -931,23 +950,31 @@ var items = [
                 type: "Melee",
                 range: 0.5,
                 move: ["Attack", "Ambush"],
-                career: ["Pirate", "Noble", "Thug", "Assassin"],
+                career: ["Brawling", "Assassin"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
             },
             {
-                name: "Grapple",
+                name: "Feint",
+                range: 1,
+                hands: 1,
+                type: "Melee",
+                move: ["Feint"],
+                career: ["Brawling", "Assassin", "Urban"],
+            },
+            {
+                name: "Stab at close range",
                 type: "Grapple",
                 range: 0,
                 move: ["Attack", "Ambush"],
-                career: ["Pirate", "Noble", "Thug", "Assassin"],
+                career: ["Brawling", "Assassin", "Urban"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
             },
             {
                 name: "Thrown",
                 type: "Thrown",
-                career: ["Pirate", "Noble", "Thug", "Assassin"],
+                career: ["Noble", "Urban", "Assassin"],
                 range: 10,
-                move: ["Attack", "Ambush"],
+                move: ["Ambush", "Attack"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
                 charges: 1,
             }],
@@ -967,7 +994,7 @@ var items = [
                 type: "Melee",
                 range: 0.5,
                 move: ["Attack", "Ambush"],
-                career: ["Gladiator", "Hunter", "Pirate", "Assassin"],
+                career: ["Martial"],
                 damage: [{ damage: "2d6", type: "slashing", when: "" }],
             },
             {
@@ -1023,21 +1050,30 @@ var items = [
                 move: ["Attack", "Ambush"],
                 range: 0.5,
                 damage: [{ damage: "1d6", type: "piercing", when: "" }],
-                career: ["Assassin", "Brawler"],
+                career: ["Assassin", "Brawling"],
             },
+
             {
+                name: "Feint",
+                range: 1,
+                hands: 1,
+                type: "Melee",
+                move: ["Feint"],
+                career: ["Brawling", "Assassin"],
+            }, {
                 type: "Grapple",
                 range: 0,
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "1d6", type: "piercing", when: "" }],
-                career: ["Assassin", "Brawler"],
+                career: ["Assassin", "Brawling"],
             },
             {
                 type: "Thrown",
                 range: 10,
                 move: ["Attack", "Ambush"],
                 awkward: true,
-                damage: [{ damage: "1d6", type: "piercing", when: "" }]
+                damage: [{ damage: "1d6", type: "piercing", when: "" }],
+                career: ["Assassin"],
 
             }],
         counters: [{ max: 1, cur: 1, regen_when: "Short Rest", regen_amount: "1" }],
@@ -1082,7 +1118,7 @@ var items = [
             move: ["Attack", "Ambush"],
             hands: 2,
             type: "Melee",
-            career: ["Infantry", "Gladiator"],
+            career: ["Martial"],
         }],
         weapon_modes:
             [{
@@ -1092,7 +1128,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 range: 1.1,
                 damage: [{ damage: "2d12", type: "slashing", when: "" }],
-                career: ["Infantry", "Gladiator"],
+                career: ["Martial"],
             },
             {
                 name: "Pommel",
@@ -1100,7 +1136,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 range: 0,
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
-                career: ["Brawler", "Gladiator"],
+                career: ["Martial", "Assassin"],
             },
             ],
 
@@ -1119,7 +1155,7 @@ var items = [
                 range: 1.1,
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
-                career: ["Infantry", "Gladiator", "Strength"],
+                career: ["Martial", "Strenth"],
             },
             {
                 name: "Pommel",
@@ -1127,7 +1163,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 range: 0,
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
-                career: ["Brawler", "Gladiator"],
+                career: ["Brawling", "Gladiator", "Strength"],
             },
             ],
 
@@ -1149,11 +1185,12 @@ var items = [
         }],
         weapon_modes:
             [{
+                name: "Entangle",
                 type: "Ranged",
                 hands: 2,
                 range: 2,
                 move: ["Attack", "Ambush"],
-                damage: [{ condition: "restrained", type: "fabric", when: "Large or smaller target" }],
+                damage: [{ damage: 0, condition: "restrained", type: "fabric", when: "Large or smaller target" }],
                 career: ["Hunter", "Gladiator"],
             }
             ],
@@ -1172,7 +1209,7 @@ var items = [
             hands: 2,
             move: ["Attack", "Ambush"],
             type: "Melee",
-            career: ["Infantry", "Gladiator", "Paladin"],
+            career: ["Martial"],
         }],
         weapon_modes:
             [{
@@ -1181,7 +1218,7 @@ var items = [
                 range: 1.1,
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "4d6", type: "slashing", when: "" }],
-                career: ["Infantry", "Gladiator", "Paladin"],
+                career: ["Martial"],
             },
             {
                 name: "Pommel",
@@ -1189,7 +1226,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 range: 0,
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
-                career: ["Brawler", "Infantry", "Gladiator", "Paladin"],
+                career: ["Brawling", "Assassin"],
             },
             ],
 
@@ -1229,7 +1266,7 @@ var items = [
                 range: 4,
                 hands: 1,
                 type: "Thrown",
-                move: ["Attack", "Ambush"],
+                move: ["Ambush", "Attack"],
                 damage: [{ damage: "4d6", type: "acid", when: "" }],
                 career: ["Assassin"],
                 charges: 1,
@@ -1250,7 +1287,7 @@ var items = [
                 radius: 1,
                 hands: 1,
                 type: "Thrown",
-                move: ["Attack", "Ambush"],
+                move: ["Ambush", "Attack"],
                 damage: [{ damage: "1d6", type: "fire", when: "" }, { condition: "aflame", type: "fire", when: "flammable" }],
                 career: ["Assassin"],
                 charges: 1,
@@ -1450,7 +1487,7 @@ var feats = {
     },
     Master_of_Stealth: {
         name: "Master of Stealth",
-        description: "Spend Effort to sneak without any sort of roll, you can spend additional points for your friends. Also applies to ‘scout’ rolls",
+        description: "Spend Effort to sneak withouPt any sort of roll, you can spend 1 additional effort points for all your friends. Also applies to ‘scout’ rolls",
     },
     McGuyver: {
         name: "McGuyver",
@@ -1578,7 +1615,7 @@ var feats = {
     },
     Two_Weapon_Fighting: {
         name: "Two Weapon Fighting",
-        description: "You can fight with both weapons, so you can attack two adjacent foes with one roll, takes 1 Effort",
+        description: "When fighting with two weapons, reduce by 1 the cost in Steel if attacking more than one opponent, do the damage of the better weapon",
     },
     Vicious_Mockery: {
         name: "Vicious Mockery",
@@ -1598,7 +1635,7 @@ var feats = {
     },
     Whirlwind: {
         name: "Whirlwind",
-        description: "for Effort,  attack another adjacent target, roll again",
+        description: "for Effort,  attack another adjacent target, roll again, initiative determined by last roll",
     },
     Wicked_Lie: {
         name: "Wicked Lie",
@@ -1615,6 +1652,10 @@ var feats = {
     Zealot: {
         name: "Zealot",
         description: "You have +1 on attacks when fighting infidels and supernatural evil",
+    },
+    Familiar: {
+        name: "Familiar",
+        description: "You have a small inoffensive animal you can command mentally. You can possess this creature and see from it's eyes at will. You can only take actions as your familiar or yourself on any round",
     },
     Burning_Brand: {
         name: "Burning Brand",
@@ -1727,25 +1768,25 @@ var feats = {
     },
     Channel_Divinity: {
         name: "Channel Divinity",
-        description: "Once per short rest, based on your oath: See D&D materials:\n" +
-            "Oath of the Ancients: A creature is restrained by Vines, or, turn fey and fiends  \n" +
-            "Oath of Conquest: Inflict fear on all nearby, advantage on a display of might and power\n" +
-            "Oath of Devotion: You sword becomes magic +2 steel and +1 damage,  and radiates light or fiends and undead are turned\n" +
-            "Oath of Glory: Advantage on Athletics , or, Smite all creatures nearby when you smite (doing 1 or 2 pts per smite)\n" +
+        description: "Once per short rest, based on your oath: :\n" +
+            "Oath of the Ancients: A creature is restrained by Vines, difficult strength save, or, turn fey and fiends  \n" +
+            "Oath of Conquest: Inflict fear on all nearby, advantage on your Display of Might and Power for entire battle\n" +
+            "Oath of Devotion: You sword becomes magic +2 steel and +1 damage  and radiates light for 1 minute, or fiends and undead are turned\n" +
+            "Oath of Glory: Advantage on Athletics , or, Smite all creatures nearby when you smite (doing just the bonus damge, not weapon damage, to creatures not targeted)\n" +
             "Oath of Redemption: Emissary of Peace: advantage on peaecful negotiation, OR Rebuke the violent cause someone to hurt himself the amount of damage he caused this round\n" +
-            "Oath of Vengeance: Target one foe for getting advantage on attacks for the rest of the battle\n" +
-            "Oath of the Watchers: Turn aberrations, celestials, elementals, fey, and fiends, OR, give the nearby +1 forward on saving throws vs magic\n" +
-            "Oathbreaker: Control nearby undead, or frighten all beings nearby\n" +
+            "Oath of Vengeance: Target one foe and getting advantage on attacks and +1 forward for the rest of the battle\n" +
+            "Oath of the Watchers: Turn aberrations, celestials, elementals, fey, and fiends, OR, block one spell affect from affecting one target\n" +
+            "Oathbreaker: Control nearby undead, or frighten all beings nearby, advantage on a display of might and power\n" +
             "Oath of the Open Sea: Create marine fog, channel water violence\n",
     },
     Aura: {
         name: "Aura",
         description: "Your aura has an effect based on your oath to those allies and friends nearby or to your enemies\n" +
             "Oath of the Ancients: Advantage on defenses versus spells\n" +
-            "Oath of Conquest: Those who are frightened of you cannot move, and slowly take damage\n" +
-            "Oath of Devotion: Those nearby cannot be magically charmed\n" +
-            "Oath of Glory:  Allies following you or in formation with you get +2 movement which you also get\n" +
-            "Oath of Vengeance: Allies following you and yourself get some advantage on stealth\n" +
+            "Oath of Conquest: +1 forward always on Display of Might and Power by you or friends\n" +
+            "Oath of Devotion: Allies nearby cannot be magically charmed\n" +
+            "Oath of Glory:  Spend effort to reroll your or your ally's attack\n" +
+            "Oath of Vengeance: Sped effort to reroll your or your ally's damage\n" +
             "Oath of Watchers: Allies nearby can get advantage to gaining initiative at the start of an encounter\n" +
             "Oath of the Open Sea: Allies and yourself  nearby can swim at +2 move and get advantage escaping from grapples",
     },
@@ -1783,11 +1824,11 @@ var feats = {
     },
     Blood_Sacrifice: {
         name: "Blood Sacrifice",
-        description: "You have advantage resisting damage from self harm for casting magic",
+        description: "You have advantage resisting damage from self harm for casting magic and recieve triple mana value",
     },
-    Wisdom: {
-        name: "Wisdom",
-        description: "If you take care you can cast your spells more quietly, for cantrips and first circle, so that they don’t even appear to be magic.",
+    SubtleSpell: {
+        name: "Subtle Spell",
+        description: "If you take care you can cast your spells more quietly, and low mana spells (<3), may not even appear to be magic.",
     },
     Brawler: {
         name: "Brawler",
@@ -1795,7 +1836,7 @@ var feats = {
     },
     Wrestler: {
         name: "Wrestler",
-        description: "Add +1 to rolls involving wrestling",
+        description: "Add +1 forward when fighting in a grapple",
     },
     Tough: {
         name: "Tough",
@@ -1803,11 +1844,11 @@ var feats = {
     },
     Reach: {
         name: "Reach",
-        description: "Your long arms give you an advantage: like when attacked by someone with the same length weapon when the enemy is moving into range you have and can use your defense for an attack instead, just as if you were armed with a longer reach weapon",
+        description: "Your long arms give you +1 reach: also when attacked by someone with the same length weapon when the enemy is moving into range you have and can use your defense for an attack instead, just as if you were armed with a longer reach weapon",
     },
     Invisible_Man: {
         name: "Invisible Man",
-        description: "Use Effort not to be paid attention to  during the scene as long as you don’t act up",
+        description: "Use Effort not to be paid attention to during the scene as long as you don’t act up",
     },
     Tracking_Scent: {
         name: "Tracking Scent",
@@ -1835,24 +1876,22 @@ var languages = [
 ];
 
 var magic_languages = [
-    "Abyssal (magic)",
-    "Arachnos (Magic) ",
-    "BeastSpeech (Magic)",
-    "Celestial (Magic)",
-    "Firespeech (Magic)",
-    "High Elvish (Magic)",
-    "Ignos (Firespeech) (Magic)",
-    "Sea Tongue (Magic) ",
-    "Saurian (Magic) ",
-    "Windsong (Magic)"
+    "Abyssal (demon magic)",
+    "Arachnos (spider magic) ",
+    "BeastSpeech (animal magic)",
+    "Celestial (divine magic)",
+    "Firespeech (fire magic)",
+    "High Elvish (elven magic)",
+    "Sea Tongue (fish magic) ",
+    "Saurian (reptiloid magic) ",
+    "Windsong (air magic)"
 ];
 
 var tribal_languages = [
-    "Cheptian  (Tribal)",
-    "Frozen Cost(Tribal) ",
-    "Giant (Tribal)",
+    "Horse plains  (Tribal)",
+    "Frozen North (Tribal) ",
+    "Burning Sands (Tribal) ",
     "Orc (Tribal)",
-    "Pavis (Tribal)",
     "Ratling (Tribal)",
     "Trollish (Tribal)",
 
@@ -1863,8 +1902,8 @@ var careers = {
     Assassin: {
         name: "Assassin",
         type: "Rogue",
+        weapons: ["Assassin"],
         description: "Blades-for-hire, perhaps agents in the service of the king, spies and assassins make killing and stealing in a discreet manner a way of life. They are adept at sneak attacks, killing, information gathering, disguises, city lore, persuasion, poisons, and lock picking. Their methods involve gathering intelligence on their subject from various (sometimes seedy) sources, circumventing security measures of all types, adopting disguises that allow them to get close to the target, and building up a broad selection of contacts. They are also patient, sometimes hiding out in a single spot for days to await the perfect opportunity to strike. ",
-        weapons: ["Ambush", "Simple", "AllMartial"],
         feats: ["Holdout_Weapon", "Wicked_Lie", "Anatomy", "Poison_Master", "Sniper", "Disguise_Master", "Master_of_Stealth"],
 
         languages: [],
@@ -1875,7 +1914,6 @@ var careers = {
         type: "Rogue",
         description: "Beggars are not usually the career choice of a famous adventurer, but some of the careers like ignoring poor conditions and not needing food can come in handy. Also Beggars are alert to danger and often can pickpocket and steal.\n" +
             "Beggars are vagrants or tramps, aimlessly wandering from place to place. They may do casual work here and there, they may sell a few small trinkets that they carry about in their backpacks, or they may have to beg for a few coins when times are really hard. Some even turn their hands to dishonest pursuits.",
-        weapons: [],
         feats: ["Mercy", "Expert_Pickpocket", "Pack_Rat", "Wasnt_Here"],
         languages: [],
         tools: ""
@@ -1883,8 +1921,7 @@ var careers = {
     Viking: {
         name: "Nord",
         description: "These warriors hail from the frozen north.",
-        weapons: ["Nord"],
-
+        weapons: ["Martial", "Brawling", "LightArmor", "HeavyArmor"],
         feats: ["Swift",
             "Climber",
             "Reflexes",
@@ -1898,7 +1935,6 @@ var careers = {
         name: "Bard",
         description: "Training in singing,  dancing (to a degree, not as acrobatic as a dancer, just enough to look good onstage), storytelling, and playing instruments. In a tavern, 1 level of minstrel might allow a roll to be not difficult, while it might take 4 for a royal performance.\n" +
             "As wandering entertainers, minstrels perform songs, music, poetry, and plays – telling tales of distant places and historical or fantastical events. They often create their own stories or memorize and embellish the work of others. Whilst most are travelers taking their songs and music from city to city, some are retained at the courts of nobles for their own entertainment",
-        weapons: [],
         feats: [
             "Bardic_Lore",
             "Master_Musician",
@@ -1913,7 +1949,7 @@ var careers = {
     Beast: {
         name: "Beast",
         description: "For animal companions. Animal companions can choose from Beast, also Slave, Strong, perhaps Mother as their careers. Note, animals don't naturally fight well, this could represent a gerbil, choose strong if you want skill at claw and teeth",
-        weapons: ["Unarmed"],
+        weapons: ["Brawling"],
         feats: ["Tracking_Scent", "Animal_Influence", "Animal_Communication", "Human_Communication", "Commune", "Swift"],
         languages: [],
         tools: ""
@@ -1922,7 +1958,7 @@ var careers = {
     Cavalry: {
         name: "Cavalry",
         description: "Raiding and soldiers: Fighting with cavalry weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Melee", "Unarmed", "AllMartial"],
+        weapons: ["Martial", "Mounted", "HeavyArmor"],
 
         feats: [
             "Ride_By",
@@ -1938,8 +1974,7 @@ var careers = {
     HorseArcher: {
         name: "Horse Archer",
         description: "Raiders and soldiers: Fighting with ranged weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Ranged", "Simple", "AllMartial"],
-
+        weapons: ["Archer", "Mounted", "HorseArcher", "LightArmor"],
         feats: [
             "Ride_By",
             "Swift_Rider",
@@ -1953,7 +1988,6 @@ var careers = {
         name: "Craft",
         description: "Ability to make and repair things.\n" +
             "Specialty:  such as blacksmith, jeweler, carpenter, architect, weaver, drug maker. Your first feat Must be a specialty, after you can take more or take other feats",
-        weapons: [],
 
         feats: [
             "Specialty_Weapon_Smith",
@@ -1997,7 +2031,6 @@ var careers = {
             "2 = 1d8\n" +
             "3 = 1d10\n" +
             "4 = 1d12\n",
-        weapons: [],
         feats: [
             "Zealot",
             "Polytheist",
@@ -2012,7 +2045,7 @@ var careers = {
     },
     Dancer: {
         name: "Dancer", description: "Dancing is an important part of entertainment in the land. Ceremonies and feasts will have dancers or acrobats. Dancers are athletic, showing feats of skill, agility, and coordination. They can dive, tumble, and do acrobatics. Some dancers extend their skills to a few sleight of hand and juggling tricks, and others to exotic techniques using veils to barely conceal their nakedness.",
-        weapons: [],
+        weapons: ["Dancer"],
         feats: [
             "Swift",
             "Master_Acrobat",
@@ -2026,7 +2059,7 @@ var careers = {
     },
     Martal_Monk: {
         name: "Martial Monk", description: "These monks meditate in hidden temples, honing their martial arts powers",
-        weapons: ["Unarmed"],
+        weapons: ["Brawling"],
         feats: [
             "Swift",
             "Master_Acrobat",
@@ -2044,7 +2077,6 @@ var careers = {
     },
     Farmer: {
         name: "Farmer", description: "Work with your hands and the land, agriculture, hard work. Ability to connect to common people. Farmers live outside the city, but often within half a day’s travel, so that they are able to get their produce to the city to feed the populace. They are hardy and hard working, and are skilled in basic plant- and animal lore, animal handling, cooking, baking and brewing, trading for basic goods, and such like.",
-        weapons: [],
         feats: [
             "Commune",
             "Mercy",
@@ -2056,7 +2088,7 @@ var careers = {
         tools: "Camping"
     }, Gladiator: {
         name: "Gladiator", description: "Gladiators are specialists at individual combat. They are adept with a variety of weapons. They fight humans or beasts in an entertaining fashion. Gladiators may have ended up in the arena as a slave or to pay off a debt – whatever the reason, they have survived to hear the howls of the crowd and their adversary at their feet. The best gladiators are often famous outside the arena, which can be to their advantage or to their detriment",
-        weapons: ["Gladiator", "Melee", "Unarmed"],
+        weapons: ["Brawling", "Martial", "Gladiator", "LightArmor", "HeavyArmor"],
         feats: [
             "Two_Weapon_Fighting",
             "Wrestler",
@@ -2067,7 +2099,7 @@ var careers = {
     },
     Hunter: {
         name: "Hunter", description: "The hunter is a master of tracking prey through the wilderness and the wastelands. Once hunters locate their target, they’ll use stealth, traps and/or expert bowmanship or spears  to bring it down. They are at home in the wild and can survive there for long periods, returning to more civilized areas only when they have furs and hides to sell, or when they require the company of their fellow men (or women). ",
-        weapons: ["Ranged", "Simple", "AllMartial"],
+        weapons: ["Hunter", "LightArmor"],
         feats: [
             "Home_Field_Advantage",
             "Sniper",
@@ -2096,8 +2128,8 @@ var careers = {
     },
     Infantry: {
         name: "Infantry",
+        weapons: ["Martial", "Brawling", "LightArmor", "HeavyArmor"],
         description: "Fighting with infantry weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Melee", "Thrown", "Simple", "AllMartial"],
         feats: [
             "Phalanx",
             "Artillery",
@@ -2112,7 +2144,7 @@ var careers = {
     Archer: {
         name: "Archer",
         description: "A Solider. Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Ranged", "Simple", "AllMartial"],
+        weapons: ["Archer", "LightArmor"],
         feats: [
             "Artillery",
             "Tough",
@@ -2127,7 +2159,6 @@ var careers = {
         name: "Scholar",
         description: "Knowledge of literature, different languages, ancient tongues, the true names of demons, how to read hieroglyphics, or Mystic tongues: the level of your Lore determines what you know. The DM may ask players for Lore rather than being the sole provider. Of course you are literate.\n" +
             "You get one extra language per level of lore, including ancient or magical tongues.",
-        weapons: [],
         feats: [
             "Wizard",
             "Demonology_And_Cults",
@@ -2145,19 +2176,17 @@ var careers = {
     Medecine: {
         name: "Medecine",
         description: "Physicians, and others who can heal injured or sick people, are very important individuals in the cities.. With their great scale of knowledge and the importance of their job, they are held in high esteem in society. Most of the lowest-born citizens cannot afford the services of a physician, and are forced to use the services of charlatans and quacks. Physicians are dispensers of potions and medicines and have practical skills in bone setting, surgery, and child delivery. They are knowledgeable of plant lore, first aid, and diseases and their cures. Many physicians have their own herb gardens, where they grow the exotic plants that are used in their medications.",
-        weapons: [],
         feats: [
             "Master_Surgeon",
             "Exorcist",
             "Potion_Maker",],
         languages: [],
-        tools: "Herbs, Medical Kit, Alchemicals"
+        tools: "Herbs, Medical Kit, Alchemical Kit"
     },
     Merchant: {
         name: "Merchant", description: "Merchants know the price of everything, and have often traveled far in their careers and speak many languages. Managing caravans, logistics. They can do accounting and are literate. Arranging complicated deals, finding rare items.\n" +
             "Merchants are not shopkeepers – they are wide traveled adventurers, who seek new and exotic goods to sell from faraway places. As such, merchant characters pick up a range of useful skills like trading, appraisal, obtaining rare or unusual goods, persuasion, city lore, knowledge of distant places, and guild membership. If you want a strange or unusual item, speak to a merchant first\n" +
             "You get one extra non-magic language per level of merchant",
-        weapons: [],
         feats: [],
         languages: [tribal_languages, languages,],
         tools: "Ledger, Caravan, Wagon, Camping"
@@ -2175,10 +2204,27 @@ var careers = {
         languages: [],
         tools: "Herbs, Medical Kit"
     },
+    Witch: {
+        name: "Witch",
+        description: "You apprenticed to one of the witches or hags that dot the land. Did you leave on good terms? Are you a good witch or bad witch?\n",
+        weapons: ["Assassin"],
+        feats: [
+            "Area_of_Magic",
+            "Blood_Sacrifice",
+            "Disguise_Master",
+            "Tough",
+            "Poison_Master",
+            "Wicked_Lie",
+            "Familiar",
+            "SubtleSpell", "Taboo"],
+        languages: [],
+        tools: "Herbs, Medical Kit",
+        mana: 1
+    },
     Noble: {
         name: "Noble",
         description: "Often holding homes in the city and estates or villas outside the city, these characters are usually titled (though not necessarily deserving) and have some authority over the common people, peasants, and slaves. Nobles are often able to obtain credit, have high-ranking contacts, and are skilled in such things as bribery, browbeating, dress sense, and etiquette.",
-        weapons: ["Light", "AllMartial"],
+        weapons: ["Noble", "Martial", "LightArmor"],
         feats: [
             "Swift_Rider",
             "Great_Beauty",
@@ -2191,8 +2237,8 @@ var careers = {
     },
     Paladin: {
         name: "Paladin",
+        weapons: ["Paladin", "Martial", "Brawling", "LightArmor", "HeavyArmor"],
         description: "A classic paladin, who swears an oath (pick one from the lists in the feats) who fights for justice (or maybe injustice). You may want to round your conception with Cavalry and Noble… note weapon skills do not come from your oath",
-        weapons: ["AllMartial"],
         feats: [
             "Lay_On_Hands",
             "Smite",
@@ -2205,7 +2251,7 @@ var careers = {
     Sailor: {
         name: "Sailor",
         description: "Ability to sail and survive in the seas. Navigating, captaining a ship and supplying it, knowledge of strange and distant lands and islands, climbing, acrobatics. Perhaps you were  a pilot, perhaps a sailor, or a pirate, and you probably can swim well.",
-        weapons: [],
+        weapons: ["Brawling"],
         feats: [
             "Sail_Monkey",
             "Every_Port",
@@ -2217,8 +2263,8 @@ var careers = {
     },
     Pirate: {
         name: "Pirate",
+        weapons: ["Martial", "Brawling", "Urban", "Pirate"],
         description: "Ability to sail and survive in the seas. Navigating, captaining a ship and supplying it, knowledge of strange and distant lands and islands, climbing, acrobatics. Perhaps you were  a pilot, perhaps a sailor, or a pirate, and you probably can swim well.",
-        weapons: ["Light", "Thrown", "AllMartial"],
         feats: ["Sail_Monkey",
             "Artillery",
             "Every_Port",
@@ -2233,7 +2279,6 @@ var careers = {
         name: "Slave:",
         description: "Slavery is not exactly a career of choice for a heroic adventurer. Nevertheless, it can be useful in rounding out a character concept, and does provide the opportunity to pick up a few skills and techniques that other careers do not give. The career provides skill in things like humility, going unnoticed, listening and sneaking, as well as cooking, cleaning, gardening, sewing, and manual labor. Some slaves (the strong ones or the troublemakers) are sold to gladiatorial arenas.\n" +
             "Note: slavery is not common in Prittania, and reserved as a punishment for crimes there, but is common in other nations.",
-        weapons: [],
         feats: [
             "Tough",
             "Invisible_Man",
@@ -2247,27 +2292,27 @@ var careers = {
         description: "Sorcery is dark.. Sorcery does not imply literacy if you come from a barbarian place, though but does imply you know the names of spirits and demons, and the use of dreadful potions and words, and you can sense sorcery. Sorcery involves dealing with dark powers.\n" +
             "You get to learn 1 magical language per level (from the list of languages, but only magical ones).\n" +
             "Magicians are both respected and feared. There are few who will deal with them willingly without great need, as a great many magicians are amoral at best, exceedingly evil at worst, and all of them are at least slightly unhinged. Magicians often live alone, with only a few servants or the occasional apprentice to attend them.",
-        weapons: [],
+        weapons: ["Sorcerer"],
         feats: [
             "Area_of_Magic",
             "Area_of_Magic2",
             "Area_of_Magic3",
             "Blood_Sacrifice",
-            "Wisdom", "Taboo"],
+            "SubtleSpell", "Taboo"],
         languages: [magic_languages],
         tools: "Magical Devices",
         mana: 1,
     },
     Strength: {
         name: "Strength",
+        weapons: ["Brawling", "Strength"],
         description: "Being big and tall and imposing. Not a career as such but this ability will be able to carry you through life.\nWill let you wield larger weapons and possibly inflict more harm. This will give you a bonus  to Steel  as well.). You can carry and lift more. You can perform feats of strength. Each level of strength increases your Health points by 1.\n" +
             "4 = A Freak of Nature\n" +
             "3 = Massive\n" +
             "2 = Huge\n" +
             "1 = Muscular",
-        weapons: ["Strong", "Simple", "Unarmed"],
         feats: [
-            "Brawler",
+            "Brawling",
             "Wrestler",
             "Tough",
             "Reach",],
@@ -2276,8 +2321,8 @@ var careers = {
     },
     Thug: {
         name: "Thug",
-        description: "You have not fought in wars for this career, but you have fought. You have beaten up people, fought in gang wars, been a bodyguard. You have contacts in the city, and  know how to get information out of people, whether that means intimidation or knuckles. You know how to commit violence in a city without getting into trouble. You might have been in charge of prisoners or slaves.",
-        weapons: ["Melee", "Unarmed", "Light", "AllMartial"],
+        weapons: ["Brawling", "Martial", "Urban", "LightArmor"],
+        description: "You have not fought in wars for this career, but you have fought. You have beaten up people, fought in gangs, been a bodyguard. You have contacts in the city, and  know how to get information out of people, whether that means intimidation or knuckles. You know how to commit violence in a city without getting into trouble. You might have been in charge of prisoners or slaves.",
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
@@ -2286,8 +2331,8 @@ var careers = {
     },
     Guard: {
         name: "Guard",
-        description: "You have not fought in wars for this career, but you have fought. You have beaten up people, fought in gang wars, been a bodyguard. You have contacts in the city, and  know how to get information out of people, whether that means intimidation or knuckles. You know how to commit violence in a city without getting into trouble. You might have been in charge of prisoners or slaves.",
-        weapons: ["Melee", "Unarmed", "Light", "AllMartial"],
+        weapons: ["Brawling", "Martial", "Urban", "LightArmor"],
+        description: "You have not fought in wars for this career, but you have fought. You have beaten up people, fought gangs, been a bodyguard. You have contacts in the city, and  know how to get information out of people, whether that means intimidation or knuckles. You know how to commit violence in a city without getting into trouble. You might have been in charge of prisoners or slaves.",
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
@@ -2953,7 +2998,7 @@ function convertPTBA() {
     Object.keys(feats).forEach(function (key, index) {
         let feat = feats[key];
         tags = {
-            "file": "CompendiumFiles/" + key,
+            "file": "CompendiumFiles/feat_" + key,
             "page": "feats",
             "source": "Gil",
             "type": "feat",
@@ -2966,7 +3011,7 @@ function convertPTBA() {
 
             description: {
                 value: "<div class=\"rd__b  rd__b--3\"> " +
-                    feat.description + " ></div>",
+                    feat.description + "</div>",
             },
             source: "GilPTBA",
 

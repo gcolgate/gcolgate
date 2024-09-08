@@ -10,12 +10,10 @@ LineOfCareer(owner, thing, notes)
         color-scheme: light dark
           font-family: Georgia, serif;
           font-size: 15px;
-          font-style: italic;
-          font-weight: 400;
+           font-weight: 400;
           margin:8px;
-          line-height: 26.1333px;
-          text-transform: lowercase">
-  {Collapsible("Description",false) }
+          line-height: 26.1333px">
+  {Collapsible("Description", owner , thing) }
 
   <div> { notes!=undefined ? "" : thing.description.value } </div>
   <!-- <span class="npcBold">Weapons </span>{ thing.weapons } -->

@@ -1,6 +1,6 @@
 import { slotList } from './drag.js';
 import { sendChat } from './chat.js';
-import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, MakeAvailableToParser, MakeAvailableToPopup, MakeAvailableToHtml, windowSetElemVisible } from './characters.js'
+import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, MakeAvailableToParser, MakeAvailableToHtml } from './characters.js'
 import { socket } from './main.js';
 
 
@@ -9,6 +9,7 @@ export const moves = {
         "stat": [
             "bravery"
         ],
+        "tooltip": "Confront: Bravely confront someone to his face",
         "Comments": "<ul>\
         <li> &#x25BA;  Confronting your mother over whether you can stay out late, </li>\
         <li> &#x25BA;  Challenging a troll at a bridge, </li>\
@@ -19,10 +20,22 @@ export const moves = {
         "mixed": "Inconclusive, or get your way but take some pain",
         "fail": "You definitely lose the confrontation, taking pain"
     },
+    "Feint": {
+        "stat": [
+            "cunning"
+        ],
+        "tooltip": "In melee, can be done before an attack to attack with cunning even without flanking or surprise",
+        "Comments": "In melee, can be done before an attack to attack with cunning even without flanking or surprise. Advantage when switching to a new weapon, or narrating something surprising",
+        "Critical": "You get advantage on your attacks",
+        "success": "You can attack using cunning stat against your opponents",
+        "mixed": "You can attack using cunning against one opponent",
+        "fail": "Sorry! You lose your attack"
+    },
     "Extinguish Fire": {
         "stat": [
             "caring"
         ],
+        "tooltip": "Extinguish Fire:  When your friend is on fire",
         "Comments": "<ul>\
         <li> &#x25BA;  When your friend is on fire </li>\
         <li> &#x25BA;  Note, doing things like jumping in a lake </li>\
@@ -50,6 +63,7 @@ export const moves = {
         "stat": [
             "avoid", "caring"
         ],
+        "tooltip": "Extinguish Fire:   When you are on fire",
         "Comments": "<ul>\
         <li> &#x25BA;  When you are on fire </li>\
         <li> &#x25BA;  Note, doing things like jumping in a lake </li>\
@@ -77,6 +91,7 @@ export const moves = {
         "stat": [
             "bravery"
         ],
+        "tooltip": "Display of Might and Power:  When take an action which is intimidating",
         "Comments": "Some actions which get you a bonus to your steel for this purpose  of intimidation: <ul>\
         <li> &#x25BA; A Mighty Name The character’s reputation alone is enough to make enemies hesitate</li>\
         <li> &#x25BA; Dead Man’s Stare The character brandishes the severed head of an enemy at arm’s length, raising the grim trophy high for all to see. This violent action, drenched in gore, deters all but the most hardened foes. For extra emphasis, the head can be dropped dramatically, cast away as refuse, or tossed into the hands of a hapless target. </li>\
@@ -86,19 +101,20 @@ export const moves = {
         <li> &#x25BA; Sorcerous Power The character’s flashy and  dark and unnatural arts is enough to terrify many foes</li>\
         <li> &#x25BA; Stain the Soil Red Following the death of several foes and the shedding of copious amounts of blood, the character lets out a savage, primordial cry</li>\
         <li> &#x25BA; Divine Power Against the superstitious and the extraplanar, the words of a priest can compel</li></ul>",
-        "Critical": "",
+        "Critical": "Foes are frightened, take +1 forward, keep the initiative, gain 1 Supremacy ",
         "success": "Foes are frightened may flee (Wis Save or Circumstances): take +1 forward on your rolls against them for the scene (not stacking),  keep the initiative",
         "mixed": "Foes are frightened: choose 1:<ul>\
         <li> &#x25BA; you keep the initiative</li>\
         <li> &#x25BA; take +1 forward on your rolls against them for the scene (not stacking)</li></ul>",
-        "fail": "No or reverse effect and you lose the initiative"
+        "fail": "None or reverse effect and you lose the initiative"
     },
     "Attack": {
         "stat": [
             "bravery"
         ],
+        "tooltip": "Basic Attack (Bravery)",
         "Comments": "Swing your weapon",
-        "Critical": 'You hit your foe, do double damage,  :\
+        "Critical": 'You hit your foe, do double damage, get 1 supremacy :\
         <a href="#">and GM can choose 1 \
          <div class="tooltipcontainer">\
                 <div class="tooltip">\
@@ -141,6 +157,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
+        "tooltip": "Artillery: Operate Artillery or certain spells",
         "Comments": "Operate artillery",
         "Critical": 'You hit your target forcefully, Foes cannot avoid damage',
         "success": 'You hit your target. Those hit can reduce damage with Avoid/Dex saving throws',
@@ -149,12 +166,13 @@ export const moves = {
 
 
     },
-    "Wrestle (offense)": {
+    "Wrestle": {
         "stat": [
             "bravery"
         ],
+        "tooltip": "Wrestle:  Wrestle someone",
         "Comments": "Wrestle someone",
-        "Critical": 'You wrestle your foe  <a href="#">and you can choose 2 \
+        "Critical": 'You wrestle your foe and get 1 supremacy  <a href="#">and you can choose 2 \
             <div class="tooltipcontainer">\
       <ul>\
         <li> &#x25BA; You injure him. Do 2 + your strength stat damage </li>\
@@ -195,6 +213,7 @@ export const moves = {
             "bravery",
             "avoidance"
         ],
+        "tooltip": "Defend against wrestling with wrestling or squiggling",
         "Comments": "This move can only be used if you are already wrestling with your foe",
         "Critical": "Immediately get to use your wrestle on offense</li>\
         <li> &#x25BA; r get free with the initiative",
@@ -211,6 +230,7 @@ export const moves = {
             "bravery",
             "avoidance"
         ],
+        "tooltip": "Parry with weapon or shield",
         "Comments": "Parry with weapon or shield",
         "Critical": "gain the initiative, block your foe, and counterattack: damage your foe.",
         "success": "You block your foe and gain the initiative",
@@ -227,6 +247,7 @@ export const moves = {
         "stat": [
             "avoidance"
         ],
+        "tooltip": "Avoid a confrontation or people or trouble",
         "Comments": "Avoid is how to not get yourself into a confrontation.  When an NPC is attempting to confront you, you can Avoid.<ul>\
         <li> &#x25BA; You can avoid trouble by being submissive and accepting punishment, by lying about something, by misdirecting or confusing.</li>\
         <li> &#x25BA; You can avoid trouble with disguises or forged papers or bribes.</li>\
@@ -241,6 +262,7 @@ export const moves = {
         "stat": [
             "avoidance"
         ],
+        "tooltip": "Dodge an attack or enemies",
         "Comments": "This roll is used in more detailed combat to represent dodging an attack<ul\
         <li> &#x25BA; It can be difficult to dodge multiple, swarming opponents, or volleys of arrow fire, without running pell mell away… </li>\
         <li> &#x25BA; It can be easy to dodge missiles if you can get into cover</li></ul>",
@@ -260,6 +282,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
+        "tooltip": "Bargain  when pointing out the benefits of a deal to someone",
         "Comments": "Using logic, and pointing out the mutual benefits of a deal or alliance, on success, you can get agreement on an issue. The deal must really have benefits for the other party, be sure to point those out",
         "Critical": "You make the deal, it doesn't have to be that fair",
         "success": "You make the deal, it must be at least somewhat fair",
@@ -272,6 +295,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
+        "tooltip": "Investigate/Insight  when understnding or investigating",
         "Comments": "When you closely study something or someone, ask the GM questions. such as <ul>\
         <li> &#x25BA; What happened here recently?</li>\
         <li> &#x25BA; What is about to happen?</li>\
@@ -297,6 +321,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
+        "tooltip": "Purchase   Downtime purchase of rare things like magic items. ",
         "Comments": "Downtime purchase of rare and unsual things, such as magic items, improved weapons, etc.",
         "Critical": "",
         "success": "You find the item for sale and can buy it for a reasonable sum",
@@ -310,6 +335,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
+        "tooltip": "Spout Lore   Know something about something ",
         "Comments": "When you search your memories and experiences or library for clues. The knowledge you get is like consulting a bestiary, travel guide, or library. You get facts about the subject matter. This is highly dependent on your careers ",
         "Critical": "",
         "success": "The GM will reveal something interesting and useful relevant to your situation. This might help you investigate further",
@@ -320,6 +346,7 @@ export const moves = {
         "stat": [
             "caring"
         ],
+        "tooltip": "Heal   heal some harm",
         "Comments": "It takes a few minutes at least to provide healing, unless provided by a spell of the first magnitude. After each wounding, 1 roll per character who tries to heal, unless a spelll. These do not stack, take the best. Heal also reduces the effect of an injury. Injuries commonly last until all harm is gone, and count as one extra harm you need to heal. Without healing it normally it takes 1 day to heal 1 harm, although infected wounds in bad conditions can get worse, 1 day for 1 harm.",
         "Critical": "",
         "success": "Heal 3 harm plus if you have skill at Medecine or Mom, you can 3 harm per 1 Effort you spend.",
@@ -330,6 +357,7 @@ export const moves = {
         "stat": [
             "caring"
         ],
+        "tooltip": "Calm  Calm someone down or smooth over a situation",
         "Comments": "Calm someone down",
         "Critical": "",
         "success": "You stop someone from freeking out",
@@ -340,6 +368,7 @@ export const moves = {
         "stat": [
             "allure"
         ],
+        "tooltip": "Seduce/Flirt/Entertain   entertain, get someone to do something, distract them",
         "Comments": "Person to person interaction",
         "Critical": "",
         "success": "You either entertain and charm someone which they will remember fondly, or get them to do something they later regret  (or not), and hold them distracted for a while",
@@ -354,6 +383,7 @@ export const moves = {
         "stat": [
             "allure"
         ],
+        "tooltip": "stat entertain",
         "Comments": "Performance will often require a level of Bard/Dancing/Noble  career to match the difficulty. A Tavern is but 1, but a King’s palace is more difficult (3 or 4). This is used to determine if the roll is easy or difficult.  ",
         "Critical": "",
         "success": "you receive applause and rewards, and you leave the audience with a particular emotion and theme, like ‘The Heroes are Great’ or ‘The Emperor is Evil’, or you can get one particular  person in the audience to come up to talk to you with them being inclined to like you",
@@ -368,6 +398,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
+        "tooltip": "Wicked Lie con or scam someone (not all lies)",
         "Comments": "While a fearful person lies to avoid confrontation, and a lusty person lies to seduce, and a caring person makes white lies to make people feel better, a Wicked Lie is a con, a scam, a ‘Big Lie’. It can be brazen and completely unmoored from reality.</ul>\
         <li> &#x25BA; /li>\
         <li> &#x25BA; emember, not all lies are wicked lies. A person trying to avoid being identified by a guard can use Avoid to claim to be someone else. A seducer might lie and say that he loves his partner when he is motivated by lust. But only a wicked lie could be used to tell that guard you are an agent of the king and that he must follow along with you or have his head chopped off. Only a wicked lie could persuade the seduced person to give over her money and jewels to you for investment into a new overseas company with a “guarantee” of riches..</li></ul>",
@@ -384,6 +415,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
+        "tooltip": "Steal steal or pickpocket",
         "Comments": "Stealing, pickpocketing, etc. Might not be possible in some circumstances without magic",
         "Critical": "",
         "success": "On a success, you palm or steal the item and are not noticed.",
@@ -396,6 +428,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
+        "tooltip": "Scout  When you sneak stealthily into a dangerous place",
         "Comments": "When you sneak stealthily into a dangerous place",
         "Critical": "",
         "success": "You can see the opponents unobserved",
@@ -406,6 +439,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
+        "tooltip": "Ambush: When you attack by surprise, loose non combat",
         "Comments": "When you describe a plan to inflict pain and suffering or harm on someone by surprise or by suddenly attacking, or executing a helpless person.  ",
         "Critical": "You inflict great pain and suffering and have the option to get away (if that is feasible)",
         "success": "You inflict the pain and suffering and have the option to get away (if that is feasible)",
@@ -418,6 +452,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
+        "tooltip": "Backstab:  When you attack by surprise in combat",
         "Comments": "The swing of a sword from behind with stealth. Note that it is difficult to backstab, unless you are entering the combat stealthily, or have been out of sight on the previous round. Then it might instead be easy.",
         "Critical": "Do +6 damage to him, stacks with assasin feats",
         "success": "You hit your foe and do +3 damage to him , (stacks with assassin feats), you have the initiative if engaged",
@@ -434,6 +469,7 @@ export const moves = {
             "allure",
             "intelligence"
         ],
+        "tooltip": "Gossip:  When you seek information from conversation",
         "Comments": "When you chat with NPCs and ask questions, </l>\
         <li> &#x25BA; What is ____ up to?<ul>\
         <li> &#x25BA; What are you most worried about?</li>\
@@ -461,6 +497,7 @@ export const moves = {
             "intelligence",
             "avoidance"
         ],
+        "tooltip": "Perilous Journey: For a succesful wilderness journey",
         "Comments": "Describe how you proceed through the wilderness, and how you avoid danger. This can mean that almost any stat can be used, but probably not bravery. I.E. by careful planning you use Intelligence, with a sense of discretion use discretion, by cunning arts use cunning.. If just marching into the unknown and trying to use bravery you probably just automatically fail unless you have a narrative power.",
         "Critical": "You get their pronot without using supplies or exhaustion, not encountering the evil denizens of the land, you can find an adventure spot or a good denizen of the land who can assist you",
         "success": "choose 3.<ul>\
@@ -580,10 +617,11 @@ function isArmorProficient(owner_id, thingId) {
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
         if (item.page == "careers") {
-
-            for (let j = 0; j < thing.armor.career.length; j++) {
-                if (thing.armor.career[j] == item.name) {
-                    return true;
+            for (let k = 0; k < item.weapons.length; k++) {
+                for (let j = 0; j < thing.armor.career.length; j++) {
+                    if (thing.armor.career[j] == item.armor[k]) {
+                        return true;
+                    }
                 }
             }
         }
@@ -658,14 +696,14 @@ var takeDamageMove = {
             </div></div></a>',
 };
 
-function takeDamageAmt(owner, damage, damageType, advantage) {
+function takeDamage(ownerId, damage, damageType, advantage) {
 
+    let owner = GetRegisteredThing(ownerId);
     let armor = getArmor(owner, damageType);
-    let mod_damage = (-(damage - 3) + armor * 2) / 2;
-
+    let mod_damage = Math.floor((-(damage - 3) + armor * 2) / 2);
 
     socket.emit('roll', {
-        title: owner.name + "<ul><li> Resist Damage </li><li>" + damage + " armor " + armor + " mod " + mod_damage + "</li></ul>",
+        title: owner.name + "<ul><li> Resist Damage </li><li> Damage: " + damage + " armor: " + armor + " mod " + mod_damage + " " + advantage + "</li></ul>",
         style: "dual-move",
         advantage: advantage,
         roll: baseDice + (mod_damage >= 0 ? "+" + mod_damage : mod_damage),
@@ -673,16 +711,21 @@ function takeDamageAmt(owner, damage, damageType, advantage) {
     });
 
 }
-function takeDamage(thingId) {
 
-    let thing = GetRegisteredThing(thingId);
-    let damage = prompt("Amount of Damage", "0");
-    if (!isNaN(damage))
-        takeDamageAmt(thing, damage);
-
-}
 MakeAvailableToParser("takeDamage", takeDamage);
 MakeAvailableToHtml("takeDamage", takeDamage);
+
+function getTakenDamage(thingId) {
+    let thing = GetRegisteredThing(thingId);
+    return thing.counters.damageToTakeAmt;
+}
+
+function getTakenDamageType(thingId) {
+    let thing = GetRegisteredThing(thingId);
+    return thing.counters.damageToTakeType;
+}
+MakeAvailableToHtml("getTakenDamage", getTakenDamage);
+MakeAvailableToHtml("getTakenDamageType", getTakenDamageType);
 
 function FindBestCareerNode(owner, node) {
 
@@ -696,19 +739,19 @@ function FindBestCareerNode(owner, node) {
         let item = owner.items[i];
         if (item.page == "careers") {
             let career = GetRegisteredThing(item.file);
-            if (career.owner_level > bonus) {
-                for (let cw = 0; cw < career.weapons.length; cw++) {
-                    let career_wt = career.weapons[cw];
+            let level = Number(career.owner_level);
+            if (level > bonus) {
+                for (let k = 0; k < career.weapons.length; k++)
                     for (let w2 = 0; w2 < node.career.length; w2++) {
-                        if (career.name == node.career[w2] || career_wt == node.career[w2]) {
-                            bonus = career.owner_level;
+                        if (career.weapons[k] == node.career[w2]) {
+                            bonus = level;
                             career_string = career.name;
                         }
+
                     }
-                }
             }
             if (career.name == "Strength" && node.strAdd == true) {
-                strbonus = career.owner_level;
+                strbonus = level;
             }
         }
     }
@@ -718,13 +761,12 @@ function FindBestCareerNode(owner, node) {
 
 function showWeaponModes(thing, owner) {
     let answer = "";
-    return "";
     if (!thing.weapon_modes) return answer;
     for (let i = 0; i < thing.weapon_modes.length; i++) {
         let mode = thing.weapon_modes[i];
-        for (let mv = 0; mv < mode.moves.length; mv++) {
-            let move = mode.moves[mv];
-            answer += span(mode.name + " " + moves[move].name, "", "bold") + ".  ";
+        for (let mv = 0; mv < mode.move.length; mv++) {
+            let move = mode.move[mv];
+            answer += span(mode.name + " " + move, "", "bold") + ".  ";
             if (mode.range) answer += (span("range ", mode.range, "italic")) + ".  ";
             if (mode.min_range) answer += (span("minimum range ", mode.min_range, "italic")) + ".  ";
             if (mode.radius) answer += (span("radius range ", mode.radius, "italic")) + ".  ";
@@ -932,7 +974,7 @@ function Expend(thingId, weapon_mode) {
     if (newUses < 0) return false;
     thing.counters[weapon_mode] = newUses;
     socket.emit('change', {
-        change: 'thing.counters[ ' + weapon_mode + '].cur = ' + newUses,
+        change: 'ensureExists (thing, template, "counters"); thing.counters[ ' + weapon_mode + '].cur = ' + newUses,
         thing: thingId
     });
     return newUses <= 0;
@@ -1088,11 +1130,19 @@ function openTab(evt, tabName, button, id) {
 MakeAvailableToParser('openTab', openTab);
 MakeAvailableToHtml('openTab', openTab);
 
+function ensureExists(thing, template, field) {
+    // actually only used on server
+    if (!thing[field]) thing[field] = {}
+}
+MakeAvailableToParser('ensureExists', ensureExists);
+
+
+
 
 function featCheckBox(feats, i, thing, owner, checked, featSheet) {
 
-
-    let clause = "ensureExists(thing, 'owner_featsChosen'); thing.owner_featsChosen['" + feats[i] + "']"
+    let template = "";
+    let clause = "ensureExists(thing, template, 'owner_featsChosen'); thing.owner_featsChosen['" + feats[i] + "']"
     let text = "<li> &#x25BA;"
     text += '<input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"'
         + '"  data-owner="' + owner.id + '" '
@@ -1138,57 +1188,37 @@ function drawCareerFeats(thing, owner, notes) {
 
     let feats = thing.feats;
 
-
-    if (owner) {
-
-        if (!notes) {
-            text += div(span("Weapons", Editable(thing, "thing.weapons", ""))) +
-                div(span("Tools", Editable(thing, "thing.tools", "")));
-        } else {
-
-            text += div(span("Weapons", thing.weapons, 'class="bold"')) +
-                div(span("Tools", thing.tools, 'class="bold"'));
-
-        }
-
-        text += '<div id="list3" class="dropdown-check-list" tabindex="100">';
-
-        text += '<ul class=" .dropdown-check-list-ul-item">';
-
-        for (let i = 0; i < feats.length; i++) {
-            let name = "CompendiumFiles/" + feats[i];
-
-            let checked = thing.owner_featsChosen[feats[i]];
-
-            if (notes && !checked) continue;
-
-            let featSheet = GetRegisteredThing(name);
-
-            text += featCheckBox(feats, i, thing, owner, checked, featSheet);
-
-            // let clause = "thing.owner_featsChosen['" + feats[i] + "']"
-            // text += '<li> &#x25BA; <input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
-            //     + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
-            //     ' onchange="featclicked(this);" /><label for="' + feats[i] + '"> <span class=npcBold>' +
-            //     featSheet.name + ':</span>' + featSheet.description.value + '</label></li > ';
-
-        }
-        text += '</ul> </div>';
-        return text;
+    text += div(span("Weapons Proficiencies:", thing.weapons, "bold"));
+    if (thing.tools && thing.tools.length) {
+        text += div(span("Tool Proficiencies", thing.tools, "bold"));
     }
+
+    text += div(span("Magic: ", thing.mana ? "Yes" : "No", "bold"));
+    text += '<div id="list3" class="dropdown-check-list" tabindex="100">';
+
+    text += '<ul class=" .dropdown-check-list-ul-item">';
 
     for (let i = 0; i < feats.length; i++) {
-
-        if (owner && !thing.owner_featsChosen[feats[i]]) continue;
-
         let name = "CompendiumFiles/" + feats[i];
-        text += "<div>";
-        text += parseSheet(GetRegisteredThing(name), "itemSummary", owner);
-        text += "</div>";
 
+        let checked = thing?.owner_featsChosen[feats[i]];
+
+        if (notes && !checked) continue;
+
+        let featSheet = GetRegisteredThing(name);
+
+        if (owner)
+            text += featCheckBox(feats, i, thing, owner, checked, featSheet);
+
+        // let clause = "thing.owner_featsChosen['" + feats[i] + "']"
+        // text += '<li> &#x25BA; <input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
+        //     + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
+        //     ' onchange="featclicked(this);" /><label for="' + feats[i] + '"> <span class=npcBold>' +
+        //     featSheet.name + ':</span>' + featSheet.description.value + '</label></li > ';
 
     }
-    console.log(text); return text;
+    text += '</ul> </div>';
+    return text;
 }
 
 MakeAvailableToParser('drawCareerFeats', drawCareerFeats);
@@ -1201,7 +1231,13 @@ document.addEventListener("mouseup", (event) => {
     }
 });
 
+function DragAppearanceArt(thingDragged, event, portrait) {
 
+    console.log("DragAppearanceArt thingDragged " + thingDragged, event, portrait);
+
+
+}
+MakeAvailableToHtml('DragAppearanceArt', DragAppearanceArt);
 
 // input is drag and drop file
 async function UploadAppearanceArt(ev, which, id) {
@@ -1755,29 +1791,31 @@ function WeaponMoves(thing, weaponId,) {
     if (weapon.weapon_modes)
         for (let m = 0; m < weapon.weapon_modes.length; m++) {
             if (isExpended(weaponId, m)) continue;
+
             let mode = weapon.weapon_modes[m];
-            // if (mode.range) answer += div(span("range ", mode.range));
-            // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
-            // if (mode.radius) answer += div(span("radius range ", mode.radius));
-            // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
-            let bonus = FindBestCareerNode(thing, mode);
+            for (let k = 0; k < mode.move.length; k++) {
+                // if (mode.range) answer += div(span("range ", mode.range));
+                // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
+                // if (mode.radius) answer += div(span("radius range ", mode.radius));
+                // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
+                let bonus = FindBestCareerNode(thing, mode);
 
 
-            let key = "Attack";
-            for (let j = 0; j < moves[key].stat.length; j++) {
-                let stat = moves[key].stat[j];
-                answer += "<div>"
-                answer += "<button class=\"greentintButton roundbutton \" onclick =\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
-                    + "+" +
-                    "</button>";
-                answer += "<button class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
-                    + ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + (moves[key].stat.length > 1 ? "(" + stat + ")" : "") +
-                    "</button>";
-                answer += "<button class=\"redtintButton roundbutton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
-                    + "-" +
-                    "</button>";
-                answer += "</div>"
-
+                let key = mode.move[k];
+                for (let j = 0; j < moves[key].stat.length; j++) {
+                    let stat = moves[key].stat[j];
+                    answer += "<div>"
+                    answer += "<button class=\"greentintButton roundbutton \" onclick =\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
+                        + "+" +
+                        "</button>";
+                    answer += "<button class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
+                        + ' ' + mode.name + '  +' + stat + "(" + thing.stats[stat] + ') ST(' + bonus[0] + ") " + 'Rng(' + mode.range + ")" +
+                        "</button>";
+                    answer += "<button class=\"redtintButton roundbutton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
+                        + "-" +
+                        "</button>";
+                    answer += "</div>"
+                }
             }
         }
     return answer;
@@ -1823,8 +1861,6 @@ function WeaponParries(thing, weaponId,) {
     return answer;
 }
 
-
-
 function PTBAMoves(thing) {
     let answer = "";
     let keys = Object.keys(moves);
@@ -1841,18 +1877,20 @@ function PTBAMoves(thing) {
         } else
             for (let j = 0; j < moves[key].stat.length; j++) {
                 let stat = moves[key].stat[j];
-                answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',1)\">"
+                answer += "<div class=\"padded\" >";
+                answer += "<button class=\"greentintButton roundbutton \"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',1)\">"
                     + "+" +
                     "</button>";
-                answer += "<button  class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',0)\">"
-                    + key + (moves[key].stat.length > 1 ? "(" + stat + ")" : "") +
+                answer += "<button title=\"" + moves[key].tooltip
+                    + "\" class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',0)\">"
+                    + key + "(" + stat + ":" + thing.stats[stat] + ")" +
                     "</button>";
                 answer += "<button class=\"redtintButton roundbutton\"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',-1)\">"
                     + "-" +
                     "</button></div>";
             }
     }
-    return answer;
+    return (answer);
 }
 MakeAvailableToParser('PTBAMoves', PTBAMoves);
 

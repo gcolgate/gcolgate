@@ -21,11 +21,11 @@ for row in spells.index:
     baseName = baseName.replace("/", "_")
     baseName = baseName.replace("\\", "_")
     print("baseName " + baseName)
-    file = baseName
+    file = "spell_" + baseName
     baseName += ".json"
-    path = os.path.join("./", "public", "CompendiumFiles", baseName)
+    path = os.path.join("./", "public", "CompendiumFiles", "spell_" + baseName)
     print("path " + path)
-    tag_path = os.path.join("./", "public", "Compendium", "tag_" + baseName)
+    tag_path = os.path.join("./", "public", "Compendium", "tag_spell_" + baseName)
     print("tag_path " + tag_path)
     tag_f = open(tag_path, "w")
 

@@ -12,6 +12,7 @@ var folders = {
     Favorites: {},
     Uniques: {},
     Scenes: {},
+    Images: {},
 };
 var dirWindowCustomization = {
     Compendium: {},
@@ -19,6 +20,7 @@ var dirWindowCustomization = {
     Favorites: {},
     Uniques: {},
     Scenes: {},
+    Images: {},
 };
 export function GetMainDirectories() {
     GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
@@ -26,11 +28,14 @@ export function GetMainDirectories() {
     GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
     GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
     GetDirectory('Scenes').then((c) => { folders.Scenes = c; });
+    GetDirectory('Images').then((c) => { folders.Images = c; });
+
     setUpDirButton('Compendium');
     setUpDirButton('Party');
     setUpDirButton('Favorites');
     setUpDirButton('Uniques');
     setUpDirButton('Scenes');
+    setUpDirButton('Images');
 }
 
 function setUpDirButton(buttonName) {
@@ -175,9 +180,11 @@ function search(array, for_what) {
         let searched = [];
         let s = escapeRegExp(for_what.toLowerCase()); // i couldn't figure out the incantations to make this ignore case
         for (let i = 0; i < array.length; i++) {
-            if (array[i].name.toLowerCase().search(s) >= 0) {
-                searched.push(array[i]);
-            }
+            try {
+                if (array[i]?.name?.toLowerCase().search(s) >= 0) {
+                    searched.push(array[i]);
+                }
+            } catch (err) { console.log(i, array[i]); }
         }
         return searched;
     }

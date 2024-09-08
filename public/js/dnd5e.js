@@ -95,35 +95,6 @@ function MaybeDescription(description) {
 }
 MakeAvailableToParser('MaybeDescription', MaybeDescription);
 
-function findBestCareer(owner, thing) {
-
-    let bonus = 0;
-    let strbonus = 0;
-    let career_string = "";
-    for (let i = 0; i < owner.items.length; i++) {
-
-        let item = owner.items[i];
-        if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file);
-            if (career.owner_level > bonus) {
-                for (let cw = 0; cw < career.weapons.length; cw++) {
-                    let career_wt = career.weapons[cw];
-                    for (let wt2 = 0; wt2 < thing.types.length; wt2++) {
-                        if (career_wt == thing.types[wt2]) {
-                            bonus = career.owner_level;
-                            career_string = career.name;
-                        }
-                    }
-                }
-            }
-            if (career.name == "Strength") {
-                strbonus = career.owner_level;
-            }
-        }
-    }
-    return [bonus + strbonus, career_string];
-}
-
 
 function ItemWeapon(thing, owner, full) {
     let career_value;
@@ -137,11 +108,6 @@ function ItemWeapon(thing, owner, full) {
     if (owner != undefined && !owner.isptba) {
         answer += "<button  onclick=\"htmlContext.rollWeapon('" + owner.id + "','" + thing.id + "')\">Damage</button>";
         //  include applydamage button on roll need to decide who is target
-    } else if (owner) {
-        [career_value, career_string] = findBestCareer(owner, thing);
-        answer += chkDiv("<button  onclick=\"htmlContext.rollWeaponDamage('" + owner.id + "','" + thing.id + "'," + career_value + ")\">Damage</button>");
-        answer += div(career_string);
-
     }
     if (full && atk != 0) answer += div(" <span>Attack</span> " + atk + "<span> Damage: </span>" + commaString(damage));
     else if (full) answer += div("<span> Damage: </span > " + commaString(damage));

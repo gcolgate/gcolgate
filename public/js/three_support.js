@@ -451,8 +451,8 @@ function three_xyinMouseToWorld(x, y) {
         vec.sub(three_camera.position).normalize();
 
         let distance = - three_camera.position.z / vec.z;
-
-        pos.copy(camera.position).add(vec.multiplyScalar(distance));
+        let pos = new THREE.Vector3();
+        pos.copy(three_camera.position).add(vec.multiplyScalar(distance));
         return pos;
     }
 
@@ -626,7 +626,6 @@ export function three_mouseMove(event) {
     three_lastMouse = newMouse;
 }
 three_renderer.domElement.onwheel = (event) => {
-    console.log(event.delta);
     let d = event.wheelDelta * 0.6;
     let wd = d * three_renderer_dimensions().aspect;
     three_camera.left += wd; three_camera.right -= wd;
@@ -909,16 +908,50 @@ async function CreateToken(thingDragged, event) {
 
 }
 
+
+function topTileZ() {
+    let maxZ = -100000;
+    for (let i = 0; i < layers.tile.selectables.length; i++) {
+        let sprite = layers.tile.selectables[i];
+
+        if (sprite.position.z > maxZ) maxZ = sprite.position.z;
+    }
+    return maxZ;
+}
+
 three_renderer.domElement.acceptDrag = function (thingDragged, event) {
 
-    // for (let i = 0; i < array.length; i++) {
-    //     if (array[i].file == thingDragged.file) {
-    //         console.log("Dupe");
 
-    //     }
-    // }
-    CreateToken(thingDragged, event);
+    switch (thingDragged.type) {
+        case "dir": break;
+        case "tile":
+            let mouse = toGrid(three_mousePositionToWorldPosition(event));
+            // todo handle non-instanced
+            const img = new Image();
+            img.src = thingDragged.img;
+            img.onload = function () {
+                console.log(`Width: ${img.width}, Height: ${img.height}`);
+                let newTile = { "x": mouse.x, "y": mouse.y, "z": topTileZ() + 1, guiLayer: "tile", sheet: thingDragged };
+                newTile.texture = thingDragged.img.substring("/images".length + 1);
+                newTile.scale = {
+                    x: img.width, // todo should be tile size
+                    y: img.height,
+                    z: 1
+                };
+                console.log("Create tile New Tile ", newTile);
 
+                // boo evil dependency code fix
+                three_setEditMode(true);
+
+
+                const editMap = document.getElementById("EditMap");
+                editMap.checked = true;
+                socket.emit("add_tile", { scene: current_scene.name, tile: newTile });
+            };
+            break;
+        default:
+            CreateToken(thingDragged, event);
+    }
 
 }
 
