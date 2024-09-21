@@ -390,6 +390,18 @@
                         <title>LeftArm</title>
                     </rect>
                 </g>
+
+
+                <g slot="mount">
+                    <image href='{ getSlotImage(thing,"mount","assets/mount.webp")}' x=30% y="81%" width="16.25%"
+                        height="10%" />
+                    <rect x=30% y="81%" width="16.25%" height="10%" slot="mount" class="inventoryitem"
+                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                        onmouseout="hideInventoryTooltip('{thing.id}');">
+                        <title>Mount</title>
+                    </rect>
+                </g>
+
                 <g slot="pendant">
                     <image href=' {getSlotImage(thing,"pendant","assets/pendant.webp")}' x="78%" y="1%" width="11.25%"
                         height="7.03125%" />

@@ -97,8 +97,6 @@ MakeAvailableToParser('MaybeDescription', MaybeDescription);
 
 
 function ItemWeapon(thing, owner, full) {
-    let career_value;
-    let career_string;
 
     let s = thing;
     let atk = s.attackBonus;
@@ -685,7 +683,6 @@ MakeAvailableToHtml('RemoveItemFromThing', RemoveItemFromThing);
 
 
 function IsInventoryItem(item) {
-
     switch (item.page) {
         case "armor": return true;
         case "careers": return false;
@@ -742,7 +739,22 @@ function ItemFiltered(item, filter) {
     return !(filter(item));
 
 }
+function drawDnDItems(thing) {
 
+
+    let text = "";
+    if (!thing.items) thing.items = [];
+    for (let i = 0; i < thing.items.length; i++) {
+        let item = thing.items[i];
+
+        let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, undefined, { file: item.file }); // no w
+
+        text += div(a);
+    }
+    return (text);
+
+}
+MakeAvailableToParser("drawDnDItems", drawDnDItems);
 
 function drawItems(thing, filter, notes) {
     let text = "";

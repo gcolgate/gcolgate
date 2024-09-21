@@ -7,7 +7,7 @@ import re
 # with tab separator
 # This function will
 # read data from file
-spells = pd.read_csv("..\Prittania Spells - Spells(6).tsv", sep="\t", dtype="str")
+spells = pd.read_csv("..\Prittania Spells - Spells(7).tsv", sep="\t", dtype="str")
 
 
 index = 0
@@ -50,7 +50,6 @@ for row in spells.index:
     f.write("{")
     f.write('"image": "images/questionMark.png"')
     for col in spells.columns:
-        print(col)
         if pd.isna(spells[col][row]) == False:
             if col == "Powers" or col == "PossibleEnhancements":
                 pieces = str(spells[col][row]).split(",")
@@ -62,15 +61,22 @@ for row in spells.index:
                 f.write("]")
 
                 if col == "PossibleEnhancements":
+                    print(col)
                     f.write(',"owner_modified":')
                     f.write("{")
                     comma = False
+                    print("PossibleEnhancements")
+                    if len(pieces) == 0:
+                        print("Error")
                     for index in range(0, len(pieces)):
                         if comma:
                             f.write(",")
                         comma = True
                         f.write(str(pieces[index]).strip() + ":0")
+                        print(str(pieces[index]).strip() + ":0")
                     f.write("}")
+                else:
+                    print("else " + col)
 
             elif col == "Name":
                 f.write(', "name": "' + str(spells[col][row]) + '"')

@@ -20,6 +20,17 @@ export const moves = {
         "mixed": "Inconclusive, or get your way but take some pain",
         "fail": "You definitely lose the confrontation, taking pain"
     },
+    "Control Mount": {
+        "stat": [
+            "bravery", "caring"
+        ],
+        "tooltip": "Control your horse. If you are skilled at Cavalry or a similar career, roll with advantage",
+        "Comments": "Control your horse. If you are skilled at Cavalry or a similar career, roll with advantage",
+        "Critical": "You control your mount",
+        "success": "You control your mount",
+        "mixed": "Your mount acts panicked or with another emotion, doing something you don't want it to, but you stay on",
+        "fail": "Your mount acts panicked or with another emotion, and you fall off of it"
+    },
     "Feint": {
         "stat": [
             "cunning"
@@ -1951,10 +1962,12 @@ function getModifiedManaCost(thing) {
 
     let a = Number(thing.BaseManaCost);
 
+
     let numbers = Object.values(thing.owner_modified);
     for (let i = 0; i < numbers.length; i++) {
         a += numbers[i];
     }
+
     return a;
 
 }
@@ -1972,7 +1985,7 @@ function GetModifiedDamageString(thing) {
     if (!thing.Damage) return "";
     if (thing.Damage.length > 0) {
         let answer = "";
-        let intensity = (thing.owner_modified.Intensity);
+        let intensity = (thing?.owner_modified?.Intensity);
         if (!intensity) intensity = 0;
         intensity = Number(intensity);
 
@@ -1990,7 +2003,7 @@ MakeAvailableToParser('GetModifiedDamageString', GetModifiedDamageString);
 
 function GetSpellModifiedRangeString(thing) {
 
-    if (!thing.owner_modified?.Range) {
+    if (!thing?.owner_modified?.Range) {
         return thing.Range;
     }
     let baseRange = 0;
@@ -2023,7 +2036,7 @@ function DrawArrayEnhancementButtons(thing, owner, array) {
             + "+" +
             "</button>";
         s += '<button class="middleButton" onclick="ZeroSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\')">'
-            + ' ' + (thing.owner_modified[stat] ? "(" + thing.owner_modified[stat] + ") " : "") + stat +
+            + ' ' + (thing?.owner_modified[stat] ? "(" + thing.owner_modified[stat] + ") " : "") + stat +
             "</button>";
         s += '<button class="redtintButton roundbutton" onclick ="ChangeSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\',-1)">'
             + "-" +
@@ -2039,12 +2052,17 @@ function ChangeSpell(thingId, ownerId, stat, amt) {
     let thing = GetRegisteredThing(thingId);
 
     let res = 0;
-    if (thing.owner_modified[stat] != undefined) {
+    if (!thing.owner_modifield) {
+        let template = thing.origValue;
+        thing.owner_modfied = template.owner_modified;
+
+    }
+    if (thing?.owner_modified[stat] != undefined) {
         res = thing.owner_modified[stat];
     }
     res += amt;
     thing.owner_modified[stat] = res;
-    let evaluation = 'thing.owner_modified["' + stat + '"] =' + res;
+    let evaluation = 'ensureExists(thing, template, "owner_modified") ; thing.owner_modified["' + stat + '"] =' + res;
     socket.emit('change', {
         change: evaluation,
         thing: thingId
@@ -2052,8 +2070,8 @@ function ChangeSpell(thingId, ownerId, stat, amt) {
     let owner = GetRegisteredThing(ownerId);
     // hack around redrawing keeping the tooltip as open
     owner.openSpell = thing.name;
-    RedrawWindow(owner)
-    owner.openSpell = "";
+    // RedrawWindow(owner);
+    // owner.openSpell = "";
 
 }
 

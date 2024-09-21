@@ -230,9 +230,11 @@ function fixTile(tile) {
     tile.x = Number(tile.x);
     tile.y = Number(tile.y);
     tile.z = Number(tile.z);
-    tile.scale.x = Number(tile.scale.x);
-    tile.scale.y = Number(tile.scale.y);
-    tile.scale.z = Number(tile.scale.z);
+    if (tile.scale) {
+        tile.scale.x = Number(tile.scale.x);
+        tile.scale.y = Number(tile.scale.y);
+        tile.scale.z = Number(tile.scale.z);
+    }
 
 }
 

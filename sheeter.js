@@ -275,12 +275,12 @@ async function AddItem(thingName, item_tag, io, msg) {
         // copy the file to the same dir 
         // get the main file maybe just a copy?
 
-        let item_filePath = path.normalize(path.join(__dirname, 'public', item_tag.file + ".json"));
+        // let item_filePath = path.normalize(path.join(__dirname, 'public', item_tag.file + ".json"));
         let out_item_filePath = path.normalize(path.join(__dirname, 'public', (thingName) + "_" + baseItemName + "_" + uuid + ".json"));
         // promises.push(fs.copyFile(item_filePath, out_item_filePath));
 
 
-        let outPutFile = { template: item_tag.file + ".json" };
+        let outPutFile = { template: item_tag.file + ".json", owner: thingName };
 
         promises.push(fs.writeFile(out_item_filePath, JSON.stringify(outPutFile), (err) => {
             {

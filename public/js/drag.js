@@ -62,6 +62,7 @@ export var slotList = [
     { slot: "ring", num: 2 },
     { slot: "pockets", num: 6 },
     { slot: "potion", num: 3 },
+    { slot: "mount", num: 1 },
 ];
 
 function svgDragDrop(event) {

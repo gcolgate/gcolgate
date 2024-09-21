@@ -888,9 +888,7 @@ app.get("/Images", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
     recurseReadImageDir(path.join(__dirname, 'public', 'images')).then((answer) => {
-        console.log(answer);
         res.end(JSON.stringify(answer));
-        console.log(JSON.stringify(answer));
     });
 
 });

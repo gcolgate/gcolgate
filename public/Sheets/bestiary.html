@@ -19,7 +19,7 @@
       {thing.traits ? thing.traits.size : "medium" }<span> {get5eDetails(thing)} </span>
     </div>
     <div class="grid-container">
-      <div> <span class="npcBold">Steel </span>{ Number(thing.attributes.prof) - 1 }
+      <div> <span class="npcBold">Steel </span>{ Number(thing.steel) }
       </div>
       <div><span class="npcBold">Armor Class
         </span>
@@ -39,21 +39,21 @@
       </div>
       <div class="grid-container">
         <div>
-          { DndSpeed( "burrow", thing, "thing.attributes.movement.burrow",
-          thing.attributes.movement.units)
+          { DndSpeed( "burrow", thing, "thing?.attributes?.movement?.burrow",
+          thing?.attributes?.movement?.units)
           }</div>
-        <div>{ DndSpeed( "Climb", thing, "thing.attributes.movement.climb",
-          thing.attributes.movement.units) }
+        <div>{ DndSpeed( "Climb", thing, "thing?.attributes?.movement?.climb",
+          thing?.attributes?.movement?.units) }
         </div>
-        <div>{ DndSpeed( "Swim", thing, "thing.attributes.movement.swim",
-          thing.attributes.movement.units) }
+        <div>{ DndSpeed( "Swim", thing, "thing?.attributes?.movement?.swim",
+          thing?.attributes?.movement?.units) }
         </div>
-        <div>{ DndSpeed( "Walk", thing, "thing.attributes.movement.walk",
-          thing.attributes.movement.units) }
+        <div>{ DndSpeed( "Walk", thing, "thing?.attributes?.movement?.walk",
+          thing?.attributes?.movement?.units) }
         </div>
-        {thing.attributes.movement.hover ? '<div>Can Hover</div>' : ""}
+        {thing?.attributes?.movement?.hover ? '<div>Can Hover</div>' : ""}
       </div>
-      { drawItems(thing) }
+      { drawDnDItems(thing) }
       <div>
         <div style="display: flex;
               color: rgb(88, 23, 13);

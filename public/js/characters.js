@@ -430,18 +430,22 @@ export async function UpdateNPC(change) {
     if (!thing) {
         return; //  NPC has never been opened
     }
-    let template = null; // todo fix
+    let template = thing.origValue;
     eval(change.change);
-    let w = windowShowing(thing.registeredId); // GIL thing.id?
+    let id = thing.owner ? thing.owner : thing.registeredId;
+
+
+    let w = windowShowing(thing.registeredId);
     if (w) {
         await EnsureLoaded(w.sheet, thing.registeredId);
         displayThing(thing.registeredId, w.sheet);
     }
-    let parentId = ParentId(thing.registeredId);
-    w = windowShowing(parentId); // GIL thing.id?
-    if (w) {
-        await EnsureLoaded(w.sheet, parentId);
-        displayThing(parentId, w.sheet);
+    if (thing.owner) {
+        w = windowShowing(thing.owner);
+        if (w) {
+            await EnsureLoaded(w.sheet, thing.owner);
+            displayThing(thing.owner, w.sheet);
+        }
     }
 }
 

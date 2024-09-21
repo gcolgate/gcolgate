@@ -63,14 +63,14 @@ function ComputePage(json, page) {
 
 
 }
-
+var counter = 0;
 function writeJsonFileInPublic(dir, fileName, json) {
 
     try {
         let pathName = path.join(__dirname, 'public', dir, fileName + '.json');
 
         rawfs.writeFileSync(pathName, JSON.stringify(json));
-        console.log(pathName);
+        if (++counter > 20) { console.log("."); counter = 0; }
 
     } catch (err) {
         console.log(err + " Error with " + dir + " " + fileName);
@@ -148,6 +148,24 @@ const count = (xs) =>
 
 const uniq = (xs) =>
     [... new Set(xs)]
+
+////////////
+function prepareStringSimilarity(text) {
+    let bg1 = bigrams(prep(text));
+    let c = count(bg1);
+    return {
+        bigRams: bg1,
+        count: c
+    };
+
+}
+// works only on compared stirngs
+const optimizedStringSimularity = (a, b) => {
+
+    const combined = uniq([...a.bigRams, ...b.bigRams])
+        .reduce((t, k) => t + (Math.min(a.count[k] || 0, b.count[k] || 0)), 0)
+    return 2 * combined / (Math.max(a.bigRams.length + b.bigRams.length, 1))
+}
 
 
 // items
@@ -570,6 +588,27 @@ var items = [
         slot: "mount",
         hands: 0,
         wealth: 4,
+        saddlebags: 12,
+        weapon_defenses: [{
+            name: "Fast Avoid Missiles",
+            range: 0,
+            hands: 0,
+            advantage: 1,
+            type: "Melee",
+            move: ["Avoid"],
+            career: ["Mounted"],
+        }],
+        weapon_modes:
+            [],
+    },
+
+    {
+        name: "Riding Horse",
+        description: "A horse not used to battle - might have to control it",
+        image: "images/assets/srd5e/img/MM/Riding_Horse.png",
+        slot: "mount",
+        hands: 0,
+        wealth: 3,
         saddlebags: 12,
         weapon_defenses: [{
             name: "Fast Avoid Missiles",
@@ -2081,7 +2120,7 @@ var careers = {
             "Commune",
             "Mercy",
             "Pack_Rat",
-            "Wasn’t_here",
+            "Wasnt_here",
             "Animal_Influence",
         ],
         languages: [],
@@ -2312,7 +2351,7 @@ var careers = {
             "2 = Huge\n" +
             "1 = Muscular",
         feats: [
-            "Brawling",
+            "Brawler",
             "Wrestler",
             "Tough",
             "Reach",],
@@ -2416,7 +2455,7 @@ async function findSource(inputPath, recur = 0) {
 
         for (let i = 0; i < sourceImages.length; i++) {
 
-            sourceBaseNames.push(path.basename(reverseString(sourceImages[i])));
+            sourceBaseNames.push(prepareStringSimilarity(path.basename(reverseString(sourceImages[i]))));
         }
     }
 
@@ -2432,9 +2471,9 @@ async function findSource(inputPath, recur = 0) {
     console.log("No exact match " + inputPath);
 
     let baseName = path.basename(inputPath)
-
+    let baseBg = prepareStringSimilarity(baseName);
     for (let i = 0; i < sourceBaseNames.length; i++) {
-        let res = stringSimilarity(sourceBaseNames[i], baseName);
+        let res = optimizedStringSimularity(sourceBaseNames[i], baseBg);
         if (res > best) {
             best = res;
             answer = i;
@@ -2446,80 +2485,82 @@ async function findSource(inputPath, recur = 0) {
         let resultPath = reverseString(sourceImages[answer]);
 
         founds[inputPath] = resultPath;
+        console.log("  match " + resultPath);
         return resultPath;
     }
     founds[inputPath] = "";
-
     return "";
 }
 
 
-async function processImageForTraining(imagePath, tagsSource) {
+// async function processImageForTraining(imagePath, tagsSource) {
 
-    if (imagePath.startsWith("http")) {
+//     if (imagePath.startsWith("http")) {
 
-        destFile = path.pasename(imagePath);
-        destFile = path.normalize(path.join(__dirname, 'public', 'trainingData', destFile));
-        if (!rawfs.existsSync(destFile)) {
+//         destFile = path.pasename(imagePath);
+//         destFile = path.normalize(path.join(__dirname, 'public', 'trainingData', destFile));
+//         if (!rawfs.existsSync(destFile)) {
 
-            try {
-                let response = await fetch(imagePath);
-                //  console.log(imagePath);
-                const arrayBuffer = await response.arrayBuffer();
-                const buffer = Buffer.from(arrayBuffer);
-                //  console.log(fileType);
+//             try {
+//                 let response = await fetch(imagePath);
+//                 //  console.log(imagePath);
+//                 const arrayBuffer = await response.arrayBuffer();
+//                 const buffer = Buffer.from(arrayBuffer);
+//                 //  console.log(fileType);
 
 
-                await EnsureDestinationExists(destFile);
-                console.log("Would copy " + imagePath + " to " + destFile);
+//                 await EnsureDestinationExists(destFile);
+//                 console.log("Would copy " + imagePath + " to " + destFile);
 
-                await rawfs.createWriteStream(destFile).write(buffer);
-                console.log("Did copy " + imagePath + " to " + destFile);
-                return destFile;
+//                 await rawfs.createWriteStream(destFile).write(buffer);
+//                 console.log("Did copy " + imagePath + " to " + destFile);
+//                 return destFile;
 
-            }
+//             }
 
-            catch (error) {
-                console.log(error, "Cannot fetch " + imagePath);
-                return "";
-            }
-        } else {
-            return destFile;
-        }
-    } else {
+//             catch (error) {
+//                 console.log(error, "Cannot fetch " + imagePath);
+//                 return "";
+//             }
+//         } else {
+//             return destFile;
+//         }
+//     } else {
 
-        let a = path.basename(imagePath);
-        sourceFile = await findSource(a, 0);
-        if (!(nameOk(sourceFile))) {
-            console.error("Cannot find " + a);
-            return "";
-        }
-        a = cleanPath(a);
-        let destFile = path.normalize(path.join(__dirname, 'public', 'trainingData', a));
-        if (typeof destFile != "string") throw ("WTF1");
-        if (!rawfs.existsSync(destFile)) {
+//         let a = path.basename(imagePath);
+//         sourceFile = await findSource(a, 0);
+//         if (!(nameOk(sourceFile))) {
+//             console.error("Cannot find " + a);
+//             return "";
+//         }
+//         a = cleanPath(a);
+//         let destFile = path.normalize(path.join(__dirname, 'public', 'trainingData', a));
+//         if (typeof destFile != "string") throw ("WTF1");
+//         if (!rawfs.existsSync(destFile)) {
 
-            await EnsureDestinationExists(destFile);
+//             await EnsureDestinationExists(destFile);
 
-            try {
-                console.log("Would copy " + sourceFile + " to " + destFile);
-                await fs.copyFile(sourceFile, destFile);
-                console.log("did copy " + sourceFile + " to " + destFile);
-            } catch (error) { console.log("Error Could not copy ", '"' + sourceFile + '"', " to ", '"' + destFile + '"'); }
-            return destFile;
+//             try {
+//                 console.log("Would copy " + sourceFile + " to " + destFile);
+//                 await fs.copyFile(sourceFile, destFile);
+//                 console.log("did copy " + sourceFile + " to " + destFile);
+//             } catch (error) { console.log("Error Could not copy ", '"' + sourceFile + '"', " to ", '"' + destFile + '"'); }
+//             return destFile;
 
-        } else {
-            return destFile;
+//         } else {
+//             return destFile;
 
-        }
+//         }
 
-    }
+//     }
 
-}
+// }
 
 async function processImage(imagePath, tagsSource) {
 
+
     if (imagePath.startsWith("http")) {
+        let startTime = performance.now();
         const fileType = path.extname(imagePath);
         if (!tagsSource) tagsSource = {};
         if (!tagsSource?.hash) {
@@ -2533,14 +2574,11 @@ async function processImage(imagePath, tagsSource) {
 
             try {
                 let response = await fetch(imagePath);
-                //  console.log(imagePath);
                 const arrayBuffer = await response.arrayBuffer();
                 const buffer = Buffer.from(arrayBuffer);
-                //  console.log(fileType);
 
 
                 await EnsureDestinationExists(destFile);
-                //  console.log("Would copy " + imagePath + " to " + destFile);
 
                 await rawfs.createWriteStream(destFile).write(buffer);
                 return FixSlashes(relativeName);
@@ -2552,16 +2590,18 @@ async function processImage(imagePath, tagsSource) {
                 return "";
             }
         } else {
+            let endTime = performance.now();
             return FixSlashes(relativeName);
         }
     } else {
 
         let a = path.normalize(imagePath);
-        sourceFile = await findSource(a, 0);
+        let sourceFile = await findSource(a, 0);
         if (!(nameOk(sourceFile))) {
             console.error("Cannot find " + a);
             return "";
         }
+        let startTime = performance.now();
         a = cleanPath(a);
         let relativeName = path.normalize(path.join('images', a));
         let destFile = path.normalize(path.join(__dirname, 'public', 'images', a));
@@ -2572,15 +2612,15 @@ async function processImage(imagePath, tagsSource) {
 
             try {
                 await fs.copyFile(sourceFile, destFile);
-                //  console.log("Would copy " + sourceFile + " to " + destFile);
             } catch (error) { console.log("Error Could not copy ", '"' + sourceFile + '"', " to ", '"' + destFile + '"'); }
             let a = FixSlashes(relativeName);
-            if (typeof a != "string") throw ("WTF3");
+
+
             return a;
 
         } else {
             let a = FixSlashes(relativeName);
-            if (typeof a != "string") throw ("WTF5");
+            ;
             return a;
         }
 
@@ -2603,6 +2643,7 @@ function FixSlashes(a) {
 function convert_weapons(input) {
 
     if (input.type != "weapon") return input;
+
     let output = {};
     output.name = input.name;
     output.type = input.type;
@@ -2611,12 +2652,7 @@ function convert_weapons(input) {
     output.range = {};
     output.range = input.range;
     output.types = [];
-    console.log(input.name);
-    console.log(input.range?.long);
-    console.log(input?.range?.long);
 
-    if (input.name == "Longbow")
-        console.log(input);
 
     if (input?.range?.long && input.range.long > 0)
         output.types.push("Ranged");
@@ -2643,13 +2679,47 @@ function convert_weapons(input) {
 
     return output;
 }
+function clearField(json, field) {
+
+    if (json[field] !== undefined)
+        delete json[field];
+    return json;
+}
+function CleanIt(json) {
+
+    if (json.system) {
+        let swap = json.system;
+        delete json.system;
+        json = { ...json, ...swap };
+    }
+    json = clearField(json, "prototypeToken");
+    json = clearField(json, "effects");
+    json = clearField(json, "_stats");
+    json = clearField(json, "folder");
+    json = clearField(json, "sort");
+    json = clearField(json, "ownership");
+    json = clearField(json, "_id");
+    json = clearField(json, "flags");
+    if (json?.attributes?.hp) {
+
+        json.attributes.hp.value = json.attributes.hp.value / 2;
+        json.attributes.hp.max = json.attributes.hp.max / 2;
+        delete json.attributes.hp.formula;
+
+    }
+    if (!isNaN(json?.attributes?.prof))
+        json.steel = json?.attributes.prof - 1;
+    if (json?.attributes?.attunement)
+        delete json.attributes.attunement;
+    return json;
+}
 async function convertDnD5e() {
 
     await fsExtra.emptyDir(path.join(__dirname, 'public', 'Compendium'));
     await fsExtra.emptyDir(path.join(__dirname, 'public', 'CompendiumFiles'));
     let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert')); // 
     let counts = {};
-    console.log("%o", dir);
+
 
     for (let i = 0; i < dir.length; i++) {
 
@@ -2669,17 +2739,17 @@ async function convertDnD5e() {
                 switch (text[i]) {
                     case '"': inQuotes = true; break;
                     case '{': level++; //console.log("up:" + level);
-                        // console.log(oneEntry);
+
                         break;
                     case '}': level--;
-                        // console.log("down:" + level); console.log(oneEntry);
+
                         if (level < 0) {
                             console.log("Error in conversion");
                             console.log(oneEntry);
                             exit(-1);
                         }
                         if (level === 0) {
-                            //    console.log("Writing size " + oneEntry.length);
+
                             subfiles.push(oneEntry);
                             oneEntry = "";
                         } break;
@@ -2713,9 +2783,7 @@ async function convertDnD5e() {
 
 
                 let tagsSource = json.flags.plutonium;
-                if (json.name == "Mace") {
-                    console.log(json);
-                }
+
 
                 if (tagsSource) {
 
@@ -2768,13 +2836,10 @@ async function convertDnD5e() {
                     });
 
                     json.current_appearance = "normal";
-                    console.log(json);
 
-                    if (json.system) {
-                        let swap = json.system;
-                        delete json.system;
-                        json = { ...json, ...swap };
-                    }
+
+                    json = CleanIt(json);
+
 
                     tagsSource.hash = cleanFileName(tagsSource.hash);
 
@@ -2810,6 +2875,7 @@ async function convertDnD5e() {
                                 img: item.img,
                             };
 
+                            item = CleanIt(item);
                             item = convert_weapons(item);
 
                             writeJsonFileInPublic('Compendium', "tag_" + subFile, tags);
@@ -2831,7 +2897,9 @@ async function convertDnD5e() {
                         prototypeToken: tagsSource.prototypeToken
                     };
 
+                    CleanIt(json);
                     json = convert_weapons(json);
+                    if (!json.name) json.name = tags.name;
 
                     if (counts[tagsSource.page] == undefined)
                         counts[tagsSource.page] = 0;
@@ -2848,148 +2916,148 @@ async function convertDnD5e() {
             //       console.error("error parsing json ( " + err + "+)");
             //   }
         }
-        let keys = Object.keys(counts);
-        for (let i = 0; i < keys.length; i++) {
-            console.log(keys[i], counts[keys[i]]);
-            // let outfile3 = path.join(pathy.join(__dirname, 'public', "artgenerator.json"));
-            //  fs.writeFile(outfile3, JSON.stringify(artGeneratorFile));
-        }
+        // let keys = Object.keys(counts);
+        // for (let i = 0; i < keys.length; i++) {
+        //     console.log(keys[i], counts[keys[i]]);
+        //     // let outfile3 = path.join(pathy.join(__dirname, 'public', "artgenerator.json"));
+        //     //  fs.writeFile(outfile3, JSON.stringify(artGeneratorFile));
+        // }
 
     }
 }
 
 
-async function makeTrainingData() {
+// async function makeTrainingData() {
 
-    await fsExtra.emptyDir(path.join(__dirname, 'public', 'TrainingData'));
-    await fsExtra.emptyDir(path.join(__dirname, 'public', 'TrainingData'));
-    let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert3')); // 
-    let counts = {};
-    console.log("Make training data " + dir.length);;
+//     await fsExtra.emptyDir(path.join(__dirname, 'public', 'TrainingData'));
+//     await fsExtra.emptyDir(path.join(__dirname, 'public', 'TrainingData'));
+//     let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert3')); // 
+//     let counts = {};
+//     console.log("Make training data " + dir.length);;
 
-    for (let i = 0; i < dir.length; i++) {
+//     for (let i = 0; i < dir.length; i++) {
 
-        let fname = path.join(__dirname, 'public', 'toConvert3', dir[i]);
+//         let fname = path.join(__dirname, 'public', 'toConvert3', dir[i]);
 
-        console.log("CHecking " + fname);;
+//         console.log("CHecking " + fname);;
 
-        let text = (await fs.readFile(fname)).toString();
-        let level = 0;
-        let inQuotes = false;
-        let subfiles = [];
-        let oneEntry = "";
-        badNews = false;
-        for (let i = 0; i < text.length; i++) {
-            oneEntry += text[i];
-            if (!inQuotes) {
-                switch (text[i]) {
-                    case '"': inQuotes = true; break;
-                    case '{': level++; //console.log("up:" + level);
-                        // console.log(oneEntry);
-                        break;
-                    case '}': level--;
-                        // console.log("down:" + level); console.log(oneEntry);
-                        if (level < 0) {
-                            console.log("Error in conversion");
-                            console.log(oneEntry);
-                            exit(-1);
-                        }
-                        if (level === 0) {
-                            //    console.log("Writing size " + oneEntry.length);
-                            subfiles.push(oneEntry);
-                            oneEntry = "";
-                        } break;
-                    default: break;
-                }
-            }
-            else {
-                //  if (text[i] === '@') { badNews = true; }
+//         let text = (await fs.readFile(fname)).toString();
+//         let level = 0;
+//         let inQuotes = false;
+//         let subfiles = [];
+//         let oneEntry = "";
+//         badNews = false;
+//         for (let i = 0; i < text.length; i++) {
+//             oneEntry += text[i];
+//             if (!inQuotes) {
+//                 switch (text[i]) {
+//                     case '"': inQuotes = true; break;
+//                     case '{': level++; //console.log("up:" + level);
+//                         // console.log(oneEntry);
+//                         break;
+//                     case '}': level--;
+//                         // console.log("down:" + level); console.log(oneEntry);
+//                         if (level < 0) {
+//                             console.log("Error in conversion");
+//                             console.log(oneEntry);
+//                             exit(-1);
+//                         }
+//                         if (level === 0) {
+//                             //    console.log("Writing size " + oneEntry.length);
+//                             subfiles.push(oneEntry);
+//                             oneEntry = "";
+//                         } break;
+//                     default: break;
+//                 }
+//             }
+//             else {
+//                 //  if (text[i] === '@') { badNews = true; }
 
-                if (!badNews) {
-                    if (text[i] === '"' && text[i - 1] !== '/') { inQuotes = false; }
-                } else {
-                    if (text[i] == '{') badNews = false;
-                    else {
-                        oneEntry = oneEntry.slice(0, -1);
-                    }
-                }
-            }
-        }
+//                 if (!badNews) {
+//                     if (text[i] === '"' && text[i - 1] !== '/') { inQuotes = false; }
+//                 } else {
+//                     if (text[i] == '{') badNews = false;
+//                     else {
+//                         oneEntry = oneEntry.slice(0, -1);
+//                     }
+//                 }
+//             }
+//         }
 
-        console.log("Num SubFiles " + subfiles.length);
+//         console.log("Num SubFiles " + subfiles.length);
 
-        let last = 0;
-        let audit = false;
-        for (let fileIndex = 0; fileIndex < subfiles.length; fileIndex++) {
-
-
-            if (fileIndex > last + 50) { console.log(fileIndex + " of " + subfiles.length); last = fileIndex; audit = true; }
-            {//   try {
-                json = JSON.parse(subfiles[fileIndex]);
-                if (!json.flags) { console.log("PRESKipping " + json.name); continue; }
+//         let last = 0;
+//         let audit = false;
+//         for (let fileIndex = 0; fileIndex < subfiles.length; fileIndex++) {
 
 
-                let tagsSource = json.flags.plutonium;
-                if (json.name == "Mace") {
-                    console.log(json);
-                }
+//             if (fileIndex > last + 50) { console.log(fileIndex + " of " + subfiles.length); last = fileIndex; audit = true; }
+//             {//   try {
+//                 json = JSON.parse(subfiles[fileIndex]);
+//                 if (!json.flags) { console.log("PRESKipping " + json.name); continue; }
 
 
-
-
-                if (json.img) {
-                    console.log("json.img " + json.img);
-                    // todo: avoid token images
-                    //    console.log("json %o ", json);
-                    let destFile = await processImageForTraining(json.img, tagsSource);
-                    console.log("json.img " + destFile);
-
-
-                    let text = path.basename(destFile);
-
-                    text = text.replace(/\.[^/.]+$/, "")
+//                 let tagsSource = json.flags.plutonium;
+//                 if (json.name == "Mace") {
+//                     console.log(json);
+//                 }
 
 
 
 
-                    let pathName = destFile;
-                    pathName = pathName.replace(/\.[^/.]+$/, ".txt")
-                    console.log("pathName " + pathName);
-                    writeText(pathName, text);
-
-                }
-
-                // if (json?.prototypeToken) {
+//                 if (json.img) {
+//                     console.log("json.img " + json.img);
+//                     // todo: avoid token images
+//                     //    console.log("json %o ", json);
+//                     let destFile = await processImageForTraining(json.img, tagsSource);
+//                     console.log("json.img " + destFile);
 
 
-                //     let t = json.prototypeToken;
+//                     let text = path.basename(destFile);
 
-                //     let text = json.base?.name + " " + json.base._typeHtml
-                //         + json.base?._subTypeHtml + " token " + json?.description
-                //         + (json.base?.weapon ? "weapon" : "");
-
-                //     json.prototypeToken = await processImageForTraining(t.texture.src);
-
-                //     let pathName = json.prototypeToken;
-                //     pathName = pathName.replace(/\.[^/.]+$/, ".txt")
-                //     writeText(pathName, text);
-
-
-                //     // todo auto make tokens from main image
-                // }
+//                     text = text.replace(/\.[^/.]+$/, "")
 
 
 
-            };
 
-        }
-        //    catch (err) {
-        //       console.error("error parsing json ( " + err + "+)");
-        //   }
-    }
+//                     let pathName = destFile;
+//                     pathName = pathName.replace(/\.[^/.]+$/, ".txt")
+//                     console.log("pathName " + pathName);
+//                     writeText(pathName, text);
+
+//                 }
+
+//                 // if (json?.prototypeToken) {
 
 
-}
+//                 //     let t = json.prototypeToken;
+
+//                 //     let text = json.base?.name + " " + json.base._typeHtml
+//                 //         + json.base?._subTypeHtml + " token " + json?.description
+//                 //         + (json.base?.weapon ? "weapon" : "");
+
+//                 //     json.prototypeToken = await processImageForTraining(t.texture.src);
+
+//                 //     let pathName = json.prototypeToken;
+//                 //     pathName = pathName.replace(/\.[^/.]+$/, ".txt")
+//                 //     writeText(pathName, text);
+
+
+//                 //     // todo auto make tokens from main image
+//                 // }
+
+
+
+//             };
+
+//         }
+//         //    catch (err) {
+//         //       console.error("error parsing json ( " + err + "+)");
+//         //   }
+//     }
+
+
+// }
 
 
 
@@ -2997,7 +3065,7 @@ function convertPTBA() {
 
     Object.keys(feats).forEach(function (key, index) {
         let feat = feats[key];
-        tags = {
+        let tags = {
             "file": "CompendiumFiles/feat_" + key,
             "page": "feats",
             "source": "Gil",
@@ -3006,7 +3074,7 @@ function convertPTBA() {
             "img": "images/careers/" + key + ".avif" /// need this
         };
 
-        item = {
+        let item = {
             name: feat.name,
 
             description: {

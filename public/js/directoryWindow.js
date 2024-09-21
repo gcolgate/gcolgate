@@ -77,7 +77,9 @@ async function GetDirectory(directory) {
         let response = await fetch("./" + directory);
         console.log("Fetch " + directory);
         const jsonData = await response.json();
-        processDirectory(jsonData);
+        console.log(jsonData);
+        if (directory !== "Images")
+            processDirectory(jsonData);
         return jsonData;
     } catch (err) {
         console.log("Failed to fetch" + err + " " + directory);
@@ -122,7 +124,7 @@ function extractFromCompendium(filter_array, thing) {
     for (let i = 0; i < searched.length; i++) {
 
         let quote = '"';
-
+        console.log(thing.id);
         answer += "<li   onmousedown='htmlContext.addToPlayerFromDropdown("
             + JSON.stringify(searched[i]) + "," + quote + thing.id + quote + ")'>";
         answer += '<img src="' + searched[i].img + '" width="32" height="32"></img>';
