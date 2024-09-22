@@ -883,6 +883,26 @@ export function getAppearanceImage(thing, type) {
 MakeAvailableToParser('getAppearanceImage', getAppearanceImage);
 
 
+
+export function setAppearanceImage(thingId, image_type, path) {
+
+    let thing = GetRegisteredThing(thingId);
+    if (path.startsWith(window.location.href)) { // remove URL if present
+        let skip = window.location.href.length;
+        path = path.substr(skip);
+    }
+    let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).' + image_type + '.image =  "' + path + '"';
+
+    console.log('evaluation is ' + evaluation);
+
+    socket.emit("change_appearance", { thing: thingId, change: evaluation, updatePortrait: true });
+
+
+}
+MakeAvailableToParser('setAppearanceImage', setAppearanceImage);
+
+
+
 export function setSlot(thing, slotExact, item) {
     let answer = findInNamedArray(thing.appearance, thing.current_appearance);
 

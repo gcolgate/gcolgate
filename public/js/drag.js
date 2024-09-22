@@ -1,5 +1,5 @@
-import { MakeAvailableToHtml, GetRegisteredThing } from './characters.js';
-import { setSlot, findInNamedArray, isEquipped } from './ptba.js';
+import { MakeAvailableToHtml, MakeAvailableToParser, GetRegisteredThing } from './characters.js';
+import { setSlot, findInNamedArray, isEquipped, setAppearanceImage } from './ptba.js';
 export var thingDragged = null;
 
 export function setThingDragged(t) {
@@ -369,7 +369,126 @@ export function dragDrop(elem, listeners) {
         elem.classList.remove('drag')
     }
 }
+///////////////////
+var isEntered = false;
+var numIgnoredEnters = 0;
+function onDragEnter(event, elem) {
+    event.stopPropagation()
+    event.preventDefault()
 
+
+
+    if (isEntered) {
+        numIgnoredEnters += 1
+        return false // early return
+    }
+
+    isEntered = true
+
+    addDragClass(elem)
+
+    return false
+}
+MakeAvailableToHtml('onDragEnter', onDragEnter);
+MakeAvailableToParser('onDragEnter', onDragEnter);
+
+function onDragOver(event) {
+    event.stopPropagation()
+    event.preventDefault()
+
+
+
+    event.dataTransfer.dropEffect = 'copy'
+
+    return false
+}
+MakeAvailableToHtml('onDragOver', onDragOver);
+MakeAvailableToParser('onDragOver', onDragOver);
+
+function onDragLeave(event, elem) {
+    event.stopPropagation()
+    event.preventDefault()
+
+    if (numIgnoredEnters > 0) {
+        numIgnoredEnters -= 1
+        return false
+    }
+
+    isEntered = false
+
+
+
+    removeDragClass(elem)
+
+    return false
+}
+MakeAvailableToHtml('onDragLeave', onDragLeave);
+MakeAvailableToParser('onDragLeave', onDragLeave);
+function onDropOnImage(event, elem, thingId, type) {
+    event.stopPropagation()
+    event.preventDefault()
+
+
+    removeDragClass(elem)
+
+    isEntered = false
+    numIgnoredEnters = 0
+
+    const pos = {
+        x: event.clientX,
+        y: event.clientY
+    }
+
+    // text drop support
+    const text = event.dataTransfer.getData('text')
+    if (text) {
+        setAppearanceImage(thingId, type, text);
+    }
+
+
+
+    // File drop support. The `dataTransfer.items` API supports directories, so we
+    // use it instead of `dataTransfer.files`, even though it's much more
+    // complicated to use.
+    // See: https://github.com/feross/drag-drop/issues/39
+    if (elem.onDropFile && !thingDragged && event.dataTransfer.items && event.dataTransfer.items.length > 0) {
+        processItems(event.dataTransfer.items, (err, files, directories) => {
+            if (err) {
+                // TODO: A future version of this library might expose this somehow
+                console.error(err)
+                return
+            }
+
+            if (files.length === 0) return
+
+            const fileList = event.dataTransfer.files
+
+            // TODO: This callback has too many arguments, and the order is too
+            // arbitrary. In next major version, it should be cleaned up.
+            elem.onDropFile(files, pos, fileList, directories)
+        })
+    }
+    else {
+        if (thingDragged) {
+            if (elem.acceptDrag) {
+                elem.acceptDrag(thingDragged, event);
+            }
+        }
+
+    }
+    return false
+}
+MakeAvailableToHtml('onDropOnImage', onDropOnImage);
+MakeAvailableToParser('onDropOnImage', onDropOnImage);
+function addDragClass(elem) {
+    elem.classList.add('drag')
+}
+
+function removeDragClass(elem) {
+    elem.classList.remove('drag')
+}
+
+//////////////////
 function processItems(items, cb) {
     // Handle directories in Chrome using the proprietary FileSystem API
     items = Array.from(items).filter(item => {

@@ -531,19 +531,31 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
                     // let nextTwo = text.substring(i, i + 1);
                     // if (nextTwo == "{{") {
                     //     newText += '{';
+                    //     i++;
                     //     break;
                     // }
                     // if (nextTwo == "}}") {
                     //     newText += '}';
+                    //     i++;
                     //     break;
                     // }
                     // if it is code we want to execute, got to steate 1
                     if (nextOne == '{') {
-                        state = 1; code = "";
+                        if (text[i + 1] === '{') {
+                            newText += '{';
+                            i = i + 1;
+                        } else {
+                            state = 1; code = "";
+                        }
                     }
                     // assert for mismatched }
                     else if (nextOne == '}') {
-                        throw new Error("Mismatched '} fileSOFar: " + newText + "\ncodeBeingEvaluated " + code);
+                        if (text[i + 1] === '}') {
+                            newText += '}';
+                            i = i + 1;
+                        } else {
+                            throw new Error("Mismatched '} fileSOFar: " + newText + "\ncodeBeingEvaluated " + code);
+                        }
                     }
                     else newText += nextOne;
                 }
@@ -560,6 +572,12 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
                 }
                 // reach end of code block
                 if (text[i] == '}') {
+
+                    if (text[i + 1] === '}') { // not a real code block
+                        newText += '}';
+                        i = i + 1;
+                        continue;
+                    }
                     state--;
                     if (state == 0) {
                         try {

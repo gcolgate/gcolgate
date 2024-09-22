@@ -156,37 +156,41 @@
                 <div> Portrait</div>
                 <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
                     style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                    onclick="htmlContext.showPasteAndChoose(event, window, 'portrait_{thing.id}','token_{thing.id}')">
-                </image>
-                <div id="portrait_{thing.id}" class="hiddenButton">
-                    <button>Paste</button>
-                    <form action="/uploadFromButton" method="POST" enctype="multipart/form-data"
-                        id="portrait_form_{thing.id}">
-                        <input type="file" id="portrait_file_{thing.id}" name="filename" hidden
-                            onchange="UploadAppearanceArt(event,'portrait','{thing.id}')">
-                        <input id='buttonid' type='button' value='Upload Image'
-                            onclick="document.getElementById('portrait_file_{thing.id}').click();" />
-                        <input type='submit' value='Submit' hidden />
-                    </form>
-                </div>
+                    onclick="htmlContext.showPasteAndChoose(event, window, 'portrait_{thing.id}','token_{thing.id}')"
+                    ondragenter="onDragEnter(event,this)" ondragover="onDragOver(event,this)"
+                    ondrop="onDropOnImage(event,this,'{thing.id}', 'portrait')" ondragleave="onDragLeave(event,this)"
+                    </image>
+                    <div id="portrait_{thing.id}" class="hiddenButton">
+                        <button>Paste</button>
+                        <form action="/uploadFromButton" method="POST" enctype="multipart/form-data"
+                            id="portrait_form_{thing.id}">
+                            <input type="file" id="portrait_file_{thing.id}" name="filename" hidden
+                                onchange="UploadAppearanceArt(event,'portrait','{thing.id}')">
+                            <input id='buttonid' type='button' value='Upload Image'
+                                onclick="document.getElementById('portrait_file_{thing.id}').click();" />
+                            <input type='submit' value='Submit' hidden />
+                        </form>
+                    </div>
             </div>
             <div>
                 <div> Token</div>
                 <image src="{getAppearanceImage(thing, 'token')}" alt="{thing.name}"
                     style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'token')}"
-                    onclick="htmlContext.showPasteAndChoose(event, window, 'token_{thing.id}','portrait_{thing.id}')">
-                </image>
-                <div id="token_{thing.id}" class="hiddenButton">
-                    <button>Paste</button>
-                    <form action="/uploadFromButton" method="POST" enctype="multipart/form-data"
-                        id="token_form_{thing.id}">
-                        <input type="file" id="token_file_{thing.id}" name="filename" hidden
-                            onchange="UploadAppearanceArt(event,'token','{thing.id}')">
-                        <input id='buttonid' type='button' value='Upload Image'
-                            onclick="document.getElementById('token_file_{thing.id}').click();" />
-                        <input type='submit' value='Submit' hidden />
-                    </form>
-                </div>
+                    onclick="htmlContext.showPasteAndChoose(event, window, 'token_{thing.id}','portrait_{thing.id}')"
+                    ondragenter="onDragEnter(event,this)" ondragover="onDragOver(event,this)"
+                    ondrop="onDropOnImage(event,this,'{thing.id}', 'token')" ondragleave=" onDragLeave(event,this)"
+                    </image>
+                    <div id=" token_{thing.id}" class="hiddenButton">
+                        <button>Paste</button>
+                        <form action="/uploadFromButton" method="POST" enctype="multipart/form-data"
+                            id="token_form_{thing.id}">
+                            <input type="file" id="token_file_{thing.id}" name="filename" hidden
+                                onchange="UploadAppearanceArt(event,'token','{thing.id}')">
+                            <input id='buttonid' type='button' value='Upload Image'
+                                onclick="document.getElementById('token_file_{thing.id}').click();" />
+                            <input type='submit' value='Submit' hidden />
+                        </form>
+                    </div>
             </div>
         </div>
     </div>

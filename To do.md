@@ -10,7 +10,7 @@ https://stackoverflow.com/questions/17493027/can-i-open-a-new-window-and-populat
 https://daily-dev-tips.com/posts/javascript-sending-data-between-windows/
 
 Issue: if closing main window window copy screws up, add button to make main window hide and copy window open. When closing copy window make copy main window visible
-
+For slow network, need to put up clock when loading initial scene, as each character sheet is loaded.
 Working 30%
 Finish image server
 Fix non-fighty characters dancer based had no weapons
