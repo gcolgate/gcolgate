@@ -1,9 +1,9 @@
 import { chkDiv } from "./characters.js";
+import { uploadDroppedImages } from "./main.js"
 import { thingDragged, dragDrop, setThingDragged } from "./drag.js";
-import { bringToFront, createOrGetDirWindow, fadeIn } from './window.js';
-import { MakeAvailableToHtml, GetRegisteredThing, MakeAvailableToParser, showThing, SetRegisteredThing } from './characters.js';
+import { bringToFront, clickOne, createOrGetDirWindow, fadeIn } from './window.js';
+import { parseSheet, MakeAvailableToHtml, GetRegisteredThing, MakeAvailableToParser, showThing, SetRegisteredThing, ensureThingLoadedElem } from './characters.js';
 import { socket } from './main.js';
-
 
 
 var folders = {
@@ -12,30 +12,30 @@ var folders = {
     Favorites: {},
     Uniques: {},
     Scenes: {},
-    Images: {},
+    images: {},
 };
 var dirWindowCustomization = {
-    Compendium: {},
-    Party: { newButton: "newPlayer" },
-    Favorites: {},
-    Uniques: {},
-    Scenes: {},
-    Images: {},
+    Compendium: { dimensions: [.2, .6, .2, .2] },
+    Party: { newButton: "newPlayer", dimensions: [.2, .6, .2, .2] },
+    Favorites: { dimensions: [.2, .6, .2, .2] },
+    Uniques: { dimensions: [.2, .6, .2, .2] },
+    Scenes: { dimensions: [.2, .6, .2, .2] },
+    images: { newButton: "up", dimensions: [.6, .6, .2, .2], divHolder: "twocolumns" },
 };
 export function GetMainDirectories() {
-    GetDirectory('Compendium').then((c) => { folders.Compendium = c; });
-    GetDirectory('Party').then((c) => { folders.Party = c; });
-    GetDirectory('Favorites').then((c) => { folders.Favorites = c; });
-    GetDirectory('Uniques').then((c) => { folders.Uniques = c; });
-    GetDirectory('Scenes').then((c) => { folders.Scenes = c; });
-    GetDirectory('Images').then((c) => { folders.Images = c; });
+    GetDirectory('Compendium', true).then((c) => { folders.Compendium = c; });
+    GetDirectory('Party', true).then((c) => { folders.Party = c; });
+    GetDirectory('Favorites', true).then((c) => { folders.Favorites = c; });
+    GetDirectory('Uniques', true).then((c) => { folders.Uniques = c; });
+    GetDirectory('Scenes', true).then((c) => { folders.Scenes = c; });
+    //GetDirectory('images').then((c) => { folders.images = c; }); // todo remove
 
     setUpDirButton('Compendium');
     setUpDirButton('Party');
     setUpDirButton('Favorites');
     setUpDirButton('Uniques');
     setUpDirButton('Scenes');
-    setUpDirButton('Images');
+    setUpDirButton('images');
 }
 
 function setUpDirButton(buttonName) {
@@ -46,10 +46,12 @@ function setUpDirButton(buttonName) {
 }
 function createDirWindow(buttonName) {
 
-    if (!folders[buttonName]) {
+    if (!folders[buttonName] && buttonName != "images") {
         alert("Have not yet receieved " + buttonName + "from server");
     } else {
-        let w = createOrGetDirWindow(buttonName, .2, .6, .2, .2, dirWindowCustomization[buttonName]);
+        let w = createOrGetDirWindow(buttonName, dirWindowCustomization[buttonName].dimensions[0],
+            dirWindowCustomization[buttonName].dimensions[1],
+            dirWindowCustomization[buttonName].dimensions[2], dirWindowCustomization[buttonName].dimensions[3], dirWindowCustomization[buttonName]);
         bringToFront(w);
         showDirectoryWindow(buttonName, folders[buttonName]);
     }
@@ -71,14 +73,14 @@ export function processDirectory(jsonData) {
     return jsonData;
 }
 
-async function GetDirectory(directory) {
+async function GetDirectory(directory, processDir) {
 
     try {
         let response = await fetch("./" + directory);
         console.log("Fetch " + directory);
         const jsonData = await response.json();
         console.log(jsonData);
-        if (directory !== "Images")
+        if (processDir) // todo, make this seperate function no flag
             processDirectory(jsonData);
         return jsonData;
     } catch (err) {
@@ -106,8 +108,16 @@ async function addToPlayerFromDropdown(thing_file, ownerid) {
 }
 MakeAvailableToHtml('addToPlayerFromDropdown', addToPlayerFromDropdown);
 
+function itemToolTip(name, owner, on) {
+    let t = document.getElementById(name + owner);
+    if (t) {
+        if (on) t.style.display = 'block';
+        else t.style.display = 'none';
+    }
+}
+MakeAvailableToHtml('itemToolTip', itemToolTip);
 
-function extractFromCompendium(filter_array, thing) {
+function extractFromCompendium(filter_array, owner) {
 
     if (!folders.Compendium) {
         return [];
@@ -124,12 +134,38 @@ function extractFromCompendium(filter_array, thing) {
     for (let i = 0; i < searched.length; i++) {
 
         let quote = '"';
-        console.log(thing.id);
-        answer += "<li   onmousedown='htmlContext.addToPlayerFromDropdown("
-            + JSON.stringify(searched[i]) + "," + quote + thing.id + quote + ")'>";
-        answer += '<img src="' + searched[i].img + '" width="32" height="32"></img>';
+        console.log(owner.id);
+        answer += "<li class='preview'  onmousedown='htmlContext.addToPlayerFromDropdown("
+            + JSON.stringify(searched[i]) + "," + quote + owner.id + quote + ")'";
+
+
+        answer += ">";
+        answer += '<div ' + '" onMouseLeave="itemToolTip(\'' + searched[i].file + '\',\'' + owner.id + '\', false)"' +
+            ' onMouseEnter="itemToolTip(\'' + searched[i].file + '\',\'' + owner.id + '\', true)" >';
+        if ((searched[i].page == "spell" || searched[i].page == "weapon")) {
+            answer += '<div class="tooltipcontainer">';
+            answer += '<div class="tooltip" id="' + searched[i].file + owner.id + '">';
+            if (!GetRegisteredThing(searched[i].file)) {
+                ensureThingLoadedElem(searched[i].file, searched[i].file + owner.id).then(data => {
+                    let a = parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
+                    document.getElementById(data).innerHTML = a;
+                });
+            } else {
+                answer += parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
+            }
+            //parseSheet(thing, sheetName, w, owner, notes, additionalParms)
+            answer += '</div>';
+            answer += '</div>';
+        }
+
+        answer += '<img src="' + searched[i].img + ' width="32" height="32"></img>';
+        answer += '</div>';
         answer += searched[i].name;
         if (searched[i].price) answer += '<span class="bold"> ' + searched[i].price + "</span > "
+
+        // does not work because thing not loaded
+
+
         // li.references = array[i];
         // li.draggable = true;
         // li.onmousedown = function (event) { clickOne(this); };
@@ -237,20 +273,128 @@ function collectFilter(id) {
 
 }
 
+function sortDirEntry(a, b) {
+
+    if (a.dir && !b.dir) return -1;
+    if (!a.dir && b.dir) return 1;
+    return a.name.localeCompare(b.name);
+}
+
+export function GoUpOneDirectory(windowname) {
+    let window = document.getElementById("window_" + windowname);
+    if (window.subdir !== "") {
+        let text = window.subdir;
+        for (let i = 0; i < 2; i++) {
+            let lastIndex = text.lastIndexOf('/');
+            text = text.substring(0, lastIndex);
+        }
+
+        console.log(text);
+        window.subdir = text;
+        console.log(window.subdir);
+        refreshDirectoryWindow(windowname, null);
+    }
+}
+
+export function refreshDirectoryWindow(id, whole) {
+
+
+    let window = document.getElementById("window_" + id);
+    let array;
+    if (id === "images") {
+        if (!window.subdir) {
+            window.subdir = "";
+        }
+        GetDirectory("images" + window.subdir, false).then(array => {
 
 
 
-function refreshDirectoryWindow(id, whole) {
+            let ul = document.getElementById("window_" + id + "_list");
+
+            ul.style.height = (window.clientHeight - ul.offsetTop) + "px";
+            ul.style.overflow = "auto";
+            while (ul.firstChild) {
+                ul.removeChild(ul.firstChild);
+            }
+
+
+            window.resizeObserver = new ResizeObserver(entries => {
+                entries.forEach(entry => {
+                    console.log("%o", entry);
+                    console.log('width', entry.contentRect.width);
+                    console.log('height', entry.contentRect.height);
+                    let ul = document.getElementById("window_" + id + "_list");
+                    if (ul) { ul.style.height = (window.clientHeight - ul.offsetTop) + "px"; }
+                    else {
+                        console.log("WTF");
+                    }
+                });
+
+            });
+
+            window.resizeObserver.observe(window);
+            window.resizeObserver.observe(ul);
+
+            array.sort(sortDirEntry);
+
+            for (let i = 0; i < array.length; i++) {
+                let li = document.createElement("li");
+                li.className = "speedline";
+                let text = document.createTextNode(array[i].name);
+                // need better images 
+                if (array[i].img) {
+                    let img = document.createElement('img');
+                    img.src = array[i].img;
+                    img.width = "64"
+                    img.height = "64"
+                    li.appendChild(img);
+
+                }
+
+                li.appendChild(text);
+                li.references = array[i];
+                li.draggable = true;
+
+                if (array[i].type !== "dir") {
+                    li.className = "npcheader border";
+                    li.onmousedown = function (event) { clickOne(this); };
+                    li.ondblclick = clickOnThing;
+                    li.ondragstart = function (event) {
+                        setThingDragged(this.references);
+                        thingDragged.windowId = id;
+
+                    }
+                } else {
+                    li.className = "npcheader border";
+                    li.onmousedown = function (event) {
+                        // /images is 7 long
+                        window.subdir = this.references.name.substring(7);
+
+                        refreshDirectoryWindow(id, whole);
+
+                    };
+
+
+                }
+
+                ul.appendChild(li);
+            }
+
+        });
+
+        return;
+    }
 
     let params = collectFilter(id);
-    let window = document.getElementById("window_" + id);
-
-    window.search_in_directory.set_array(whole); //search_input.array = array;
-
     let searched = window.search_in_directory.search();
 
+    // 
 
-    let array = filter(searched, params.filter);
+    window.search_in_directory.set_array(whole); //search_input.array = array;
+    array = filter(searched, params.filter);
+
+
+
 
     // let title = document.getElementById("window_" + id + "_title");
 
@@ -281,6 +425,8 @@ function refreshDirectoryWindow(id, whole) {
     window.resizeObserver.observe(window);
     window.resizeObserver.observe(ul);
 
+    array.sort(sortDirEntry);
+
     for (let i = 0; i < array.length; i++) {
         let li = document.createElement("li");
         let text = document.createTextNode(array[i].name);
@@ -297,11 +443,22 @@ function refreshDirectoryWindow(id, whole) {
         li.appendChild(text);
         li.references = array[i];
         li.draggable = true;
-        li.onmousedown = function (event) { clickOne(this); };
-        li.ondblclick = clickOnThing;
-        li.ondragstart = function (event) {
-            setThingDragged(this.references);
-            thingDragged.windowId = id;
+        if (!array[i].dir) {
+            li.onmousedown = function (event) { clickOne(this); };
+            li.ondblclick = clickOnThing;
+            li.ondragstart = function (event) {
+                setThingDragged(this.references);
+                thingDragged.windowId = id;
+
+            }
+        } else {
+            li.onmousedown = function (event) {
+
+                array[i].open = array[i].open ? false : true;
+                refreshDirectoryWindow(id, whole);
+
+            };
+
 
         }
 
@@ -326,7 +483,9 @@ export async function updateDirectoryWindow(id, updatedFolder, makeFront) {
     let w = document.getElementById(windowName);
 
     if (!w && !makeFront) { return; }
-    w = createOrGetDirWindow(id, .2, .6, .2, .2, dirWindowCustomization[id]);
+    w = createOrGetDirWindow(id, dirWindowCustomization[buttonName].dimensions[0],
+        dirWindowCustomization[buttonName].dimensions[1],
+        dirWindowCustomization[buttonName].dimensions[2], dirWindowCustomization[id]);
     if (makeFront) bringToFront(w);
     showDirectoryWindow(id, folders[id]);
 
@@ -403,6 +562,23 @@ function showDirectoryWindow(id, array) {
             onDragOver: (event) => { },
             onDragLeave: (event) => { console.log("Drag leave1"); }
         });
+
+        if (id === "images") {
+            ul.windowOwner = window;
+            ul.ondrop = function (e) {
+                if (thingDragged) {
+                    // will be handled by canvas
+                } else {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    uploadDroppedImages(e, this.windowOwner.subdir);
+                    e.dataTransfer.effectAllowed = 'none'
+                    e.dataTransfer.dropEffect = 'none'
+                    return false;
+                }
+            };
+
+        }
         id = RemoveSlashes(id);
 
         ul.acceptDrag = function (thingDragged, event) {

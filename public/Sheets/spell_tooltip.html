@@ -1,0 +1,39 @@
+<div>
+    <div class="npcheader ">
+        <div class="speedline ">
+
+            <div class=" body spelltext">
+
+                <div class="paragraphText wide">
+                    <div class="npcheader"> {htmlContext.DrawImageArray("images/spells/", thing.Powers, '.jfif')
+                        +thing.name
+                        }
+
+
+                    </div>
+                    <div> <span class="bold"> Powers:</span> {htmlContext.DrawArray(thing.Powers)}
+                        <div> <span class="bold"> Enhancements:</span>
+                            {
+                            DrawArrayEnhancementButtons(thing, owner, thing.PossibleEnhancements)}
+                        </div>
+
+                        <div> <span class="bold">Description: </span>{thing.Description}</div>
+                        <div> <span class="bold"> ManaCost:</span> {getModifiedManaCost(thing)}
+                            <span class="bold"> TimeToCast:</span> {thing.TimeToCast}
+                        </div>
+                        <div> <span class="bold"> Damage:</span> {GetModifiedDamageString(thing) }
+                            <span class="bold"> Concentration:</span> {thing.Concentration ? thing.Concentration :
+                            "N"}
+                            <span class="bold"> Range:</span> {GetSpellModifiedRangeString(thing)}
+                            <span class="bold"> Target:</span> {thing.Target }
+                            <span class="bold"> Move:</span> {thing.Move}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

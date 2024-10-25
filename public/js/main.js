@@ -1,7 +1,7 @@
 
 
 import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
-import { GetMainDirectories, processDirectory, updateDirectoryWindow } from './directoryWindow.js';
+import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow } from './directoryWindow.js';
 import { createOrGetLoginWindow, windowsInit } from './window.js';
 import { showChatWindow, setLogin, addChat } from './chat.js';
 import { UpdateNPC, RemoveFromNPC, AddItemToNPC } from "./characters.js";
@@ -108,8 +108,12 @@ socket.on('addItem', function (msg) {
 });
 
 socket.on('updateDir', function (msg) {
-    let f = processDirectory(msg.folder);
-    updateDirectoryWindow(msg.id, f, msg.makeFront);
+    if (msg.folder) {
+        let f = processDirectory(msg.folder);
+        updateDirectoryWindow(msg.id, f, msg.makeFront);
+    } else {
+        refreshDirectoryWindow(msg.id, false);
+    }
 
 });
 
@@ -251,6 +255,10 @@ function noDragging(e) {
 async function dropOneFile(file, additional) {
     try {
         let url = new URL(window.location.href).origin + '/upload';
+        if (additional && additional.newDir) {
+            url = new URL(window.location.href).origin + '/uploadToDir';
+
+        }
         let formData = new FormData()
         formData.append('file', file);
         for (const [key, value] of Object.entries(additional)) {
@@ -276,7 +284,7 @@ async function dropOneFile(file, additional) {
 // existing if it is there already
 // if control held, just make new tile but
 // don't upload
-function uploadDroppedImages(e) {
+export function uploadDroppedImages(e, dir) {
 
     let fd = new FormData();
     let files = e.dataTransfer.files;
@@ -291,11 +299,13 @@ function uploadDroppedImages(e) {
             x: vec.x,
             y: vec.y,
             z: null, // todo fix
-            current_scene: current_scene.name
+            current_scene: current_scene.name,
+            newDir: dir,
         }
         dropOneFile(file, additional);
     }
 }
+
 
 function noDropping(e) {
     // TODO:unhighliht

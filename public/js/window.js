@@ -6,7 +6,7 @@
 import { MakeAvailableToHtml } from "./characters.js";
 import { socket } from './main.js';
 import { setThingDragged } from './drag.js';
-
+import { GoUpOneDirectory } from './directoryWindow.js';
 
 var realWindows = [];
 
@@ -138,6 +138,7 @@ export function windowShowing(name) {
 let ButtonTitles = {
     newPlayer: "New Player",
     popout: "PopOut",
+    up: "<---",
 };
 
 function DoButton(id) {
@@ -147,6 +148,10 @@ function DoButton(id) {
             socket.emit('newPlayer');
 
             break;
+        case "up": {
+            GoUpOneDirectory("images");
+
+        }
     }
 
 }
@@ -383,7 +388,7 @@ export function createOrGetDirWindow(id, width, height, left, top, customization
 
 }
 
-function clickOne(selected) {
+export function clickOne(selected) {
 
     let ul = selected.parentElement;
     const listArray = [...ul.children];

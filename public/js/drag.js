@@ -424,10 +424,10 @@ function onDragLeave(event, elem) {
 }
 MakeAvailableToHtml('onDragLeave', onDragLeave);
 MakeAvailableToParser('onDragLeave', onDragLeave);
-function onDropOnImage(event, elem, thingId, type) {
+
+function onDropOnDir(event, elem, thingId, type) {
     event.stopPropagation()
     event.preventDefault()
-
 
     removeDragClass(elem)
 
@@ -442,7 +442,7 @@ function onDropOnImage(event, elem, thingId, type) {
     // text drop support
     const text = event.dataTransfer.getData('text')
     if (text) {
-        setAppearanceImage(thingId, type, text);
+        //     setAppearanceImage(thingId, type, text);
     }
 
 
@@ -476,6 +476,67 @@ function onDropOnImage(event, elem, thingId, type) {
         }
 
     }
+    return false;
+}
+
+function onDropOnImage(event, elem, thingId, type) {
+    event.stopPropagation()
+    event.preventDefault()
+
+    console.log("onDropOnImage");
+
+    removeDragClass(elem)
+
+    isEntered = false
+    numIgnoredEnters = 0
+
+    const pos = {
+        x: event.clientX,
+        y: event.clientY
+    }
+
+    // text drop support
+    const text = event.dataTransfer.getData('text')
+    if (text) {
+        console.log("text");
+        setAppearanceImage(thingId, type, text);
+    }
+
+
+
+    // File drop support. The `dataTransfer.items` API supports directories, so we
+    // use it instead of `dataTransfer.files`, even though it's much more
+    // complicated to use.
+    // See: https://github.com/feross/drag-drop/issues/39
+    if (elem.onDropFile && !thingDragged && event.dataTransfer.items && event.dataTransfer.items.length > 0) {
+        console.log("processItems");
+        processItems(event.dataTransfer.items, (err, files, directories) => {
+            if (err) {
+                // TODO: A future version of this library might expose this somehow
+                console.error(err)
+                return
+            }
+
+            if (files.length === 0) return
+
+            const fileList = event.dataTransfer.files
+
+            // TODO: This callback has too many arguments, and the order is too
+            // arbitrary. In next major version, it should be cleaned up.
+            console.log(" elem.onDropFile");
+            elem.onDropFile(files, pos, fileList, directories)
+        })
+    }
+    else {
+        if (thingDragged) {
+            console.log("  thingDragged");
+            if (elem.acceptDrag) {
+                console.log("  acceptDrag");
+                elem.acceptDrag(thingDragged, event);
+            }
+        }
+
+    }
     return false
 }
 MakeAvailableToHtml('onDropOnImage', onDropOnImage);
@@ -491,6 +552,7 @@ function removeDragClass(elem) {
 //////////////////
 function processItems(items, cb) {
     // Handle directories in Chrome using the proprietary FileSystem API
+    console.log("  processItemsprocessItems");
     items = Array.from(items).filter(item => {
         return item.kind === 'file'
     })
@@ -498,9 +560,11 @@ function processItems(items, cb) {
     if (items.length === 0) {
         cb(null, [], [])
     }
+    console.log("  items.length " + items.length);
 
     (items.map(item => {
         return cb => {
+            console.log(" processEntry %o", cb);
             processEntry(item.webkitGetAsEntry(), cb)
         }
     }), (err, results) => {
@@ -519,6 +583,7 @@ function processItems(items, cb) {
         const directories = entries.filter(item => {
             return item.isDirectory
         })
+        console.log(" cb %o", cb);
 
         cb(null, files, directories)
     })
@@ -528,6 +593,7 @@ function processEntry(entry, cb) {
     let entries = []
 
     if (entry.isFile) {
+        console.log(" isfile ", file.fullPath);
         entry.file(file => {
             file.fullPath = entry.fullPath // preserve path for consumer
 
@@ -538,6 +604,7 @@ function processEntry(entry, cb) {
             cb(err)
         })
     } else if (entry.isDirectory) {
+        console.log(" isDirectory ");
         const reader = entry.createReader()
         readEntries(reader)
     }
@@ -554,6 +621,7 @@ function processEntry(entry, cb) {
     }
 
     function doneEntries() {
+        console.log(" doneEntries ");
         parallel(entries.map(entry => {
             return cb => {
                 processEntry(entry, cb)
@@ -568,6 +636,7 @@ function processEntry(entry, cb) {
                     isFile: false,
                     isDirectory: true
                 })
+                console.log(" cb %o ", cb);
                 cb(null, results)
             }
         })

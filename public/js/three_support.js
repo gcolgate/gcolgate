@@ -255,6 +255,10 @@ let baseMaterial = new THREE.MeshBasicMaterial({ color: 0x0, transparent: false 
 async function three_setTileImage(tile, plane) {
 
 
+    if (tile.texture == undefined) {
+        console.log("Error Bad texture for %o", tile);
+        return;
+    }
     // TODO: Fix calling this with two kinds of parameters and get rid of this line   
     let tname = (typeof tile.texture == "string" ? tile.texture : tile.texture.img);
 
@@ -645,8 +649,20 @@ function three_intersect(ev) {
         return intersects[0];
     }
 
+    for (let i = 0; i < layers.tile.selectables.length; i++) {
+        let s = layers.tile.selectables[i];
+        console.log(i + ") " + s.position.z + " " + s.reference.texture);
+
+    }
+
     intersects = three_rayCaster.intersectObjects(layers.tile.selectables);
     if (intersects.length > 0) {
+
+        for (let i = 0; i < intersects.length; i++) {
+            let s = intersects[i].object;
+            console.log("intersect " + i + ") " + s.position.z + " " + s.reference.texture);
+        }
+
         return intersects[0];
     }
 

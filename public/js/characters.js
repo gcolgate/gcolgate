@@ -42,6 +42,7 @@ var sheetDependencies = null;
 // preload
 ensureSheetLoaded("itemSummary");
 ensureSheetLoaded("spell_chat");
+ensureSheetLoaded("spell_tooltip");
 
 function ClickCollapsible(evt, ownerid, id) {
 
@@ -172,6 +173,10 @@ function construct_fetch_path(thingName, ext) {
     }
     if (!s.endsWith(ext)) s += ext;
     return s;
+}
+export async function ensureThingLoadedElem(thingName, id) {
+    await ensureThingLoaded(thingName);
+    return id;
 }
 
 export async function ensureThingLoaded(thingName) {

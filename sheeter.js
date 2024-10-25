@@ -1,15 +1,10 @@
 
-const debugfs = require('fs');
+//const debugfs = require('fs');
 const fs = require('fs').promises;
 const path = require('path');
 const jsonHandling = require('./json_handling.js');
 var folders = { Compendium: [], Favorites: [], Uniques: [], Party: [], Scenes: [], ScenesParsed: [] };
 
-// function SanitizeThing(text) {
-//     text.replace(/\s|\"|\'|\(|\)/g, '');
-//     if (!text.startsWith('thing.')) { return null; }
-//     return text;
-// }
 
 function uuidv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>

@@ -284,7 +284,9 @@
 <div id="inventory" { tabClass( thing.tab && thing.tab=="inventory" )}>
     <div id="{'InventoryTooltip_' + thing.id}" class="tooltip">
     </div>
-
+    <div class="npcheader" onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"> {
+        thing.current_appearance }
+    </div>
     <div class="twocolumnsuneven">
         <div class="imageWrapper">
             <!-- <img class="overlayImage" src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"

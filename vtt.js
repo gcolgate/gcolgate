@@ -16,6 +16,7 @@ const probeImage = require('probe-image-size');
 
 const host = 'localhost';
 const port = 8000;
+//const port = 30000;
 
 const app = express();
 const http_io = http.Server(app);
@@ -111,6 +112,55 @@ app.post('/upload', (req, res) => {
 });
 
 
+async function toUploadToDir(res, req) {
+
+    let file = req.files.file;
+    console.log(req.files);
+
+    // Log the files to the console
+    // Upload expects a file, an x, a y, and a z
+    // and it will create a new image
+    // If does not have image mime type prevent from uploading
+    if (!file.mimetype.startsWith('image')) {
+        console.log("Must be image not " + file.mimetype);
+        return res.sendStatus(400);
+    }
+    // Move the uploaded image to our upload folder
+    try {
+
+        let probed = probeImage.sync(req.files.file.data);
+        let newDir = req.body.newDir;
+        let t = Date.now();
+
+        await file.mv(path.normalize(__dirname + '/public/images/' + newDir + file.name));
+        res.sendStatus(200);
+
+        await refreshDirThatHasBeenAddedTo(__dirname + '/public/images/' + newDir);
+
+        io.emit('updateDir', { id: "images", folder: sheeter.folders["images"] });
+
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+app.post('/uploadToDir', (req, res) => {
+    // Log the files to the console
+    // Upload expects a file, an x, a y, and a z
+    // and it will create a new image
+
+
+
+    // If no image submitted, exit
+    if (!req.files || !req.files.file) {
+        console.log("Cant find image");
+        return res.sendStatus(400);
+    }
+    toUploadToDir(res, req);
+
+});
+
+
 
 
 app.post('/uploadFromButton', (req, res) => {
@@ -163,6 +213,7 @@ async function InitialDiskLoad() {
     sheeter.folders.Scenes = results[4];
     sheeter.folders.uploadedImages = results[7];
 
+
     //  await delay(5000);
 
     init.inited = true;
@@ -170,12 +221,12 @@ async function InitialDiskLoad() {
 
 }
 
-try {
-    InitialDiskLoad();
-} catch (err) {
-    console.log("Unable to initialize" + err);
-    exit(-1);
-}
+//try {
+InitialDiskLoad();
+// } catch (err) {
+//     console.log("Unable to initialize" + err);
+//     exit(-1);
+//}
 function getUser(socket) {
 
     let user = "";
@@ -848,48 +899,139 @@ function fixImageFileName(file) {
 
     let stemIndex = file.indexOf("public") + "public".length;
     let stem = file.substring(stemIndex);
-    return stem.replaceAll('\\', '/');
+    stem = stem.replaceAll('\\', '/');
+    return stem.replaceAll('//', '/');
 
 }
+let tabrecur = 0;
+function spaces(t) {
+    let answer = ""
+    while (t > 0) {
+        answer += " ";
+        t--;
+    }
+    return answer;
+}
+
+var imageDirMap = {};
 
 async function recurseReadImageDir(dir) {
 
     let results = [];
-    let list = await fs.readdir(dir);
+    fs.readdir(dir).then(list => {
+        tabrecur++;
+        let seeDir = fixImageFileName(dir) + '/';
 
-    for (let i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length; i++) {
 
-        let file = list[i];
-        if (!file) {
-            console.log("Error with element " + i + " of " + dir);
-            return results;
+            let file = list[i];
+            if (!file) {
+                console.log("Error with element " + i + " of  " + spaces(tabrecur) + dir);
+                return results;
+            }
+            file = path.resolve(dir, file);
+
+            try {
+                fs.stat(file).then((stat) => {
+                    if (stat && stat.isDirectory()) {
+
+                        if (!imageDirMap[seeDir]) {
+                            imageDirMap[seeDir] = [];
+
+                        }
+                        let seeFile = fixImageFileName(file);
+                        imageDirMap[seeDir].push({ name: seeFile + '/', img: "", type: "dir" });
+                        try {
+                            recurseReadImageDir(file);
+                        } catch (e) { console.log(e); }
+
+                    } else if (stat) {
+                        let seeFile = fixImageFileName(file);
+                        if (!imageDirMap[seeDir]) {
+                            imageDirMap[seeDir] = [];
+
+                        }
+                        imageDirMap[seeDir].push({ name: seeFile, img: seeFile, type: "tile" });
+                    }
+                });
+            } catch (err) { console.log(err); console.log("Unable to stat " + file); }
         }
-        file = path.resolve(dir, file);
+        tabrecur--;
+    });
 
-        let stat = await fs.stat(file);
-
-        if (stat && stat.isDirectory()) {
-            let res = await recurseReadImageDir(file);
-            file = fixImageFileName(file);
-            results.push({ name: file, img: "", dir: res, type: "dir" });
-
-        } else {
-            file = fixImageFileName(file);
-            results.push({ name: file, img: file, type: "tile" });
-
-        }
-    }
-    return results;
 }
-app.get("/Images", (req, res) => {
 
-    // Error here need to bulletproof server not being ready?
-    console.log("Images");
+function locateFileInDir(list, seeFile) {
+
+    const results = list.filter(entry => entry.name === seeFile);
+    return results.length > 0;
+}
+
+async function refreshDirThatHasBeenAddedTo(dir) {
+
+    let results = [];
+    fs.readdir(dir).then(list => {
+        tabrecur++;
+        let seeDir = fixImageFileName(dir);
+
+        for (let i = 0; i < list.length; i++) {
+
+            let file = list[i];
+            if (!file) {
+                console.log("Error with element " + i + " of  " + spaces(tabrecur) + dir);
+                return results;
+            }
+            file = path.resolve(dir, file);
+
+            try {
+                fs.stat(file).then((stat) => {
+                    if (stat && stat.isDirectory()) {
+
+                        if (!imageDirMap[seeDir]) {
+                            imageDirMap[seeDir] = [];
+
+                        }
+                        let seeFile = fixImageFileName(file);
+                        if (!locateFileInDir(imageDirMap[seeDir], seeFile)) {
+                            imageDirMap[seeDir].push({ name: seeFile + '/', img: "", type: "dir" });
+                            try {
+                                recurseReadImageDir(file);
+                            } catch (e) { console.log(e); }
+                        }
+
+                    } else if (stat) {
+                        let seeFile = fixImageFileName(file);
+                        if (!imageDirMap[seeDir]) {
+                            imageDirMap[seeDir] = [];
+
+                        }
+                        if (!locateFileInDir(imageDirMap[seeDir], seeFile)) {
+                            imageDirMap[seeDir].push({ name: seeFile, img: seeFile, type: "tile" });
+                        }
+                    }
+                });
+            } catch (err) { console.log(err); console.log("Unable to stat " + file); }
+        }
+        tabrecur--;
+    });
+
+}
+
+recurseReadImageDir(path.join(__dirname, 'public', 'images'));
+
+
+app.use("/images", (req, res, next) => {
+
+    console.log("images");
+    console.log(req.originalUrl);
+
+
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    recurseReadImageDir(path.join(__dirname, 'public', 'images')).then((answer) => {
-        res.end(JSON.stringify(answer));
-    });
+    console.log(imageDirMap[req.originalUrl]);
+
+    let answer = imageDirMap[req.originalUrl];
+    res.end(JSON.stringify(answer));
 
 });
 

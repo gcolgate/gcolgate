@@ -1981,7 +1981,7 @@ export function dragCareersAndItems(thingDragged, evt) {
 function getModifiedManaCost(thing) {
 
     let a = Number(thing.BaseManaCost);
-
+    if (!thing.owner_modified) return a;
 
     let numbers = Object.values(thing.owner_modified);
     for (let i = 0; i < numbers.length; i++) {
