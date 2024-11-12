@@ -1,5 +1,12 @@
 
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
+
 import { dragDrop, setThingDragged } from './drag.js';
 /////// TODO put in seperate file
 import { socket } from './main.js';
@@ -186,6 +193,33 @@ export var current_scene =
     type: "2d", // types are 2d, theatre_of_the_mind, 3d
 }
 
+
+//postprocessing
+
+var three_composer = [new EffectComposer(three_renderer)];
+
+const three_renderPass = new RenderPass(three_scenes[1], three_camera);
+three_composer[0].addPass(three_renderPass);
+
+var three_outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), three_scenes[1], three_camera);
+three_composer[0].addPass(three_outlinePass);
+three_outlinePass.edgeStrenth = 4.79;
+three_outlinePass.edgeGlow = 4.698;
+three_outlinePass.edgeThickness = 3.72;
+three_outlinePass.pulsePeriod = 1.9;
+three_outlinePass.visibleEdgeColor.set('#ffffff');
+three_outlinePass.hiddenEdgeColor.set('#190a05');
+
+const textureLoader = new THREE.TextureLoader();
+
+const three_outputPass = new OutputPass();
+three_composer[0].addPass(three_outputPass);
+
+var three_effectFXAA = new ShaderPass(FXAAShader);
+three_effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
+three_composer[0].addPass(three_effectFXAA);
+
+
 export var three_mouseShapes = {}
 
 const mouse_geometry = new THREE.BoxGeometry(10, 10, 10);
@@ -279,9 +313,16 @@ async function three_setTileImage(tile, plane) {
 
     new THREE.TextureLoader().loadAsync(tname).then(texture => {
 
-        let material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff, transparent: true });
+        let material = new THREE.MeshBasicMaterial({
+            map: texture, color: 0xffffff, transparent: true,
+            onBeforeCompile: (shader) => {
+                console.log("ZZZYX");
+                console.log(shader);
+            }
+        });
         let textureScaleX = tile.scale.x;
         let textureScaleY = tile.scale.y;
+        texture.colorSpace = THREE.SRGBColorSpace;
         plane.baseScale = new THREE.Vector2(texture.image.width, texture.image.height);
         plane.material = material;
         plane.scale.set(textureScaleX, textureScaleY, 1);
@@ -407,10 +448,18 @@ export function three_animate() {
 
     for (let i = 0; i < three_scenes.length; i++) {
 
-        three_renderer.render(three_scenes[i], three_camera);
-        three_renderer.autoClear = false;
-        if (current_scene.type != "3d") {
-            three_renderer.clearDepth()
+        if (i == 1) {
+            three_composer[0].render();
+            if (current_scene.type != "3d") {
+                three_renderer.clearDepth()
+            }
+        }
+        else {
+            three_renderer.render(three_scenes[i], three_camera);
+            three_renderer.autoClear = false;
+            if (current_scene.type != "3d") {
+                three_renderer.clearDepth()
+            }
         }
     }
 }
@@ -522,6 +571,13 @@ export function three_mouseMove(event) {
     }
     let newMouse = three_mousePositionToWorldPosition(event);
 
+
+    let intersect = three_intersect(event);
+
+
+
+
+
     if (mouseButtonsDown[mainButton]) {
         switch (mouseMode) {
 
@@ -534,6 +590,9 @@ export function three_mouseMove(event) {
                     selection[i].tile.x += (newMouse.x - three_lastMouse.x);
                     selection[i].tile.y += (newMouse.y - three_lastMouse.y);
                     socket.emit('updateTile', { tile: selection[i].tile, scene: current_scene.name });
+                    let highlightcolor = ((Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255) | 128;
+                    selection[i].material.color.set((highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
+
                 }
                 break;
             case "scaling":
@@ -546,6 +605,8 @@ export function three_mouseMove(event) {
 
                     scale.x = scalingX ? (newMouse.x - three_lastMouse.x) + scale.x : scale.x;
                     scale.y = scalingY ? (newMouse.y - three_lastMouse.y) + scale.y : scale.y;
+                    let highlightcolor = ((Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255) | 128;
+                    selection[i].material.color.set((highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
 
                     fixTile(plane.tile);
                     socket.emit('updateTile', { tile: plane.tile, scene: current_scene.name });
@@ -712,28 +773,50 @@ three_renderer.domElement.onmousedown = function (event) {
         if (intersect?.object) {
             let obj = intersect.object;
             if (editMode && obj.tile.guiLayer == "tile") {
-                const minim = 0.2;
+                const minim = 64;
+                let tile = obj.tile;
                 // this works only for tiles. To do make it a function added to each kind of thing
-                scalingX = scalingX = intersect.uv.x < minim || intersect.uv.x > 1 - minim;
-                scalingY = scalingY = intersect.uv.y < minim || intersect.uv.y > 1 - minim;
+                // maybe better to do icon -> world
+                let maxx = 1 * tile.scale.x;
+                let x = intersect.uv.x * maxx;
+                let maxy = 1 * tile.scale.y;
+                let y = intersect.uv.y * maxy;
+                scalingX = scalingX = x < minim || x > maxx - minim;
+                scalingY = scalingY = y < minim || y > maxy - minim;
                 if (scalingX ||
                     scalingY) {
                     mouseMode = 'scaling';
-                    obj.material.color.set(0xff0000);
+
+                    let highlightcolor = (Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255;
+
+                    obj.material.color.set((highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
+                    three_outlinePass.selectedObjects = [obj];
+                    three_outlinePass.visibleEdgeColor.set('#ff0000');
 
                 } else {
                     mouseMode = 'dragging';
-                    obj.material.color.set(0x0000ff);
+                    let highlightcolor = (Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255;
+                    obj.material.color.set((highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
+                    // obj.material.color.set(0x0000ff);
+                    //   if (intersect?.object) {
+                    //  let obj = intersect.object;
+                    //   if (editMode && obj.tile.guiLayer == "tile") {
+
+                    three_outlinePass.visibleEdgeColor.set('#ffffff');
+                    three_outlinePass.selectedObjects = [obj];
+                    //  } else if (!editMode && obj.tile.guiLayer == "token") {
+                    //     three_outlinePass.selectedObjects = [obj];
+                    //}
                 }
-                selection.push(obj);
-
-            } else if (!editMode && obj.tile.guiLayer == "token") {
-                obj.material.color.set(0x0000ff);
-                const minim = 0.2;
-                mouseMode = 'dragging';
-                selection.push(obj);
-
             }
+            selection.push(obj);
+
+        } else if (!editMode && obj.tile.guiLayer == "token") {
+            obj.material.color.set(0x0000ff);
+            const minim = 0.2;
+            mouseMode = 'dragging';
+            selection.push(obj);
+
         }
     }
 }
@@ -837,6 +920,8 @@ window.onmouseup = function (event) {
     mouseButtonsDown[event.button] = false;
 
     if (!mouseButtonsDown[mainButton]) {
+
+        three_outlinePass.selectedObjects = [];
 
         for (let i = 0; i < selection.length; i++) {
 

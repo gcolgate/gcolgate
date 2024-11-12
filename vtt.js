@@ -48,7 +48,6 @@ async function justAnUpload(res, req) {
     }
     try {
 
-        let probed = probeImage.sync(req.files.file.data);
         console.log(path.normalize(__dirname + '/public/images/uploaded/' + file.name));
         await file.mv(path.normalize(__dirname + '/public/images/uploaded/' + file.name));
         res.sendStatus(200);
