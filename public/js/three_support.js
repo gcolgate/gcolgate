@@ -164,12 +164,31 @@ const guiLayer = new THREE.Scene();
 const tokenLayer = new THREE.Scene();
 const gridLayer = new THREE.Scene();
 
-
+const kTileLayerIndex = 1;
+const kTokenLLayerIndex = 3;
 const three_scenes = [backgroundLayer, tileLayer, gridLayer, tokenLayer, guiLayer];
 
 var rendererSize = three_renderer_dimensions();
 
+class cleanRenderPass extends RenderPass {
+    constructor(scene, camera, overrideMaterial = null, clearColor = null, clearAlpha = null) {
+        super(scene, camera, overrideMaterial, clearColor, clearAlpha);
+        this.clear = false;
+        this.clearDepth = true;
 
+    }
+
+}
+
+class firstRenderPass extends RenderPass {
+    constructor(scene, camera, overrideMaterial = null, clearColor = null, clearAlpha = null) {
+        super(scene, camera, overrideMaterial, clearColor, clearAlpha);
+        this.clear = true;
+        this.clearDepth = true;
+
+    }
+
+}
 export const three_camera = new THREE.OrthographicCamera(rendererSize.width / - 2, rendererSize.width / 2,
     rendererSize.height / 2, rendererSize.height / - 2,
     -10, 1000);
@@ -195,30 +214,44 @@ export var current_scene =
 
 
 //postprocessing
+{
 
-var three_composer = [new EffectComposer(three_renderer)];
 
-const three_renderPass = new RenderPass(three_scenes[1], three_camera);
-three_composer[0].addPass(three_renderPass);
+    var three_composer = new EffectComposer(three_renderer);
 
-var three_outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), three_scenes[1], three_camera);
-three_composer[0].addPass(three_outlinePass);
-three_outlinePass.edgeStrenth = 4.79;
-three_outlinePass.edgeGlow = 4.698;
-three_outlinePass.edgeThickness = 3.72;
-three_outlinePass.pulsePeriod = 1.9;
-three_outlinePass.visibleEdgeColor.set('#ffffff');
-three_outlinePass.hiddenEdgeColor.set('#190a05');
+    three_composer.addPass(new firstRenderPass(backgroundLayer, three_camera));
+    three_composer.addPass(new cleanRenderPass(tileLayer, three_camera));
+    var three_outlinePass_tile = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), tileLayer, three_camera);
+    three_composer.addPass(three_outlinePass_tile);
 
-const textureLoader = new THREE.TextureLoader();
 
-const three_outputPass = new OutputPass();
-three_composer[0].addPass(three_outputPass);
+    three_composer.addPass(new cleanRenderPass(gridLayer, three_camera));
+    three_composer.addPass(new cleanRenderPass(tokenLayer, three_camera));
+    var three_outlinePass_token = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), tokenLayer, three_camera);
+    three_composer.addPass(three_outlinePass_token);
+    three_composer.addPass(new cleanRenderPass(guiLayer, three_camera));
 
-var three_effectFXAA = new ShaderPass(FXAAShader);
-three_effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
-three_composer[0].addPass(three_effectFXAA);
+    three_outlinePass_tile.edgeStrenth = 4.79;
+    three_outlinePass_tile.edgeGlow = 4.698;
+    three_outlinePass_tile.edgeThickness = 3.72;
+    three_outlinePass_tile.pulsePeriod = 1.9;
+    three_outlinePass_tile.visibleEdgeColor.set('#ffffff');
+    three_outlinePass_token.hiddenEdgeColor.set('#190a05');
+    three_outlinePass_token.edgeStrenth = 4.79;
+    three_outlinePass_token.edgeGlow = 4.698;
+    three_outlinePass_token.edgeThickness = 1.72;
+    three_outlinePass_token.pulsePeriod = 2.9;
+    three_outlinePass_token.visibleEdgeColor.set('#ffffff');
+    three_outlinePass_token.hiddenEdgeColor.set('#190a05');
 
+    //const textureLoader = new THREE.TextureLoader();
+
+    three_composer.addPass(new OutputPass());
+
+    // var three_effectFXAA = new ShaderPass(FXAAShader);
+    // three_effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
+    // three_composer.addPass(three_effectFXAA);
+}
 
 export var three_mouseShapes = {}
 
@@ -446,22 +479,11 @@ export function three_animate() {
     }
     three_renderer.autoClear = true;
 
-    for (let i = 0; i < three_scenes.length; i++) {
-
-        if (i == 1) {
-            three_composer[0].render();
-            if (current_scene.type != "3d") {
-                three_renderer.clearDepth()
-            }
-        }
-        else {
-            three_renderer.render(three_scenes[i], three_camera);
-            three_renderer.autoClear = false;
-            if (current_scene.type != "3d") {
-                three_renderer.clearDepth()
-            }
-        }
+    three_composer.render();
+    if (current_scene.type != "3d") {
+        three_renderer.clearDepth()
     }
+
 }
 
 let three_rayCaster = new THREE.Raycaster();
@@ -556,6 +578,7 @@ var hud = null;
 var card = null;
 export function three_mouseMove(event) {
     //  event.preventDefault();
+    three_outlinePass_token.selectedObjects = [];
 
     if (mouseMode == "scrolling") {
         console.log("Scroll");
@@ -640,6 +663,8 @@ export function three_mouseMove(event) {
                 let o = intersect.object?.tile?.reference;
                 if (o) {
 
+
+                    three_outlinePass_token.selectedObjects = [intersect.object];
                     let screenPos = worldToScreen(intersect.object.position);
 
                     if (!hud) {
@@ -790,8 +815,8 @@ three_renderer.domElement.onmousedown = function (event) {
                     let highlightcolor = (Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255;
 
                     obj.material.color.set((highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
-                    three_outlinePass.selectedObjects = [obj];
-                    three_outlinePass.visibleEdgeColor.set('#ff0000');
+                    three_outlinePass_tile.selectedObjects = [obj];
+                    three_outlinePass_tile.visibleEdgeColor.set('#ff0000');
 
                 } else {
                     mouseMode = 'dragging';
@@ -802,8 +827,8 @@ three_renderer.domElement.onmousedown = function (event) {
                     //  let obj = intersect.object;
                     //   if (editMode && obj.tile.guiLayer == "tile") {
 
-                    three_outlinePass.visibleEdgeColor.set('#ffffff');
-                    three_outlinePass.selectedObjects = [obj];
+                    three_outlinePass_tile.visibleEdgeColor.set('#ffffff');
+                    three_outlinePass_tile.selectedObjects = [obj];
                     //  } else if (!editMode && obj.tile.guiLayer == "token") {
                     //     three_outlinePass.selectedObjects = [obj];
                     //}
@@ -921,7 +946,7 @@ window.onmouseup = function (event) {
 
     if (!mouseButtonsDown[mainButton]) {
 
-        three_outlinePass.selectedObjects = [];
+        three_outlinePass_tile.selectedObjects = [];
 
         for (let i = 0; i < selection.length; i++) {
 
