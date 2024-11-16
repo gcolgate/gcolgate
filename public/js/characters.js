@@ -40,6 +40,7 @@ export function MakeAvailableToParser(fnName, fn) { // for now use window, soon 
 var registeredSheets = {};
 var sheetDependencies = null;
 // preload
+ensureSheetLoaded("hud");
 ensureSheetLoaded("itemSummary");
 ensureSheetLoaded("spell_chat");
 ensureSheetLoaded("spell_tooltip");

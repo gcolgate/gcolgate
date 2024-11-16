@@ -2,15 +2,15 @@
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+//import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
+//import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 
 import { dragDrop, setThingDragged } from './drag.js';
 /////// TODO put in seperate file
 import { socket } from './main.js';
-import { ensureThingLoaded, GetRegisteredThing, showThing } from './characters.js';
+import { parseSheet, ensureThingLoaded, GetRegisteredThing, showThing, MakeAvailableToHtml } from './characters.js';
 import { getAppearanceImage } from './ptba.js';
 
 
@@ -480,9 +480,7 @@ export function three_animate() {
     three_renderer.autoClear = true;
 
     three_composer.render();
-    if (current_scene.type != "3d") {
-        three_renderer.clearDepth()
-    }
+
 
 }
 
@@ -574,7 +572,29 @@ function getPortrait(o) {
     return o.img;
 }
 
-var hud = null;
+function findTokenTile(id) {
+    let scene = three_getLayer("token");
+    for (let i = 0; i < scene.selectables.length; i++) {
+        let o = scene.selectables[i].reference;
+        if (o && o.tile_id == id) {
+            return o;
+        }
+    }
+    return undefined;
+}
+
+function ChangeTileZ(id, changeAmt) {
+    let tile = findTokenTile(id);
+    if (tile) {
+        tile.z += changeAmt;
+        socket.emit('updateTile', { tile: tile, scene: current_scene.name });
+        hud.innerHTML = parseSheet(tile.reference, "hud", tile)
+    }
+}
+MakeAvailableToHtml('ChangeTileZ', ChangeTileZ);
+
+
+var hud = document.getElementById("hud");
 var card = null;
 export function three_mouseMove(event) {
     //  event.preventDefault();
@@ -594,13 +614,6 @@ export function three_mouseMove(event) {
     }
     let newMouse = three_mousePositionToWorldPosition(event);
 
-
-    let intersect = three_intersect(event);
-
-
-
-
-
     if (mouseButtonsDown[mainButton]) {
         switch (mouseMode) {
 
@@ -616,6 +629,8 @@ export function three_mouseMove(event) {
                     let highlightcolor = ((Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255) | 128;
                     selection[i].material.color.set((highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
 
+                    if (selection[i].tile.guiLayer == "token")
+                        three_outlinePass_token.selectedObjects.push(selection[i]);
                 }
                 break;
             case "scaling":
@@ -664,27 +679,19 @@ export function three_mouseMove(event) {
                 if (o) {
 
 
-                    three_outlinePass_token.selectedObjects = [intersect.object];
+                    if (three_outlinePass_token.selectedObjects.length == 0)
+                        three_outlinePass_token.selectedObjects = [intersect.object];
                     let screenPos = worldToScreen(intersect.object.position);
 
-                    if (!hud) {
-                        hud = document.createElement("div");
-                        hud.id = "hud";
-                        hud.style.zIndex = 2;
-                        hud.className = "hud";
-                        //  hud.style.position = "absolute";
-                        //  hud.style.textAlign = "center";
-                        // hud.style.zIndex = "200";
-                        //  hud.style.display = "block";
-                        //  hud.style.width = "256px";
-                        document.body.appendChild(hud);
-
-
-                    }
 
                     hud.style.left = Math.trunc(screenPos.x) + "px";
                     hud.style.top = Math.trunc(screenPos.y) + "px";
-                    hud.innerHTML = o.name;
+                    let thang = intersect.object.tile?.reference;
+                    if (thang) {
+
+                        hud.innerHTML = parseSheet(thang, "hud", intersect.object.tile);
+                    }
+                    else hud.innerHTML = o.name;;
 
 
                     if (!card) {
@@ -756,7 +763,7 @@ function three_intersect(ev) {
 }
 
 three_renderer.domElement.ondblclick = (ev) => {
-    event.preventDefault();
+    ev.preventDefault();
     console.log("Double click");
     three_lastMouse = three_mousePositionToWorldPosition(ev);
     let pointer = new THREE.Vector2((ev.clientX / window.innerWidth) * 2 - 1,
@@ -789,9 +796,7 @@ three_renderer.domElement.onmousedown = function (event) {
 
     three_rayCaster.setFromCamera(pointer, three_camera);
 
-
-
-    if (mouseButtonsDown[0]) {
+    if (event.button == mainButton) {
         let intersect = three_intersect(event);
 
 
@@ -833,15 +838,13 @@ three_renderer.domElement.onmousedown = function (event) {
                     //     three_outlinePass.selectedObjects = [obj];
                     //}
                 }
+
+                selection.push(obj);
+
+            } else if (!editMode && obj.tile.guiLayer == "token") {
+                mouseMode = 'dragging';
+                selection.push(obj);
             }
-            selection.push(obj);
-
-        } else if (!editMode && obj.tile.guiLayer == "token") {
-            obj.material.color.set(0x0000ff);
-            const minim = 0.2;
-            mouseMode = 'dragging';
-            selection.push(obj);
-
         }
     }
 }
@@ -1031,6 +1034,7 @@ async function CreateToken(thingDragged, event) {
         z: 1
     };
     newTile.reference = thingDragged;
+
     console.log("Create Token New Tile ", newTile);
     socket.emit("add_token", { scene: current_scene.name, tile: newTile });
 
