@@ -142,7 +142,7 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
                 console.log("%o", folder[i]);
 
                 if (entry.file == tag.file) {
-                    entry.img = getPortrait(thing);
+                    entry.image = getPortrait(thing);
                     folder[i] = JSON.stringify(entry);
                     await fs.writeFile(tag_filePath, folder[i], (err) => {
                         if (err)

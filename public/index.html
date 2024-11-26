@@ -31,6 +31,7 @@
 
     .imageWrapper {
       position: relative;
+
     }
 
     .overlayImage {
@@ -73,6 +74,7 @@
       font-weight: Normal;
       /* Additional positioning, height, width, etc. */
       top: -40px;
+      width: 500px;
     }
 
     a:hover .tooltip {
@@ -99,6 +101,46 @@
     }
 
 
+    .weapontooltip {
+      display: none;
+      position: absolute;
+      border-radius: 5px;
+      color: black;
+      border-color: #2d240c;
+      background-color: white;
+      border-style: outset;
+      font-family: sans-serif;
+      font-weight: Normal;
+      /* Additional positioning, height, width, etc. */
+      top: -40px;
+      width: 500px;
+      transform: translateX(-500px);
+    }
+
+    a:hover .weapontooltip {
+      display: block;
+    }
+
+
+    .weapontooltip_open {
+      display: block;
+      position: absolute;
+      border-radius: 5px;
+      color: black;
+      border-color: #2d240c;
+      background-color: white;
+      border-style: outset;
+      font-family: sans-serif;
+      font-weight: Normal;
+      /* Additional positioning, height, width, etc. */
+      left: -400px;
+      top: -40px;
+    }
+
+    :hover .weapontooltip_open {
+      display: block;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -115,27 +157,40 @@
     .redtintButton {
 
       background-color: rgb(255, 165, 165);
+      color: #2d240c;
 
     }
 
     .redtintButton:hover {
 
       background-color: rgb(240, 44, 44);
+      color: #2d240c;
 
     }
 
     .greentintButton {
 
       background-color: rgb(165, 255, 210);
+      color: #2d240c;
 
     }
 
     .greentintButton:hover {
-      background-color: rgb(28, 254, 133)
+      background-color: rgb(28, 254, 133) color:#2d240c;
     }
 
     .middleButton {
       border-radius: 5px;
+      background-color: rgb(255, 215, 170);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #524217;
+      font-size: 10;
+      font-weight: 700;
+    }
+
+    .fillspace {
+      display: flex;
+      justify-content: space-between;
     }
 
     .window {
@@ -231,6 +286,12 @@
     .twocolumns {
       display: grid;
       grid-template-columns: 50% 50%;
+      background-color: beige;
+    }
+
+    .weapon_columns {
+      display: grid;
+      grid-template-columns: 10% 60% 16% 6% 8%;
       background-color: beige;
     }
 
@@ -460,6 +521,13 @@
       text-indent: 12px;
     }
 
+    .centered {
+      text-align: center;
+
+      width: 100%;
+
+    }
+
     .npcNum {
       box-sizing: border-box;
       color: rgb(88, 23, 13);
@@ -542,6 +610,19 @@
       margin-right: 0px;
       border: none;
       width: 800px;
+      text-transform: none;
+
+    }
+
+    .weapontext {
+      color: rgb(84, 44, 38);
+      background-color: rgb(248, 228, 205);
+      color-scheme: light dark;
+      font-size: 8px;
+      margin-left: 0px;
+      margin-right: 0px;
+      border: none;
+      text-transform: none;
 
     }
 
@@ -812,7 +893,7 @@
     }
 
 
-    .inventorygbkg {
+    .inventory-bkg {
       fill: rgba(0, 0, 0, 1.0);
     }
 
@@ -932,13 +1013,19 @@
     #hud {
       position: absolute;
       top: 10px;
-      text-align: left;
+      text-align: center;
       z-index: 9;
       display: block;
       color: rgb(245, 245, 145);
       text-shadow: 2px 2px 3px rgb(19, 6, 65), -2px -2px 3px rgb(134, 116, 197);
+      background-color: rgb(19, 6, 65);
+      left: 50%;
+      /* relative to nearest positioned ancestor or body element */
+      /* top: 50%; */
+      /*  relative to nearest positioned ancestor or body element */
+      transform: translate(-50%, -50%);
 
-
+      /* relative to element's height & width */
     }
 
     #card {
@@ -1119,6 +1206,10 @@
     /* The container <div> - needed to position the dropdown content */
     .inline_block {
       display: inline-block;
+    }
+
+    a {
+      color: rgb(86, 3, 109)
     }
 
     /* Links inside the dropdown */

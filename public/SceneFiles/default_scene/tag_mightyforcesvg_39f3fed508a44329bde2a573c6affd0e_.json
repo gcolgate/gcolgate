@@ -1,0 +1,20 @@
+{
+    "x": -1750,
+    "y": -150,
+    "z": 5.00001,
+    "guiLayer": "tile",
+    "sheet": {
+        "name": "/images/mighty-force.svg",
+        "image": "/images/mighty-force.svg",
+        "type": "tile",
+        "windowId": "images"
+    },
+    "texture": "mighty-force.svg",
+    "scale": {
+        "x": 150,
+        "y": 150,
+        "z": 1
+    },
+    "tile_id": "mightyforcesvg_39f3fed508a44329bde2a573c6affd0e",
+    "tile_json": "C:\\Users\\gcolg\\Downloads\\vtt\\public\\SceneFiles\\default_scene\\tag_mightyforcesvg_39f3fed508a44329bde2a573c6affd0e_.json"
+}

@@ -1,17 +1,15 @@
-<div>
-    <div class="body itemsetnada" ondragenter="ondragenter(event)" ondragover="ondragover(event)"
+<div class="body itemsetnada displayinline">
+    <div class=" weapon_columns" ondragenter="ondragenter(event)" ondragover="ondragover(event)"
         ondragleave="ondragleave(event)" ondrop="ondrop(event)">
-        <image src="{thing.image}" width="16" height="16" draggable=true
+        <img src="{thing.image}" width="20" height="20" draggable=true
             ondragstart="htmlContext.setDragStart(event,'{thing.id}')">
-        </image>
-        { Editable(thing,
-        "thing.name",
-        "displayinline") + ( owner && additionalParms ? formatRemoveButton(owner.id, additionalParms.file):"") +
-        EquippedCheckBox(owner.id, additionalParms.file) }
+        </img>
+        {
+        "<span>" + thing.name + "</span>" }
 
         <a href="#">Info
             <div class="tooltipcontainer">
-                <div class="tooltip">
+                <div class="weapontooltip">
 
 
                     <div inline_block>
@@ -29,6 +27,12 @@
                 </div>
             </div>
         </a>
+
+        { ( owner && additionalParms ? "<span>" + formatRemoveButton(owner.id,
+            additionalParms.file) + "</span>":"") +
+        "<span>" + EquippedCheckBox(owner.id, additionalParms.file)+ "</span>"}
+
+
 
     </div>
     { WeaponMoves(owner, thing.id)}

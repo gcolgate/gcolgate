@@ -210,6 +210,7 @@ var items = [
         image: "images/icons/equipment/chest/breastplate-cuirass-steel-grey.webp",
         slot: "armor",
         wealth: 3,
+        price: 400,
         armor: {
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 1,
@@ -217,25 +218,27 @@ var items = [
             career: ["LightArmor"],
         },
     },
-    {
-        name: "Hoplite Armor",
-        description: "Greek Armor",
-        image: "",
-        slot: "armor",
-        wealth: 3,
-        armor: {
-            type: ["bludgeoning", "piercing", "slashing"],
-            sacrifice: 2,
-            bonus: 3,
-            career: ["HeavyArmor"],
-        },
-    },
+    // {
+    //     name: "Hoplite Armor",
+    //     description: "Greek Armor",
+    //     image: "",
+    //     slot: "armor",
+    //     wealth: 3,
+    //     price: 600,
+    //     armor: {
+    //         type: ["bludgeoning", "piercing", "slashing"],
+    //         sacrifice: 2,
+    //         bonus: 3,
+    //         career: ["HeavyArmor"],
+    //     },
+    // },
     {
         name: "Knights Armor",
         description: "Knightly Armor, reduces movement by 1 on foot",
         image: "",
         slot: "armor",
         wealth: 3,
+        price: 1500,
         armor: {
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 2,
@@ -248,6 +251,7 @@ var items = [
         name: "Viking Armor",
         description: "Chainmail Armor",
         image: "",
+        price: 200,
         slot: "armor",
         wealth: 3,
         armor: {
@@ -264,6 +268,7 @@ var items = [
         image: "",
         slot: "armor",
         wealth: 2,
+        price: 5,
         armor: {
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 1,
@@ -278,12 +283,12 @@ var items = [
         image: "",
         slot: "armor",
         wealth: 2,
+        price: 10,
         armor: {
             type: ["bludgeoning", "slashing"],
             sacrifice: 1,
             bonus: 1,
             career: ["LightArmor"],
-            movement: -1
         },
     },
     {
@@ -292,6 +297,7 @@ var items = [
         image: "",
         slot: "head",
         wealth: 2,
+        price: 50,
         armor: {
             type: ["bludgeoning", "slashing"],
             bonus: 1,
@@ -306,6 +312,7 @@ var items = [
         image: "",
         slot: "head",
         wealth: 2,
+        price: 150,
         armor: {
             type: ["bludgeoning", "piercing", "slashing"],
             bonus: 1,
@@ -321,6 +328,7 @@ var items = [
         image: "",
         slot: "armor",
         wealth: 2,
+        price: 10,
         weapon_defenses: [{
             name: "Parry",
             range: 1,
@@ -341,6 +349,7 @@ var items = [
         image: "",
         slot: "armor",
         wealth: 2,
+        price: 20,
         weapon_defenses: [{
             name: "Parry",
             range: 1,
@@ -364,6 +373,7 @@ var items = [
         image: "images/icons/weapons/polearms/spear-flared-worn-grey.webp",
         slot: "longarm",
         wealth: 1,
+        price: 2,
         weapon_defenses: [{
             name: "Quaterstaff Block",
             range: 1,
@@ -396,6 +406,7 @@ var items = [
         image: "images/icons/skills/melee/hand-grip-staff-blue.webp",
         slot: "longarm",
         wealth: 0,
+        price: 0.5,
         weapon_defenses: [{
             name: "Quaterstaff Block",
             range: 1,
@@ -430,6 +441,7 @@ var items = [
         image: "images/icons/weapons/polearm/halberd-crescent-glowing.webp",
         slot: "longarm",
         wealth: 3,
+        price: 20,
         weapon_defenses: [{
             name: "Quaterstaff Block",
             range: 1,
@@ -473,6 +485,7 @@ var items = [
         image: "images/icons/weapons/polearms/spear-hooked-blue.webp",
         slot: "longarm",
         wealth: 1,
+        price: 5,
         weapon_defenses: [{
             name: "Quaterstaff Block",
             range: 1,
@@ -518,6 +531,7 @@ var items = [
         slot: "sidearm",
         hands: 1,
         wealth: 3,
+        price: 20,
         weapon_defenses: [{
             name: "Parry",
             range: 1,
@@ -559,6 +573,7 @@ var items = [
         description: "A big axe",
         image: "images/icons/weapons/polearms/halberd-curved-steel.webp",
         slot: "sidearm",
+        price: 20,
         hands: 1,
         wealth: 3,
         weapon_defenses: [{
@@ -589,6 +604,7 @@ var items = [
         hands: 0,
         wealth: 4,
         saddlebags: 12,
+        price: 400,
         weapon_defenses: [{
             name: "Fast Avoid Missiles",
             range: 0,
@@ -609,6 +625,7 @@ var items = [
         slot: "mount",
         hands: 0,
         wealth: 3,
+        price: 75,
         saddlebags: 12,
         weapon_defenses: [{
             name: "Fast Avoid Missiles",
@@ -628,6 +645,7 @@ var items = [
         image: "images/cutlass.jpg",
         slot: "sidearm",
         wealth: 2,
+        price: 20,
         weapon_defenses: [{
             name: "Parry",
             range: 1,
@@ -672,6 +690,7 @@ var items = [
         image: "",
         slot: "longarm",
         wealth: 2,
+        price: 10,
         weapon_defenses: [{
             name: "Quaterstaff Block",
             range: 1,
@@ -708,6 +727,7 @@ var items = [
         image: "images/icons/weapons/clubs/club-simple-barbed.webp",
         slot: "longarm",
         wealth: 0,
+        price: 0.1,
         weapon_defenses: [],
         weapon_modes:
             [{
@@ -727,6 +747,7 @@ var items = [
         image: "images/icons/weapons/maces/mace-spiked-steel-grey.webp",
         slot: "sidearm",
         wealth: 2,
+        price: 10,
         weapon_defenses: [],
         weapon_modes:
             [{
@@ -789,6 +810,7 @@ var items = [
         image: "images/icons/weapons/crossbows/crossbow-simple-brown.webp",
         slot: "sidearm",
         wealth: 3,
+        price: 75,
         weapon_modes:
             [{
                 name: "Shoot",
@@ -811,6 +833,7 @@ var items = [
         image: "images/icons/weapons/crossbows/crossbow-blue.webp",
         slot: "longarm",
         wealth: 3,
+        price: 50,
         weapon_modes:
             [{
                 name: "Shoot",
@@ -834,6 +857,7 @@ var items = [
         image: "images/icons/weapons/bows/longbow-leather-green.webp",
         slot: "longarm",
         wealth: 3,
+        price: 50,
         weapon_modes:
             [{
                 name: "Shoot",
@@ -856,6 +880,7 @@ var items = [
         image: "images/icons/weapons/bows/longbow-recurve-leather-red.webp",
         slot: "longarm",
         wealth: 3,
+        price: 50,
         weapon_modes:
             [{
                 name: "Shoot",
@@ -878,6 +903,7 @@ var items = [
         image: "images/icons/weapons/bows/shortbow-recurve.webp",
         slot: "longarm",
         wealth: 3,
+        price: 25,
         weapon_modes:
             [{
                 name: "Shoot",
@@ -900,6 +926,7 @@ var items = [
         slot: "sidearm",
         range: 1.5,
         wealth: 3,
+        price: 25,
 
         weapon_defenses: [{
             name: "Parry",
@@ -943,6 +970,7 @@ var items = [
         image: "images/icons/weapons/swords/Rapier.webp",
         slot: "sidearm",
         wealth: 4,
+        price: 100,
         weapon_defenses: [{
             name: "Parry",
             range: 1,
@@ -983,6 +1011,7 @@ var items = [
         image: "images/icons/weapons/daggers/dagger-jeweled-purple.webp",
         slot: "pockets",
         wealth: 2,
+        price: 5,
         weapon_modes:
             [{
                 name: "Stab",
@@ -1027,6 +1056,7 @@ var items = [
         image: "images/icons/weapons/axes/axe-broad-black.webp",
         slot: "pockets",
         wealth: 2,
+        price: 5,
         weapon_modes:
             [{
                 name: "Chop",
@@ -1055,6 +1085,7 @@ var items = [
         image: "images/icons/weapons/polearms/javelin.webp",
         slot: "longarm",
         wealth: 0,
+        price: 0.5,
         weapon_modes:
             [{
                 name: "Stab",
@@ -1082,6 +1113,7 @@ var items = [
         image: "images/icons/weapons/polearms/Kobold__knife.webp",
         slot: "pockets",
         wealth: 1,
+        price: 1,
         weapon_modes:
             [{
                 name: "Stab",
@@ -1124,6 +1156,7 @@ var items = [
         image: "images/icons/weapons/polearms/ouroboros-flail.webp",
         slot: "longarm",
         wealth: 1,
+        price: 10,
         weapon_modes:
             [{
                 name: "Swing",
@@ -1151,6 +1184,7 @@ var items = [
         slot: "longarm",
         strengthMin: 2,
         wealth: 4,
+        price: 30,
         weapon_defenses: [{
             name: "Block",
             range: 1,
@@ -1187,6 +1221,7 @@ var items = [
         slot: "longarm",
         strengthMin: 2,
         wealth: 1,
+        price: 0.1,
         weapon_modes:
             [{
                 type: "Melee",
@@ -1214,6 +1249,7 @@ var items = [
         slot: "longarm",
         strengthMin: 2,
         wealth: 1,
+        price: 1,
         weapon_defenses: [{
             name: "Block",
             range: 1,
@@ -1242,6 +1278,7 @@ var items = [
         slot: "longarm",
         strengthMin: 2,
         wealth: 5,
+        price: 50,
         weapon_defenses: [{
             name: "Parry",
             range: 1,
@@ -1276,6 +1313,7 @@ var items = [
         image: "images/icons/weapons/polearms/Wand of Fireballs.jpg",
         slot: "sidearm",
         wealth: 10,
+        price: 3000,
         weapon_modes:
             [
                 {
@@ -1299,6 +1337,7 @@ var items = [
         image: "images/icons/weapons/polearms/acid-flask.webp",
         slot: "pockets",
         wealth: 3,
+        price: 25,
         weapon_modes:
             [{
                 name: "Splattered",
@@ -1319,6 +1358,7 @@ var items = [
         image: "images/icons/weapons/polearms/bottled-sunlight.webp",
         slot: "pockets",
         wealth: 3,
+        price: 50,
         weapon_modes:
             [{
                 name: "Shatter",
@@ -1342,6 +1382,7 @@ var items = [
         image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
         wealth: 2,
+        price: 25,
         use:
             [{
                 name: "Use",
@@ -1361,6 +1402,7 @@ var items = [
         description: "As an action, a character expend this which will grant him mana to his aura",
         image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
+        price: 50,
         wealth: 4,
         use:
             [{
@@ -1381,6 +1423,7 @@ var items = [
         description: "As an action, a character expend this which will grant him mana to his aura",
         image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
+        price: 700,
         wealth: 8,
         use:
             [{
@@ -1401,7 +1444,8 @@ var items = [
         description: "The boomerang is a ranged weapon, on a miss it returns to your hand. Useful for killing birds.",
         image: "images/icons/weapons/polearms/boomerang.webp",
         slot: "pockets",
-        wealth: 5,
+        wealth: 1,
+        price: 5,
         weapon_modes:
             [{
                 name: "Thrown",
@@ -3144,7 +3188,7 @@ function convertPTBA() {
             "type": "weapon",
             "name": items[item].name,
             "img": items[item].image, /// need this
-            "price": items[item].wealth, /// need this
+            "price": items[item].price, /// need this
         };
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
 

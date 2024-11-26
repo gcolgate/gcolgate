@@ -1,0 +1,20 @@
+{
+    "x": -1550,
+    "y": -1550,
+    "z": 6.00001,
+    "guiLayer": "tile",
+    "sheet": {
+        "name": "/images/fetched/aberrant20spirit_tce.png",
+        "image": "/images/fetched/aberrant20spirit_tce.png",
+        "type": "tile",
+        "windowId": "images"
+    },
+    "texture": "fetched/aberrant20spirit_tce.png",
+    "scale": {
+        "x": 280,
+        "y": 280,
+        "z": 1
+    },
+    "tile_id": "fetched_aberrant20spirit_tcepng_3663c78c49944817b3dad9113a9238e4",
+    "tile_json": "C:\\Users\\gcolg\\Downloads\\vtt\\public\\SceneFiles\\default_scene\\tag_fetched_aberrant20spirit_tcepng_3663c78c49944817b3dad9113a9238e4_.json"
+}

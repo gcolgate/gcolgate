@@ -157,8 +157,7 @@ function extractFromCompendium(filter_array, owner) {
             answer += '</div>';
             answer += '</div>';
         }
-
-        answer += '<img src="' + searched[i].img + ' width="32" height="32"></img>';
+        answer += '<img src="' + (searched[i].image != undefined ? searched[i].image : searched[i].img) + '" width="16" height="16"></img>';
         answer += '</div>';
         answer += searched[i].name;
         if (searched[i].price) answer += '<span class="bold"> ' + searched[i].price + "</span > "
@@ -342,12 +341,12 @@ export function refreshDirectoryWindow(id, whole) {
                 li.className = "speedline";
                 let text = document.createTextNode(array[i].name);
                 // need better images 
-                if (array[i].img) {
-                    let img = document.createElement('img');
-                    img.src = array[i].img;
-                    img.width = "64"
-                    img.height = "64"
-                    li.appendChild(img);
+                if (array[i].image) {
+                    let image = document.createElement('image');
+                    image.src = array[i].image;
+                    image.width = "64"
+                    image.height = "64"
+                    li.appendChild(image);
 
                 }
 
@@ -431,12 +430,12 @@ export function refreshDirectoryWindow(id, whole) {
         let li = document.createElement("li");
         let text = document.createTextNode(array[i].name);
         // need better images 
-        if (array[i].img) {
-            let img = document.createElement('img');
-            img.src = array[i].img;
-            img.width = "32"
-            img.height = "32"
-            li.appendChild(img);
+        if (array[i].image) {
+            let image = document.createElement('img');
+            image.src = array[i].image;
+            image.width = "32"
+            image.height = "32"
+            li.appendChild(image);
 
         }
 

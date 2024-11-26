@@ -44,6 +44,7 @@ ensureSheetLoaded("hud");
 ensureSheetLoaded("itemSummary");
 ensureSheetLoaded("spell_chat");
 ensureSheetLoaded("spell_tooltip");
+ensureSheetLoaded("weapon_tooltip");
 
 function ClickCollapsible(evt, ownerid, id) {
 
@@ -365,7 +366,7 @@ function DrawImageArray(dir, array, ext) {
 
     let s = "";
     for (let i = 0; i < array.length; i++) {
-        s += ' <image src="' + dir + array[i] + ext + '" width="48" height="48")> </image>'
+        s += ' <img src="' + dir + array[i] + ext + '" width="48" height="48")> </img>'
 
     }
     return s;

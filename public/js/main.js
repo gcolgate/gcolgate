@@ -82,6 +82,7 @@ socket.on('displayScene', function (msg) {
 });
 
 socket.on('updatedTile', function (msg) {
+    console.log('updated');
     if (msg.scene === current_scene.name)
         three_updateTile(msg.tile, msg.updateImage);
 });

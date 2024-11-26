@@ -115,9 +115,9 @@ function cleanFileName(destString) {
 
 function cleanTileId(destString) {
     // just path a name, not a path
-    const img = path.parse(destString);
+    const image = path.parse(destString);
 
-    desttring = img.dir + img.base;
+    destString = image.dir + image.base;
 
     destString = destString.replaceAll("\\", "_");
     destString = destString.replaceAll("/", "_");

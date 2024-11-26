@@ -57,7 +57,7 @@ Layout: Spell window has lots of wasted space, Features too
 
 Feature: All windows pop out
 
-Game: Is mana generating fun?
+Game: Is mana generating fun? NO
 Game: maybe cursor keys scroll map. Maybe control also controls map.
 
 

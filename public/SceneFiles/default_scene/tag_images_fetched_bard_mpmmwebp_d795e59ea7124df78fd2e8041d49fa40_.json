@@ -1,0 +1,32 @@
+{
+    "x": -1150,
+    "y": -50,
+    "z": 0,
+    "guiLayer": "token",
+    "sheet": {
+        "file": "SceneFiles\\default_scene\\bard_mpmmd204f69d-99bd-449d-a842-894accc7f805.json",
+        "page": "bestiary",
+        "source": "MPMM",
+        "type": "npc",
+        "name": "Bard",
+        "image": "images/fetched/bard_mpmm.webp",
+        "windowId": "Compendium"
+    },
+    "texture": "images/fetched/bard_mpmm.webp",
+    "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+    },
+    "reference": {
+        "file": "SceneFiles\\default_scene\\bard_mpmmd204f69d-99bd-449d-a842-894accc7f805.json",
+        "page": "bestiary",
+        "source": "MPMM",
+        "type": "npc",
+        "name": "Bard",
+        "image": "images/fetched/bard_mpmm.webp",
+        "windowId": "Compendium"
+    },
+    "tile_id": "images_fetched_bard_mpmmwebp_d795e59ea7124df78fd2e8041d49fa40",
+    "tile_json": "C:\\Users\\gcolg\\Downloads\\vtt\\public\\SceneFiles\\default_scene\\tag_images_fetched_bard_mpmmwebp_d795e59ea7124df78fd2e8041d49fa40_.json"
+}

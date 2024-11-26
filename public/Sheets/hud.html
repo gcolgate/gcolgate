@@ -3,9 +3,11 @@
 
 
     <div>
-        {thing.name}: <button class="greentintButton roundbutton"
-            onclick="ChangeTileZ('{w.tile_id}',1);">+</button>{w.z}
-        <button class="redtintButton roundbutton" onclick="ChangeTileZ('{w.tile_id}',-1);">+</button>
+        {thing.name}
+    </div>
+    <div>
+        <button class="greentintButton roundbutton" onclick="ChangeTileZ('{w.tile_id}',1);">Z+</button>{w.z}
+        <button class="redtintButton roundbutton" onclick="ChangeTileZ('{w.tile_id}',-1);">Z-</button>
     </div>
 
 </div>

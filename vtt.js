@@ -455,7 +455,7 @@ async function NewPlayer(socket, msg) {
         source: "",
         type: "",
         name: baseName,
-        img: "images/questionMark.png"
+        image: "images/questionMark.png"
     };
 
 
@@ -612,9 +612,10 @@ io.on('connection', (socket) => {
         ChangeName(msg.dir, msg.thingName, msg.newName, io, msg, true);
     });
     socket.on('updateTile', (msg) => {
-
+        console.log('update');
         let sender = getUser(socket);
         if (sender) {
+            console.log('sender' + sender);
             let scene = sheeter.folders.ScenesParsed[msg.scene];
 
             Scene.updateSceneTile(scene, msg.tile);   // change to in place and update
@@ -939,7 +940,7 @@ async function recurseReadImageDir(dir) {
 
                         }
                         let seeFile = fixImageFileName(file);
-                        imageDirMap[seeDir].push({ name: seeFile + '/', img: "", type: "dir" });
+                        imageDirMap[seeDir].push({ name: seeFile + '/', image: "", type: "dir" });
                         try {
                             recurseReadImageDir(file);
                         } catch (e) { console.log(e); }
@@ -950,7 +951,7 @@ async function recurseReadImageDir(dir) {
                             imageDirMap[seeDir] = [];
 
                         }
-                        imageDirMap[seeDir].push({ name: seeFile, img: seeFile, type: "tile" });
+                        imageDirMap[seeDir].push({ name: seeFile, image: seeFile, type: "tile" });
                     }
                 });
             } catch (err) { console.log(err); console.log("Unable to stat " + file); }
@@ -992,7 +993,7 @@ async function refreshDirThatHasBeenAddedTo(dir) {
                         }
                         let seeFile = fixImageFileName(file);
                         if (!locateFileInDir(imageDirMap[seeDir], seeFile)) {
-                            imageDirMap[seeDir].push({ name: seeFile + '/', img: "", type: "dir" });
+                            imageDirMap[seeDir].push({ name: seeFile + '/', image: "", type: "dir" });
                             try {
                                 recurseReadImageDir(file);
                             } catch (e) { console.log(e); }
@@ -1005,7 +1006,7 @@ async function refreshDirThatHasBeenAddedTo(dir) {
 
                         }
                         if (!locateFileInDir(imageDirMap[seeDir], seeFile)) {
-                            imageDirMap[seeDir].push({ name: seeFile, img: seeFile, type: "tile" });
+                            imageDirMap[seeDir].push({ name: seeFile, image: seeFile, type: "tile" });
                         }
                     }
                 });

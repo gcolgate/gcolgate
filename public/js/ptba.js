@@ -31,14 +31,14 @@ export const moves = {
         "mixed": "Your mount acts panicked or with another emotion, doing something you don't want it to, but you stay on",
         "fail": "Your mount acts panicked or with another emotion, and you fall off of it"
     },
-    "Feint": {
+    "Feint (free action)": {
         "stat": [
             "cunning"
         ],
-        "tooltip": "In melee, can be done before an attack to attack with cunning even without flanking or surprise",
+        "tooltip": "In melee, maneuver, can be done before an attack to attack with cunning even without flanking or surprise",
         "Comments": "In melee, can be done before an attack to attack with cunning even without flanking or surprise. Advantage when switching to a new weapon, or narrating something surprising",
         "Critical": "You get advantage on your attacks",
-        "success": "You can attack using cunning stat against your opponents",
+        "success": "You can attack using your Cunning stat against your opponents",
         "mixed": "You can attack using cunning against one opponent",
         "fail": "Sorry! You lose your attack"
     },
@@ -51,73 +51,73 @@ export const moves = {
         <li> &#x25BA;  When your friend is on fire </li>\
         <li> &#x25BA;  Note, doing things like jumping in a lake </li>\
         <li> &#x25BA;  will not require a roll. </li></li></ul>",
-        "Critical": "The fire is out, and it takes you no time and will not affect initiative",
+        "Critical": "The fire is out, and it takes you no time",
         "success": 'You get the fire out, but <a href="#">choose 1\
                     <div class="tooltipcontainer">\
                     <div class="tooltip">\
-                     <ul><li> &#x25BA; You lose the intiative</li>\
+                     <ul><li> &#x25BA; It takes your action to do so</li>\
                     <li> &#x25BA; They take damage from the fire</li>\
                 </div >\
             </div ></a >',
-        "mixed": 'Choose <a href="#">you lose the initiative\
+        "mixed": '<a href="#"> Choose One \
                     <div class="tooltipcontainer">\
                     <div class="tooltip">\
-                     <ul><li> &#x25BA; You get the intiative</li>\
+                     <ul><li> &#x25BA; You dont waste your action</li>\
                     <li> &#x25BA; They don\'t take damage from the fire</li>\
                     <li> &#x25BA; You get the fire out</li>\
                 </div>\
             </div ></a>',
-        "fail": "You lose the initiative and they take damage from the fire",
+        "fail": "You waste your action and they take damage from the fire",
         "fumble": "You catch yourself on fire too."
     },
     "On Fire": {
         "stat": [
-            "avoid", "caring"
+            "avoidanceMOv", "caring"
         ],
         "tooltip": "Extinguish Fire:   When you are on fire",
         "Comments": "<ul>\
         <li> &#x25BA;  When you are on fire </li>\
         <li> &#x25BA;  Note, doing things like jumping in a lake </li>\
         <li> &#x25BA;  will not require a roll. </li></li></ul>",
-        "Critical": "The fire is out, and it takes you no time and will not affect initiative",
+        "Critical": "The fire is out, and it takes you no time",
         "success": 'You get the fire out, but <a href="#">choose 1\
                     <div class="tooltipcontainer">\
                     <div class="tooltip">\
-                     <ul><li> &#x25BA; You lose the intiative</li>\
-                    <li> &#x25BA; You take damage from the fire</li>\
+                     <ul><li> &#x25BA; You it takes your action</li>\
+                    <li> &#x25BA; You don\'t take damage from the fire</li>\
                 </div >\
             </div ></a >',
-        "mixed": 'Choose <a href="#">you lose the initiative\
+        "mixed": 'Choose One <a href="#"> \
                     <div class="tooltipcontainer">\
                     <div class="tooltip">\
-                     <ul><li> &#x25BA; You get the intiative</li>\
+                     <ul><li> &#x25BA; You don\'t waste your action</li>\
                     <li> &#x25BA; You don\'t take damage from the fire</li>\
                     <li> &#x25BA; You get the fire out</li>\
                 </div>\
             </div ></a>',
-        "fail": "You lose the initiative and take damage from the fire",
+        "fail": "You waste your turn, and take damage from the fire",
         "fumble": "You spread the fire to a nearby object."
     },
     "Display of Might and Power": {
         "stat": [
             "bravery"
         ],
-        "tooltip": "Display of Might and Power:  When take an action which is intimidating",
+        "tooltip": "Display of Might and Power:  When you take an action which is intimidating",
         "Comments": "Some actions which get you a bonus to your steel for this purpose  of intimidation: <ul>\
         <li> &#x25BA; A Mighty Name The character’s reputation alone is enough to make enemies hesitate</li>\
         <li> &#x25BA; Dead Man’s Stare The character brandishes the severed head of an enemy at arm’s length, raising the grim trophy high for all to see. This violent action, drenched in gore, deters all but the most hardened foes. For extra emphasis, the head can be dropped dramatically, cast away as refuse, or tossed into the hands of a hapless target. </li>\
-        <li> &#x25BA; Flaming Brand Against  beasts, the threat of fire is something that inspires a primal dread. </li>\
+        <li> &#x25BA; Flaming Brand: Against  beasts, the threat of fire is something that inspires a primal dread. </li>\
         <li> &#x25BA; Impossible Feat of Might The character pulls out all the stops and overturns a massive statue or stone, or something similar,  sending it crashing to the ground</li>\
         <li> &#x25BA; Knife to the Throat A particularly intimate form of intimidation, holding a foe at the point or edge of a blade can cause them to swiftly capitulate</li>\
         <li> &#x25BA; Sorcerous Power The character’s flashy and  dark and unnatural arts is enough to terrify many foes</li>\
         <li> &#x25BA; Stain the Soil Red Following the death of several foes and the shedding of copious amounts of blood, the character lets out a savage, primordial cry</li>\
         <li> &#x25BA; Divine Power Against the superstitious and the extraplanar, the words of a priest can compel</li></ul>",
-        "Critical": "Foes are frightened, take +1 forward, keep the initiative, gain 1 Supremacy ",
-        "success": "Foes are frightened may flee (Wis Save or Circumstances): take +1 forward on your rolls against them for the scene (not stacking),  keep the initiative",
+        "Critical": "Foes are frightened, take +1 forward and  take another, different, action ",
+        "success": "Foes are frightened may flee (Wis Save or Circumstances): take +1 forward on your rolls against them for the scene (not stacking), take another, different, action",
         "mixed": "Foes are frightened: choose 1:<ul>\
-        <li> &#x25BA; you keep the initiative</li>\
-        <li> &#x25BA; take +1 forward on your rolls against them for the scene (not stacking)</li></ul>",
-        "fail": "None or reverse effect and you lose the initiative"
+        <li> &#x25BA; take another, different, action</li>\
+        <li> &#x25BA; take +1 forward on your rolls against them for the scene (not stacking) but end your turn </li></ul>",
+        "fail": "None or reverse effect"
     },
     "Attack": {
         "stat": [
@@ -125,36 +125,35 @@ export const moves = {
         ],
         "tooltip": "Basic Attack (Bravery)",
         "Comments": "Swing your weapon",
-        "Critical": 'You hit your foe, do double damage, get 1 supremacy :\
+        "Critical": 'You hit your foe, do double damage,\
         <a href="#">and GM can choose 1 \
          <div class="tooltipcontainer">\
                 <div class="tooltip">\
        <ul><li> &#x25BA; You hit him in a vulnerable spot. Add another x1 damage, and he is bleeding or stunned</li>\
-        <li> &#x25BA; You can immediately act again, maybe attacking a different foed</li>\
-        <li> &#x25BA; You are very strong. Add your Strength x4 more damage, foe is prone (Str Save), and get a free action (display of might and power) to intimidate all enemies</li></ul> \
+        <li> &#x25BA; You can immediately act again, maybe attacking a different foe</li>\
+        <li> &#x25BA; You use brutal strength. Add your Strength x4 more damage, foe is prone (Str Save), and you get a free action (display of might and power) to intimidate all enemies</li></ul> \
         </div>\
         </div>\
         </a>',
         "success": 'You hit your foe and do damage to him, and the  \
-         <a href="#">and GM can let you choose 1=2 of these \
+         <a href="#">and GM can let you choose 1 to 2 of these \
             <div class="tooltipcontainer">\
                 <div class="tooltip">\
         <ul><li> &#x25BA; Knock him back</li>\
         <li> &#x25BA; Make him prone (Str Save)</li><li> &#x25BA; Get +1 on your next roll</li>\
         <li> &#x25BA; Force him to retreat and you advance</li>\
-        \<li> &#x25BA; Give your ally ( who is adjacent to the enemy)  initiative</li>\
-        <li> &#x25BA; Retreat away after, free move</li></ul> </ul>\
+         <li> &#x25BA; Retreat away after, free move with disengagement</li></ul> </ul>\
                  </div>\
             </div>\
             </a>',
-        "mixed": ": You hit your foe, but lose the initiative",
-        "fail": ' You miss, lose the initiative, \
+        "mixed": ": You hit your foe",
+        "fail": ' You miss,  \
         <a href="#">and GM can choose 1 \
             <div class="tooltipcontainer">\
                 <div class="tooltip">\
                 <ul>\
                 <li> &#x25BA; Weapon entangled or stuck</li>\
-                <li> &#x25BA; Foe retaliates </li>\
+                <li> &#x25BA; Foe retaliates (free attack) </li>\
                 <li> &#x25BA; lose some gear, perhaps it falls off</li>\
                 <li> &#x25BA; 1d3 hexes in a bad direction</li>\
                 <li> &#x25BA; Take -1 on your next roll</li>\
@@ -172,8 +171,8 @@ export const moves = {
         "Comments": "Operate artillery",
         "Critical": 'You hit your target forcefully, Foes cannot avoid damage',
         "success": 'You hit your target. Those hit can reduce damage with Avoid/Dex saving throws',
-        "mixed": 'You miss by 1d6 yards per 10 yards, in a random direction. All hit can make saving throws. Lose intiative',
-        "fail": 'If using a spell, you release the mana in a random way. If using artillery, you are taking a long time to set up your shot. Lose the initiative and try again next time',
+        "mixed": 'You are taking a long time to wind up your shot and don\'t actually shoot this round',
+        "fail": 'You miss by 1d6 yards per 10 yards range, in a random direction from your aiming point. All hit can make saving throws.',
 
 
     },
@@ -183,36 +182,42 @@ export const moves = {
         ],
         "tooltip": "Wrestle:  Wrestle someone",
         "Comments": "Wrestle someone",
-        "Critical": 'You wrestle your foe and get 1 supremacy  <a href="#">and you can choose 2 \
+        "Critical": 'You wrestle your foe <a href="#">and you can choose 2 \
             <div class="tooltipcontainer">\
-      <ul>\
-        <li> &#x25BA; You injure him. Do 2 + your strength stat damage </li>\
-        <li> &#x25BA; You can throw you foe at another, doing 1 damage to each and knocking both prone</li>\
-        <li> &#x25BA; You have your foe helpless</li>\
-        <li> &#x25BA; You disarm your foe</li>\
-        <li> &#x25BA; You also keep the initiative and you can can keep the foe  wrestled unless you throw him</div>\
+                    <div class="tooltip">\
+            <ul>\
+                <li> &#x25BA; You injure him. Do 2 + your strength stat damage </li>\
+                <li> &#x25BA; You can throw you foe at another, doing 1 damage to each + your strength stat and knocking both prone</li>\
+                <li> &#x25BA; You have your foe helpless, you will need to choose to keep him wrestled</li>\
+                <li> &#x25BA; You disarm your foe</li>\
+                <li> &#x25BA; You also keep your foe wrestled</li>\
             </ul>\
+            </div>\
             </div>\
             </a>',
         "success": 'You wrestle your foe   <a href="#">and you can choose 1 \
             <div class="tooltipcontainer">\
-      <ul>\
-        <li> &#x25BA; You disarm your foe</li>\
-        <li> &#x25BA; You keep your foe wrestled</li>\
-        <li> &#x25BA; You keep the initiative</li>\
-        <li> &#x25BA; You add +2 on you next wrestling move  " </ul>\
+                    <div class="tooltip">\
+             <ul>\
+              <li> &#x25BA; You disarm your foe</li>\
+              <li> &#x25BA; You keep your foe wrestled</li>\
+              <li> &#x25BA; You add +2 on you next wrestling move  " </ul>\
+            </ul>\
+            </div>\
             </div>\
             </a>',
-        "mixed": 'You wrestle   <a href="#">and you  choose 1 \
-            <div class="tooltipcontainer">\
-      <ul>\ </li>\
-        <li> &#x25BA; You disarm your foe</li>\
-        <li> &#x25BA; You keep your foe wrestled</li>\
-        <li> &#x25BA; You keep the initiative    </ul>\
-                 </ul>\
-            </div>\
-            </a>',
-        "fail": "You miss, lose the initiative, and are stabbed  or punched "
+        "mixed": 'You wrestle \
+                    <a href="#">and choose 1 \
+                   <div class="tooltipcontainer"> \
+            <div class="tooltip">\
+                    <ul>\
+                    <li> & #x25BA; You disarm your foe</li>\
+                    <li> & #x25BA; You keep your foe wrestled</li >\
+                   </ul >\
+                 </div >\
+                 </div >\
+                 </a>',
+        "fail": "Wrestling ends,  and are stabbed or punched and/or prone"
     },
     // bugs: attack grapple should be wrestle
     // defenses should be on stat page
@@ -227,14 +232,25 @@ export const moves = {
         "tooltip": "Defend against wrestling with wrestling or squiggling",
         "Comments": "This move can only be used if you are already wrestling with your foe",
         "Critical": "Immediately get to use your wrestle on offense</li>\
-        <li> &#x25BA; r get free with the initiative",
-        "success": "Your foe misses and you get the initiative",
-        "mixed": "You wrestle  but choose one</li>\
-        <li> &#x25BA; Take some damage anyway (½)</li>\
-        <li> &#x25BA; Don’t get the initiative</li>\
-        <li> &#x25BA; End the grapple if the foe wishes</li>\
-        <li> &#x25BA; You are knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs",
-        "fail": "You are squarely hit, take damage, lose the initiative, and the GM choose one from mixed."
+        <li> &#x25BA; or get free and get a free move",
+        "success": "Your can escape or take the offense",
+        "mixed": 'You wrestle <a href="#"> but  choose 1 \
+            <div class="tooltipcontainer">  \
+            <div class="tooltip">\
+            <ul> \
+            <li> &#x25BA; Take some damage anyway if taking it only(½)</li> \
+            <li> &#x25BA; Take -2 on the next wrestling roll</li> \
+            <li> &#x25BA; End the grapple if the foe wishes this</li> \
+            <li> &#x25BA; You are knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs \
+            </ul></div></div></a>',
+        "fail": 'You are squarely hit, take damage, and the GM  <a href="#">  choose one \
+        <div class="tooltipcontainer">  \
+            <div class="tooltip">  \
+        <li> &#x25BA; Take some damage anyway if taking it only(½)</li>\
+        <li> &#x25BA; Take -2 on the next wrestling roll</li>\
+        <li> &#x25BA; End the grapple if the foe wishes this</li>\
+        <li> &#x25BA; You are knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs \
+        </div> </div></a>'
     },
     "Parry": {
         "stat": [
@@ -243,16 +259,23 @@ export const moves = {
         ],
         "tooltip": "Parry with weapon or shield",
         "Comments": "Parry with weapon or shield",
-        "Critical": "gain the initiative, block your foe, and counterattack: damage your foe.",
-        "success": "You block your foe and gain the initiative",
-        "mixed": "You block your foe but you either don't gain the initiative or gm chooses:<ul>\
-        <li> &#x25BA; Take some damage anyway 1 pt</li>\
-        <li> &#x25BA; Don’t get the initiative </li>\
+        "Critical": "you block your foe, and counterattack: damage your foe with your weapon.",
+        "success": "You block your foe",
+        "mixed": 'You block your foe but you or gm <a href="#">  choose one \
+          <div class="tooltipcontainer">  \
+            <div class="tooltip">  \
+            <ul> \
+                <li> &#x25BA; Take some damage anyway 1 pt</li>\
+                <li> &#x25BA; Your weapon, shield, or armor piece is damaged or knocked away</li>\
+                <li> &#x25BA; you are knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs </li></ul> \
+              </div> </div></a>',
+        "fail": 'You are squarely hit, take damage,   and the GM is allowed to <a href="#"> choose 1: \
+         <div class="tooltipcontainer">  \
+            <div class="tooltip">  \
+            <ul> \
         <li> &#x25BA; Your weapon, shield, or armor piece is damaged or knocked away</li>\
-        <li> &#x25BA; you are knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs </li></ul>",
-        "fail": " You are squarely hit, take damage,  definitely don’t get the initiative, and the GM is allowed to choose 1: <ul>\
-        <li> &#x25BA; Your weapon, shield, or armor piece is damaged or knocked away</li>\
-        <li> &#x25BA; you knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs </li></ul>"
+        <li> &#x25BA; you knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs </li></ul> \
+              </div></div></a>',
     },
     "Avoid": {
         "stat": [
@@ -266,7 +289,7 @@ export const moves = {
         <li> &#x25BA; You can also try to avoid danger by running pell mell from it. Running away is also an avoid roll.</li></ul>",
         "Critical": "",
         "success": "You avoid the problem or confrontation",
-        "mixed": "you must drop something, lose something, take harm, or bear some other cost to avoid the confrontation, otherwise  you are confronted.",
+        "mixed": "you must drop something, lose something, take harm, or bear some other cost to avoid the confrontation, otherwise you are confronted.",
         "fail": "You get contronted, and there is a chance the situation is worse because you tried to avoid it. "
     },
     "Dodge": {
@@ -278,23 +301,30 @@ export const moves = {
         <li> &#x25BA; It can be difficult to dodge multiple, swarming opponents, or volleys of arrow fire, without running pell mell away… </li>\
         <li> &#x25BA; It can be easy to dodge missiles if you can get into cover</li></ul>",
         "Critical": "",
-        "success": "You dodge your foe and gain the initiative and either<ul>\
+        "success": 'You dodge your foe and <a href="#">choose one \
+         <div class="tooltipcontainer">  \
+         <div class="tooltip">  \
+            <ul> \
         <li> &#x25BA;  Can move to a safer place, maybe outmanuevering chasing foes</li>\
-        <li> &#x25BA;  Can set yourself up for a better attack +1 on attacking next</li></ul>",
-        "mixed": "You dodge your foe  but choose 1:<ul>\
+        <li> &#x25BA;  Can set yourself up for a better attack +1 on attacking next</li></ul> \
+              </div> \
+              </div></a>',
+        "mixed": 'You dodge your foe  but<a href="#"> choose 1: \
+         <div class="tooltipcontainer">  \
+         <div class="tooltip">  \
+            <ul> \
         <li> &#x25BA; Take half damage anyway</li>\
-        <li> &#x25BA; Don’t get the initiative</li>\
         <li> &#x25BA; Your weapon is damaged or knocked away or dropped</li>\
-        <li> &#x25BA; You are knocked prone or otherwise put into a bad position</li></ul>",
-        "fail": "You are squarely hit, take damage, and perhaps the GM may add 1 of: Your weapon is damaged or knocked away or dropped</li>\
-        <li> &#x25BA; You are knocked prone or otherwise put into a bad position"
+        <li> &#x25BA; You are knocked prone or otherwise put into a bad position</li></ul>\
+        </div></div></a>',
+        "fail": "You are squarely hit"
     },
     "Bargain": {
         "stat": [
             "intelligence"
         ],
-        "tooltip": "Bargain  when pointing out the benefits of a deal to someone",
-        "Comments": "Using logic, and pointing out the mutual benefits of a deal or alliance, on success, you can get agreement on an issue. The deal must really have benefits for the other party, be sure to point those out",
+        "tooltip": "Bargain: you need to point out the benefits of a deal (or the consequences of not following the deal) to someone",
+        "Comments": "Using logic, and pointing out the mutual benefits of a deal or alliance, or the problem if not doing so, on success, you can get agreement on an issue. The deal must really have benefits for the other party, be sure to point those out",
         "Critical": "You make the deal, it doesn't have to be that fair",
         "success": "You make the deal, it must be at least somewhat fair",
         "mixed": "You make the deal, but choose:<ul><li> &#x25BA; You must compromise a lot more than you hoped</li>\
@@ -332,21 +362,21 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
-        "tooltip": "Purchase   Downtime purchase of rare things like magic items. ",
+        "tooltip": "Purchase: Downtime purchase of rare things like magic items. ",
         "Comments": "Downtime purchase of rare and unsual things, such as magic items, improved weapons, etc.",
         "Critical": "",
         "success": "You find the item for sale and can buy it for a reasonable sum",
         "mixed": " DM choose 1<ul>\
         <li> &#x25BA; the item is more expensive</li>\
         <li> &#x25BA; the item is not quite the one you wanted to buy</li>\
-        <li> &#x25BA; the item has a hidden cost, like it is stolen, or cursed, or being pursued by enemies </li></ul>",
+        <li> &#x25BA; the item looks great but it has a hidden cost, like it is stolen, or cursed, or being pursued by enemies </li></ul>",
         "fail": "On a miss, maybe you can’t find the item, maybe you get into trouble, maybe you find it but it is more expensive, is not the one you wanted, and it is stolen, or cursed, or pursued."
     },
     "Spout Lore": {
         "stat": [
             "intelligence"
         ],
-        "tooltip": "Spout Lore   Know something about something ",
+        "tooltip": "Spout Lore : Know something about something ",
         "Comments": "When you search your memories and experiences or library for clues. The knowledge you get is like consulting a bestiary, travel guide, or library. You get facts about the subject matter. This is highly dependent on your careers ",
         "Critical": "",
         "success": "The GM will reveal something interesting and useful relevant to your situation. This might help you investigate further",
@@ -357,8 +387,8 @@ export const moves = {
         "stat": [
             "caring"
         ],
-        "tooltip": "Heal   heal some harm",
-        "Comments": "It takes a few minutes at least to provide healing, unless provided by a spell of the first magnitude. After each wounding, 1 roll per character who tries to heal, unless a spelll. These do not stack, take the best. Heal also reduces the effect of an injury. Injuries commonly last until all harm is gone, and count as one extra harm you need to heal. Without healing it normally it takes 1 day to heal 1 harm, although infected wounds in bad conditions can get worse, 1 day for 1 harm.",
+        "tooltip": "Heal :  heal some harm",
+        "Comments": "It takes a few minutes at least to provide healing, unless provided by a spell of the first magnitude. After each wounding, 1 roll per character who tries to heal, unless a spell. These do not stack, take the best. Heal also reduces the effect of an injury. Injuries commonly last until all harm is gone, and count as one extra harm you need to heal. Without healing it normally it takes 1 day to heal 1 harm, although infected wounds in bad conditions can get worse, 1 day for 1 harm.",
         "Critical": "",
         "success": "Heal 3 harm plus if you have skill at Medecine or Mom, you can 3 harm per 1 Effort you spend.",
         "mixed": "Heal 1 harm plusif you have skill at Medecine or Mom,  3 per 1 Effort you spend.",
@@ -368,18 +398,18 @@ export const moves = {
         "stat": [
             "caring"
         ],
-        "tooltip": "Calm  Calm someone down or smooth over a situation",
+        "tooltip": "Calm:  Calm someone down or smooth over a situation",
         "Comments": "Calm someone down",
         "Critical": "",
-        "success": "You stop someone from freeking out",
-        "mixed": "You stop someone from freaking out, but maybe after a second of him expressing it",
+        "success": "You stop someone from freaking out",
+        "mixed": "You stop someone from freaking out, but maybe after a second of them expressing it",
         "fail": "You cannot calm them, maybe you become upset too, or it becomes worse"
     },
     "Seduce/Flirt/Entertain": {
         "stat": [
             "allure"
         ],
-        "tooltip": "Seduce/Flirt/Entertain   entertain, get someone to do something, distract them",
+        "tooltip": "Seduce/Flirt/Entertain  : entertain, get someone to do something, distract them",
         "Comments": "Person to person interaction",
         "Critical": "",
         "success": "You either entertain and charm someone which they will remember fondly, or get them to do something they later regret  (or not), and hold them distracted for a while",
@@ -388,7 +418,7 @@ export const moves = {
         <li> &#x25BA; You entertain and charm someone but they forget about it very quickly</li>\
         <li> &#x25BA; You entertain and charm someone but their friends have a bad opinion of you</li>\
         <li> &#x25BA; You distract them but they immediately become all alert after a minute</li></ul>",
-        "fail": "A hit and a miss, the GM has all sorts of bad reactions from the other party"
+        "fail": "A swing and a miss, the GM has all sorts of bad reactions from the other party"
     },
     "Performance": {
         "stat": [
@@ -409,12 +439,12 @@ export const moves = {
         "stat": [
             "cunning"
         ],
-        "tooltip": "Wicked Lie con or scam someone (not all lies)",
+        "tooltip": "Wicked Lie con or scam someone (not all lies are Wicked)",
         "Comments": "While a fearful person lies to avoid confrontation, and a lusty person lies to seduce, and a caring person makes white lies to make people feel better, a Wicked Lie is a con, a scam, a ‘Big Lie’. It can be brazen and completely unmoored from reality.</ul>\
         <li> &#x25BA; /li>\
-        <li> &#x25BA; emember, not all lies are wicked lies. A person trying to avoid being identified by a guard can use Avoid to claim to be someone else. A seducer might lie and say that he loves his partner when he is motivated by lust. But only a wicked lie could be used to tell that guard you are an agent of the king and that he must follow along with you or have his head chopped off. Only a wicked lie could persuade the seduced person to give over her money and jewels to you for investment into a new overseas company with a “guarantee” of riches..</li></ul>",
+        <li> &#x25BA; Remember, not all lies are wicked lies. A person trying to avoid being identified by a guard can use Avoid to claim to be someone else. A seducer might lie and say that he loves his partner when he is motivated by lust. But only a wicked lie could be used to tell that guard you are an agent of the king and that he must follow along with you or have his head chopped off. Only a wicked lie could persuade the seduced person to give over her money and jewels to you for investment into a new overseas company with a “guarantee” of riches..</li></ul>",
         "Critical": "",
-        "success": "people believe you and follow along.",
+        "success": "People believe you and follow along.",
         "mixed": "GM choose 1:<ul>\
         <li> &#x25BA; People are skeptical, but are willing to entertain the idea</li>\
         <li> &#x25BA; they believe you but the reaction is not what you expected</li>\
@@ -426,13 +456,13 @@ export const moves = {
         "stat": [
             "cunning"
         ],
-        "tooltip": "Steal steal or pickpocket",
+        "tooltip": "Steal : steal or pickpocket",
         "Comments": "Stealing, pickpocketing, etc. Might not be possible in some circumstances without magic",
         "Critical": "",
         "success": "On a success, you palm or steal the item and are not noticed.",
         "mixed": "Choose 1:<ul>\
         <li> &#x25BA; You palm or steal the item but are confronted</li>\
-        <li> &#x25BA; You are about to palm or steal the item but are confronted, but perhaps you can weasel your way out of it</li></ul>",
+        <li> &#x25BA; You are about to palm or steal the item but are confronted, but perhaps you can gaslight your way out of it</li></ul>",
         "fail": " You are caught red handed without the item or the GM makes some other hard move"
     },
     "Scout": {
@@ -456,7 +486,8 @@ export const moves = {
         "success": "You inflict the pain and suffering and have the option to get away (if that is feasible)",
         "mixed": " you inflict the pain and suffering  but  (choose one)<ul>\
         <li> &#x25BA; You are now confronting the victim or his heirs or friends,</li>\
-        <li> &#x25BA; You take stress (Exhaustion).</li></ul>",
+        <li> &#x25BA; You take stress (Exhaustion).</li></ul>\
+        <li> &#x25BA; You are running for your life from a hue and cry.</li></ul>",
         "fail": "On a failure you don’t inflict the pain and suffering, maybe you can’t bring yourself to do it, or perhaps you do it sloppily, or are exhausted by your actions. GM decides"
     },
     "Backstab": {
@@ -465,11 +496,11 @@ export const moves = {
         ],
         "tooltip": "Backstab:  When you attack by surprise in combat",
         "Comments": "The swing of a sword from behind with stealth. Note that it is difficult to backstab, unless you are entering the combat stealthily, or have been out of sight on the previous round. Then it might instead be easy.",
-        "Critical": "Do +6 damage to him, stacks with assasin feats",
-        "success": "You hit your foe and do +3 damage to him , (stacks with assassin feats), you have the initiative if engaged",
+        "Critical": "Do +6 damage to him, stacks with assassin feats",
+        "success": "You hit your foe and do +3 damage to him , (stacks with assassin feats), you can move away freely",
         "mixed": " You hit your foe and either (choose 1):<ul>\
-        <li> &#x25BA; Do less damage (½)</li>\
-        <li> &#x25BA; Lose the initiative</li>\
+        <li> &#x25BA; Do half damage (½)</li>\
+        <li> &#x25BA; Are engaged</li>\
         <li> &#x25BA; Get your weapon entangled, lose some gear,  are knocked prone or otherwise put into a bad position</li>\
         <li> &#x25BA; Miss instead, since you decided to wait for a better time, stay hiding and not attack now, maybe you can try next turn</li></ul>",
         "fail": "On a failure you lose the initiative and probably the ire of the person you tried to backstab."
@@ -627,8 +658,8 @@ function isArmorProficient(owner_id, thingId) {
     let owner = GetRegisteredThing(owner_id);
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
-        if (item.page == "careers") {
-            for (let k = 0; k < item.weapons.length; k++) {
+        if (item.page == "careers" && item.armor) {
+            for (let k = 0; k < item.armor.length; k++) {
                 for (let j = 0; j < thing.armor.career.length; j++) {
                     if (thing.armor.career[j] == item.armor[k]) {
                         return true;
@@ -699,7 +730,7 @@ var takeDamageMove = {
                  <ul> \
                     <li>● You’re out of action: unconscious, trapped, incoherent or panicked.</li> \
                     <li>● It’s worse than it seemed. Lose 2 more health. </li>\
-                    <li>● You have an injury, like a hurt leg (slowed), bleeding (lose additional damage with a chance each round, \
+                    <li>● You have an injury, like a hurt leg (slowed), bleeding (lose additional damage with a chance each round, d6 \
                           each 6 for light bleeding or greater than 1 for heavy), a hurt arm (-1 with actions from that arm),\
                           partial blindness (-3 to steel, many actions become more difficult) Certain weapons get bonuses to some kinds of injuries, so if you get struck by those you might be in worse shape. \
                     <li>● You are stunned, for a moment you can’t do anything. </li>\
@@ -795,7 +826,7 @@ function showWeaponModes(thing, owner) {
             }
         }
     }
-    return div(answer);
+    return div(answer, "centered");
 }
 MakeAvailableToParser('showWeaponModes', showWeaponModes);
 
@@ -1369,7 +1400,7 @@ function showApperancePopUp(e, id) {
     if (thing) {
         ul.replaceChildren();
 
-        // let li = document.createElement("li");
+        // letli= document.createElement("li");
         // li.appendChild(document.createTextNode("Edit " + thing.current_appearance));
         // ul.appendChild(li);
 
@@ -1835,7 +1866,7 @@ function WeaponMoves(thing, weaponId,) {
                 let key = mode.move[k];
                 for (let j = 0; j < moves[key].stat.length; j++) {
                     let stat = moves[key].stat[j];
-                    answer += "<div>"
+                    answer += "<div class='centered'>"
                     answer += "<button class=\"greentintButton roundbutton \" onclick =\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
                         + "+" +
                         "</button>";

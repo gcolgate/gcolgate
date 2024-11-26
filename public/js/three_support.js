@@ -15,6 +15,7 @@ import { getAppearanceImage } from './ptba.js';
 
 
 let kGridSize = 100;
+let kWidthHeightOffsetTimesTwo = 32; // 2x the margins from the window to the canvas
 class InfiniteGrid extends THREE.Mesh {
 
     constructor(size1, size2, color, distance, axes = 'xyz') {
@@ -111,8 +112,8 @@ class InfiniteGrid extends THREE.Mesh {
 
 
 function three_renderer_dimensions() {
-    let width = window.innerWidth - 32;
-    let height = window.innerHeight - 32;
+    let width = window.innerWidth - kWidthHeightOffsetTimesTwo;
+    let height = window.innerHeight - kWidthHeightOffsetTimesTwo;
     return {
         width: width,
         height: height,
@@ -327,7 +328,7 @@ async function three_setTileImage(tile, plane) {
         return;
     }
     // TODO: Fix calling this with two kinds of parameters and get rid of this line   
-    let tname = (typeof tile.texture == "string" ? tile.texture : tile.texture.img);
+    let tname = (typeof tile.texture == "string" ? tile.texture : tile.texture.image);
 
     if (!tname.startsWith("images/"))
         tname = "./images/" + tile.texture; // todo fix this so we are not adding paths in random places
@@ -553,11 +554,18 @@ export function three_setEditMode(on) {
 
 }
 function worldToScreen(worldPos) {
+
+
+
+
     let dim = three_renderer_dimensions()
     var screenPos = worldPos.clone();
     screenPos.project(three_camera);
-    screenPos.x = (screenPos.x + 1) * dim.width / 2;
-    screenPos.y = (- screenPos.y + 1) * dim.height / 2;
+    screenPos.x = (screenPos.x + 1) * (dim.width + 0.5 + kWidthHeightOffsetTimesTwo) / 2;
+    screenPos.y = (- screenPos.y + 1) * (dim.height + 0.5 + kWidthHeightOffsetTimesTwo) / 2;
+
+    // screenPos.x = (screenPos.x + 1) * (three_camera.projectionMatrixInverse.elements[0]);
+    // screenPos.y = (-screenPos.y + 1) * (three_camera.projectionMatrixInverse.elements[5]);
     return screenPos;
 }
 
@@ -569,7 +577,7 @@ function getPortrait(o) {
         }
 
     }
-    return o.img;
+    return o.image;
 }
 
 function findTokenTile(id) {
@@ -681,11 +689,7 @@ export function three_mouseMove(event) {
 
                     if (three_outlinePass_token.selectedObjects.length == 0)
                         three_outlinePass_token.selectedObjects = [intersect.object];
-                    let screenPos = worldToScreen(intersect.object.position);
 
-
-                    hud.style.left = Math.trunc(screenPos.x) + "px";
-                    hud.style.top = Math.trunc(screenPos.y) + "px";
                     let thang = intersect.object.tile?.reference;
                     if (thang) {
 
@@ -693,6 +697,14 @@ export function three_mouseMove(event) {
                     }
                     else hud.innerHTML = o.name;;
 
+                    let p = intersect.object.position.clone();
+                    p.y += kGridSize/2;
+                    p.x -= kGridSize/10; // hack
+                    let screenPos = worldToScreen(p);
+
+                  //  screenPos.y -= hud.offsetHeight;
+                    hud.style.left = Math.trunc(screenPos.x) + "px";
+                    hud.style.top = Math.trunc(screenPos.y) + "px";
 
                     if (!card) {
                         card = document.createElement("img");
@@ -917,12 +929,12 @@ async function GetImageFor(thing) {
             if (t.prototypeToken?.texture?.src)
 
                 return {
-                    img: t.prototypeToken.texture.src,
+                    image: t.prototypeToken.texture.src,
                     scaleX: t.prototypeToken.texture.scaleX,
                     scaleY: t.prototypeToken.texture.scaleY
                 };
             return {
-                img: thing.img,
+                image: thing.image,
                 scaleX: 1,
                 scaleY: 1
             };
@@ -931,13 +943,13 @@ async function GetImageFor(thing) {
         case "theatreOfTheMind":
         case "3d":
             return {
-                img: thing.img,
+                image: thing.image,
                 scaleX: 1,
                 scaleY: 1
             };
 
     }
-    // {"file":"CompendiumFiles/_plus_1_allpurpose_tool_tce","page":"items","source":"TCE","droppable":"item","type":"equipment","name":"+1 All-Purpose Tool","img":"images/modules/plutonium/media/icon/crossed-swords.svg"}
+    // {"file":"CompendiumFiles/_plus_1_allpurpose_tool_tce","page":"items","source":"TCE","droppable":"item","type":"equipment","name":"+1 All-Purpose Tool","image":"images/modules/plutonium/media/icon/crossed-swords.svg"}
 
 
 }
@@ -1026,11 +1038,11 @@ async function CreateToken(thingDragged, event) {
     // todo handle non-instanced
     let newTile = { "x": mouse.x, "y": mouse.y, "z": 0, guiLayer: "token", sheet: thingDragged };
 
-    let img = await GetImageFor(thingDragged);
-    newTile.texture = img.img;
+    let image = await GetImageFor(thingDragged);
+    newTile.texture = image.image;
     newTile.scale = {
-        x: img.scaleX * kGridSize, // todo should be tile size
-        y: img.scaleY * kGridSize,
+        x: image.scaleX * kGridSize, // todo should be tile size
+        y: image.scaleY * kGridSize,
         z: 1
     };
     newTile.reference = thingDragged;
@@ -1059,15 +1071,15 @@ three_renderer.domElement.acceptDrag = function (thingDragged, event) {
         case "tile":
             let mouse = toGrid(three_mousePositionToWorldPosition(event));
             // todo handle non-instanced
-            const img = new Image();
-            img.src = thingDragged.img;
-            img.onload = function () {
-                console.log(`Width: ${img.width}, Height: ${img.height}`);
+            const image = new Image();
+            image.src = thingDragged.image;
+            image.onload = function () {
+                console.log(`Width: ${image.width}, Height: ${image.height}`);
                 let newTile = { "x": mouse.x, "y": mouse.y, "z": topTileZ() + 1, guiLayer: "tile", sheet: thingDragged };
-                newTile.texture = thingDragged.img.substring("/images".length + 1);
+                newTile.texture = thingDragged.image.substring("/images".length + 1);
                 newTile.scale = {
-                    x: img.width, // todo should be tile size
-                    y: img.height,
+                    x: image.width, // todo should be tile size
+                    y: image.height,
                     z: 1
                 };
                 console.log("Create tile New Tile ", newTile);
