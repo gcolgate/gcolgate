@@ -110,7 +110,7 @@ function cleanFileName(destString) {
 }
 
 function cleanPath(destString) {
-    // just path a name, not a path 
+    // just path a name, not a path
     destString = destString.replaceAll(" ", "_");
     destString = destString.replaceAll("%20%", "_");
     destString = destString.replaceAll("%2b%", "_plus_");
@@ -176,9 +176,9 @@ const optimizedStringSimularity = (a, b) => {
 // containers:: pack .. allows a number of small or bulky items
 // containers:: pockets:: allows a number of smnall items
 // hammerspace:: pockets with a large amount of items
-// 
-// counters 
-//      charges, ammo, : recharges at: long rest, short rest, shopping, activity, dawn, dusk, midnight, 
+//
+// counters
+//      charges, ammo, : recharges at: long rest, short rest, shopping, activity, dawn, dusk, midnight,
 // Careers or weapon types that apply
 // weapon stats
 // range: min, short, long
@@ -2433,10 +2433,10 @@ async function findSource(inputPath, recur = 0) {
 
     if (sourceImages.length == 0) {
 
-        let files = await readDir("C:/Users/gcolg/AppData/Local/FoundryVTT/Data");
+        let files = []; //await readDir("C:/Users/gcolg/AppData/Local/FoundryVTT/Data");
 
         sourceImages = files;
-        files = await readDir("C:/Program Files/FoundryVTT/Foundry Virtual Tabletop/resources/app/public");
+        files = []; //await readDir("C:/Program Files/FoundryVTT/Foundry Virtual Tabletop/resources/app/public");
         sourceImages = sourceImages.concat(files);
 
 
@@ -2717,7 +2717,7 @@ async function convertDnD5e() {
 
     await fsExtra.emptyDir(path.join(__dirname, 'public', 'Compendium'));
     await fsExtra.emptyDir(path.join(__dirname, 'public', 'CompendiumFiles'));
-    let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert')); // 
+    let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert')); //
     let counts = {};
 
 
@@ -2801,7 +2801,7 @@ async function convertDnD5e() {
 
 
                     tagsSource.hash = cleanFileName(tagsSource.hash);
-                    if (json.img) {
+                    if (json.img != undefined) {
                         // todo: avoid token images
                         json.img = await processImage(json.img, tagsSource);
                     }
@@ -2813,7 +2813,7 @@ async function convertDnD5e() {
 
 
                         let token = {};
-                        if (t.texture.src) {
+                        if (t.texture.src != undefined) {
                             t.texture.src = await processImage(t.texture.src);
                             // todo auto make tokens from main image
                         }
@@ -2863,7 +2863,8 @@ async function convertDnD5e() {
                             let item = json.items[i];
                             let subFile = tagsSource.hash + '_MITEM_' + (item.name);
                             subFile = cleanFileName(subFile);
-                            item.img = processImage(item.img);
+                            if(item.img != undefined)
+                             item.img = processImage(item.img);
 
                             let tags = {
                                 file: "CompendiumFiles/" + subFile,
@@ -2931,7 +2932,7 @@ async function convertDnD5e() {
 
 //     await fsExtra.emptyDir(path.join(__dirname, 'public', 'TrainingData'));
 //     await fsExtra.emptyDir(path.join(__dirname, 'public', 'TrainingData'));
-//     let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert3')); // 
+//     let dir = await fs.readdir(path.join(__dirname, 'public', 'toConvert3')); //
 //     let counts = {};
 //     console.log("Make training data " + dir.length);;
 
@@ -3155,7 +3156,4 @@ function convertPTBA() {
 // note, run convertDnD5e and do not translate feats
 //makeTrainingData();
 // convertDnD5e();
-// console.log("Converted D&D5e");
-convertPTBA();
-console.log("Converted convertPTBA");
-
+// console.log("Converted D&D5e");pe

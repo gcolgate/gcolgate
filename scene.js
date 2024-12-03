@@ -29,7 +29,7 @@ var socket;
 var scenes = {}
 
 function getSceneFilePath(scene) {
-    let a = path.join(__dirname, 'public', 'scenes', "tag_" + scene.directory + '.json');
+    let a = path.join(__dirname, 'public', 'Scenes', "tag_" + scene.directory + '.json');
     //console.log(a);
     return a;
 }

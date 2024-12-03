@@ -44,6 +44,7 @@ ensureSheetLoaded("hud");
 ensureSheetLoaded("itemSummary");
 ensureSheetLoaded("spell_chat");
 ensureSheetLoaded("spell_tooltip");
+ensureSheetLoaded("weapon_tooltip");
 
 function ClickCollapsible(evt, ownerid, id) {
 
@@ -338,7 +339,7 @@ async function ChangeName(button) {
     //     return; //  NPC has never been opened
     // }
 
-    let id = button.dataset.thingid; // the window id is window_fullthingname 
+    let id = button.dataset.thingid; // the window id is window_fullthingname
     let newName = button.value;
 
 
@@ -586,14 +587,14 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
                     }
                     state--;
                     if (state == 0) {
-                        try {
+                      //  try {
 
                             newText += eval(code);
 
 
-                        } catch (error) {
-                            throw new Error(error + "  fileSOFar: " + newText + "\ncodeBeingEvaluated " + error.stack + "\n" + code);
-                        }
+                     //   } catch (error) {
+                     //       throw new Error(error + "  fileSOFar: " + newText + "\ncodeBeingEvaluated " + error.stack + "\n" + code);
+                     //   }
                     }
                     else {
                         code += '}';
@@ -642,6 +643,7 @@ export function formatRemoveButton(ownerid, itemid) {
 }
 
 function LineOfCareer(owner, thing, notes) {
+    if(!thing) return "";
     if (notes == undefined && owner != undefined)
         return div(
             div(Editable(thing, "thing.name", "itemsetheadershort crit")) +
