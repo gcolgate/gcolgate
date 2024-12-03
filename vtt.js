@@ -1084,7 +1084,7 @@ http_io.listen(port, () => console.log(`VTT listening on port ${port}`))
 //      instances   .... these are instances in the current scene
 //                          may not be a list that is seen like unique ones,
 //                          but are created when templates dragged into the scene.
-//                          these are written with the scene (maybe just diffs? Advanced). 
+//                          these are written with the scene (maybe just diffs? Advanced).
 //
 //      Compendium   .... these are not instanced, but when added to a scene are instanced.
 //                       need 'edit' checkbox to prevent accidental editing.

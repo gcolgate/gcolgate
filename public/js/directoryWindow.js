@@ -340,13 +340,13 @@ export function refreshDirectoryWindow(id, whole) {
                 let li = document.createElement("li");
                 li.className = "speedline";
                 let text = document.createTextNode(array[i].name);
-                // need better images 
-                if (array[i].image) {
-                    let image = document.createElement('image');
-                    image.src = array[i].image;
-                    image.width = "64"
-                    image.height = "64"
-                    li.appendChild(image);
+                // need better images
+                if (array[i].img) {
+                    let img = document.createElement('img');
+                    img.src = array[i].img;
+                    img.width = "64"
+                    img.height = "64"
+                    li.appendChild(img);
 
                 }
 
@@ -387,7 +387,7 @@ export function refreshDirectoryWindow(id, whole) {
     let params = collectFilter(id);
     let searched = window.search_in_directory.search();
 
-    // 
+    //
 
     window.search_in_directory.set_array(whole); //search_input.array = array;
     array = filter(searched, params.filter);
@@ -429,13 +429,13 @@ export function refreshDirectoryWindow(id, whole) {
     for (let i = 0; i < array.length; i++) {
         let li = document.createElement("li");
         let text = document.createTextNode(array[i].name);
-        // need better images 
-        if (array[i].image) {
-            let image = document.createElement('img');
-            image.src = array[i].image;
-            image.width = "32"
-            image.height = "32"
-            li.appendChild(image);
+        // need better images
+        if (array[i].img) {
+            let img = document.createElement('img');
+            img.src = array[i].img;
+            img.width = "32"
+            img.height = "32"
+            li.appendChild(img);
 
         }
 
@@ -482,9 +482,9 @@ export async function updateDirectoryWindow(id, updatedFolder, makeFront) {
     let w = document.getElementById(windowName);
 
     if (!w && !makeFront) { return; }
-    w = createOrGetDirWindow(id, dirWindowCustomization[buttonName].dimensions[0],
-        dirWindowCustomization[buttonName].dimensions[1],
-        dirWindowCustomization[buttonName].dimensions[2], dirWindowCustomization[id]);
+    w = createOrGetDirWindow(id, dirWindowCustomization[id].dimensions[0],
+        dirWindowCustomization[id].dimensions[1],
+        dirWindowCustomization[id].dimensions[2], dirWindowCustomization[id]);
     if (makeFront) bringToFront(w);
     showDirectoryWindow(id, folders[id]);
 

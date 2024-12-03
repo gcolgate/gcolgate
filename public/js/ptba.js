@@ -223,7 +223,7 @@ export const moves = {
     // defenses should be on stat page
     // metacurrency to combat swingyness
     // Multiple attacks and initiative
-    // 
+    //
     "Wrestle (defense)": {
         "stat": [
             "bravery",
@@ -619,7 +619,7 @@ function getStrength(owner) {
         let item = owner.items[i];
         if (item.page == "careers") {
             let career = GetRegisteredThing(item.file);
-
+            if(!career) { console.error("Cannot find thing "+ item.file); continue; }
             if (career.name == "Strength") {
                 return Number(career.owner_level);
             }
@@ -993,8 +993,8 @@ function getSlotItem(owner_id, slot) {
 
 export function isEquipped(owner_id, thingId) {
     let thing = GetRegisteredThing(thingId);
-    console.log(thing);
-    console.log(thing.slot);
+    if(!thing) { console.error(thingId +" missing"); return false; }
+
     if (thing.slot == "Always") return true;
     let owner = GetRegisteredThing(owner_id);
     let answer = findInNamedArray(owner.appearance, owner.current_appearance);
