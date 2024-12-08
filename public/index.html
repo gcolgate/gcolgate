@@ -397,6 +397,10 @@
       width: 40px;
     }
 
+    .border {
+      border: groove #453301;
+    }
+
     .numberinput {
       background-color: rgb(255, 215, 170);
       color: #3d0dad;
@@ -1241,8 +1245,8 @@
   <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@v0.170.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@v0.170.0/examples/jsm/"
+        "three": "./js/three/build/three.module.min.js",
+        "three/addons/": "./js/three/examples/jsm/"
       }
     }
     
@@ -1283,7 +1287,7 @@
     <label for="EditMap"> Edit Map... </label>
     Left mouse selects, right mouse scales (edit on) and middle mouse drags, wheel zooms
     <div class="windowGroup" id="windowGroup"></div>
-    <div id="hud" class="hud">ForceDummy</div>
+    <div id="hud" class="hud"></div>
 
     <div id="popupMenu" class="popup-menu">
       <ul id="popupMenu_ul ">

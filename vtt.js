@@ -439,14 +439,36 @@ async function NewPlayer(socket, msg) {
         species: "Human", origin: "Majority City", wealth: 2,
         stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0 },
         counters: {
-            supplies: 2, hurt: 0, manaInAura: 0, exhaustion: 0,
-            "damageToTakeAmt": 0,
-            "damageToTakeType": "bludgeoning"
+            hurt: { cur: 0, long_rest: "subtract1", haven: "reset_to_zero", display: "special" },
+            manaInAura: { cur: 0, scene: "reset_to_zero", display: "special" },
+            exhaustion: { cur: 0, long_rest: "subtract1", haven: "reset_to_zero", display: "special" },
+
+        },
+        ui: {
+            damageToTakeAmt: 0,
+            damageToTakeType: "bludgeoning"
         },
         languages: { FarDuric: true, Dwarvish: false, Firespeech: false, PrittanianLow: false, ImperialCourt: false },
         items: [], tab: "stats",
-        featsChosen: {}
+        featsChosen: {},
+        conditions: {
+            "Unconcious": { "tooltip": "You are unconcious and cannot take actions until you awake", "affecting": false },
+            "Exausted": { "tooltip": "Disadvantage on all actions", "affecting": false },
+            "On_Fire": { "tooltip": "You take damage each round until it is out.", "affecting": false },
+            "Frightened": { "tooltip": "You have disadvantage dealing with the source of your fear.", "affecting": false },
+            "Prone": { "tooltip": "It takes either an action or your move to stand.", "affecting": false },
+            "Grappled": { "tooltip": "You cannot move except if you carry your foe.", "affecting": false },
+            "Hurt_leg": { "tooltip": "YOu are slowed", "affecting": false },
+            "Two_Hurt_legs": { "tooltip": "You can only crawl", "affecting": false },
+            "Light_Bleeding": { "tooltip": "Roll d6 at your turn, on a '6' you take damage", "affecting": false },
+            "Heavy_Bleeding": { "tooltip": "Roll d6 at your turn, on a '2-6' you take damage", "affecting": false },
+            "Hurt_Off_Arm": { "tooltip": "Cannot use shield or offhand weapon", "affecting": false },
+            "Hurt_Main_Arm": { "tooltip": "Disadvantage on attacks", "affecting": false },
+            "Partial_Blindness": { "tooltip": "-3 to steel, disadvantage on perception", "affecting": false },
+            "Blind": { "tooltip": "Disadvantage on all actions", "affecting": false },
+            "Dead": { "tooltip": "Dead", "affecting": false },
 
+        }
     };
 
     let newPartyMemberTag = {

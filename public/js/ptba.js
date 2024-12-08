@@ -4,6 +4,36 @@ import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseShe
 import { socket } from './main.js';
 
 
+
+
+function ToggleCondition(thingId, condition) {
+    let thing = GetRegisteredThing(thingId);
+
+    socket.emit('change', {
+        change: 'thing.conditions[ "' + condition + '"].affecting = ' + !thing.conditions[condition].affecting,
+        thing: thingId
+    });
+}
+MakeAvailableToHtml('ToggleCondition', ToggleCondition);
+
+function drawConditions(thing) {
+    let answer = "";
+
+    let c = Object.keys(thing.conditions);
+    for (let i = 0; i < c.length; i++) {
+        answer += "<li>" + c[i];
+        let e = thing.conditions[c[i]].affecting == true;
+
+        answer += '<input type=checkbox id="' + thing.id + '_ conditions' + c[i] + '"' + (e ? ' checked=true' : "") + '' +
+            ' onChange=\'htmlContext.ToggleCondition("' + thing.id + '","' + c[i] + '")\'  > ' + "</li>";
+
+        //'<input type ="checkbox"' + (thing.conditions[c[i]].affecting == true ? " checked " : "") + " > </input > "; // todo use label not text word prof
+    }
+    return answer;
+}
+MakeAvailableToHtml('drawConditions', drawConditions);
+
+
 export const moves = {
     "Confront": {
         "stat": [
@@ -112,11 +142,9 @@ export const moves = {
         <li> &#x25BA; Sorcerous Power The character’s flashy and  dark and unnatural arts is enough to terrify many foes</li>\
         <li> &#x25BA; Stain the Soil Red Following the death of several foes and the shedding of copious amounts of blood, the character lets out a savage, primordial cry</li>\
         <li> &#x25BA; Divine Power Against the superstitious and the extraplanar, the words of a priest can compel</li></ul>",
-        "Critical": "Foes are frightened, take +1 forward and  take another, different, action ",
-        "success": "Foes are frightened may flee (Wis Save or Circumstances): take +1 forward on your rolls against them for the scene (not stacking), take another, different, action",
-        "mixed": "Foes are frightened: choose 1:<ul>\
-        <li> &#x25BA; take another, different, action</li>\
-        <li> &#x25BA; take +1 forward on your rolls against them for the scene (not stacking) but end your turn </li></ul>",
+        "Critical": "Foes are frightened of you,  and  take another, different, action ",
+        "success": "Foes are frightened of you and may flee (Wis Save or Circumstances): take another, different, action",
+        "mixed": "Foes are frightened",
         "fail": "None or reverse effect"
     },
     "Attack": {
@@ -156,7 +184,6 @@ export const moves = {
                 <li> &#x25BA; Foe retaliates (free attack) </li>\
                 <li> &#x25BA; lose some gear, perhaps it falls off</li>\
                 <li> &#x25BA; 1d3 hexes in a bad direction</li>\
-                <li> &#x25BA; Take -1 on your next roll</li>\
                 </ul>\
                  </div>\
             </div>\
@@ -619,7 +646,7 @@ function getStrength(owner) {
         let item = owner.items[i];
         if (item.page == "careers") {
             let career = GetRegisteredThing(item.file);
-            if(!career) { console.error("Cannot find thing "+ item.file); continue; }
+            if (!career) { console.error("Cannot find thing " + item.file); continue; }
             if (career.name == "Strength") {
                 return Number(career.owner_level);
             }
@@ -759,12 +786,12 @@ MakeAvailableToHtml("takeDamage", takeDamage);
 
 function getTakenDamage(thingId) {
     let thing = GetRegisteredThing(thingId);
-    return thing.counters.damageToTakeAmt;
+    return thing.ui.damageToTakeAmt;
 }
 
 function getTakenDamageType(thingId) {
     let thing = GetRegisteredThing(thingId);
-    return thing.counters.damageToTakeType;
+    return thing.ui.damageToTakeType;
 }
 MakeAvailableToHtml("getTakenDamage", getTakenDamage);
 MakeAvailableToHtml("getTakenDamageType", getTakenDamageType);
@@ -969,8 +996,6 @@ function getSlotImage(thing, type, placeholder) {
     }
     let item = GetRegisteredThing(slots[type]);
     if (item) {
-
-
         return item.image;
     }
     return placeholder;
@@ -993,7 +1018,7 @@ function getSlotItem(owner_id, slot) {
 
 export function isEquipped(owner_id, thingId) {
     let thing = GetRegisteredThing(thingId);
-    if(!thing) { console.error(thingId +" missing"); return false; }
+    if (!thing) { console.error(thingId + " missing"); return false; }
 
     if (thing.slot == "Always") return true;
     let owner = GetRegisteredThing(owner_id);
@@ -1011,7 +1036,8 @@ export function isEquipped(owner_id, thingId) {
 
 function isAllExpended(thingId) {
     let thing = GetRegisteredThing(thingId);
-    if (!thing.counters) return false;
+
+    if (!thing?.counters) return false;
     for (let i = 0; i < thing.counters.length; i++) {
         if (thing.counters[i].cur > 0) return false;
     }
@@ -1020,13 +1046,12 @@ function isAllExpended(thingId) {
 
 function isExpended(thingId, weaponMode) {
     let thing = GetRegisteredThing(thingId);
-    if (!thing.counters) return false;
-
-    if (thing.counters[weaponMode].cur > 0) return false;
+    if (!thing?.counters) return false;
+    if (thing.counters.length < weaponMode)
+        if (thing.counters[weaponMode].cur > 0) return false;
 
     return true;
 }
-
 function Expend(thingId, weapon_mode) {
     // returns true if expended status has changed
     let thing = GetRegisteredThing(thingId);
@@ -2165,13 +2190,13 @@ function exhaust(thingId, amt) {
     });
     let thing = GetRegisteredThing(thingId);
 
-    switch (thing.counters.exhaustion + amt) { // add since emit not processed yet
+    switch (thing.counters.exhaustion.cur + amt) { // add since emit not processed yet
 
         default:
-            sendChat("Exhaustion now " + (Number(thing.counters.exhaustion) + Number(amt)));
+            sendChat("Exhaustion now " + (Number(thing.counters.exhaustion.cur) + Number(amt)));
             break;
         case 11:
-            sendChat("You are suffering from fatigue");
+            sendChat("You are exausted and have disadvantage on all actions");
             break;
         case 12:
             sendChat("You are fall unconcious");
@@ -2191,7 +2216,7 @@ MakeAvailableToHtml('addManaOncePerTurn', addManaOncePerTurn);
 
 function addManaExhaust(button, thingId) {
     let thing = GetRegisteredThing(thingId);
-    if (thing.counters.exhaustion <= 11) {
+    if (thing.counters.exhaustion.cur <= thing.counters.exhaustion.max - 1) {
         exhaust(thingId, 1);
 
         addMana(thingId, 1);

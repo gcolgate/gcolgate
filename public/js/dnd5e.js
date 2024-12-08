@@ -758,12 +758,17 @@ MakeAvailableToParser("drawDnDItems", drawDnDItems);
 
 function drawItems(thing, filter, notes) {
     let text = "";
+    if (!thing) { console.error("thing  missing "); return text; }
     if (!thing.items) thing.items = [];
     for (let i = 0; i < thing.items.length; i++) {
         let item = thing.items[i];
+        if (!item) { console.error("item missing "); continue; }
 
         if (ItemFiltered(item, filter)) { continue; }
-        let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes, { file: item.file }); // no w
+        let regItem = GetRegisteredThing(item.file);
+        if (!regItem) { console.error("Item file not in database " + item.file); continue; }
+
+        let a = parseSheet(regItem, item.page, undefined, thing, notes, { file: item.file }); // no w
         if (item.page != "careers" && item.page != "weapon" && item.page != "spell")
             a += formatRemoveButton(thing.id, item.file);;
         text += div(a);

@@ -103,6 +103,7 @@ const EnsureDestinationExists = async (fullFilePath) => {
 function cleanFileName(destString) {
     // just path a name, not a path
     destString = destString.replaceAll(" ", "_");
+    destString = destString.replaceAll(",", "_");
     destString = destString.replaceAll("%20%", "_");
     destString = destString.replaceAll("%2b%", "_plus_");
     destString = destString.replace(/[`~!@#$%^*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
@@ -1377,7 +1378,7 @@ var items = [
 
 
     {
-        name: "Arcane Ingredients, Common",
+        name: "Arcane Ingredients-Common",
         description: "As an action, a character expend this which will grant him mana to his aura",
         image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
@@ -1398,7 +1399,7 @@ var items = [
         counters: [{ max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
     },
     {
-        name: "Arcane Ingredients, Rare",
+        name: "Arcane Ingredients- Rare",
         description: "As an action, a character expend this which will grant him mana to his aura",
         image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
@@ -1419,7 +1420,7 @@ var items = [
         counters: [{ max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
     },
     {
-        name: "Arcane Ingredients, Legendary",
+        name: "Arcane Ingredients- Legendary",
         description: "As an action, a character expend this which will grant him mana to his aura",
         image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
@@ -2907,8 +2908,8 @@ async function convertDnD5e() {
                             let item = json.items[i];
                             let subFile = tagsSource.hash + '_MITEM_' + (item.name);
                             subFile = cleanFileName(subFile);
-                            if(item.img != undefined)
-                             item.img = processImage(item.img);
+                            if (item.img != undefined)
+                                item.img = processImage(item.img);
 
                             let tags = {
                                 file: "CompendiumFiles/" + subFile,
@@ -3199,5 +3200,6 @@ function convertPTBA() {
 }
 // note, run convertDnD5e and do not translate feats
 //makeTrainingData();
-// convertDnD5e();
-// console.log("Converted D&D5e");pe
+convertPTBA();
+//convertDnD5e();
+console.log("Converted");

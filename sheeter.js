@@ -166,43 +166,43 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
           });
           msg.updateAppearance = updateAppearance;
           io.emit('change', msg);
-          if (updateAppearance && thing.appearance && msg.updatePortrait) {
-            let fileName = path.basename(thingName);
-            let dir = path.dirname(thingName);
-            let tagDir = dir.slice(0, -5);
-            let folder = folders[tagDir];
+          // if (updateAppearance && thing.appearance && msg.updatePortrait) {
+          //   let fileName = path.basename(thingName);
+          //   let dir = path.dirname(thingName);
+          //   let tagDir = dir.slice(0, -5);
+          //   let folder = folders[tagDir];
 
-            console.log("Tag dir (" + tagDir + ")");
-            let tag_filePath = path.normalize(path.join(__dirname, 'public', tagDir, "tag_" + optionallyAddExt(fileName, ".json")));
-            console.log("tag_filePath " + tag_filePath);
+          //   console.log("Tag dir (" + tagDir + ")");
+          //   let tag_filePath = path.normalize(path.join(__dirname, 'public', tagDir, "tag_" + optionallyAddExt(fileName, ".json")));
+          //   console.log("tag_filePath " + tag_filePath);
 
 
-            result = await fs.readFile(tag_filePath);
-            let tag = jsonHandling.ParseJson(tag_filePath, result);
+          //   result = await fs.readFile(tag_filePath);
+          //   let tag = jsonHandling.ParseJson(tag_filePath, result);
 
-            for (let i = 0; i < folder.length; i++) {
+          //   for (let i = 0; i < folder.length; i++) {
 
-              let entry = jsonHandling.ParseJson("inline", folder[i]);
-              console.log(entry.file + " vs " + tag.file);
-              console.log("%o", folder[i]);
+          //     let entry = jsonHandling.ParseJson("inline", folder[i]);
+          //     console.log(entry.file + " vs " + tag.file);
+          //     console.log("%o", folder[i]);
 
-              if (entry.file == tag.file) {
-                entry.image = getPortrait(thing);
-                folder[i] = JSON.stringify(entry);
-                await fs.writeFile(tag_filePath, folder[i], (err) => {
-                  if (err)
-                    console.log(err);
-                  else {
-                    console.log("File written successfully\n");
-                    console.log("The written has the following contents:");
-                    //  console.log(fs.readFileSync("books.txt", "utf8"));
-                  }
-                });
-                io.emit('updateDir', { id: tagDir, folder: folders[tagDir], makeFront: false });
-                break;
-              }
-            }
-          });
+          //     if (entry.file == tag.file) {
+          //       entry.image = getPortrait(thing);
+          //       folder[i] = JSON.stringify(entry);
+          //       await fs.writeFile(tag_filePath, folder[i], (err) => {
+          //         if (err)
+          //           console.log(err);
+          //         else {
+          //           console.log("File written successfully\n");
+          //           console.log("The written has the following contents:");
+          //           //  console.log(fs.readFileSync("books.txt", "utf8"));
+          //         }
+          //       });
+          //       io.emit('updateDir', { id: tagDir, folder: folders[tagDir], makeFront: false });
+          //       break;
+          //     }
+          //   }
+          // };
           io.emit(
             'updateDir',
             { id: tagDir, folder: folders[tagDir], makeFront: false });
@@ -238,14 +238,14 @@ async function RemoveItemFromThing(io, msg) {
   let thingId = msg.thingId;
   let itemId = msg.itemId;
 
-  console.log(thingId);
-  console.log(itemId);
+  console.log("thingId" + thingId);
+  console.log("itemId" + itemId);
 
 
   let filePath = path.normalize(
     path.join(__dirname, 'public', optionallyAddExt(thingId, '.json')));
   console.log('filePath ', filePath);
-  ok = false;
+  let ok = false;
   let result = await fs.readFile(filePath);
   let thing = jsonHandling.ParseJson(
     filePath, result);  // for eval to work we need a thing

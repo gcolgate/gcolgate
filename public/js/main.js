@@ -110,6 +110,7 @@ socket.on('addItem', function (msg) {
 
 socket.on('updateDir', function (msg) {
     if (msg.folder) {
+        console.log(msg.folder);
         let f = processDirectory(msg.folder);
         updateDirectoryWindow(msg.id, f, msg.makeFront);
     } else {
