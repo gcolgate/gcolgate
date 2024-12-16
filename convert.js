@@ -3108,7 +3108,7 @@ function convertPTBA() {
             "source": "Gil",
             "type": "careers",
             "name": career.name,
-            "img": "images/modules/plutonium/media/icon/mighty-force.svg" /// need this
+            "img": "images/careers/"+career+".jpg" /// need this
         };
 
         career.owner_level = 0;
