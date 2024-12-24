@@ -2,8 +2,8 @@
 
 
     <div class="tab">
-        <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="goals" ) ) }
-            onclick="htmlContext.openTab(event, 'goals', this, '{ thing.id }')">Goals</div>
+        <!-- <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="goals" ) ) }
+            onclick="htmlContext.openTab(event, 'goals', this, '{ thing.id }')">Goals</div> -->
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="appearance" ) ) }
             onclick="htmlContext.openTab(event, 'appearance', this, '{ thing.id }')">Image</div>
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="stats" ) ) }
@@ -28,9 +28,9 @@
     -->
 
     <!-- Different tabs here -->
-    <div id="goals" { tabClass( !thing.tab || (thing.tab && thing.tab=="goals" ) ) }>
-        <div class=" twocolumnsuneven">
-            <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+    <!-- <div id="goals" { tabClass( !thing.tab || (thing.tab && thing.tab=="goals" ) ) }> -->
+        <!-- <div class=" twocolumnsuneven"> -->
+            <!-- <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
                 onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"></image>
             <div id="columntwo">
@@ -51,7 +51,7 @@
                         "paragraphText ", 4,8 ) }</span></p>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Different tabs here -->
 
     <div id="stats" { tabClass( thing.tab && thing?.tab=="stats" ) }>
@@ -223,7 +223,6 @@
     <p clas=" npcBold"c13"><span class="c2"></span></p><a id="t.65e1cb7adb445e5b6fb90a596e799c0ac98d7fbc"></a><a
         id="t.1"></a> -->
 
-</div>
 <!-- Different tabs here -->
 
 <div id="spells" { tabClass( thing.tab && thing.tab=="spells" )}>
@@ -273,7 +272,7 @@
         } </div>
 
 </div>
-<!-- Different tabs here onclick="showApperancePopUp(event,'{thing.id}')" 
+<!-- Different tabs here onclick="showApperancePopUp(event,'{thing.id}')"
 
  onclick="showApperancePopUp(event,'{thing.id}')"
 

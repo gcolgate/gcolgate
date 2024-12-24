@@ -628,6 +628,7 @@ function isArmorProficient(owner_id, thingId) {
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
         if (item.page == "careers") {
+            if(item?.weapons?.length)
             for (let k = 0; k < item.weapons.length; k++) {
                 for (let j = 0; j < thing.armor.career.length; j++) {
                     if (thing.armor.career[j] == item.armor[k]) {
@@ -752,6 +753,7 @@ function FindBestCareerNode(owner, node) {
             let career = GetRegisteredThing(item.file);
             let level = Number(career.owner_level);
             if (level > bonus) {
+            if(career?.weapons?.length)
                 for (let k = 0; k < career.weapons.length; k++)
                     for (let w2 = 0; w2 < node.career.length; w2++) {
                         if (career.weapons[k] == node.career[w2]) {

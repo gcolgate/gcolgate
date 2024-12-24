@@ -52,7 +52,7 @@ class InfiniteGrid extends THREE.Mesh {
             },
             transparent: true,
             vertexShader: `
-       
+
        varying vec3 worldPosition;
 
        uniform float uDistance;
@@ -62,7 +62,7 @@ class InfiniteGrid extends THREE.Mesh {
             pos.${planeAxes} += cameraPosition.${planeAxes};
             worldPosition = pos;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-       
+
        }
        `,
 
@@ -73,24 +73,24 @@ class InfiniteGrid extends THREE.Mesh {
        uniform float uSize2;
        uniform vec3 uColor;
        uniform float uDistance;
-        
+
        float getGrid(float size) {
             vec2 r = worldPosition.${planeAxes} / size;
             vec2 grid = abs(fract(r - 0.5) - 0.5) / fwidth(r);
             float line = min(grid.x, grid.y);
             return 1.0 - min(line, 1.0);
         }
-        
+
        void main() {
               float d = 1.0 - min(distance(cameraPosition.${planeAxes}, worldPosition.${planeAxes}) / uDistance, 1.0);
               float g1 = getGrid(uSize1);
               float g2 = getGrid(uSize2);
               gl_FragColor = vec4(uColor.rgb, mix(g2, g1, g1) * pow(d, 3.0));
               gl_FragColor.a = mix(0.5 * gl_FragColor.a, gl_FragColor.a, g2);
-            
+
               if ( gl_FragColor.a <= 0.0 ) discard;
        }
-       
+
        `,
 
             extensions: {
@@ -202,7 +202,7 @@ three_renderer.domElement.style.resize = "both";
 
 three_renderer.domElement.acceptsDropFile = true;
 
-three_camera.position.z = 5;
+three_camera.position.z = 1000;
 
 three_window_sizer_watcher(three_renderer, three_camera);
 
@@ -326,7 +326,7 @@ async function three_setTileImage(tile, plane) {
         console.log("Error Bad texture for %o", tile);
         return;
     }
-    // TODO: Fix calling this with two kinds of parameters and get rid of this line   
+    // TODO: Fix calling this with two kinds of parameters and get rid of this line
     let tname = (typeof tile.texture == "string" ? tile.texture : tile.texture.img);
 
     if (!tname.startsWith("images/"))
@@ -671,6 +671,7 @@ export function three_mouseMove(event) {
             let pointer = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1,
                 -(event.clientY / window.innerHeight) * 2 + 1);
             three_rayCaster.setFromCamera(pointer, three_camera);
+            // if ortho
 
             let intersect = three_intersect(event);
             //  console.log(intersect);
@@ -1086,4 +1087,3 @@ three_renderer.domElement.acceptDrag = function (thingDragged, event) {
     }
 
 }
-

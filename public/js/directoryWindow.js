@@ -188,11 +188,13 @@ function clickOnThing(event) {
 
     // hack to handle scenes, which don't have a seperate file. TODO: make more readable
     if (name === undefined) {
-        let thing = SetRegisteredThing("SCENE" + this.references, this.references);
-        name = thing.registeredId;
-    }
+        //let thing = SetRegisteredThing("SCENE" + this.references, this.references);
+       // name = thing.registeredId;
+        window.LoadScene(this.references.name);
+    } else {
 
     showThing(name, this.references.page);
+    }
 }
 
 

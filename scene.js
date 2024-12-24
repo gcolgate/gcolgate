@@ -134,7 +134,7 @@ function generateNewTileId(scene, tile) {
     // it will have the name of the first texture used
 
     tile.tile_id = cleanTileId(tile.texture + "_" + uuidv4());
-    tile.tile_json = path.join(__dirname, 'public', 'SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
+    tile.tile_json = path.join('SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
     console.log("Tile id ", tile.tile_id);
 }
 
@@ -142,10 +142,10 @@ function getTileFileJsonFileName(scene, tile) {
 
     if (!tile.tile_json) {
         tile.tile_id = cleanTileId(tile.texture + "_" + uuidv4());
-        tile.tile_json = path.join(__dirname, 'public', 'SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
+        tile.tile_json = path.join('SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
     }
 
-    return tile.tile_json;
+    return path.normalize(path.join(__dirname, 'public',tile.tile_json));
 }
 
 function addTile(scene, tile) {
