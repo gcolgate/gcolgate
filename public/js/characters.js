@@ -190,9 +190,9 @@ export async function ensureThingLoaded(thingName) {
         console.log(file);
         try {
             let response = await fetch(file);
-            console.log("Fetched " + file);
+          //  console.log("Fetched " + file);
             let thing = await response.json();
-            console.log("json " + file);
+           // console.log("json " + file);
             thing.id = (thingName);
 
             if (thing.template) {
@@ -610,7 +610,7 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
     return newText;
 }
 
-async function displayThing(fullthingname, sheetName) {
+  async function displayThing(fullthingname, sheetName) {
 
     /// TODO: needs to save and restore any scrolling or window resizing
     fullthingname = SanitizeSlashes(fullthingname);

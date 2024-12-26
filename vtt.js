@@ -15,8 +15,8 @@ const jsonHandling = require('./json_handling.js');
 const probeImage = require('probe-image-size');
 
 const host = 'localhost';
-const port = 8000;
-//const port = 30000;
+ //const port = 8000;
+const port = 30000;
 
 const app = express();
 const http_io = http.Server(app);
@@ -549,15 +549,17 @@ async function sendScene(name, socket) {
 
     let found = 0;/// todo fix bad form
     for (i = 0; i < sheeter.folders.Scenes.length; i++) {
-        //      console.log(sheeter.folders.Scenes[i], name);
-        if (sheeter.folders.Scenes[i].name == name) {
-            found = i;
-            break;
-        }
-    }
-    let unparsed = sheeter.folders.Scenes[found];
+        let unparsed = sheeter.folders.Scenes[i]; // TODO do this once rather than every time
 
-    sheeter.folders.ScenesParsed[name] = jsonHandling.ParseJson(name, unparsed);
+        let scene = jsonHandling.ParseJson(name, unparsed);
+        let nom = scene.name;
+        sheeter.folders.ScenesParsed[nom] = scene;
+
+        // if (sheeter.folders.ScenesParsed[i].name == name) {
+        //     found = i;
+        //     break;
+        // }
+    }
 
     let scene = sheeter.folders.ScenesParsed[name];
 

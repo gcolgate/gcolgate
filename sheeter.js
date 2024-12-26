@@ -108,7 +108,7 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
       let result = await fs.readFile(filePath);
       template = jsonHandling.ParseJson(filePath, result);
     }
-    console.log('rep' + replacement);
+    console.log('rep ' + replacement);
     if (replacement.indexOf(']') >= 0) {
       console.log('Do something');
     }

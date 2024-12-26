@@ -4,10 +4,10 @@ import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, t
 import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow } from './directoryWindow.js';
 import { createOrGetLoginWindow, windowsInit } from './window.js';
 import { showChatWindow, setLogin, addChat } from './chat.js';
-import { UpdateNPC, RemoveFromNPC, AddItemToNPC } from "./characters.js";
+import { UpdateNPC, RemoveFromNPC, AddItemToNPC , showThing} from "./characters.js";
 import { fetchJson } from './fetchJson.js';
 import { thingDragged } from './drag.js';
-///////// 
+/////////
 
 windowsInit();
 let players = { hero: "" };
@@ -201,6 +201,16 @@ editMap.onclick = function () {
         three_setEditMode(editMap.checked);
     };
 }
+
+const settings = document.getElementById("Settings");
+settings.onclick = function() {
+    if (!players.hero) {
+        alert("Please log in");
+    } else {
+        showThing("Scenes/tag_"+current_scene.name+".json", "scene");
+
+    };
+}
 // main code falls through to here
 
 init();
@@ -356,4 +366,3 @@ three_renderer.domElement.ondrop = function (e) {
 
 
 three_animate();
-
