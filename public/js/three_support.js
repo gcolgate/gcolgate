@@ -100,7 +100,7 @@ class InfiniteGrid extends THREE.Mesh {
 
 var sqrt3 = Math.sqrt(3);
 
-const kHexGridSize = kGridSize/2;
+const kHexGridSize = kGridSize;
 
 function cube_to_axial(cube) {
     var q = cube.q
@@ -281,7 +281,7 @@ class InfiniteHexGrid extends THREE.Mesh {
             }
 
             vec2 convert_flat_hex_to_pixel(vec2 hex) {
-            float kHexGridSize = uSize1/2.;
+            float kHexGridSize = uSize1;
 
             float x = kHexGridSize * (3. / 2. * hex.x);
             float y = kHexGridSize * (sqrt3 / 2. * hex.x + sqrt3 * hex.y);
@@ -289,7 +289,7 @@ class InfiniteHexGrid extends THREE.Mesh {
             }
 
             vec2 convert_pixel_to_flat_hex(vec2 point) {
-            float kHexGridSize = uSize1/2.;
+            float kHexGridSize = uSize1;
             float q = (2. / 3. * point.x) / kHexGridSize;
             float r = (-1. / 3. * point.x + sqrt3 / 3. * point.y) / kHexGridSize;
             return axial_round(vec2(q,r));
@@ -303,7 +303,7 @@ class InfiniteHexGrid extends THREE.Mesh {
             pos -= center;
             vec3 color = uColor*2.;
 
-             float kHexGridSize = uSize1/2.;
+             float kHexGridSize = uSize1;
 
              if(length(pos) > kHexGridSize) {
                 color = vec3(1,0,0);

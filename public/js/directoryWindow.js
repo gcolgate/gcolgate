@@ -6,7 +6,7 @@ import { parseSheet, MakeAvailableToHtml, GetRegisteredThing, MakeAvailableToPar
 import { socket } from './main.js';
 
 
-var folders = {
+export var folders = {
     Compendium: {},
     Party: {},
     Favorites: {},
@@ -19,7 +19,7 @@ var dirWindowCustomization = {
     Party: { newButton: "newPlayer", dimensions: [.2, .6, .2, .2] },
     Favorites: { dimensions: [.2, .6, .2, .2] },
     Uniques: { dimensions: [.2, .6, .2, .2] },
-    Scenes: { dimensions: [.2, .6, .2, .2] },
+    Scenes: {  newButton: "newScene", dimensions: [.2, .6, .2, .2] },
     images: { newButton: "up", dimensions: [.6, .6, .2, .2], divHolder: "twocolumns" },
 };
 export function GetMainDirectories() {
@@ -73,7 +73,7 @@ export function processDirectory(jsonData) {
     return jsonData;
 }
 
-async function GetDirectory(directory, processDir) {
+export async function GetDirectory(directory, processDir) {
 
     try {
         let response = await fetch("./" + directory);

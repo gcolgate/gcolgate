@@ -1,7 +1,7 @@
 
 
 import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
-import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow } from './directoryWindow.js';
+import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow ,folders,GetDirectory} from './directoryWindow.js';
 import { createOrGetLoginWindow, windowsInit } from './window.js';
 import { showChatWindow, setLogin, addChat } from './chat.js';
 import { UpdateNPC, RemoveFromNPC, AddItemToNPC , showThing} from "./characters.js";
@@ -144,6 +144,9 @@ socket.on('login_success', function (msg) {
 
 });
 
+socket.on('refresh_scenes', function () {
+    GetDirectory('Scenes', true).then((c) => { folders.Scenes = c; });
+});
 
 ////// login handling
 const Login = document.getElementById("Login");

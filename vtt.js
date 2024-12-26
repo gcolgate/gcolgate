@@ -15,7 +15,7 @@ const jsonHandling = require('./json_handling.js');
 const probeImage = require('probe-image-size');
 
 const host = 'localhost';
- //const port = 8000;
+//const port = 8000;
 const port = 30000;
 
 const app = express();
@@ -211,6 +211,15 @@ async function InitialDiskLoad() {
     sheeter.folders.Uniques = results[3];
     sheeter.folders.Scenes = results[4];
     sheeter.folders.uploadedImages = results[7];
+
+
+    for (i = 0; i < sheeter.folders.Scenes.length; i++) {
+        let unparsed = sheeter.folders.Scenes[i];
+        let scene = jsonHandling.ParseJson(i, unparsed);
+        let nom = scene.name;
+        sheeter.folders.ScenesParsed[nom] = scene;
+
+    }
 
 
     //  await delay(5000);
@@ -487,6 +496,83 @@ async function NewPlayer(socket, msg) {
 }
 
 
+
+async function NewScene(socket, msg) {
+
+    let dir = "Scenes";
+
+    let baseName = path.join(__dirname, "public", dir, "tag_" + msg.name + ".json");
+
+    let sceneDir = path.join(__dirname, "public", "SceneFiles", msg.name);
+    //   let indexFolderDir = dir.substring(0, dir.length - 5);
+    if (doesPathExist(baseName)) {
+
+        socket.emit('error', { message: "scene " + baseName + " already exists" });
+        return;
+    }
+
+    console.log("New baseName " + baseName);
+    let newSceneTag =
+    {
+        name: msg.name,
+        page: "scene",
+        image: "modules/plutonium/media/icon/mighty-force.svg",
+        topDown: true,
+        directory: msg.name,
+        gridScaleInPixels: 100,
+        gridScaleInUnits: "5ft",
+        typeOfGrid: "hex",
+        cameraStartX: 0,
+        cameraStartY: 0,
+        nextZ: 0.00001,
+        next_tile_id: 0,
+        count: 0
+    }
+
+        ;
+
+
+
+    // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + name + '.json');
+
+
+
+    console.log(" to " + baseName);
+    console.log(" to " + sceneDir);
+    // warning overwrites msg.from.file, poor form
+
+    // this is not good, let's try to change to leveldb soon
+
+
+    await Promise.all([
+
+        fs.writeFile(baseName, JSON.stringify(newSceneTag)),
+        fs.mkdir(sceneDir, { recursive: true }),
+
+    ]);
+
+    let result = await fs.readdir(path.join(__dirname, 'public', 'Scenes'));
+
+     sheeter.folders.Scenes = await jsonHandling.fillDirectoryTable("Scenes", result);
+    for (i = 0; i < sheeter.folders.Scenes.length; i++) {
+        let unparsed = sheeter.folders.Scenes[i];
+        let scene = jsonHandling.ParseJson(i, unparsed);
+        let nom = scene.name;
+        sheeter.folders.ScenesParsed[nom] = scene;
+    }
+
+
+    //   sheeter.folders.ScenesParsed.push(newSceneTag);
+    socket.emit('refresh_scenes');
+    socket.emit('updateDir', { id: dir});
+
+
+
+
+
+}
+
+
 async function ChangeName(dir, thingName, newName, io, msg, updateAppearance) {
 
     /// this could be done better with more callbacks instead of async
@@ -539,27 +625,14 @@ async function ChangeName(dir, thingName, newName, io, msg, updateAppearance) {
             //  console.log(fs.readFileSync("books.txt", "utf8"));
         }
     });
-
-
-    io.emit('updateDir', { id: tagDir, folder: sheeter.folders[tagDir] });
+    io.emit('refresh_scenes');
 
 }
 
 async function sendScene(name, socket) {
 
     let found = 0;/// todo fix bad form
-    for (i = 0; i < sheeter.folders.Scenes.length; i++) {
-        let unparsed = sheeter.folders.Scenes[i]; // TODO do this once rather than every time
 
-        let scene = jsonHandling.ParseJson(name, unparsed);
-        let nom = scene.name;
-        sheeter.folders.ScenesParsed[nom] = scene;
-
-        // if (sheeter.folders.ScenesParsed[i].name == name) {
-        //     found = i;
-        //     break;
-        // }
-    }
 
     let scene = sheeter.folders.ScenesParsed[name];
 
@@ -594,6 +667,9 @@ io.on('connection', (socket) => {
 
     socket.on('newPlayer', (msg) => {
         NewPlayer(socket, msg);
+    });
+    socket.on('newScene', (msg) => {
+        NewScene(socket, msg);
     });
 
     socket.on('disconnect', () => {
