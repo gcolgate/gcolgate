@@ -1,18 +1,19 @@
 
 import * as THREE from 'three';
-import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
-// import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import {OutlinePass} from 'three/addons/postprocessing/OutlinePass.js';
-import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
-import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 
-import {ensureThingLoaded, GetRegisteredThing, MakeAvailableToHtml, parseSheet, showThing} from './characters.js';
+import { ensureThingLoaded, GetRegisteredThing, MakeAvailableToHtml, parseSheet, showThing } from './characters.js';
 // import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 
-import {dragDrop, setThingDragged} from './drag.js';
+import { dragDrop, setThingDragged } from './drag.js';
 /////// TODO put in seperate file
-import {socket} from './main.js';
-import {getAppearanceImage} from './ptba.js';
+import { socket } from './main.js';
+import { getAppearanceImage } from './ptba.js';
+import { waterShader,waterTexture } from './water_texture.js';
 
 var grid;
 var hexgrid;
@@ -37,11 +38,11 @@ class InfiniteGrid extends THREE.Mesh {
       side: THREE.DoubleSide,
 
       uniforms: {
-        uSize1: {value: size1},
-        uSize2: {value: size2},
-        uColor: {value: color},
-        uOpacity: {value: opacity},
-        uDistance: {value: distance}
+        uSize1: { value: size1 },
+        uSize2: { value: size2 },
+        uColor: { value: color },
+        uOpacity: { value: opacity },
+        uDistance: { value: distance }
       },
       transparent: true,
       vertexShader: `
@@ -76,8 +77,7 @@ class InfiniteGrid extends THREE.Mesh {
         }
 
        void main() {
-              float d = 1.0 - min(distance(cameraPosition.${
-          planeAxes}, worldPosition.${planeAxes}) / uDistance, 1.0);
+              float d = 1.0 - min(distance(cameraPosition.${planeAxes}, worldPosition.${planeAxes}) / uDistance, 1.0);
               float g1 = getGrid(uSize1);
               float g2 = getGrid(uSize2);
               gl_FragColor = vec4(uColor.rgb, mix(g2, g1, g1) * pow(d, 3.0)*uOpacity);
@@ -88,7 +88,7 @@ class InfiniteGrid extends THREE.Mesh {
 
        `,
 
-      extensions: {derivatives: true}
+      extensions: { derivatives: true }
 
     });
 
@@ -103,36 +103,36 @@ var sqrt3 = Math.sqrt(3);
 const kHexGridSize = kGridSize;
 
 function cube_to_axial(cube) {
-    var q = cube.q
-    var r = cube.r
-    return { q: q, r: r};
+  var q = cube.q
+  var r = cube.r
+  return { q: q, r: r };
 }
 
-function axial_to_cube(hex){
-    var q = hex.q
-    var r = hex.r
-    var s = -q-r
-    return { q: q, r:r, s:s};
+function axial_to_cube(hex) {
+  var q = hex.q
+  var r = hex.r
+  var s = -q - r
+  return { q: q, r: r, s: s };
 }
 
 function cube_round(frac) {
-    let q = Math.round(frac.q);
-    let r = Math.round(frac.r);
-    let s = Math.round(frac.s);
+  let q = Math.round(frac.q);
+  let r = Math.round(frac.r);
+  let s = Math.round(frac.s);
 
-    let q_diff = Math.abs(q - frac.q);
-    let r_diff = Math.abs(r - frac.r);
-    let s_diff = Math.abs(s - frac.s);
+  let q_diff = Math.abs(q - frac.q);
+  let r_diff = Math.abs(r - frac.r);
+  let s_diff = Math.abs(s - frac.s);
 
 
-    if(q_diff > r_diff && q_diff > s_diff)
-        q = -r-s;
-    else if (r_diff > s_diff)
-        r = -q-s;
-    else
-        s = -q-r;
+  if (q_diff > r_diff && q_diff > s_diff)
+    q = -r - s;
+  else if (r_diff > s_diff)
+    r = -q - s;
+  else
+    s = -q - r;
 
-    return { q: q, r: r, s: s };
+  return { q: q, r: r, s: s };
 }
 
 // function axial_round(x, y) {
@@ -145,19 +145,19 @@ function cube_round(frac) {
 // }
 
 function axial_round(hex) {
-    return cube_to_axial(cube_round(axial_to_cube(hex)))
+  return cube_to_axial(cube_round(axial_to_cube(hex)))
 }
 
 function convert_flat_hex_to_pixel(hex) {
   let x = kHexGridSize * (3. / 2 * hex.q);
   let y = kHexGridSize * (sqrt3 / 2 * hex.q + sqrt3 * hex.r);
-  return {x: x, y: y};
+  return { x: x, y: y };
 }
 
 function convert_pixel_to_flat_hex(point) {
   var q = (2. / 3 * point.x) / kHexGridSize;
   var r = (-1. / 3 * point.x + sqrt3 / 3 * point.y) / kHexGridSize;
-  return axial_round({q, r});
+  return axial_round({ q, r });
 }
 class InfiniteHexGrid extends THREE.Mesh {
   constructor(size1, size2, color, opacity, distance, axes = 'xyz') {
@@ -177,11 +177,11 @@ class InfiniteHexGrid extends THREE.Mesh {
       side: THREE.DoubleSide,
 
       uniforms: {
-        uSize1: {value: size1},
-        uSize2: {value: size2},
-        uColor: {value: color},
-        uOpacity: {value: opacity},
-        uDistance: {value: distance},
+        uSize1: { value: size1 },
+        uSize2: { value: size2 },
+        uColor: { value: color },
+        uOpacity: { value: opacity },
+        uDistance: { value: distance },
 
       },
 
@@ -320,7 +320,7 @@ class InfiniteHexGrid extends THREE.Mesh {
 
        `,
 
-      extensions: {derivatives: true}
+      extensions: { derivatives: true }
     });
 
     super(geometry, material);
@@ -366,16 +366,16 @@ function three_window_sizer_watcher(renderer, camera, dimension) {
   // return .stop() the function to stop watching window resize
   return {
     trigger:
-        function() {
-          three_setDimension()
-        },
-        /**
-         * Stop watching window resize
-         */
+      function () {
+        three_setDimension()
+      },
+    /**
+     * Stop watching window resize
+     */
 
-        destroy: function() {
-          window.removeEventListener('resize', three_setDimension)
-        }
+    destroy: function () {
+      window.removeEventListener('resize', three_setDimension)
+    }
   }
 }
 
@@ -385,18 +385,19 @@ const tileLayer = new THREE.Scene();
 const guiLayer = new THREE.Scene();
 const tokenLayer = new THREE.Scene();
 const gridLayer = new THREE.Scene();
+//const waterTexture = new WaterTexture({ debug: true });
 
 const kTileLayerIndex = 1;
 const kTokenLLayerIndex = 3;
 const three_scenes =
-    [backgroundLayer, tileLayer, gridLayer, tokenLayer, guiLayer];
+  [backgroundLayer, tileLayer, gridLayer, tokenLayer, guiLayer];
 
 var rendererSize = three_renderer_dimensions();
 
 class cleanRenderPass extends RenderPass {
   constructor(
-      scene, camera, overrideMaterial = null, clearColor = null,
-      clearAlpha = null) {
+    scene, camera, overrideMaterial = null, clearColor = null,
+    clearAlpha = null) {
     super(scene, camera, overrideMaterial, clearColor, clearAlpha);
     this.clear = false;
     this.clearDepth = true;
@@ -405,16 +406,16 @@ class cleanRenderPass extends RenderPass {
 
 class firstRenderPass extends RenderPass {
   constructor(
-      scene, camera, overrideMaterial = null, clearColor = null,
-      clearAlpha = null) {
+    scene, camera, overrideMaterial = null, clearColor = null,
+    clearAlpha = null) {
     super(scene, camera, overrideMaterial, clearColor, clearAlpha);
     this.clear = true;
     this.clearDepth = true;
   }
 }
 export const three_camera = new THREE.OrthographicCamera(
-    rendererSize.width / -2, rendererSize.width / 2, rendererSize.height / 2,
-    rendererSize.height / -2, -10, 1000);
+  rendererSize.width / -2, rendererSize.width / 2, rendererSize.height / 2,
+  rendererSize.height / -2, -10, 1000);
 
 export const three_renderer = new THREE.WebGLRenderer();
 three_renderer.setSize(rendererSize.width, rendererSize.height, true);
@@ -442,16 +443,16 @@ export var current_scene = {
   three_composer.addPass(new firstRenderPass(backgroundLayer, three_camera));
   three_composer.addPass(new cleanRenderPass(tileLayer, three_camera));
   var three_outlinePass_tile = new OutlinePass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight), tileLayer,
-      three_camera);
+    new THREE.Vector2(window.innerWidth, window.innerHeight), tileLayer,
+    three_camera);
   three_composer.addPass(three_outlinePass_tile);
 
 
   three_composer.addPass(new cleanRenderPass(gridLayer, three_camera));
   three_composer.addPass(new cleanRenderPass(tokenLayer, three_camera));
   var three_outlinePass_token = new OutlinePass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight), tokenLayer,
-      three_camera);
+    new THREE.Vector2(window.innerWidth, window.innerHeight), tokenLayer,
+    three_camera);
   three_composer.addPass(three_outlinePass_token);
   three_composer.addPass(new cleanRenderPass(guiLayer, three_camera));
 
@@ -469,6 +470,10 @@ export var current_scene = {
   three_outlinePass_token.hiddenEdgeColor.set('#190a05');
 
   // const textureLoader = new THREE.TextureLoader();
+  const waterPass = new ShaderPass(waterShader);
+  three_composer.addPass(waterPass);
+
+
 
   three_composer.addPass(new OutputPass());
 
@@ -480,7 +485,7 @@ export var current_scene = {
 export var three_mouseShapes = {}
 
 const mouse_geometry = new THREE.BoxGeometry(10, 10, 10);
-const mouse_material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+const mouse_material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 const plane_geometry = new THREE.PlaneGeometry(1, 1);
 
@@ -489,12 +494,12 @@ var materials = {};
 var layers = {
   tile: {
     selectables:
-        [],  // for some reason I have both an array and map of this, maybe
-             // because I need array for THREE calls? TODO: investigate
+      [],  // for some reason I have both an array and map of this, maybe
+    // because I need array for THREE calls? TODO: investigate
     selectablesMap: {},
     protoSheetMap:
-        {},  // if the object has a sheet with  with a file name, this will be
-             // the file name, like PlayerOne. TODO: better name
+      {},  // if the object has a sheet with  with a file name, this will be
+    // the file name, like PlayerOne. TODO: better name
     layer: tileLayer,
   },
   token: {
@@ -544,7 +549,7 @@ export function three_findMouseShapes(who) {
 }
 
 let baseMaterial =
-    new THREE.MeshBasicMaterial({color: 0x0, transparent: false});
+  new THREE.MeshBasicMaterial({ color: 0x0, transparent: false });
 
 async function three_setTileImage(tile, plane) {
   if (tile.texture == undefined) {
@@ -554,17 +559,17 @@ async function three_setTileImage(tile, plane) {
   // TODO: Fix calling this with two kinds of parameters and get rid of this
   // line
   let tname =
-      (typeof tile.texture == 'string' ? tile.texture : tile.texture.img);
+    (typeof tile.texture == 'string' ? tile.texture : tile.texture.img);
 
   if (!tname.startsWith('images/'))
     tname = './images/' + tile.texture;  // todo fix this so we are not adding
-                                         // paths in random places
+  // paths in random places
 
   if (tile.sheet?.file) {
     await ensureThingLoaded(tile.sheet.file);
     // need to add style here
     let token =
-        getAppearanceImage(GetRegisteredThing(tile.sheet.file), 'token');
+      getAppearanceImage(GetRegisteredThing(tile.sheet.file), 'token');
     if (token) {
       tname = token;
     }
@@ -585,10 +590,39 @@ async function three_setTileImage(tile, plane) {
     let textureScaleY = tile.scale.y;
     texture.colorSpace = THREE.SRGBColorSpace;
     plane.baseScale =
-        new THREE.Vector2(texture.image.width, texture.image.height);
+      new THREE.Vector2(texture.image.width, texture.image.height);
     plane.material = material;
     plane.scale.set(textureScaleX, textureScaleY, 1);
   });
+}
+
+function debugWaterTexture() {
+  const plane = new THREE.Mesh(plane_geometry, baseMaterial);
+
+
+  plane.position.x = 0;
+  plane.position.y = 0;
+  plane.position.z = 10;
+  plane.reference = null;
+
+
+  let layer = three_getLayer("token");
+  layer.layer.add(plane);
+
+  let material = new THREE.MeshBasicMaterial({
+    map: waterTexture.texture,
+    color: 0xffffff,
+    transparent: false,
+
+  });
+  let textureScaleX = 256;
+  let textureScaleY = 256;
+  waterTexture.colorSpace = THREE.SRGBColorSpace;
+  plane.baseScale =
+    new THREE.Vector2(64,64);
+  plane.material = material;
+  plane.scale.set(textureScaleX, textureScaleY, 1);
+
 }
 
 export function three_addTile(tile) {
@@ -633,7 +667,7 @@ function clearThree(obj) {
     Object.keys(obj.material).forEach(prop => {
       if (!obj.material[prop]) return;
       if (obj.material[prop] !== null &&
-          typeof obj.material[prop].dispose === 'function')
+        typeof obj.material[prop].dispose === 'function')
         obj.material[prop].dispose();
     })
     obj.material.dispose();
@@ -658,7 +692,7 @@ export function three_replaceScene(sceneName, sceneType, c) {
 
 
 
-  hexgrid = new InfiniteHexGrid(kGridSize,  kGridSize);
+  hexgrid = new InfiniteHexGrid(kGridSize, kGridSize);
   gridLayer.add(hexgrid);
   grid = new InfiniteGrid(kGridSize, kGridSize);
   gridLayer.add(grid);
@@ -679,6 +713,8 @@ export function three_replaceScene(sceneName, sceneType, c) {
       console.log('Could not load ', keys[i], c[keys[i]]);
     }
   }
+
+  debugWaterTexture() ;
 }
 
 export async function three_updateTile(tile) {
@@ -705,7 +741,7 @@ export async function three_updateTile(tile) {
 export function three_animate() {
   requestAnimationFrame(three_animate);
 
-
+  //waterTexture.update();
 
   for (const [key, cube] of Object.entries(three_mouseShapes)) {
     cube.rotation.x += 0.01;
@@ -722,7 +758,7 @@ let three_lastRawMouse = null;
 
 // change these when window size changes, for mouse calculations
 let multiplier =
-    new THREE.Vector2(2 / window.innerWidth, 2 / window.innerHeight);
+  new THREE.Vector2(2 / window.innerWidth, 2 / window.innerHeight);
 let adder = new THREE.Vector2(-1, 1);
 
 
@@ -749,7 +785,7 @@ var scrollButton = middleMouseButton;
 
 function three_xyinMouseToWorld(x, y) {
   let vec = new THREE.Vector3(
-      (x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
+    (x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
 
   vec.unproject(three_camera);
   if (!three_camera.isOrthographicCamera) {
@@ -812,7 +848,7 @@ function ChangeTileZ(id, changeAmt) {
   let tile = findTokenTile(id);
   if (tile) {
     tile.z += changeAmt;
-    socket.emit('updateTile', {tile: tile, scene: current_scene.name});
+    socket.emit('updateTile', { tile: tile, scene: current_scene.name });
     hud.innerHTML = parseSheet(tile.reference, 'hud', tile)
   }
 }
@@ -821,7 +857,26 @@ MakeAvailableToHtml('ChangeTileZ', ChangeTileZ);
 
 var hud = document.getElementById('hud');
 var card = null;
+
+
 export function three_mouseMove(event) {
+
+
+  if (pinger.mouseDownTimer) {
+    if (Math.abs(event.clientX - pinger.initialMousePosition.x) > 5
+      || Math.abs(event.clientY - pinger.initialMousePosition.y) > 5) {
+      pinger.isMouseStill = false;
+      clearTimeout(pinger.mouseDownTimer); // Clear the timeout if mouse moves
+      pinger.mouseDownTimer = null;
+    }
+  }
+
+  let m = {
+    x: event.clientX / window.innerWidth,
+    y: 1 - event.clientY / window.innerHeight
+  };
+  waterTexture.addTouch(m);
+
   //  event.preventDefault();
   three_outlinePass_token.selectedObjects = [];
 
@@ -849,12 +904,12 @@ export function three_mouseMove(event) {
           selection[i].tile.x += (newMouse.x - three_lastMouse.x);
           selection[i].tile.y += (newMouse.y - three_lastMouse.y);
           socket.emit(
-              'updateTile',
-              {tile: selection[i].tile, scene: current_scene.name});
+            'updateTile',
+            { tile: selection[i].tile, scene: current_scene.name });
           let highlightcolor =
-              ((Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255) | 128;
+            ((Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255) | 128;
           selection[i].material.color.set(
-              (highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
+            (highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
 
           if (selection[i].tile.guiLayer == 'token')
             three_outlinePass_token.selectedObjects.push(selection[i]);
@@ -869,17 +924,17 @@ export function three_mouseMove(event) {
           plane.tile.y += (newMouse.y - three_lastMouse.y) / 2;
 
           scale.x =
-              scalingX ? (newMouse.x - three_lastMouse.x) + scale.x : scale.x;
+            scalingX ? (newMouse.x - three_lastMouse.x) + scale.x : scale.x;
           scale.y =
-              scalingY ? (newMouse.y - three_lastMouse.y) + scale.y : scale.y;
+            scalingY ? (newMouse.y - three_lastMouse.y) + scale.y : scale.y;
           let highlightcolor =
-              ((Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255) | 128;
+            ((Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255) | 128;
           selection[i].material.color.set(
-              (highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
+            (highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
 
           fixTile(plane.tile);
           socket.emit(
-              'updateTile', {tile: plane.tile, scene: current_scene.name});
+            'updateTile', { tile: plane.tile, scene: current_scene.name });
         }
         break;
     }
@@ -892,16 +947,16 @@ export function three_mouseMove(event) {
     let zoomMulipleX = three_camera.right / (dim.width / 2);
     //     let zoomMulipleY = three_camera.top / (dim.width/2);
     three_camera.position.x -=
-        (event.clientX - three_lastRawMouse.x) * zoomMulipleX;
+      (event.clientX - three_lastRawMouse.x) * zoomMulipleX;
     three_camera.position.y +=
-        (event.clientY - three_lastRawMouse.y) * zoomMulipleX;
+      (event.clientY - three_lastRawMouse.y) * zoomMulipleX;
 
     //    console.log(event.timeStamp, "x " + (newMouse.x - three_lastMouse.x) +
     //    " y " + (newMouse.y - three_lastMouse.y));
   } else if (!mouseButtonsDown[mainButton]) {
     let pointer = new THREE.Vector2(
-        (event.clientX / window.innerWidth) * 2 - 1,
-        -(event.clientY / window.innerHeight) * 2 + 1);
+      (event.clientX / window.innerWidth) * 2 - 1,
+      -(event.clientY / window.innerHeight) * 2 + 1);
     three_rayCaster.setFromCamera(pointer, three_camera);
     // if ortho
 
@@ -949,7 +1004,7 @@ export function three_mouseMove(event) {
       card.style.display = 'none';
   }
 
-  three_lastRawMouse = {x: event.clientX, y: event.clientY};
+  three_lastRawMouse = { x: event.clientX, y: event.clientY };
   three_lastMouse = newMouse;
 }
 three_renderer.domElement.onwheel = (event) => {
@@ -962,11 +1017,17 @@ three_renderer.domElement.onwheel = (event) => {
   three_camera.updateProjectionMatrix()
 };
 
+three_renderer.domElement.onmouseup = (ev) => {
+  if (pinger.mouseDownTimer) {
+    clearTimeout(pinger.mouseDownTimer);
+    pinger.mouseDownTimer = null;
+  }
+};
 
 function three_intersect(ev) {
   let pointer = new THREE.Vector2(
-      (ev.clientX / window.innerWidth) * 2 - 1,
-      -(ev.clientY / window.innerHeight) * 2 + 1);
+    (ev.clientX / window.innerWidth) * 2 - 1,
+    -(ev.clientY / window.innerHeight) * 2 + 1);
   let intersects = three_rayCaster.intersectObjects(layers.token.selectables);
   if (intersects.length > 0) {
     return intersects[0];
@@ -991,228 +1052,245 @@ function three_intersect(ev) {
   return undefined;
 }
 
+var pinger = {
+  isMouseStill: false,
+  initialMousePosition: { x: 0, y: 0 },
+  mouseDownTimer: null,
+};
+
 three_renderer.domElement.ondblclick =
-    (ev) => {
-      ev.preventDefault();
-      console.log('Double click');
-      three_lastMouse = three_mousePositionToWorldPosition(ev);
-      let pointer = new THREE.Vector2(
-          (ev.clientX / window.innerWidth) * 2 - 1,
-          -(ev.clientY / window.innerHeight) * 2 + 1);
-      three_rayCaster.setFromCamera(pointer, three_camera);
+  (ev) => {
+    ev.preventDefault();
+    console.log('Double click');
+    three_lastMouse = three_mousePositionToWorldPosition(ev);
+    let pointer = new THREE.Vector2(
+      (ev.clientX / window.innerWidth) * 2 - 1,
+      -(ev.clientY / window.innerHeight) * 2 + 1);
+    three_rayCaster.setFromCamera(pointer, three_camera);
 
-      let intersect = three_intersect(ev);
+    let intersect = three_intersect(ev);
+    if (intersect?.object) {
+      let o = intersect.object?.tile?.reference;
+      if (o) {
+        showThing(o.file, o.page);
+      }
+    }
+  }
+
+three_renderer.domElement.oncontextmenu =
+  function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+three_renderer.domElement.onmousedown =
+  function (event) {
+    event.preventDefault();
+    selection = [];
+    let pointer = new THREE.Vector2(
+      (event.clientX / window.innerWidth) * 2 - 1,
+      -(event.clientY / window.innerHeight) * 2 + 1);
+
+    mouseButtonsDown[event.button] = true;
+    three_lastMouse = three_mousePositionToWorldPosition(event);
+    three_lastRawMouse = { x: event.clientX, y: event.clientY };
+
+    three_rayCaster.setFromCamera(pointer, three_camera);
+
+    if (event.button == mainButton) {
+      let intersect = three_intersect(event);
+
+
       if (intersect?.object) {
-        let o = intersect.object?.tile?.reference;
-        if (o) {
-          showThing(o.file, o.page);
-        }
-      }
-    }
+        let obj = intersect.object;
+        if (editMode && obj.tile.guiLayer == 'tile') {
+          const minim = 64;
+          let tile = obj.tile;
+          // this works only for tiles. To do make it a function added to each
+          // kind of thing maybe better to do icon -> world
+          let maxx = 1 * tile.scale.x;
+          let x = intersect.uv.x * maxx;
+          let maxy = 1 * tile.scale.y;
+          let y = intersect.uv.y * maxy;
+          scalingX = scalingX = x < minim || x > maxx - minim;
+          scalingY = scalingY = y < minim || y > maxy - minim;
+          if (scalingX || scalingY) {
+            mouseMode = 'scaling';
 
-            three_renderer.domElement.oncontextmenu =
-        function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+            let highlightcolor =
+              (Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255;
 
-        three_renderer.domElement.onmousedown =
-            function(event) {
-      event.preventDefault();
-      selection = [];
-      let pointer = new THREE.Vector2(
-          (event.clientX / window.innerWidth) * 2 - 1,
-          -(event.clientY / window.innerHeight) * 2 + 1);
+            obj.material.color.set(
+              (highlightcolor << 16) + (highlightcolor << 8) +
+              highlightcolor);
+            three_outlinePass_tile.selectedObjects = [obj];
+            three_outlinePass_tile.visibleEdgeColor.set('#ff0000');
 
-      mouseButtonsDown[event.button] = true;
-      three_lastMouse = three_mousePositionToWorldPosition(event);
-      three_lastRawMouse = {x: event.clientX, y: event.clientY};
-
-      three_rayCaster.setFromCamera(pointer, three_camera);
-
-      if (event.button == mainButton) {
-        let intersect = three_intersect(event);
-
-
-        if (intersect?.object) {
-          let obj = intersect.object;
-          if (editMode && obj.tile.guiLayer == 'tile') {
-            const minim = 64;
-            let tile = obj.tile;
-            // this works only for tiles. To do make it a function added to each
-            // kind of thing maybe better to do icon -> world
-            let maxx = 1 * tile.scale.x;
-            let x = intersect.uv.x * maxx;
-            let maxy = 1 * tile.scale.y;
-            let y = intersect.uv.y * maxy;
-            scalingX = scalingX = x < minim || x > maxx - minim;
-            scalingY = scalingY = y < minim || y > maxy - minim;
-            if (scalingX || scalingY) {
-              mouseMode = 'scaling';
-
-              let highlightcolor =
-                  (Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255;
-
-              obj.material.color.set(
-                  (highlightcolor << 16) + (highlightcolor << 8) +
-                  highlightcolor);
-              three_outlinePass_tile.selectedObjects = [obj];
-              three_outlinePass_tile.visibleEdgeColor.set('#ff0000');
-
-            } else {
-              mouseMode = 'dragging';
-              let highlightcolor =
-                  (Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255;
-              obj.material.color.set(
-                  (highlightcolor << 16) + (highlightcolor << 8) +
-                  highlightcolor);
-              // obj.material.color.set(0x0000ff);
-              //   if (intersect?.object) {
-              //  let obj = intersect.object;
-              //   if (editMode && obj.tile.guiLayer == "tile") {
-
-              three_outlinePass_tile.visibleEdgeColor.set('#ffffff');
-              three_outlinePass_tile.selectedObjects = [obj];
-              //  } else if (!editMode && obj.tile.guiLayer == "token") {
-              //     three_outlinePass.selectedObjects = [obj];
-              //}
-            }
-
-            selection.push(obj);
-
-          } else if (!editMode && obj.tile.guiLayer == 'token') {
+          } else {
             mouseMode = 'dragging';
-            selection.push(obj);
+            let highlightcolor =
+              (Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255;
+            obj.material.color.set(
+              (highlightcolor << 16) + (highlightcolor << 8) +
+              highlightcolor);
+            // obj.material.color.set(0x0000ff);
+            //   if (intersect?.object) {
+            //  let obj = intersect.object;
+            //   if (editMode && obj.tile.guiLayer == "tile") {
+
+            three_outlinePass_tile.visibleEdgeColor.set('#ffffff');
+            three_outlinePass_tile.selectedObjects = [obj];
+            //  } else if (!editMode && obj.tile.guiLayer == "token") {
+            //     three_outlinePass.selectedObjects = [obj];
+            //}
           }
+
+          selection.push(obj);
+
+        } else if (!editMode && obj.tile.guiLayer == 'token') {
+          mouseMode = 'dragging';
+          selection.push(obj);
         }
       }
     }
 
-            export function
-            three_deleteSelected() {
-              // delete the image and tell the server to delete it
-              for (let i = 0; i < selection.length; i++) {
-                socket.emit(
-                    'deleteTile',
-                    {tile: selection[i].tile, scene: current_scene.name});
-              }
-            }
+    pinger.initialMousePosition = { x: event.clientX, y: event.clientY };
+    pinger.isMouseStill = true;
+    pinger.mouseDownTimer = setTimeout(() => {
+      if (pinger.isMouseStill) {
+        // Mouse has been down and still for 3 seconds
+        console.log('Mouse down and held still for 1 seconds!');
+        // Add your desired action here
+        pinger.mouseDownTimer = null;
+      }
+    }, 1000); // 1000 milliseconds = 1 seconds
+  }
 
-            export function three_tileDeleted(tile) {
-              let i = 0;
-              fixTile(tile);
+export function
+  three_deleteSelected() {
+  // delete the image and tell the server to delete it
+  for (let i = 0; i < selection.length; i++) {
+    socket.emit(
+      'deleteTile',
+      { tile: selection[i].tile, scene: current_scene.name });
+  }
+}
 
-              let layer = three_getLayer(tile.guiLayer);
+export function three_tileDeleted(tile) {
+  let i = 0;
+  fixTile(tile);
 
-              let plane = layer.selectablesMap[tile.tile_id];
+  let layer = three_getLayer(tile.guiLayer);
 
-              if (plane) {
-                for (let i = 0; i < selection.length; i++) {
-                  if (selection[i] == plane) {
-                    selection.splice(i, 1);
-                  }
-                }
+  let plane = layer.selectablesMap[tile.tile_id];
 
-                delete layer.selectablesMap[tile.tile_id];
-                clearThree(plane)
-              }
-            }
+  if (plane) {
+    for (let i = 0; i < selection.length; i++) {
+      if (selection[i] == plane) {
+        selection.splice(i, 1);
+      }
+    }
 
-            export function three_updateAllUsingProto(id) {
-              let keys = Object.keys(layers);
-              keys.forEach((key, index) => {
-                let layer = layers[key];
-                let array = layer.protoSheetMap[id];
+    delete layer.selectablesMap[tile.tile_id];
+    clearThree(plane)
+  }
+}
 
-                if (array) {
-                  for (let i = 0; i < array.length; i++) {
-                    let plane = array[i];
-                    let tile = plane.reference;
-                    three_setTileImage(tile, plane);
-                  }
-                }
-              });
-            }
+export function three_updateAllUsingProto(id) {
+  let keys = Object.keys(layers);
+  keys.forEach((key, index) => {
+    let layer = layers[key];
+    let array = layer.protoSheetMap[id];
 
-            function
-            uuidv4() {
-              return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
-                  .replace(
-                      /[018]/g,
-                      c => (c ^
-                            crypto.getRandomValues(new Uint8Array(1))[0] &
-                                15 >> c / 4)
-                               .toString(16));
-            }
+    if (array) {
+      for (let i = 0; i < array.length; i++) {
+        let plane = array[i];
+        let tile = plane.reference;
+        three_setTileImage(tile, plane);
+      }
+    }
+  });
+}
 
-            async function GetImageFor(thing) {
-              // based on scene we may want to do something different
-              let name = thing.file;
+function
+  uuidv4() {
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
+    .replace(
+      /[018]/g,
+      c => (c ^
+        crypto.getRandomValues(new Uint8Array(1))[0] &
+        15 >> c / 4)
+        .toString(16));
+}
 
-              console.log('Current scene', current_scene);
-              console.log('Current scene t' + current_scene.type);
+async function GetImageFor(thing) {
+  // based on scene we may want to do something different
+  let name = thing.file;
 
-              switch (current_scene.type) {
-                case '2d': {
-                  let t = await ensureThingLoaded(name, '');
-                  if (t.prototypeToken?.texture?.src)
+  console.log('Current scene', current_scene);
+  console.log('Current scene t' + current_scene.type);
 
-                    return {
-                      img: t.prototypeToken.texture.src,
-                      scaleX: t.prototypeToken.texture.scaleX,
-                      scaleY: t.prototypeToken.texture.scaleY
-                    };
-                  return {img: thing.img, scaleX: 1, scaleY: 1};
-                }
-                default:
-                case 'theatreOfTheMind':
-                case '3d':
-                  return {img: thing.img, scaleX: 1, scaleY: 1};
-              }
-              // {"file":"CompendiumFiles/_plus_1_allpurpose_tool_tce","page":"items","source":"TCE","droppable":"item","type":"equipment","name":"+1
-              // All-Purpose
-              // Tool","img":"images/modules/plutonium/media/icon/crossed-swords.svg"}
-            }
+  switch (current_scene.type) {
+    case '2d': {
+      let t = await ensureThingLoaded(name, '');
+      if (t.prototypeToken?.texture?.src)
+
+        return {
+          img: t.prototypeToken.texture.src,
+          scaleX: t.prototypeToken.texture.scaleX,
+          scaleY: t.prototypeToken.texture.scaleY
+        };
+      return { img: thing.img, scaleX: 1, scaleY: 1 };
+    }
+    default:
+    case 'theatreOfTheMind':
+    case '3d':
+      return { img: thing.img, scaleX: 1, scaleY: 1 };
+  }
+  // {"file":"CompendiumFiles/_plus_1_allpurpose_tool_tce","page":"items","source":"TCE","droppable":"item","type":"equipment","name":"+1
+  // All-Purpose
+  // Tool","img":"images/modules/plutonium/media/icon/crossed-swords.svg"}
+}
 
 
-            window.onmouseup = function(event) {
-      mouseButtonsDown[event.button] = false;
+window.onmouseup = function (event) {
+  mouseButtonsDown[event.button] = false;
 
-      if (!mouseButtonsDown[mainButton]) {
-        three_outlinePass_tile.selectedObjects = [];
+  if (!mouseButtonsDown[mainButton]) {
+    three_outlinePass_tile.selectedObjects = [];
 
-        for (let i = 0; i < selection.length; i++) {
-          selection[i].material.color.set(0xffffff);
+    for (let i = 0; i < selection.length; i++) {
+      selection[i].material.color.set(0xffffff);
 
-          if (!event.altKey) {
-            if (selection[i].tile.guiLayer == 'token') {
-              ForceToGrid6(selection[i].tile)
-              socket.emit(
-                  'updateTile',
-                  {tile: selection[i].tile, scene: current_scene.name});
-            }
-          }
+      if (!event.altKey) {
+        if (selection[i].tile.guiLayer == 'token') {
+          ForceToGrid6(selection[i].tile)
+          socket.emit(
+            'updateTile',
+            { tile: selection[i].tile, scene: current_scene.name });
         }
       }
+    }
+  }
 
-      // event.preventDefault();
-      // let pointer = new THREE.Vector2((event.clientX / window.innerWidth) * 2
-      // - 1,
-      //     -(event.clientY / window.innerHeight) * 2 + 1);
+  // event.preventDefault();
+  // let pointer = new THREE.Vector2((event.clientX / window.innerWidth) * 2
+  // - 1,
+  //     -(event.clientY / window.innerHeight) * 2 + 1);
 
-      // three_rayCaster.setFromCamera(pointer, three_camera);
-      // const intersects = three_rayCaster.intersectObjects(selectables);
+  // three_rayCaster.setFromCamera(pointer, three_camera);
+  // const intersects = three_rayCaster.intersectObjects(selectables);
 
-      // for (let i = 0; i < intersects.length; i++) {
+  // for (let i = 0; i < intersects.length; i++) {
 
-      //     intersects[i].object.material.color.set(0xff0000);
+  //     intersects[i].object.material.color.set(0xff0000);
 
-      //     selection.push( intersects[i].object);
-      //     break;
-      // }
-      // three_lastMouse = pointer;
-      setThingDragged(null);
-    };
+  //     selection.push( intersects[i].object);
+  //     break;
+  // }
+  // three_lastMouse = pointer;
+  setThingDragged(null);
+};
 
 dragDrop(three_renderer.domElement, {
   onDrop: (files, pos, fileList, directories) => {
@@ -1225,9 +1303,9 @@ dragDrop(three_renderer.domElement, {
     console.log('Here is the dropped text:', text)
     console.log('Dropped at coordinates', pos.x, pos.y)
   },
-  onDragEnter: (event) => {},
-  onDragOver: (event) => {},
-  onDragLeave: (event) => {}
+  onDragEnter: (event) => { },
+  onDragOver: (event) => { },
+  onDragLeave: (event) => { }
 });
 
 // 1 on edges, 0 in middle, smooth function
@@ -1247,9 +1325,9 @@ function toGrid(point) {
   }
   if (hexgrid.visible) {
     let hexCoord = convert_pixel_to_flat_hex(point);
-    console.log("point " + point.x + " " + point.y +" ---> " + hexCoord.q + " " + hexCoord.r);
-    let answer =  convert_flat_hex_to_pixel(hexCoord);
-    console.log( hexCoord.q + " " + hexCoord.r + "====> " + answer.x + " " + answer.y );
+    console.log("point " + point.x + " " + point.y + " ---> " + hexCoord.q + " " + hexCoord.r);
+    let answer = convert_flat_hex_to_pixel(hexCoord);
+    console.log(hexCoord.q + " " + hexCoord.r + "====> " + answer.x + " " + answer.y);
     return answer;
   }
 }
@@ -1260,9 +1338,9 @@ function ForceToGrid6(point) {
     point.y = GridIfy(point.y);
   } else if (hexgrid.visible) {
     let hexCoord = convert_pixel_to_flat_hex(point);
-    console.log("point " + point.x + " " + point.y +" ---> " + hexCoord.q + " " + hexCoord.r);
+    console.log("point " + point.x + " " + point.y + " ---> " + hexCoord.q + " " + hexCoord.r);
     let a = convert_flat_hex_to_pixel(hexCoord);
-    console.log( hexCoord.q + " " + hexCoord.r + "====> " + a.x + " " + a.y );
+    console.log(hexCoord.q + " " + hexCoord.r + "====> " + a.x + " " + a.y);
     point.x = a.x;
     point.y = a.y;
   }
@@ -1289,7 +1367,7 @@ async function CreateToken(thingDragged, event) {
   newTile.reference = thingDragged;
 
   console.log('Create Token New Tile ', newTile);
-  socket.emit('add_token', {scene: current_scene.name, tile: newTile});
+  socket.emit('add_token', { scene: current_scene.name, tile: newTile });
 }
 
 
@@ -1304,55 +1382,55 @@ function topTileZ() {
 }
 
 three_renderer.domElement.acceptDrag =
-    function(thingDragged, event) {
-  switch (thingDragged.type) {
-    case 'dir':
-      break;
-    case 'tile':
-      let mouse = toGrid(three_mousePositionToWorldPosition(event));
-      // todo handle non-instanced
-      const img = new Image();
-      img.src = thingDragged.img;
-      img.onload = function() {
-        console.log(`Width: ${img.width}, Height: ${img.height}`);
-        let newTile = {
-          'x': mouse.x,
-          'y': mouse.y,
-          'z': topTileZ() + 1,
-          guiLayer: 'tile',
-          sheet: thingDragged
+  function (thingDragged, event) {
+    switch (thingDragged.type) {
+      case 'dir':
+        break;
+      case 'tile':
+        let mouse = toGrid(three_mousePositionToWorldPosition(event));
+        // todo handle non-instanced
+        const img = new Image();
+        img.src = thingDragged.img;
+        img.onload = function () {
+          console.log(`Width: ${img.width}, Height: ${img.height}`);
+          let newTile = {
+            'x': mouse.x,
+            'y': mouse.y,
+            'z': topTileZ() + 1,
+            guiLayer: 'tile',
+            sheet: thingDragged
+          };
+          newTile.texture = thingDragged.img.substring('/images'.length + 1);
+          newTile.scale = {
+            x: img.width,  // todo should be tile size
+            y: img.height,
+            z: 1
+          };
+          console.log('Create tile New Tile ', newTile);
+
+          // boo evil dependency code fix
+          three_setEditMode(true);
+
+
+          const editMap = document.getElementById('EditMap');
+          editMap.checked = true;
+          socket.emit('add_tile', { scene: current_scene.name, tile: newTile });
         };
-        newTile.texture = thingDragged.img.substring('/images'.length + 1);
-        newTile.scale = {
-          x: img.width,  // todo should be tile size
-          y: img.height,
-          z: 1
-        };
-        console.log('Create tile New Tile ', newTile);
-
-        // boo evil dependency code fix
-        three_setEditMode(true);
-
-
-        const editMap = document.getElementById('EditMap');
-        editMap.checked = true;
-        socket.emit('add_tile', {scene: current_scene.name, tile: newTile});
-      };
-      break;
-    default:
-      CreateToken(thingDragged, event);
+        break;
+      default:
+        CreateToken(thingDragged, event);
+    }
   }
-}
 
 function ChangeGrid(value) {
   if (value === '') return;
   let id = 'Scenes/tag_' + current_scene.name +
-      '.json';  // the window id is window_fullthingname
+    '.json';  // the window id is window_fullthingname
   console.log(id);
   let evaluation = 'thing.typeOfGrid = \'' + value + '\'';
   console.log(evaluation);
 
-  socket.emit('change', {change: evaluation, thing: id});
+  socket.emit('change', { change: evaluation, thing: id });
 
   hexgrid.visible = true;
   grid.visible = true;
