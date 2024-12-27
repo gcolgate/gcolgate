@@ -921,16 +921,7 @@ var card = null;
 
 export function three_mouseMove(event) {
 
-
-  if (pinger.mouseDownTimer) {
-    if (Math.abs(event.clientX - pinger.initialMousePosition.x) > 5
-      || Math.abs(event.clientY - pinger.initialMousePosition.y) > 5) {
-      pinger.isMouseStill = false;
-      clearTimeout(pinger.mouseDownTimer); // Clear the timeout if mouse moves
-      pinger.mouseDownTimer = null;
-    }
-  }
-
+  pinger.mouseMove(event);
 
 
   //  event.preventDefault();
@@ -1074,10 +1065,7 @@ three_renderer.domElement.onwheel = (event) => {
 };
 
 three_renderer.domElement.onmouseup = (ev) => {
-  if (pinger.mouseDownTimer) {
-    clearTimeout(pinger.mouseDownTimer);
-    pinger.mouseDownTimer = null;
-  }
+  pinger.mouseUp();
 };
 
 function three_intersect(ev) {
@@ -1109,29 +1097,75 @@ function three_intersect(ev) {
 }
 
 
-export var pinger = { // todo write as class maybe
-  isMouseStill: false,
-  initialMousePosition: { x: 0, y: 0 },
-  mouseDownTimer: null,
-  pingdo: async function (mouse) {
-    for (let i = 0; i < 4; i++) {
-      rings.addRing(mouse.x, mouse.y, 20);
-      await new Promise(r => setTimeout(r, 300));
+class Pinger {
+
+  constructor() {
+    this.isMouseStill = false;
+    this.initialMousePosition = { x: 0, y: 0 };
+    this.mouseDownTimer = null;
+    this.cameraToo = false;
+  }
+  mouseMove(event) {
+    if (this.mouseDownTimer) {
+      if (Math.abs(event.clientX - this.initialMousePosition.x) > 5
+        || Math.abs(event.clientY - this.initialMousePosition.y) > 5) {
+        this.isMouseStill = false;
+        clearTimeout(this.mouseDownTimer); // Clear the timeout if mouse moves
+        this.mouseDownTimer = null;
+      }
     }
-  },
-  ping: function () {
-    let mouse = three_xyinMouseToWorld(pinger.initialMousePosition.x, pinger.initialMousePosition.y);
-    console.log("Sending pingdo");
-    socket.emit('pingDo', mouse);
-  let m = {
-    x: pinger.initialMousePosition.x / window.innerWidth,
-    y: pinger.initialMousePosition.y / window.innerHeight
   };
-  waterTexture.addRing(m);
-    pinger.pingdo(mouse);
-    pinger.mouseDownTimer = null;
-  },
+  mouseUp() {
+    if (this.mouseDownTimer) {
+      clearTimeout(this.mouseDownTimer);
+      this.mouseDownTimer = null;
+    }
+  }
+  mouseDown(event) {
+    if (this.mouseDownTimer) { alert("WTF"); }
+    this.initialMousePosition = { x: event.clientX, y: event.clientY };
+    this.isMouseStill = true;
+    this.mouseDownTimer = setTimeout(this.ping()
+      , 1000); // 1000 milliseconds = 1 seconds
+    this.cameraToo = event.shiftKey;
+  }
+
+  async pingdo(msg) {
+    if (msg.scene == current_scene.name) {
+      for (let i = 0; i < 4; i++) {
+        rings.addRing(msg.x, msg.y, 20);
+        await new Promise(r => setTimeout(r, 300));
+      }
+    } else { console.log("Player on other map"); }
+  };
+  ping() {
+    let msg = three_xyinMouseToWorld(pinger.initialMousePosition.x, pinger.initialMousePosition.y);
+    msg.scene = current_scene.name;
+    socket.emit('pingDo', msg);
+    if(this.cameraToo) {
+      socket.emit('set_three_camera_xy', msg);
+    }
+    let m = {
+      x: this.initialMousePosition.x / window.innerWidth,
+      y: this.initialMousePosition.y / window.innerHeight
+    };
+    waterTexture.addRing(m);
+    this.pingdo(msg);
+    clearTimeout(this.mouseDownTimer);
+    this.mouseDownTimer = null;
+
+  };
 };
+
+export function set_three_camera_xy(msg) {
+  if (msg.scene == current_scene.name) {
+   three_camera.position.x = msg.x;
+   three_camera.position.y = msg.y;
+  }
+
+}
+
+export var pinger = new Pinger();
 
 three_renderer.domElement.ondblclick =
   (ev) => {
@@ -1228,12 +1262,7 @@ three_renderer.domElement.onmousedown =
         }
       }
     }
-
-    pinger.initialMousePosition = { x: event.clientX, y: event.clientY };
-    pinger.isMouseStill = true;
-
-    pinger.mouseDownTimer = setTimeout(pinger.ping()
-      , 1000); // 1000 milliseconds = 1 seconds
+    pinger.mouseDown(event);
   }
 
 export function

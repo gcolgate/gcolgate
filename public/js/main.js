@@ -1,6 +1,6 @@
 
 
-import { current_scene, three_camera, pinger, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
+import { current_scene, three_camera, pinger, set_three_camera_xy, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
 import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow, folders, GetDirectory } from './directoryWindow.js';
 import { createOrGetLoginWindow, windowsInit } from './window.js';
 import { showChatWindow, setLogin, addChat } from './chat.js';
@@ -59,6 +59,12 @@ addEventListener("mousemove", (event) => {
 socket.on('pingDo', function (msg) {
     pinger.pingdo(msg);
 });
+
+socket.on('set_three_camera_xy', function(msg) {
+    // perhaps this should be an animation
+    set_three_camera_xy(msg);
+});
+
 
 
 socket.on('mousemove', function (msg) {

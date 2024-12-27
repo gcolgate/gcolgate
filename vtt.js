@@ -681,6 +681,9 @@ io.on('connection', (socket) => {
     socket.on('pingDo', (msg) => {
         ReBroadCast(socket, 'pingDo', msg);
     });
+    socket.on('set_three_camera_xy', (msg) => {
+        ReBroadCast(socket, 'set_three_camera_xy', msg);
+    });
     socket.on('chat', (msg) => {
         let sender = getUser(socket);
         if (sender) {
