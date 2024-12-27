@@ -13,7 +13,7 @@ import { dragDrop, setThingDragged } from './drag.js';
 /////// TODO put in seperate file
 import { socket } from './main.js';
 import { getAppearanceImage } from './ptba.js';
-import { waterShader,waterTexture } from './water_texture.js';
+import { waterShader, waterTexture } from './water_texture.js';
 
 var grid;
 var hexgrid;
@@ -380,6 +380,61 @@ function three_window_sizer_watcher(renderer, camera, dimension) {
 }
 
 
+
+class Rings {
+
+  constructor() {
+    this.rings = [];
+
+
+  }
+
+  addARing(x, y, z, scale) {
+
+    const ring = new THREE.Mesh(ring_geometry, ring_material);
+    ring.onBeforeRender = function (renderer, scene, camera, geometry, material) {
+      material.opacity = 1 - this.age / 3.0;
+    }
+    ring.position.x = x;
+    ring.position.y = y;
+    ring.position.z = z;
+    ring.age = 0;
+    ring.scale.x = scale;
+    ring.scale.y = scale;
+    ring.rotateOnAxis(new THREE.Vector3(0, 0, 1), Math.PI / 2);
+    guiLayer.add(ring);
+    this.rings.push(ring);
+
+  }
+  addRing(x, y, z) {
+
+
+    //  this.addARing(x,y,z,-20);
+    // this.addARing(x,y,z,-10);
+    this.addARing(x, y, z, 0);
+    // this.addARing(x,y,z,4);
+  }
+
+  update() {
+    for (let i = 0; i < this.rings.length;) {
+      let ring = this.rings[i];
+      ring.scale.x += 0.5;
+      ring.scale.y += 0.5;
+      ring.age += 0.02;
+      if (ring.age > 3.0) {
+        clearThree(ring);
+        this.rings.splice(i, 1);
+
+      } else {
+        i++;
+      }
+
+    }
+  }
+};
+
+const rings = new Rings();
+
 const backgroundLayer = new THREE.Scene();
 const tileLayer = new THREE.Scene();
 const guiLayer = new THREE.Scene();
@@ -489,6 +544,10 @@ const mouse_material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 const plane_geometry = new THREE.PlaneGeometry(1, 1);
 
+const ring_geometry = new THREE.RingGeometry(1, 1.2, 128);
+const ring_material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide, transparent: true });
+
+
 var materials = {};
 
 var layers = {
@@ -596,34 +655,34 @@ async function three_setTileImage(tile, plane) {
   });
 }
 
-function debugWaterTexture() {
-  const plane = new THREE.Mesh(plane_geometry, baseMaterial);
+// function debugWaterTexture() {
+//   const plane = new THREE.Mesh(plane_geometry, baseMaterial);
 
 
-  plane.position.x = 0;
-  plane.position.y = 0;
-  plane.position.z = 10;
-  plane.reference = null;
+//   plane.position.x = 0;
+//   plane.position.y = 0;
+//   plane.position.z = 10;
+//   plane.reference = null;
 
 
-  let layer = three_getLayer("token");
-  layer.layer.add(plane);
+//   let layer = three_getLayer("token");
+//   layer.layer.add(plane);
 
-  let material = new THREE.MeshBasicMaterial({
-    map: waterTexture.texture,
-    color: 0xffffff,
-    transparent: false,
+//   let material = new THREE.MeshBasicMaterial({
+//     map: waterTexture.texture,
+//     color: 0xffffff,
+//     transparent: false,
 
-  });
-  let textureScaleX = 256;
-  let textureScaleY = 256;
-  waterTexture.colorSpace = THREE.SRGBColorSpace;
-  plane.baseScale =
-    new THREE.Vector2(64,64);
-  plane.material = material;
-  plane.scale.set(textureScaleX, textureScaleY, 1);
+//   });
+//   let textureScaleX = 256;
+//   let textureScaleY = 256;
+//   waterTexture.colorSpace = THREE.SRGBColorSpace;
+//   plane.baseScale =
+//     new THREE.Vector2(64, 64);
+//   plane.material = material;
+//   plane.scale.set(textureScaleX, textureScaleY, 1);
 
-}
+// }
 
 export function three_addTile(tile) {
   fixTile(tile);  // if I used protobufs this would not happen
@@ -714,7 +773,7 @@ export function three_replaceScene(sceneName, sceneType, c) {
     }
   }
 
-  debugWaterTexture() ;
+  // debugWaterTexture();
 }
 
 export async function three_updateTile(tile) {
@@ -742,6 +801,7 @@ export function three_animate() {
   requestAnimationFrame(three_animate);
 
   //waterTexture.update();
+  rings.update();
 
   for (const [key, cube] of Object.entries(three_mouseShapes)) {
     cube.rotation.x += 0.01;
@@ -871,11 +931,7 @@ export function three_mouseMove(event) {
     }
   }
 
-  let m = {
-    x: event.clientX / window.innerWidth,
-    y: 1 - event.clientY / window.innerHeight
-  };
-  waterTexture.addTouch(m);
+
 
   //  event.preventDefault();
   three_outlinePass_token.selectedObjects = [];
@@ -1052,10 +1108,29 @@ function three_intersect(ev) {
   return undefined;
 }
 
-var pinger = {
+
+export var pinger = { // todo write as class maybe
   isMouseStill: false,
   initialMousePosition: { x: 0, y: 0 },
   mouseDownTimer: null,
+  pingdo: async function (mouse) {
+    for (let i = 0; i < 4; i++) {
+      rings.addRing(mouse.x, mouse.y, 20);
+      await new Promise(r => setTimeout(r, 300));
+    }
+  },
+  ping: function () {
+    let mouse = three_xyinMouseToWorld(pinger.initialMousePosition.x, pinger.initialMousePosition.y);
+    console.log("Sending pingdo");
+    socket.emit('pingDo', mouse);
+  let m = {
+    x: pinger.initialMousePosition.x / window.innerWidth,
+    y: pinger.initialMousePosition.y / window.innerHeight
+  };
+  waterTexture.addRing(m);
+    pinger.pingdo(mouse);
+    pinger.mouseDownTimer = null;
+  },
 };
 
 three_renderer.domElement.ondblclick =
@@ -1156,14 +1231,9 @@ three_renderer.domElement.onmousedown =
 
     pinger.initialMousePosition = { x: event.clientX, y: event.clientY };
     pinger.isMouseStill = true;
-    pinger.mouseDownTimer = setTimeout(() => {
-      if (pinger.isMouseStill) {
-        // Mouse has been down and still for 3 seconds
-        console.log('Mouse down and held still for 1 seconds!');
-        // Add your desired action here
-        pinger.mouseDownTimer = null;
-      }
-    }, 1000); // 1000 milliseconds = 1 seconds
+
+    pinger.mouseDownTimer = setTimeout(pinger.ping()
+      , 1000); // 1000 milliseconds = 1 seconds
   }
 
 export function

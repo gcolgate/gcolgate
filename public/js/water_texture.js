@@ -10,7 +10,7 @@ const easeOutQuad = (t, b, c, d) => {
 
 
 
-  class WaterTexture {
+class WaterTexture {
     constructor() {
         this.size = 64 * 2 * 2 * 2 * 2;
         this.width = window.innerWidth;
@@ -18,10 +18,10 @@ const easeOutQuad = (t, b, c, d) => {
         this.width = this.height = this.size;
 
         this.maxAge = 64;
-        this.radius = 0.15 * this.size;
+        this.radius = 0.01 * this.size;
         // this.radius = 0.15 * 1000;
 
-        this.speed = 1 / this.maxAge;
+        this.speed = 0.2 / this.maxAge;
         // this.speed = 0.01;
 
         this.trail = [];
@@ -77,6 +77,16 @@ const easeOutQuad = (t, b, c, d) => {
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
+
+    addRing(point) {
+        point.x *= 1.0/waterTexture.aspect;
+        for (let i = 0; i < 2 * Math.PI; i += 0.05) {
+            let force = 0.5;
+            let vx = Math.cos(i) * 4;
+            let vy = Math.sin(i) * 4;
+            this.trail.push({ x: point.x, y: point.y, age: 0, force, vx, vy });
+        }
+    }
     addTouch(point) {
         let force = 0;
         let vx = 0;
@@ -126,8 +136,8 @@ const easeOutQuad = (t, b, c, d) => {
     }
     drawPoint(point) {
         const pos = {
-            x: point.x * this.width,
-            y: (1 - point.y) * this.height
+            x: point.x * this.width * this.aspect - this.offsetX,
+            y:   (point.y - this.offsetY) * this.height
         };
 
         let intensity = 1;
@@ -193,12 +203,20 @@ export var waterShader = new THREE.ShaderMaterial({
 
     name: "waterShader",
     uniforms: {
-            'tDiffuse': { value: null },
-		    'uTexture':   new THREE.Uniform(waterTexture.texture) ,
+        'tDiffuse': { value: null },
+        'uTexture': new THREE.Uniform(waterTexture.texture),
     },
-    onBeforeRender : function (renderer, scene, camera, geometry, object) {
+    onBeforeRender: function (renderer, scene, camera, geometry, object) {
         // Change color based on object's x position
+        let uViewPort = new THREE.Vector4();
+        renderer.getViewport(uViewPort);
+        let width = uViewPort.z - uViewPort.x;
+        let height = uViewPort.w - uViewPort.y;
+        waterTexture.offsetX = uViewPort.x;
+        waterTexture.offsetY = uViewPort.y;
+        waterTexture.aspect = height / width;
         waterTexture.update(1);
+
     },
     vertexShader: /* glsl */`
 
@@ -213,13 +231,16 @@ export var waterShader = new THREE.ShaderMaterial({
     fragmentShader: `
    	uniform sampler2D tDiffuse;
      uniform sampler2D uTexture;
-    varying vec2 vUv;
+      varying vec2 vUv;
     #define PI 3.14159265359
 
     void main() {
+            vec2 uvu = vUv;
             vec2 uv = vUv;
 
-            vec4 tex = texture2D(uTexture, uv);
+
+
+            vec4 tex = texture2D(uTexture, uvu);
               // Convert normalized values into regular unit vector
             float vx = -(tex.r *2. - 1.);
             float vy = -(tex.g *2. - 1.);
@@ -228,7 +249,7 @@ export var waterShader = new THREE.ShaderMaterial({
             float maxAmplitude = 0.2;
             uv.x += vx * intensity * maxAmplitude;
             uv.y += vy * intensity * maxAmplitude;
-            gl_FragColor =texture2D(tDiffuse, uv);
+            gl_FragColor =texture2D(tDiffuse, uv) + tex;
            // gl_FragColor  =texture2D(uTexture, vUv);
         }
 `});

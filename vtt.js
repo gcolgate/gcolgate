@@ -553,7 +553,7 @@ async function NewScene(socket, msg) {
 
     let result = await fs.readdir(path.join(__dirname, 'public', 'Scenes'));
 
-     sheeter.folders.Scenes = await jsonHandling.fillDirectoryTable("Scenes", result);
+    sheeter.folders.Scenes = await jsonHandling.fillDirectoryTable("Scenes", result);
     for (i = 0; i < sheeter.folders.Scenes.length; i++) {
         let unparsed = sheeter.folders.Scenes[i];
         let scene = jsonHandling.ParseJson(i, unparsed);
@@ -564,7 +564,7 @@ async function NewScene(socket, msg) {
 
     //   sheeter.folders.ScenesParsed.push(newSceneTag);
     socket.emit('refresh_scenes');
-    socket.emit('updateDir', { id: dir});
+    socket.emit('updateDir', { id: dir });
 
 
 
@@ -677,6 +677,9 @@ io.on('connection', (socket) => {
     });
     socket.on('mousemove', (msg) => {
         ReBroadCast(socket, 'mousemove', msg);
+    });
+    socket.on('pingDo', (msg) => {
+        ReBroadCast(socket, 'pingDo', msg);
     });
     socket.on('chat', (msg) => {
         let sender = getUser(socket);

@@ -1,10 +1,10 @@
 
 
-import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
-import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow ,folders,GetDirectory} from './directoryWindow.js';
+import { current_scene, three_camera, pinger, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
+import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow, folders, GetDirectory } from './directoryWindow.js';
 import { createOrGetLoginWindow, windowsInit } from './window.js';
 import { showChatWindow, setLogin, addChat } from './chat.js';
-import { UpdateNPC, RemoveFromNPC, AddItemToNPC , showThing} from "./characters.js";
+import { UpdateNPC, RemoveFromNPC, AddItemToNPC, showThing } from "./characters.js";
 import { fetchJson } from './fetchJson.js';
 import { thingDragged } from './drag.js';
 /////////
@@ -55,6 +55,9 @@ addEventListener("mousemove", (event) => {
         three_mouseMove(event);
     }
 
+});
+socket.on('pingDo', function (msg) {
+    pinger.pingdo(msg);
 });
 
 
@@ -206,11 +209,11 @@ editMap.onclick = function () {
 }
 
 const settings = document.getElementById("Settings");
-settings.onclick = function() {
+settings.onclick = function () {
     if (!players.hero) {
         alert("Please log in");
     } else {
-        showThing("Scenes/tag_"+current_scene.name+".json", "scene");
+        showThing("Scenes/tag_" + current_scene.name + ".json", "scene");
 
     };
 }
