@@ -7,7 +7,7 @@
         { Editable(thing,
         "thing.name",
         "displayinline") + ( owner && additionalParms ? formatRemoveButton(owner.id, additionalParms.file):"") +
-        EquippedCheckBox(owner.id, additionalParms.file) }
+        (owner ? EquippedCheckBox(owner.id, additionalParms.file) : "")}
 
         <a href="#">Info
             <div class="tooltipcontainer">

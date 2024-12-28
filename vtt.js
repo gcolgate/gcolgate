@@ -270,7 +270,7 @@ async function login(socket, credentials) {
     socket.emit('login_success', credentials.player);
     Scene.sceneSetSocket(socket);
 
-    sendScene({ name:"default_scene"}, socket); // TODO: it's supposed to be saved
+    sendScene({ name: "default_scene" }, socket); // TODO: it's supposed to be saved
 
     //console.log("Logins %o", io.sockets.adapter.rooms);
     //console.log("Room %o " + socket.rooms, socket.rooms);
@@ -446,7 +446,7 @@ async function NewPlayer(socket, msg) {
         }],
         current_appearance: "armed", name: baseName,
         species: "Human", origin: "Majority City", wealth: 2,
-        stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0 },
+        stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0, strength: 0, will: 0, health: 0 },
         counters: {
             supplies: 2, hurt: 0, manaInAura: 0, exhaustion: 0,
             "damageToTakeAmt": 0,
@@ -643,7 +643,7 @@ async function sendScene(msg, socket) {
     for (let i = 0; i < keys.length; i++) {
         array.push(scene.tiles[keys[i]]);
     }
-    socket.emit('displayScene', { name: msg.name, sceneType: "2d", array: array , camera: msg.camera});
+    socket.emit('displayScene', { name: msg.name, sceneType: "2d", array: array, camera: msg.camera });
 
 }
 // io

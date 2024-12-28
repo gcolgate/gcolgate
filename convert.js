@@ -74,6 +74,7 @@ function writeJsonFileInPublic(dir, fileName, json) {
 
     } catch (err) {
         console.log(err + " Error with " + dir + " " + fileName);
+        throw "badness"
     }
 }
 
@@ -1590,11 +1591,11 @@ var feats = {
     },
     Show_Off: {
         name: "Show Off",
-        description: "You can spend Effort to get +1 (once per roll) on your display of might and power.",
+        description: "You can spend Effort to reroll a display of might and power.",
     },
     Sniper: {
         name: "Sniper",
-        description: "Spend Effort (once per roll) to get +1 to ranged ambush rolls.",
+        description: "Spend Effort  to reroll a ranged attack roll",
     },
     Sorceror_Kings: {
         name: "Sorceror Kings",
@@ -1731,10 +1732,6 @@ var feats = {
     Mobile_Archer: {
         name: "Mobile Archer",
         description: "You can both move and shoot, normally when shooting bows you forgo movement that turn",
-    },
-    Sniper: {
-        name: "Sniper",
-        description: "Spend a point (once per roll) to get +1 to ranged ambush rolls",
     },
     Shield_Master: {
         name: "Shield Master",
@@ -2120,7 +2117,7 @@ var careers = {
             "Commune",
             "Mercy",
             "Pack_Rat",
-            "Wasnt_here",
+            "Wasnt_Here",
             "Animal_Influence",
         ],
         languages: [],
@@ -2182,7 +2179,7 @@ var careers = {
     },
     Archer: {
         name: "Archer",
-        description: "A Solider. Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
+        description: "A Soldier. Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
         weapons: ["Archer", "LightArmor"],
         feats: [
             "Artillery",
@@ -3092,7 +3089,7 @@ function convertPTBA() {
         console.log(key);
 
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
-        writeJsonFileInPublic('CompendiumFiles', key, item);
+        writeJsonFileInPublic('CompendiumFiles', 'feat_' +key, item);
 
     });
 
@@ -3127,6 +3124,8 @@ function convertPTBA() {
         };
         item = career;
 
+        console.log("Writing career");
+
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
 
 
@@ -3155,5 +3154,7 @@ function convertPTBA() {
 }
 // note, run convertDnD5e and do not translate feats
 //makeTrainingData();
-// convertDnD5e();
+
+convertPTBA();
+//convertDnD5e();
 // console.log("Converted D&D5e");pe

@@ -179,7 +179,7 @@ export const moves = {
     },
     "Wrestle": {
         "stat": [
-            "bravery"
+            "strength"
         ],
         "tooltip": "Wrestle:  Wrestle someone",
         "Comments": "Wrestle someone",
@@ -221,7 +221,7 @@ export const moves = {
     //
     "Wrestle (defense)": {
         "stat": [
-            "bravery",
+            "strength",
             "avoidance"
         ],
         "tooltip": "Defend against wrestling with wrestling or squiggling",
@@ -584,17 +584,8 @@ function HasFeat(thingId, featName) {
 }
 
 function getStrength(owner) {
-    for (let i = 0; i < owner.items.length; i++) {
-        let item = owner.items[i];
-        if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file);
-            if(!career) { console.error("Cannot find thing "+ item.file); continue; }
-            if (career.name == "Strength") {
-                return Number(career.owner_level);
-            }
-        }
-    }
-    return 0;
+
+    return owner.stats.strength;
 }
 
 function getMaxMageLevel(owner) {
@@ -614,7 +605,7 @@ function getMaxMageLevel(owner) {
 MakeAvailableToParser('getMaxMageLevel', getMaxMageLevel);
 
 function getMaxHealth(owner) {
-    return 6 + getStrength(owner);
+    return 20 + getStrength(owner) + owner.stats.health*5;
 }
 MakeAvailableToHtml('getMaxHealth', getMaxHealth);
 
@@ -746,6 +737,16 @@ function FindBestCareerNode(owner, node) {
     let career_string = "";
     if (!node.career) return [0, ""]; // old d7d armors
 
+    if(!owner) {
+        let s = "";
+        for(let i = 0; i < node.career.length; i++) {
+            if(i>1) s += ","
+            s += node.career[i];
+        }
+        return [0, s];
+
+    }
+
     for (let i = 0; i < owner.items.length; i++) {
 
         let item = owner.items[i];
@@ -763,8 +764,8 @@ function FindBestCareerNode(owner, node) {
 
                     }
             }
-            if (career.name == "Strength" && node.strAdd == true) {
-                strbonus = level;
+            if ( node.strAdd == true) {
+                strbonus = owner.stats.strength;
             }
         }
     }
@@ -1172,6 +1173,17 @@ MakeAvailableToParser('ensureExists', ensureExists);
 
 
 
+function featNoCheckBox(feats, i, thing, owner, checked, featSheet) {
+
+    let template = "";
+     let text = "<li> &#x25BA;"
+    text +=  '<span class=npcBold>' +
+        featSheet.name + ':</span>' + featSheet.description.value + '</li > ';
+
+    return text;
+}
+
+
 function featCheckBox(feats, i, thing, owner, checked, featSheet) {
 
     let template = "";
@@ -1242,7 +1254,8 @@ function drawCareerFeats(thing, owner, notes) {
 
         if (owner)
             text += featCheckBox(feats, i, thing, owner, checked, featSheet);
-
+        else
+           text += featNoCheckBox(feats, i, thing, owner, checked, featSheet);
         // let clause = "thing.owner_featsChosen['" + feats[i] + "']"
         // text += '<li> &#x25BA; <input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
         //     + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
@@ -1814,9 +1827,10 @@ function GetWeaponsList(thing) {
 
 }
 
-function WeaponMoves(thing, weaponId,) {
+function WeaponMoves(owner, weaponId) {
 
-    if (!isEquipped(thing.id, weaponId)) return "";
+    if(!owner) return "";
+    if (!isEquipped(owner.id, weaponId)) return "";
     let answer = "";
     let weapon = GetRegisteredThing(weaponId);
 
@@ -1831,20 +1845,20 @@ function WeaponMoves(thing, weaponId,) {
                 // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
                 // if (mode.radius) answer += div(span("radius range ", mode.radius));
                 // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
-                let bonus = FindBestCareerNode(thing, mode);
+                let bonus = FindBestCareerNode(owner, mode);
 
 
                 let key = mode.move[k];
                 for (let j = 0; j < moves[key].stat.length; j++) {
                     let stat = moves[key].stat[j];
                     answer += "<div>"
-                    answer += "<button class=\"greentintButton roundbutton \" onclick =\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
+                    answer += "<button class=\"greentintButton roundbutton \" onclick =\"htmlContext.rollMoveStat('" + owner.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
                         + "+" +
                         "</button>";
-                    answer += "<button class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
-                        + ' ' + mode.name + '  +' + stat + "(" + thing.stats[stat] + ') ST(' + bonus[0] + ") " + 'Rng(' + mode.range + ")" +
+                    answer += "<button class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + owner.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
+                        + ' ' + mode.name + '  +' + stat + "(" + owner.stats[stat] + ') ST(' + bonus[0] + ") " + 'Rng(' + mode.range + ")" +
                         "</button>";
-                    answer += "<button class=\"redtintButton roundbutton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
+                    answer += "<button class=\"redtintButton roundbutton\" onclick=\"htmlContext.rollMoveStat('" + owner.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
                         + "-" +
                         "</button>";
                     answer += "</div>"
@@ -2048,7 +2062,20 @@ function GetSpellModifiedRangeString(thing) {
 
 MakeAvailableToParser('GetSpellModifiedRangeString', GetSpellModifiedRangeString);
 
+function SpellToolTip(thing,owner) {
+
+    if(!owner) return "<div>";
+    if(owner.openSpell == thing.name) {
+        return  '<div class = "tooltip_open" onmouseleave="hidebogusTooltip(this)">';
+    }
+    return  '<div class = "tooltip_open" onmouseleave="hidebogusTooltip(this)">';
+
+}
+MakeAvailableToParser('SpellToolTip', SpellToolTip);
+
 function DrawArrayEnhancementButtons(thing, owner, array) {
+
+    if(!owner) return "";
 
     let s = "";
     if (!array) return s;

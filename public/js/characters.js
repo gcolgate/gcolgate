@@ -76,6 +76,8 @@ function Collapsible(text, owner, thing) {
     let shown = false;
     let id = SanitizeNonAlphanumeric(thing.id);
 
+    if(!owner) return "";
+    else
     if (owner.notCollapsed)
         shown = owner.notCollapsed[id];
 
@@ -652,13 +654,20 @@ function LineOfCareer(owner, thing, notes) {
             //  div(span("CP spent", Editable(thing, "thing.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")) +
             formatRemoveButton(owner.id, thing.id),
             'class="fourcolumncareers"');
-    else
+    else if(notes)
         return div(
             div("Career:", 'class="basicFont italic"') +
             div(thing.name, "itemsetheadershort") +
             div(span("Level ", thing.owner_level, "shortwidth coloring basicFont bodyText crit", "crit")) +
             //  div(span("CP spent", Editable(thing, "thing.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")),
             'class="fourcolumncareers2"');
+    else {
+        return div(
+            div("Career:", 'class="basicFont italic"') +
+            div(thing.name, "itemsetheadershort") );
+
+
+    }
 }
 MakeAvailableToHtml('LineOfCareer', LineOfCareer);
 
