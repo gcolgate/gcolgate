@@ -82,12 +82,12 @@ socket.on('newTile', function (msg) {
 });
 
 
-window.LoadScene = function (name) {
-    socket.emit("loadScene", name);
+window.LoadScene = function (msg) {
+    socket.emit("loadScene", msg);
 }
 
 socket.on('displayScene', function (msg) {
-    three_replaceScene(msg.name, msg.sceneType, msg.array);
+    three_replaceScene(msg.name, msg.sceneType, msg.array, msg.camera);
 });
 
 socket.on('updatedTile', function (msg) {

@@ -735,7 +735,7 @@ function clearThree(obj) {
 
 
 
-export function three_replaceScene(sceneName, sceneType, c) {
+export function three_replaceScene(sceneName, sceneType, c, cameraPos) {
   current_scene.name = sceneName;
   current_scene.type = sceneType;
 
@@ -772,7 +772,10 @@ export function three_replaceScene(sceneName, sceneType, c) {
       console.log('Could not load ', keys[i], c[keys[i]]);
     }
   }
-
+  if(cameraPos != undefined) {
+    three_camera.position.x = cameraPos.x;
+    three_camera.position.y = cameraPos.y;
+  }
   // debugWaterTexture();
 }
 
@@ -1161,6 +1164,11 @@ export function set_three_camera_xy(msg) {
   if (msg.scene == current_scene.name) {
    three_camera.position.x = msg.x;
    three_camera.position.y = msg.y;
+  } else {
+
+
+    window.LoadScene({ name: msg.scene, camera: msg});
+
   }
 
 }

@@ -190,7 +190,7 @@ function clickOnThing(event) {
     if (name === undefined) {
         //let thing = SetRegisteredThing("SCENE" + this.references, this.references);
        // name = thing.registeredId;
-        window.LoadScene(this.references.name);
+        window.LoadScene({ name: this.references.name });
     } else {
 
     showThing(name, this.references.page);

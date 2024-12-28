@@ -270,7 +270,7 @@ async function login(socket, credentials) {
     socket.emit('login_success', credentials.player);
     Scene.sceneSetSocket(socket);
 
-    sendScene("default_scene", socket); // TODO: it's supposed to be saved
+    sendScene({ name:"default_scene"}, socket); // TODO: it's supposed to be saved
 
     //console.log("Logins %o", io.sockets.adapter.rooms);
     //console.log("Room %o " + socket.rooms, socket.rooms);
@@ -629,12 +629,12 @@ async function ChangeName(dir, thingName, newName, io, msg, updateAppearance) {
 
 }
 
-async function sendScene(name, socket) {
+async function sendScene(msg, socket) {
 
     let found = 0;/// todo fix bad form
 
 
-    let scene = sheeter.folders.ScenesParsed[name];
+    let scene = sheeter.folders.ScenesParsed[msg.name];
 
 
     await Scene.loadScene(scene);
@@ -643,7 +643,8 @@ async function sendScene(name, socket) {
     for (let i = 0; i < keys.length; i++) {
         array.push(scene.tiles[keys[i]]);
     }
-    socket.emit('displayScene', { name: name, sceneType: "2d", array: array });
+    socket.emit('displayScene', { name: msg.name, sceneType: "2d", array: array , camera: msg.camera});
+
 }
 // io
 io.on('connection', (socket) => {
