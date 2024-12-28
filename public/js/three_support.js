@@ -444,8 +444,8 @@ const tokenLayer = new THREE.Scene();
 const gridLayer = new THREE.Scene();
 //const waterTexture = new WaterTexture({ debug: true });
 
-const kTileLayerIndex = 1;
-const kTokenLLayerIndex = 3;
+// const kTileLayerIndex = 1;
+// const kTokenLLayerIndex = 3;
 const three_scenes =
   [backgroundLayer, tileLayer, gridLayer, tokenLayer, guiLayer];
 
@@ -569,6 +569,12 @@ var layers = {
     protoSheetMap: {},
     layer: tokenLayer,
   },
+  gui: {
+    selectables: [],
+    selectablesMap: {},
+    protoSheetMap: {},
+    layer: guiLayer,
+  },
 };
 
 // gets the layer associated with a key, logic here only needed because
@@ -683,16 +689,32 @@ async function three_setTileImage(tile, plane) {
         }
       }
     });
+    material.highLight = function() {};
+    material.unHighLight = function() {};
   } else {
     material = new THREE.MeshBasicMaterial({
       map: texture,
       color: 0xffffff,
       transparent: true,
-      onBeforeCompile: (shader) => {
-        console.log('ZZZYX');
-        console.log(shader);
-      }
+      // onBeforeCompile: (shader) => {
+      //   console.log('ZZZYX');
+      //   console.log(shader);
+      // }
     });
+    material.highLight = function() {
+
+      let highlightcolor =
+      ((Math.sin(theTime / 100) * 255 / Math.PI) & 255) | 128;
+    this.color.set(
+      (highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
+
+
+    }.bind(material);
+    material.unHighLight = function() {
+
+      this.color.set(0xffffff);
+    }.bind(material);;
+
   }
   let textureScaleX = tile.scale.x;
   let textureScaleY = tile.scale.y;
@@ -1018,10 +1040,7 @@ export function three_mouseMove(event) {
           socket.emit(
             'updateTile',
             { tile: selection[i].tile, scene: current_scene.name });
-          let highlightcolor =
-            ((Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255) | 128;
-          selection[i].material.color.set(
-            (highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
+            selection[i].material.highLight();
 
           if (selection[i].tile.guiLayer == 'token')
             three_outlinePass_token.selectedObjects.push(selection[i]);
@@ -1039,10 +1058,7 @@ export function three_mouseMove(event) {
             scalingX ? (newMouse.x - three_lastMouse.x) + scale.x : scale.x;
           scale.y =
             scalingY ? (newMouse.y - three_lastMouse.y) + scale.y : scale.y;
-          let highlightcolor =
-            ((Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255) | 128;
-          selection[i].material.color.set(
-            (highlightcolor << 16) + (highlightcolor << 8) + highlightcolor);
+          selection[i].material.highLight();
 
           fixTile(plane.tile);
           socket.emit(
@@ -1190,8 +1206,12 @@ class Pinger {
     if (this.mouseDownTimer) { alert("WTF"); }
     this.initialMousePosition = { x: event.clientX, y: event.clientY };
     this.isMouseStill = true;
-    this.mouseDownTimer = setTimeout(this.ping()
-      , 1000); // 1000 milliseconds = 1 seconds
+
+    console.log("start ping " + theTime);
+    this.mouseDownTimer =   setTimeout(() => {
+     pinger.ping();
+    }, 1000);
+
     this.cameraToo = event.shiftKey;
   }
 
@@ -1204,6 +1224,7 @@ class Pinger {
     } else { console.log("Player on other map"); }
   };
   ping() {
+    console.log("Ping " + theTime);
     let msg = three_xyinMouseToWorld(pinger.initialMousePosition.x, pinger.initialMousePosition.y);
     msg.scene = current_scene.name;
     socket.emit('pingDo', msg);
@@ -1296,22 +1317,15 @@ three_renderer.domElement.onmousedown =
           if (scalingX || scalingY) {
             mouseMode = 'scaling';
 
-            let highlightcolor =
-              (Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255;
 
-            obj.material.color.set(
-              (highlightcolor << 16) + (highlightcolor << 8) +
-              highlightcolor);
-            three_outlinePass_tile.selectedObjects = [obj];
+            obj.material.highLight();
+               three_outlinePass_tile.selectedObjects = [obj];
             three_outlinePass_tile.visibleEdgeColor.set('#ff0000');
 
           } else {
             mouseMode = 'dragging';
-            let highlightcolor =
-              (Math.sin(event.timeStamp / 100) * 255 / Math.PI) & 255;
-            obj.material.color.set(
-              (highlightcolor << 16) + (highlightcolor << 8) +
-              highlightcolor);
+            obj.material.highLight();
+
             // obj.material.color.set(0x0000ff);
             //   if (intersect?.object) {
             //  let obj = intersect.object;
@@ -1429,7 +1443,7 @@ window.onmouseup = function (event) {
     three_outlinePass_tile.selectedObjects = [];
 
     for (let i = 0; i < selection.length; i++) {
-      selection[i].material.color.set(0xffffff);
+       selection[i].material.unHighLight();
 
       if (!event.altKey) {
         if (selection[i].tile.guiLayer == 'token') {

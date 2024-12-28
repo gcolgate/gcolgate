@@ -39,8 +39,11 @@ void main( )
 		float power = pow(2.0, float(i));
 		color += (1.5 / power) * snoise(coord + vec3(0.,-uTime*.05, uTime*.01), power*16.);
 	}
-    vec4 color_vec =  vec4(color, pow(max(color,0.),2.)*0.4, pow(max(color,0.),3.)*0.15,1.0);
-    color_vec.w = color;
+    vec4 color_vec =  vec4(color, pow(max(color,0.),2.)*0.3, pow(max(color,0.),3.)*0.15,1.0);
+   float opacity = max(1.0-2.*length(p),0.);
+    if(opacity > 0.0) opacity = 1.;
+   // color_vec.w *= color_vec.w;
+    color_vec.w = opacity;
 	gl_FragColor =color_vec;
 
    // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.);
