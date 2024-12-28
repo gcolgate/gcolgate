@@ -15,6 +15,8 @@ import { socket } from './main.js';
 import { getAppearanceImage } from './ptba.js';
 import { waterShader, waterTexture } from './water_texture.js';
 
+var origTime = Date.now(); // current time
+var theTime = 0; // current time since program start
 var grid;
 var hexgrid;
 let kGridSize = 100;
@@ -615,6 +617,7 @@ async function three_setTileImage(tile, plane) {
     console.log('Error Bad texture for %o', tile);
     return;
   }
+
   // TODO: Fix calling this with two kinds of parameters and get rid of this
   // line
   let tname =
@@ -626,7 +629,7 @@ async function three_setTileImage(tile, plane) {
 
   if (tile.sheet?.file) {
     await ensureThingLoaded(tile.sheet.file);
-    // need to add style here
+    //   add style here
     let token =
       getAppearanceImage(GetRegisteredThing(tile.sheet.file), 'token');
     if (token) {
@@ -634,9 +637,54 @@ async function three_setTileImage(tile, plane) {
     }
   }
 
+  let loader = new THREE.TextureLoader();
+  let texture = await loader.loadAsync(tname);
 
-  new THREE.TextureLoader().loadAsync(tname).then(texture => {
-    let material = new THREE.MeshBasicMaterial({
+  let material;
+  if (tile.vertex_shader) {
+    let response = await fetch(tile.vertex_shader);
+    let vertexShader = await response.text();
+
+    response = await fetch(tile.fragment_shader);
+    let fragmentShader = await response.text();
+
+    let uniforms = {};
+
+    let keys = Object.keys(tile.uniforms);
+
+    for (let i = 0; i < keys.length; i++) {
+
+      let key = keys[i];
+
+      switch (tile.uniforms[keys[i]]) {
+        case "Number":
+          uniforms[key] = { value: 1.0 };
+          break;
+        case "vec2":
+          uniforms[key] = new Uniform(new THREE.Vector2())
+          break;
+        default:
+          alert("need to enumerate the other kinds");
+
+
+      }
+    }
+
+    material = new THREE.ShaderMaterial({
+      side: THREE.DoubleSide,
+      uniforms: uniforms,
+      transparent: true,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      extensions: { derivatives: true },
+      onBeforeRender: function ( ) {
+        if (this.uniforms.uTime) {
+          this.uniforms.uTime.value = theTime/1000.0;
+        }
+      }
+    });
+  } else {
+    material = new THREE.MeshBasicMaterial({
       map: texture,
       color: 0xffffff,
       transparent: true,
@@ -645,14 +693,15 @@ async function three_setTileImage(tile, plane) {
         console.log(shader);
       }
     });
-    let textureScaleX = tile.scale.x;
-    let textureScaleY = tile.scale.y;
-    texture.colorSpace = THREE.SRGBColorSpace;
-    plane.baseScale =
-      new THREE.Vector2(texture.image.width, texture.image.height);
-    plane.material = material;
-    plane.scale.set(textureScaleX, textureScaleY, 1);
-  });
+  }
+  let textureScaleX = tile.scale.x;
+  let textureScaleY = tile.scale.y;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  plane.baseScale =
+    new THREE.Vector2(texture.image.width, texture.image.height);
+  plane.material = material;
+  plane.scale.set(textureScaleX, textureScaleY, 1);
+
 }
 
 // function debugWaterTexture() {
@@ -684,9 +733,8 @@ async function three_setTileImage(tile, plane) {
 
 // }
 
-export function three_addTile(tile) {
-  fixTile(tile);  // if I used protobufs this would not happen
-  const plane = new THREE.Mesh(plane_geometry, baseMaterial);
+function FinishSetTile(tile, material) {
+  const plane = new THREE.Mesh(plane_geometry, material);
 
 
   plane.position.x = tile.x;
@@ -710,6 +758,18 @@ export function three_addTile(tile) {
   plane.tile = tile;
   three_setTileImage(tile, plane);
 }
+
+export async function three_addTile(tile) {
+  fixTile(tile);  // if I used protobufs this would not happen
+
+
+  FinishSetTile(tile, baseMaterial);
+
+
+}
+
+
+
 
 function clearThree(obj) {
   if (obj.parent) {
@@ -772,7 +832,7 @@ export function three_replaceScene(sceneName, sceneType, c, cameraPos) {
       console.log('Could not load ', keys[i], c[keys[i]]);
     }
   }
-  if(cameraPos != undefined) {
+  if (cameraPos != undefined) {
     three_camera.position.x = cameraPos.x;
     three_camera.position.y = cameraPos.y;
   }
@@ -802,6 +862,8 @@ export async function three_updateTile(tile) {
 // main animation function for the game
 export function three_animate() {
   requestAnimationFrame(three_animate);
+
+  theTime = Date.now() - origTime;
 
   //waterTexture.update();
   rings.update();
@@ -1145,7 +1207,7 @@ class Pinger {
     let msg = three_xyinMouseToWorld(pinger.initialMousePosition.x, pinger.initialMousePosition.y);
     msg.scene = current_scene.name;
     socket.emit('pingDo', msg);
-    if(this.cameraToo) {
+    if (this.cameraToo) {
       socket.emit('set_three_camera_xy', msg);
     }
     let m = {
@@ -1162,12 +1224,12 @@ class Pinger {
 
 export function set_three_camera_xy(msg) {
   if (msg.scene == current_scene.name) {
-   three_camera.position.x = msg.x;
-   three_camera.position.y = msg.y;
+    three_camera.position.x = msg.x;
+    three_camera.position.y = msg.y;
   } else {
 
 
-    window.LoadScene({ name: msg.scene, camera: msg});
+    window.LoadScene({ name: msg.scene, camera: msg });
 
   }
 
