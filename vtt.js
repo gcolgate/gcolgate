@@ -445,8 +445,7 @@ async function NewPlayer(socket, msg) {
             slots: { X: "X" }
         }],
         current_appearance: "armed", name: baseName,
-        species: "Human", origin: "Majority City", wealth: 2,
-        stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0, strength: 0, will: 0, health: 0 },
+         stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0, strength: 0, will: 0, health: 0 },
         counters: {
             supplies: 2, hurt: 0, manaInAura: 0, exhaustion: 0,
             "damageToTakeAmt": 0,

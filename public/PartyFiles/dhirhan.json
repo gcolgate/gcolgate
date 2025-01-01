@@ -45,9 +45,7 @@
   ],
   "current_appearance": "armed",
   "name": "dhirhan",
-  "species": "Human",
-  "origin": "Majority City",
-  "wealth": 2,
+
   "stats": {
     "avoidance": 0,
     "allure": 0,

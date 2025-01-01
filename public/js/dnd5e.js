@@ -692,6 +692,7 @@ function IsInventoryItem(item) {
         case "weapon": return true;
         case "magic_items": return true;
         case "spell": return false;
+        case "background": return false;
         default:
             console.log("Unkown type ", item.page);
             throw ("Uknown type" + item);
@@ -709,6 +710,17 @@ function IsSpellItem(item) {
 
 }
 MakeAvailableToParser("IsSpellItem", IsSpellItem);
+
+function hasItemOfType(thing, ffunction) {
+
+    for(let i = 0; i < thing.items.length; i++) {
+        if(ffunction(thing.items[i])) return true;
+    }
+    return false;
+}
+MakeAvailableToParser("hasItemOfType", hasItemOfType);
+
+
 
 function IsSpellIngredient(item) {
     if (IsInventoryItem(item)) {
@@ -733,6 +745,15 @@ function IsCareerItem(item) {
 }
 MakeAvailableToParser("IsCareerItem", IsCareerItem);
 
+
+function IsBackgroundItem(item) {
+
+    switch (item.page) {
+        case "background": return true;
+    }
+    return false;
+}
+MakeAvailableToParser("IsBackgroundItem", IsBackgroundItem);
 
 function ItemFiltered(item, filter) {
     if (!filter) return false;
@@ -764,8 +785,8 @@ function drawItems(thing, filter, notes) {
 
         if (ItemFiltered(item, filter)) { continue; }
         let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes, { file: item.file }); // no w
-        if (item.page != "careers" && item.page != "weapon" && item.page != "spell")
-            a += formatRemoveButton(thing.id, item.file);;
+        // if (item.page != "careers" && item.page != "weapon" && item.page != "spell")
+        //     a += formatRemoveButton(thing.id, item.file);;
         text += div(a);
     }
     return (text);
@@ -810,5 +831,3 @@ function Spell(thing) {
     return answer;
 }
 MakeAvailableToHtml("Spell", Spell);
-
-

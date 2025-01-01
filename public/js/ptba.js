@@ -568,12 +568,33 @@ var tribal_languages = [
 
 ];
 
+function ListAllMagicPowers(owner) {
+
+    let list = [];
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "careers" || item.page == "background") {
+            let career = GetRegisteredThing(item.file);
+            let keys = Object.keys(career.owner_featsChosen);
+            for (let k = 0; k < keys.length; k++) {
+                if (career.owner_featsChosen[keys[k]]) {
+                    if (keys[k].endsWith("Magic")) {
+                        list.push(keys[k]);
+                    }
+                }
+            }
+        }
+    }
+    return list;
+}
+MakeAvailableToParser('ListAllMagicPowers', ListAllMagicPowers);
+
 function HasFeat(thingId, featName) {
 
     let owner = GetRegisteredThing(thingId);
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
-        if (item.page == "careers") {
+        if (item.page == "careers" || item.page == "background") {
             let career = GetRegisteredThing(item.file);
             if (career.owner_featsChosen[featName]) {
                 return true;
@@ -605,7 +626,7 @@ function getMaxMageLevel(owner) {
 MakeAvailableToParser('getMaxMageLevel', getMaxMageLevel);
 
 function getMaxHealth(owner) {
-    return 20 + getStrength(owner) + owner.stats.health*5;
+    return 20 + getStrength(owner) + owner.stats.health * 5;
 }
 MakeAvailableToHtml('getMaxHealth', getMaxHealth);
 
@@ -619,14 +640,14 @@ function isArmorProficient(owner_id, thingId) {
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
         if (item.page == "careers") {
-            if(item?.weapons?.length)
-            for (let k = 0; k < item.weapons.length; k++) {
-                for (let j = 0; j < thing.armor.career.length; j++) {
-                    if (thing.armor.career[j] == item.armor[k]) {
-                        return true;
+            if (item?.weapons?.length)
+                for (let k = 0; k < item.weapons.length; k++) {
+                    for (let j = 0; j < thing.armor.career.length; j++) {
+                        if (thing.armor.career[j] == item.armor[k]) {
+                            return true;
+                        }
                     }
                 }
-            }
         }
     }
     return false;
@@ -737,10 +758,10 @@ function FindBestCareerNode(owner, node) {
     let career_string = "";
     if (!node.career) return [0, ""]; // old d7d armors
 
-    if(!owner) {
+    if (!owner) {
         let s = "";
-        for(let i = 0; i < node.career.length; i++) {
-            if(i>1) s += ","
+        for (let i = 0; i < node.career.length; i++) {
+            if (i > 1) s += ","
             s += node.career[i];
         }
         return [0, s];
@@ -754,17 +775,17 @@ function FindBestCareerNode(owner, node) {
             let career = GetRegisteredThing(item.file);
             let level = Number(career.owner_level);
             if (level > bonus) {
-            if(career?.weapons?.length)
-                for (let k = 0; k < career.weapons.length; k++)
-                    for (let w2 = 0; w2 < node.career.length; w2++) {
-                        if (career.weapons[k] == node.career[w2]) {
-                            bonus = level;
-                            career_string = career.name;
-                        }
+                if (career?.weapons?.length)
+                    for (let k = 0; k < career.weapons.length; k++)
+                        for (let w2 = 0; w2 < node.career.length; w2++) {
+                            if (career.weapons[k] == node.career[w2]) {
+                                bonus = level;
+                                career_string = career.name;
+                            }
 
-                    }
+                        }
             }
-            if ( node.strAdd == true) {
+            if (node.strAdd == true) {
                 strbonus = owner.stats.strength;
             }
         }
@@ -965,7 +986,7 @@ function getSlotItem(owner_id, slot) {
 
 export function isEquipped(owner_id, thingId) {
     let thing = GetRegisteredThing(thingId);
-    if(!thing) { console.error(thingId +" missing"); return false; }
+    if (!thing) { console.error(thingId + " missing"); return false; }
 
     if (thing.slot == "Always") return true;
     let owner = GetRegisteredThing(owner_id);
@@ -1176,8 +1197,8 @@ MakeAvailableToParser('ensureExists', ensureExists);
 function featNoCheckBox(feats, i, thing, owner, checked, featSheet) {
 
     let template = "";
-     let text = "<li> &#x25BA;"
-    text +=  '<span class=npcBold>' +
+    let text = "<li> &#x25BA;"
+    text += '<span class=npcBold>' +
         featSheet.name + ':</span>' + featSheet.description.value + '</li > ';
 
     return text;
@@ -1224,6 +1245,33 @@ export function sumCareerFeats(thing) {
 
 }
 
+function drawBackgroundFeat(thing, owner, notes) {
+
+    MakeAvailableToParser('drawBackgroundFeat', drawBackgroundFeat);
+
+    let text = "";
+    // let career = validateCareer(thing, owner);
+
+
+    let feats = thing.feats;
+
+    text += '<ul class=" .dropdown-check-list-ul-item">';
+
+    for (let i = 0; i < feats.length; i++) {
+        let name = "CompendiumFiles/" + feats[i];
+
+        let checked = thing?.owner_featsChosen[feats[i]];
+
+        let featSheet = GetRegisteredThing(name);
+
+        text += featNoCheckBox(feats, i, thing, owner, checked, featSheet);
+        featSheet.name + ':</span>' + featSheet.description.value + '</label></li > ';
+
+    }
+    text += '</ul> </div>';
+    return text;
+}
+MakeAvailableToParser('drawBackgroundFeat', drawBackgroundFeat);
 
 
 function drawCareerFeats(thing, owner, notes) {
@@ -1255,7 +1303,7 @@ function drawCareerFeats(thing, owner, notes) {
         if (owner)
             text += featCheckBox(feats, i, thing, owner, checked, featSheet);
         else
-           text += featNoCheckBox(feats, i, thing, owner, checked, featSheet);
+            text += featNoCheckBox(feats, i, thing, owner, checked, featSheet);
         // let clause = "thing.owner_featsChosen['" + feats[i] + "']"
         // text += '<li> &#x25BA; <input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
         //     + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
@@ -1829,7 +1877,7 @@ function GetWeaponsList(thing) {
 
 function WeaponMoves(owner, weaponId) {
 
-    if(!owner) return "";
+    if (!owner) return "";
     if (!isEquipped(owner.id, weaponId)) return "";
     let answer = "";
     let weapon = GetRegisteredThing(weaponId);
@@ -1907,6 +1955,29 @@ function WeaponParries(thing, weaponId,) {
         }
     return answer;
 }
+
+
+function BackgroundButton(thing, window) {
+
+
+    let text = `<button onclick="htmlContext.dropDownToggle('backg_` + thing.id + `',window.document)" class="blueButton">Choose Background</button>`;
+
+    text += `<div id="backg_` + thing.id + `" class="dropdown-content itemsetheader short crit">`;
+
+    text += `<input type=" text" placeholder="Search.." id="backg_c_` + thing.id + `"
+                onkeyup="filterDropDown('backg_c_`+ thing.id + `','backg_` + thing.id + `')"> </input>
+            `+ extractFromCompendium(["background"], thing);
+
+    // text += '<div class="outlined dragitem">'
+    //     + drawItems(thing, IsBackgroundItem) +
+    //     '</div>'
+
+    text += '</div>'
+    console.log(text);
+    chkDiv(text);
+    return text;
+}
+MakeAvailableToParser('BackgroundButton', BackgroundButton);
 
 function PTBAMoves(thing) {
     let answer = "";
@@ -2037,6 +2108,19 @@ function GetModifiedDamageString(thing) {
 }
 MakeAvailableToParser('GetModifiedDamageString', GetModifiedDamageString);
 
+
+
+function SpellPowerOnOf(tag_thing, list) {
+
+    for(let a = 0; a < tag_thing.powers.length; a++) {
+        for(let b = 0; b < list.length; b++) {
+            if(list[b] == tag_thing.powers[a]) return true;
+        }
+    }
+    return false;
+}
+MakeAvailableToParser('SpellPowerOnOf', SpellPowerOnOf);
+
 function GetSpellModifiedRangeString(thing) {
 
     if (!thing?.owner_modified?.Range) {
@@ -2062,20 +2146,20 @@ function GetSpellModifiedRangeString(thing) {
 
 MakeAvailableToParser('GetSpellModifiedRangeString', GetSpellModifiedRangeString);
 
-function SpellToolTip(thing,owner) {
+function SpellToolTip(thing, owner) {
 
-    if(!owner) return "<div>";
-    if(owner.openSpell == thing.name) {
-        return  '<div class = "tooltip_open" onmouseleave="hidebogusTooltip(this)">';
+    if (!owner) return "<div>";
+    if (owner.openSpell == thing.name) {
+        return '<div class = "tooltip_open" onmouseleave="hidebogusTooltip(this)">';
     }
-    return  '<div class = "tooltip_open" onmouseleave="hidebogusTooltip(this)">';
+    return '<div class = "tooltip_open" onmouseleave="hidebogusTooltip(this)">';
 
 }
 MakeAvailableToParser('SpellToolTip', SpellToolTip);
 
 function DrawArrayEnhancementButtons(thing, owner, array) {
 
-    if(!owner) return "";
+    if (!owner) return "";
 
     let s = "";
     if (!array) return s;

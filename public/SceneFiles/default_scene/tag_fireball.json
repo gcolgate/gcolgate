@@ -10,7 +10,7 @@
     "windowId": "images"
   },
   "texture": "icons/white.webp",
-  "scale": { "x": 300, "y": 300, "z": 1 },
+  "scale": { "x": 400, "y": 400, "z": 1 },
   "tile_id": "tag_fireball.json",
   "tile_json": "SceneFiles/default_scene/tag_tag_fireball_.json",
   "vertex_shader": "Shaders/base_effect_vertex.glsl",
