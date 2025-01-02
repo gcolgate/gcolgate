@@ -680,7 +680,7 @@ var takeDamageMove = {
     ],
     "Comments": "Resisting damage",
     "Critical": "You escape scott free!",
-    "success": 'You are fine, but in the case of overwhelming attacks like a huge explosion or a giant’s club the GM might <a href="#">choose 1 \
+    "success": 'You are fine, but in the case of overwhelming attacks like a huge explosion or a giant’s club the GM might <a href="#">choose 1 or 2\
          <div class="tooltipcontainer"> \
                 <div class="tooltip"> \
                 <ul> \
@@ -688,12 +688,12 @@ var takeDamageMove = {
                   <li>● You lose your grip on whatever you’re holding. </li> \
                   <li>● You lose track of someone or something you’re attending to.  </li>\
                   <li>● You miss noticing something important.  </li>\
-                  <li>● You take 1 wound.</li> \
+                  <li>● You take half damage.</li> \
                   <li>● You take a level of exhaustion.  </li>\
                  </ul> \
                  </div></div></a>',
 
-    "mixed": 'Take one wound and <a href="#">choose 1 GM chooses 1: \
+    "mixed": 'Take the indicated damage and <a href="#">choose 1 GM chooses 1: \
      <div class="tooltipcontainer">\
                 <div class="tooltip">\
                  <ul> \
@@ -701,17 +701,17 @@ var takeDamageMove = {
                     <li>● You lose your grip on whatever you’re holding.</li> \
                     <li>● You lose track of someone or something you’re attending to</li> \
                     <li>● You miss noticing something important.</li> \
-                    <li>● You lose 1 more wound.</li>\
+                    <li>● You take double damage.</li>\
                     <li>● You take a level of exhaustion. \
                  </ul> \
                 </div></div></a>',
 
-    "fail": 'Take 2 wounds and the 1  <a href="#"> choose 1 GM chooses chooses 1 \
+    "fail": 'Take double damage wounds and the   <a href="#"> choose 1 GM chooses chooses 1 \
             <div class="tooltipcontainer">\
                 <div class="tooltip">\
                  <ul> \
                     <li>● You’re out of action: unconscious, trapped, incoherent or panicked.</li> \
-                    <li>● It’s worse than it seemed. Lose 2 more health. </li>\
+                    <li>● It’s worse than it seemed. Lose double damage. </li>\
                     <li>● You have an injury, like a hurt leg (slowed), bleeding (lose additional damage with a chance each round, \
                           each 6 for light bleeding or greater than 1 for heavy), a hurt arm (-1 with actions from that arm),\
                           partial blindness (-3 to steel, many actions become more difficult) Certain weapons get bonuses to some kinds of injuries, so if you get struck by those you might be in worse shape. \
@@ -719,6 +719,7 @@ var takeDamageMove = {
                  </ul> \
             </div></div></a>',
 };
+
 
 function takeDamage(ownerId, damage, damageType, advantage) {
 

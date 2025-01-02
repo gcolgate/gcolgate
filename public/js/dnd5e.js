@@ -681,6 +681,12 @@ export function RemoveItemFromThing(thingId, itemId) {
 
 MakeAvailableToHtml('RemoveItemFromThing', RemoveItemFromThing);
 
+function IsInjury(item) {
+    return (item.page == "injuries");
+
+
+}
+MakeAvailableToHtml('IsInjury', IsInjury);
 
 function IsInventoryItem(item) {
     switch (item.page) {
@@ -693,6 +699,9 @@ function IsInventoryItem(item) {
         case "magic_items": return true;
         case "spell": return false;
         case "background": return false;
+        case "background": return false;
+        case "injuries": return false;
+        case "conditions": return false;
         default:
             console.log("Unkown type ", item.page);
             throw ("Uknown type" + item);

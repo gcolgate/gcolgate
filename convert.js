@@ -6,6 +6,162 @@ const path = require('path');
 const sanitize = require('sanitize-filename');
 
 
+// todo: figure this out
+var baseFeats = {
+    Strength: {
+        name: "Strength",
+        description: "Being big and tall and imposing. You also can get bonus feats.\nWill let you wield larger weapons and possibly inflict more harm. This will give you a bonus  to Steel  as well.). You can carry and lift more. You can perform feats of strength. Each level of strength increases your Health points by 1.\n" +
+            "4 = A Freak of Nature\n" +
+            "3 = Massive\n" +
+            "2 = Huge\n" +
+            "1 = Muscular\n" +
+        "0 = Average, or short and muscular\n" +
+        "-2= short or frail\n",
+        feats: [
+            "Brawler",
+            "Wrestler",
+            "Tough",
+            "Reach",],
+        languages: [],
+        tools: ""
+    },
+    Health: {
+        name: "Health",
+        description: " Players start with 20 hit points plus 5 * Health + 1 * strength. \n",
+        feats: [],
+        languages: [],
+        tools: ""
+    },
+    Will: {
+        name: "Will",
+        description: "Each level of Will increases your Effort by 1. Effort is used to fuel some abilities. Players start with 2. If you treat Will as your dump stat you will have none\n",
+        feats: [],
+        languages: [],
+        tools: ""
+    },
+};
+
+var injuries = {
+    FootWound: {
+        name: "Foot Wound",
+        description: "Foot wound",
+        condition: "Slowed",
+        armor: "Feet",
+        stackable: "Yes",
+    },
+
+    BleedingWoundThroat: {
+        name: "Bleeding Cut in your throat",
+        description: "Bleeding cut",
+        condition: "Bleeding",
+        armor: "Chest",
+        stackable: "Yes",
+    },
+    BleedingWoundBelly: {
+        name: "Bleeding Cut in your belly",
+        description: "Bleeding cut",
+        condition: "Bleeding",
+        armor: "Chest",
+        stackable: "Yes",
+    },
+    Concussion: {
+        name: "Head concussion",
+        description: "Head concussion",
+        condition: "Concussed",
+        armor: "Head",
+        stackable: "Yes",
+    },
+    EyeInjury: {
+        name: "Eye Injury",
+        description: "Head Partially blinded",
+        condition: "Partially blinded",
+        armor: "Head",
+        stackable: "Yes, becomes Blinded",
+    },
+
+};
+var conditions = {
+
+    Slowed: {
+        name: "Slowed",
+        description: "You must move at 50% speed",
+        stackable: "Yes",
+    },
+    Distracted: {
+        name: "Distracted",
+        description: "You can take only actions or reactions this turn",
+        stackable: "No",
+    },
+    Burning: {
+        name: "You are burning",
+        description: "You must roll Move:OnFire each turn",
+        stackable: "Yes, adds damage",
+    },
+    Bleeding: {
+        name: "Bleeding",
+        description: "You lose 1 health each turn.",
+        stackable: "Yes, add damge",
+    },
+    Concussed: {
+        name: "Concussed",
+        description: "May take actions OR reactions each turn.",
+        stackable: "No",
+    },
+    Prone: {
+        name: "Prone",
+        description: "A prone creature’s only movement option is to crawl, unless it stands up and thereby ends the condition. The creature has disadvantage on attack rolls. An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage.",
+        stackable: "No",
+    },
+    Stunned: {
+        name: "Stunned",
+        description: "Take only reactions next turn, may not act on your turn",
+        stackable: "No",
+    },
+    Blinded: {
+        name: "Blinded",
+        description: "A blinded creature can’t see and automatically fails any ability check that requires sight. Attack rolls against the creature have advantage, and the creature’s attack rolls have disadvantage.",
+        stackable: "No",
+    },
+    PartiallyBlinded: {
+        name: "Partially Blinded",
+        description: "Blinded in one eye, disadvantage on next roll",
+        stackable: "Yes, becomes blinded",
+    },
+    Charmed: {
+        name: "Charmed",
+        description: "A charmed creature can’t attack the charmer or target the charmer with harmful abilities or magical effects. The charmer has advantage on any ability check to interact socially with the creature.",
+        stackable: "No",
+    },
+    Deafened: {
+        name: "Deafened",
+        description: "A Deafened creature automatically fails any checks that require hearing",
+        stackable: "No",
+    },
+    Frightened: {
+        name: "Frightned",
+        description: "A frightened creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature can’t willingly move closer to the source of its fear.",
+    },
+    Wrestled: {
+        name: "Wrestled",
+        description: "A wrestled creature’s speed becomes 0, and it can’t benefit from any bonus to its speed. The condition ends if the grappler is incapacitated (see the condition).  The condition also ends if an effect removes the grappled creature from the reach of the grappler or grappling effect, such as when a creature is hurled away by the thunderwave spell.",
+    },
+    Invisible: {
+        name: "Invisible",
+        description: "An invisible creature is impossible to see without the aid of magic or a special sense. For the purpose of hiding, the creature is heavily obscured. The creature’s location can be detected by any noise it makes or any tracks it leaves or in some cases by it's smell. Attack rolls against the creature have disadvantage, and the creature’s attack rolls have advantage."
+    },
+    Incapacitated: {
+        name: "Incapacitated",
+        description: "An incapacitated creature can’t take actions or reactions.",
+    },
+
+    Paralyzed: {
+        name: "Paralyzed",
+        description: "A paralyzed creature  can't take actions, reactions, and can’t move or speak. Attack rolls against the creature have advantage. Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.",
+    },
+    Sickened: { name: "Sickened", description: "A sickened creature must roll 'Move:overcome sickness' to act whenever it tries" },
+
+};
+
 //  TODO: Put this section is a module, it is for formatting console log output
 //////////// hack to get line numbers on log statements like in the browser
 //////////// it makes a fake error to get the stack trace
@@ -1461,7 +1617,7 @@ var feats = {
         description: "You can channel power from beyond the stars",
     },
 
-   FireMagic: {
+    FireMagic: {
         name: "Fire Magic",
         description: "You can channel the energy of fire",
     },
@@ -1471,7 +1627,7 @@ var feats = {
         description: "You can channel the energy of winter",
     },
 
-   StormMagic: {
+    StormMagic: {
         name: "Winter Magic",
         description: "You can channel the energy of storms",
     },
@@ -1491,7 +1647,7 @@ var feats = {
         description: "You can deal with the afterlife",
     },
 
-   ChiMagic: {
+    ChiMagic: {
         name: "Chi Magic",
         description: "You can open up your body to the energy that flows through it",
     },
@@ -1558,7 +1714,7 @@ var feats = {
     },
     Berserk: {
         name: "Berserk",
-        description: "Enter a rage, use 1 Effort, +1 forward on offense, -1 forward  on defense until you decdie to stop raging",
+        description: "Enter a rage, use 1 Effort, +1 forward on offense, -1 forward  on defense until you decide to stop raging",
     },
     Climber: {
         name: "Climber",
@@ -1586,7 +1742,7 @@ var feats = {
     },
     Dynasties: {
         name: "Dynasties",
-        description: "You know about politics and history.",
+        description: "You u have advantage on questions involving politics and history.",
     },
     Expert_Lockpick: {
         name: "Expert Lockpick",
@@ -1614,11 +1770,11 @@ var feats = {
     },
     Imbue_Magic: {
         name: "Imbue Magic",
-        description: "You can, at great expense, and time, make magical versions of your specialty or specialties.",
+        description: "You can, at great expense, and time, and Effort, make magical versions of your specialty or specialties.",
     },
     Kata: {
         name: "Kata",
-        description: "You dance in a spiritual way.  As you dance, spend an action to gain 2 mana point you can immediately add to your aura (for use in spells)",
+        description: "You dance in a spiritual way.  As you dance, spend a bonus action to gain 2 mana point you can immediately add to your aura (for use in spells)",
     },
     Magical_Performance: {
         name: "Magical Performance",
@@ -1634,15 +1790,15 @@ var feats = {
     },
     Master_of_Stealth: {
         name: "Master of Stealth",
-        description: "Spend Effort to sneak withouPt any sort of roll, you can spend 1 additional effort points for all your friends. Also applies to ‘scout’ rolls",
+        description: "Spend Effort to sneak without any sort of roll, you can spend 1 additional effort points for all your friends. Also applies to ‘scout’ rolls",
     },
     McGuyver: {
         name: "McGuyver",
-        description: "Spend Effort to use your specialty in a quick manner with improper tools",
+        description: "You can use your specialty in a quick manner with improper tools, with an Effort point you can acheive unlikely results",
     },
     Mercy: {
         name: "Mercy! Spare Me!",
-        description: "Spend Effort to not be the target of a creature’s attack.",
+        description: "Spend Effort to not be the target of a creature’s attack, lasts until you attack.",
     },
     Mobile_Archer: {
         name: "Mobile Archer",
@@ -1654,11 +1810,11 @@ var feats = {
     },
     Musical_Number: {
         name: "Musical Number",
-        description: "Explain to the GM the song,  the dance, the scene, and spend Effort. Resolve a problem (like building an orphanage, getting past the guards) after a broadway or bollywood sized dancing and musical number where everyone in the scene participates. Each player says how he is contributing or fighting against or sitting out the musical number.  Each player can roll to give you a +1 or a -1  to the result.  Then roll Performance. On a hit it’s what you desire. (Note, no-one dies or gets injured during the musical number, although attitudes might change). A failure may indicate a counter narrative gains control of the scene.",
+        description: "Explain to the GM the song,  the dance, the scene, and spend Effort. Resolve a problem (like building an orphanage, getting past the guards) after a broadway or bollywood sized dancing and musical number where everyone in the scene participates. Each player must say how he is contributing or fighting against or sitting out the musical number.  Each player can roll to give you a +1 or a -1  to the result.  Then roll Performance. On a hit it’s what you desire. (Note, no-one dies or gets injured during the musical number, although attitudes might change). A failure may indicate a counter narrative gains control of the scene.",
     },
     Musical_Virtuoso: {
         name: "Musical Virtuoso",
-        description: "Be able to play any instrument well",
+        description: "Be able to play any instrument well, even a klaathian nose flute",
     },
     Pack_Rat: {
         name: "Pack Rat",
@@ -1674,7 +1830,7 @@ var feats = {
     },
     Reflexes: {
         name: "Reflexes",
-        description: "Seize initiative on the first round unless surprised",
+        description: "When surprised, you still get reactions",
     },
     Religious_Lore: {
         name: "Religious Lore",
@@ -1722,7 +1878,7 @@ var feats = {
     },
     Specialty_Mason: {
         name: "Specialty Mason",
-        description: "Buidlings craft specialty",
+        description: "Buildlings craft specialty",
     },
     Specialty_Tailor: {
         name: "Specialty Tailor",
@@ -1754,7 +1910,7 @@ var feats = {
     },
     Trade: {
         name: "Trade",
-        description: "You know everything about the values of things and where they can be sold",
+        description: "You know everything about the values of things and where they can be sold, advantage on shopping",
     },
     Tree_bends_in_the_Wind: {
         name: "Tree bends in the Wind",
@@ -1766,7 +1922,7 @@ var feats = {
     },
     Vicious_Mockery: {
         name: "Vicious Mockery",
-        description: "Spend Effort to insult another and make them enraged, they will be berserk, as long as this makes sense",
+        description: "Spend Effort to insult another and make them enraged, they will be berserk and lose defense, as long as this makes sense",
     },
     Wasnt_Here: {
         name: "I Wasn't Here",
@@ -2068,7 +2224,7 @@ var backgrounds = {
         name: "Part Troll",
         description: "You are blood related to giants or trolls. You must choose Strength as your best stat.",
         feats: ["SunAllergy",
-            "BlindCombat","TrollishMagic"],
+            "BlindCombat", "TrollishMagic"],
 
         languages: [],
 
@@ -2081,7 +2237,7 @@ var backgrounds = {
         description: "You are a nasty, vicious goblin. Your worst stat must be allure. People will tend to have a bad reaction to you. Massive hindrance",
         feats: ["SunAllergy",
             "BlindCombat",
-            "DarkTravel","HexMagic"],
+            "DarkTravel", "HexMagic"],
 
         languages: [],
 
@@ -2216,7 +2372,7 @@ var careers = {
             "*Church Of Law: Think medieval Catholicism , they are opposed to the forces of Chaos who are said to one day destroy the world, and fearful of sorcerers\n " +
             "*Nordic: Players can freely mix and match gaelic and nordic religions up in crazy combos\n " +
             "*Greek:Players can mix up greek and persian and egyptian religions up in crazy combos\n " +
-              "A priest wll get a usage dice to call on his deity to help with mana generation when calling on Planar Forces (see magic):\n " +
+            "A priest wll get a usage dice to call on his deity to help with mana generation when calling on Planar Forces (see magic):\n " +
             "0 = 1d4\n" +
             "1 = 1d6\n" +
             "2 = 1d8\n" +
@@ -2413,8 +2569,8 @@ var careers = {
             "Exorcist",
             "HealingMagic",
             "Potion_Maker",],
-            mana: 1,
-            languages: [],
+        mana: 1,
+        languages: [],
         tools: "Herbs, Medical Kit, Alchemical Kit"
     },
     Merchant: {
@@ -2551,22 +2707,7 @@ var careers = {
         tools: "Magical Devices",
         mana: 1,
     },
-    // Strength: {
-    //     name: "Strength",
-    //     weapons: ["Brawling", "Strength"],
-    //     description: "Being big and tall and imposing. Not a career as such but this ability will be able to carry you through life.\nWill let you wield larger weapons and possibly inflict more harm. This will give you a bonus  to Steel  as well.). You can carry and lift more. You can perform feats of strength. Each level of strength increases your Health points by 1.\n" +
-    //         "4 = A Freak of Nature\n" +
-    //         "3 = Massive\n" +
-    //         "2 = Huge\n" +
-    //         "1 = Muscular",
-    //     feats: [
-    //         "Brawler",
-    //         "Wrestler",
-    //         "Tough",
-    //         "Reach",],
-    //     languages: [],
-    //     tools: ""
-    // },
+
     Thug: {
         name: "Thug",
         weapons: ["Brawling", "Martial", "Urban", "LightArmor"],
@@ -3298,6 +3439,53 @@ function convertPTBA() {
 
 
         };
+        console.log(key);
+
+        writeJsonFileInPublic('Compendium', "tag_" + key, tags);
+        writeJsonFileInPublic('CompendiumFiles', key, item);
+
+    });
+
+
+    Object.keys(injuries).forEach(function (key, index) {
+        let injury = injuries[key];
+        let tags = {
+            "file": "CompendiumFiles/" + key,
+            "page": "injuries",
+            "source": "Gil",
+            "type": "feat",
+            "name": injury.name,
+            "img": "images/injuries/" + key + ".jpg" /// need this
+        };
+
+        let item = injury;
+
+        injury.img =  "images/injuries/" + key + ".jpg" /// need this
+
+
+        console.log(key);
+
+        writeJsonFileInPublic('Compendium', "tag_" + key, tags);
+        writeJsonFileInPublic('CompendiumFiles', key, item);
+
+    });
+
+    Object.keys(conditions).forEach(function (key, index) {
+        let condition = conditions[key];
+        let tags = {
+            "file": "CompendiumFiles/" + key,
+            "page": "conditions",
+            "source": "Gil",
+            "type": "feat",
+            "name": condition.name,
+            "img": "images/conditions/" + key + ".jpg" /// need this
+        };conditions
+
+        let item = condition;
+
+        condition.img =  "images/conditions/" + key + ".jpg"; /// need this
+
+
         console.log(key);
 
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
