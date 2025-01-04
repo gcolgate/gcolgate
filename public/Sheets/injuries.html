@@ -1,0 +1,26 @@
+
+<div>
+  <div class="body">
+    <div class="spelltext">
+      <h1 >
+        { thing.name } </h1>
+        {  thing.condition ? thing.condition : "" }
+        Stackable: { thing.stackable}
+        { owner ?   formatRemoveButton(owner.id, thing.id) : "" }
+    </div>
+    <div style="box-sizing: border-box;
+          color: rgb(0, 0, 0);
+          color-scheme: light dark;
+          font-family: Georgia, serif;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 400;
+          margin:8px;
+          line-height: 26.1333px;
+          text-transform: lowercase">
+
+    {thing.description}
+
+</div>
+  </div>
+</div>

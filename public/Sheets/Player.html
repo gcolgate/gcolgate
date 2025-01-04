@@ -1,7 +1,7 @@
-<div class="c18 doc-content">
+<div class=" ">
 
 
-    <div class="tab">
+    <div class="tab displayblock">
         <!-- <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="goals" ) ) }
             onclick="htmlContext.openTab(event, 'goals', this, '{ thing.id }')">Goals</div> -->
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="appearance" ) ) }
@@ -21,10 +21,15 @@
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="raw" ) ) }
             onclick="htmlContext.openTab(event, 'raw', this,  '{ thing.id }')">Raw</div>
     </div>
-    <p class="basicFont npcTitleInput indented12x"> Name:
-        <input class="itemsetheader npcTitleInput" type="text" data-thingid="{thing.id}" value="{thing.name}"
-            onchange="htmlContext.ChangeName(this)">
-    </p>
+    <br>
+    <div class="verticalLine displayblock">
+        <br>
+        <div class="basicFont npcTitleInput displayblock"> Name:
+            <input class="itemsetheader npcTitleInput" type="text" data-thingid="{thing.id}" value="{thing.name}"
+                onchange="htmlContext.ChangeName(this)">
+        </div>
+        <br>
+    </div>
     <!-- Include Initiative, Health/Max Health, Conditions, Exhaustion, take Damage, be healed, and Mana on the title
     bar
     -->
@@ -59,14 +64,12 @@
     <div id="stats" { tabClass( thing.tab && thing?.tab=="stats" ) }>
 
         <div class=" twocolumnsuneven">
-            <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+            <!-- <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"></image>
-            <div id="columntwo">
+                onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"></image>-->
+            <div>
                 { hasItemOfType(thing, IsBackgroundItem) ? "" : BackgroundButton(thing,window) }
-
                 { drawItems(thing, IsBackgroundItem, undefined) }
-
                 <div style="display: flex;
                     color: rgb(88, 23, 13);
                     justify-content: space-around;
@@ -78,13 +81,20 @@
                     font-weight: 400">
                     { PTBAAbilities(thing); }
                 </div>
-
                 <div> Defenses
                     <div> { PTBADefenses(thing) } </div>
                 </div>
+            </div>
+            <div id="columntwo" class="columntwo">
 
+                <p class="npcBold"><span class="c12 ">Wounds Taken: { Editable(thing,
+                        "thing.counters.hurt",
+                        "itemsetheader numberinput") } of { getMaxHealth(thing) }</span></p>
+                <p class="npcBold"><span class="c12 ">Exhaustion Suffered: { Editable(thing,
+                        "thing.counters.exhaustion",
+                        "itemsetheader numberinput") } of 12</span></p>
 
-                <div class="padded speedline">
+                <div class="padded speedline ">
                     <button class="greentintButton roundbutton"
                         onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),1)">
                         +</button>
@@ -95,20 +105,25 @@
 
                     <div class="speedline"> Damage: {Editable(thing, 'thing.counters.damageToTakeAmt' , "npcNum")}
 
-                        type: {Editable(thing, 'thing.counters.damageToTakeType' , "npcNum")}
+                        type: {Editable(thing, 'thing.counters.damageToTakeType' , "npcText")}
                     </div>
 
                     <button class="redtintButton roundbutton"
                         onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),-1)">-</button>
-
-
                 </div>
-                <p class="npcBold"><span class="c12">Wounds Taken: { Editable(thing,
-                        "thing.counters.hurt",
-                        "itemsetheader numberinput") } of { getMaxHealth(thing) }</span></p>
-                <p class="npcBold"><span class="c12">Exhaustion Suffered: { Editable(thing,
-                        "thing.counters.exhaustion",
-                        "itemsetheader numberinput") } of 12</span></p>
+
+                <button onclick="htmlContext.dropDownToggle('dinury_{thing.id}',window.document)"
+                    class="injuryButton">Take Injury</button>
+                <div id="dinury_{thing.id}" class="dropdown-content itemsetheadershort crit">
+                    <input type=" text" placeholder="Search.." id="dinury_c_{thing.id}"
+                        onkeyup="filterDropDown('dinury_c_{thing.id}','dinury_{thing.id}')">
+                    { extractFromCompendium(["injuries"], thing); }
+                </div>
+                <div class="outlined dragitem">
+                    { drawItems(thing, IsInjury) }
+                </div>
+
+
 
             </div>
         </div>
