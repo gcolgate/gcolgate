@@ -91,7 +91,6 @@ socket.on('displayScene', function (msg) {
 });
 
 socket.on('updatedTile', function (msg) {
-    console.log('updated');
     if (msg.scene === current_scene.name)
         three_updateTile(msg.tile, msg.updateImage);
 });
@@ -119,7 +118,6 @@ socket.on('addItem', function (msg) {
 
 socket.on('updateDir', function (msg) {
     if (msg.folder) {
-        console.log(msg.folder);
         let f = processDirectory(msg.folder);
         updateDirectoryWindow(msg.id, f, msg.makeFront);
     } else {
