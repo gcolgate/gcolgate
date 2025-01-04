@@ -15,8 +15,8 @@ var baseFeats = {
             "3 = Massive\n" +
             "2 = Huge\n" +
             "1 = Muscular\n" +
-        "0 = Average, or short and muscular\n" +
-        "-2= short or frail\n",
+            "0 = Average, or short and muscular\n" +
+            "-2= short or frail\n",
         feats: [
             "Brawler",
             "Wrestler",
@@ -1638,6 +1638,12 @@ var feats = {
 
     },
 
+    HumanCompensation: {
+
+        name: "Human Compensation",
+        description: "Change one of your +0 stats to +1",
+
+    },
 
     TrollishMagic: {
         name: "Trollish Magic",
@@ -2257,7 +2263,6 @@ var backgrounds = {
         name: "Human",
         description: "A man or a woman.  ",
         feats: ["HumanCompensation"],
-        magic: [],
 
         languages: [],
 
@@ -3505,7 +3510,7 @@ function convertPTBA() {
 
         let item = injury;
 
-        injury.img =  "images/injuries/" + key + ".jpg" /// need this
+        injury.img = "images/injuries/" + key + ".jpg" /// need this
 
 
         console.log(key);
@@ -3524,11 +3529,11 @@ function convertPTBA() {
             "type": "feat",
             "name": condition.name,
             "img": "images/conditions/" + key + ".jpg" /// need this
-        };conditions
+        }; conditions
 
         let item = condition;
 
-        condition.img =  "images/conditions/" + key + ".jpg"; /// need this
+        condition.img = "images/conditions/" + key + ".jpg"; /// need this
 
 
         console.log(key);

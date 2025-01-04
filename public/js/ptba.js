@@ -654,7 +654,7 @@ function getMaxMageLevel(owner) {
 MakeAvailableToParser('getMaxMageLevel', getMaxMageLevel);
 
 function getMaxHealth(owner) {
-    return 20 + getStrength(owner) + owner.stats.health * 5;
+    return 20 + Number(owner.stats.strength) + Number(owner.stats.will) + Number(owner.stats.health) * 5;
 }
 MakeAvailableToHtml('getMaxHealth', getMaxHealth);
 

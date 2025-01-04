@@ -62,12 +62,9 @@
     <!-- Different tabs here -->
 
     <div id="stats" { tabClass( thing.tab && thing?.tab=="stats" ) }>
-
         <div class=" twocolumnsuneven">
-            <!-- <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
-                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"></image>-->
-            <div>
+
+            <div><!-- column one -->
                 { hasItemOfType(thing, IsBackgroundItem) ? "" : BackgroundButton(thing,window) }
                 { drawItems(thing, IsBackgroundItem, undefined) }
                 <div style="display: flex;
@@ -104,7 +101,6 @@
                     </button>
 
                     <div class="speedline"> Damage: {Editable(thing, 'thing.counters.damageToTakeAmt' , "npcNum")}
-
                         type: {Editable(thing, 'thing.counters.damageToTakeType' , "npcText")}
                     </div>
 
@@ -125,9 +121,10 @@
 
 
 
-            </div>
-        </div>
-    </div>
+            </div> <!-- Columntwo -->
+        </div><!-- two columns-->
+    </div><!-- tab class-->
+
 
     <!-- Different tabs here -->
 

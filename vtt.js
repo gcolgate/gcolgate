@@ -15,8 +15,8 @@ const jsonHandling = require('./json_handling.js');
 const probeImage = require('probe-image-size');
 
 const host = 'localhost';
-//const port = 8000;
-const port = 30000;
+const port = 8000;
+//const port = 30000;
 
 const app = express();
 const http_io = http.Server(app);
@@ -445,7 +445,7 @@ async function NewPlayer(socket, msg) {
             slots: { X: "X" }
         }],
         current_appearance: "armed", name: baseName,
-         stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0, strength: 0, will: 0, health: 0 },
+        stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0, strength: 0, will: 0, health: 0 },
         counters: {
             hurt: { cur: 0, long_rest: "subtract1", haven: "reset_to_zero", display: "special" },
             manaInAura: { cur: 0, scene: "reset_to_zero", display: "special" },
@@ -458,25 +458,8 @@ async function NewPlayer(socket, msg) {
         },
         languages: { FarDuric: true, Dwarvish: false, Firespeech: false, PrittanianLow: false, ImperialCourt: false },
         items: [], tab: "stats",
-        featsChosen: {},
-        conditions: {
-            "Unconcious": { "tooltip": "You are unconcious and cannot take actions until you awake", "affecting": false },
-            "Exausted": { "tooltip": "Disadvantage on all actions", "affecting": false },
-            "On_Fire": { "tooltip": "You take damage each round until it is out.", "affecting": false },
-            "Frightened": { "tooltip": "You have disadvantage dealing with the source of your fear.", "affecting": false },
-            "Prone": { "tooltip": "It takes either an action or your move to stand.", "affecting": false },
-            "Grappled": { "tooltip": "You cannot move except if you carry your foe.", "affecting": false },
-            "Hurt_leg": { "tooltip": "YOu are slowed", "affecting": false },
-            "Two_Hurt_legs": { "tooltip": "You can only crawl", "affecting": false },
-            "Light_Bleeding": { "tooltip": "Roll d6 at your turn, on a '6' you take damage", "affecting": false },
-            "Heavy_Bleeding": { "tooltip": "Roll d6 at your turn, on a '2-6' you take damage", "affecting": false },
-            "Hurt_Off_Arm": { "tooltip": "Cannot use shield or offhand weapon", "affecting": false },
-            "Hurt_Main_Arm": { "tooltip": "Disadvantage on attacks", "affecting": false },
-            "Partial_Blindness": { "tooltip": "-3 to steel, disadvantage on perception", "affecting": false },
-            "Blind": { "tooltip": "Disadvantage on all actions", "affecting": false },
-            "Dead": { "tooltip": "Dead", "affecting": false },
+        featsChosen: {}
 
-        }
     };
 
     let newPartyMemberTag = {
@@ -485,7 +468,7 @@ async function NewPlayer(socket, msg) {
         source: "",
         type: "",
         name: baseName,
-        image: "images/questionMark.png"
+        img: "images/questionMark.png"
     };
 
 
@@ -718,10 +701,9 @@ io.on('connection', (socket) => {
         ChangeName(msg.dir, msg.thingName, msg.newName, io, msg, true);
     });
     socket.on('updateTile', (msg) => {
-        console.log('update');
+
         let sender = getUser(socket);
         if (sender) {
-            console.log('sender' + sender);
             let scene = sheeter.folders.ScenesParsed[msg.scene];
 
             Scene.updateSceneTile(scene, msg.tile);   // change to in place and update
@@ -1046,7 +1028,7 @@ async function recurseReadImageDir(dir) {
 
                         }
                         let seeFile = fixImageFileName(file);
-                        imageDirMap[seeDir].push({ name: seeFile + '/', image: "", type: "dir" });
+                        imageDirMap[seeDir].push({ name: seeFile + '/', img: "", type: "dir" });
                         try {
                             recurseReadImageDir(file);
                         } catch (e) { console.log(e); }
@@ -1057,7 +1039,7 @@ async function recurseReadImageDir(dir) {
                             imageDirMap[seeDir] = [];
 
                         }
-                        imageDirMap[seeDir].push({ name: seeFile, image: seeFile, type: "tile" });
+                        imageDirMap[seeDir].push({ name: seeFile, img: seeFile, type: "tile" });
                     }
                 });
             } catch (err) { console.log(err); console.log("Unable to stat " + file); }
@@ -1099,7 +1081,7 @@ async function refreshDirThatHasBeenAddedTo(dir) {
                         }
                         let seeFile = fixImageFileName(file);
                         if (!locateFileInDir(imageDirMap[seeDir], seeFile)) {
-                            imageDirMap[seeDir].push({ name: seeFile + '/', image: "", type: "dir" });
+                            imageDirMap[seeDir].push({ name: seeFile + '/', img: "", type: "dir" });
                             try {
                                 recurseReadImageDir(file);
                             } catch (e) { console.log(e); }
@@ -1112,7 +1094,7 @@ async function refreshDirThatHasBeenAddedTo(dir) {
 
                         }
                         if (!locateFileInDir(imageDirMap[seeDir], seeFile)) {
-                            imageDirMap[seeDir].push({ name: seeFile, image: seeFile, type: "tile" });
+                            imageDirMap[seeDir].push({ name: seeFile, img: seeFile, type: "tile" });
                         }
                     }
                 });

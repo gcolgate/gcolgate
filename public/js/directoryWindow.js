@@ -62,9 +62,7 @@ export function processDirectory(jsonData) {
     for (let i = 0; i < jsonData.length; i++) {
         if (jsonData[i])
             try {
-                console.log(jsonData[i]);
                 jsonData[i] = JSON.parse(jsonData[i]);
-                console.log(jsonData[i]);
                 if (jsonData[i].page == "spell")
                     console.log(jsonData[i]);
             } catch (err) {
@@ -190,7 +188,7 @@ function extractFromCompendium(filter_array, owner, types, matches) {
             answer += '</div>';
             answer += '</div>';
         }
-        answer += '<img src="' + (searched[i].image != undefined ? searched[i].image : searched[i].img) + '" width="16" height="16"></img>';
+        answer += '<img src="' + (searched[i].image != undefined ? searched[i].image : searched[i].img) + '" width="32" height="32"></img>';
         answer += '</div>';
         answer += searched[i].name;
         if (searched[i].price) answer += '<span class="bold"> ' + searched[i].price + "</span > "
@@ -376,13 +374,13 @@ export function refreshDirectoryWindow(id, whole) {
                 let li = document.createElement("li");
                 li.className = "speedline";
                 let text = document.createTextNode(array[i].name);
-                // need better images 
-                if (array[i].image) {
-                    let image = document.createElement('img');
-                    image.src = array[i].image;
-                    image.width = "64"
-                    image.height = "64"
-                    li.appendChild(image);
+                // need better images
+                if (array[i].img) {
+                    let img = document.createElement('img');
+                    img.src = array[i].img;
+                    img.width = "64"
+                    img.height = "64"
+                    li.appendChild(img);
 
                 }
 
@@ -465,13 +463,13 @@ export function refreshDirectoryWindow(id, whole) {
     for (let i = 0; i < array.length; i++) {
         let li = document.createElement("li");
         let text = document.createTextNode(array[i].name);
-        // need better images 
-        if (array[i].image) {
-            let image = document.createElement('img');
-            image.src = array[i].image;
-            image.width = "32"
-            image.height = "32"
-            li.appendChild(image);
+        // need better images
+        if (array[i].img) {
+            let img = document.createElement('img');
+            img.src = array[i].img;
+            img.width = "32"
+            img.height = "32"
+            li.appendChild(img);
 
         }
 

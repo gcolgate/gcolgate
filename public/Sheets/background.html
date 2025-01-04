@@ -1,22 +1,18 @@
+<div class="statline">
 
-
-<div class="statline" >
-
-<div>
+  <div>
     { thing.name }
-</div>
+  </div>
 
-<div  >
-   { (thing.magic[0] ? " magic: " + thing.magic[0] : "" )}
-</div>
 
-<div class= >
+
+  <div class=>
     { thing.languages[0] ? " languages: " + thing.languages[0] : "" }
 
- </div>
+  </div>
 
- <div>  { formatRemoveButton(owner.id, thing.id) }</div>
-<div style="box-sizing: border-box;
+  <div> { formatRemoveButton(owner.id, thing.id) }</div>
+  <div style="box-sizing: border-box;
           color: rgb(0, 0, 0);
         color-scheme: light dark
           font-family: Georgia, serif;
@@ -24,12 +20,12 @@
            font-weight: 400;
           margin:8px;
           line-height: 26.1333px">
-  {Collapsible("Description", owner , thing) }
+    {Collapsible("Description", owner , thing) }
 
-  <div> { notes!=undefined ? "" : thing.description.value } </div>
-  <!-- <span class="npcBold">Weapons </span>{ thing.weapons } -->
-  <!-- <span class="npcBold">Tools </span>{ thing.tools } -->
+    <div> { notes!=undefined ? "" : thing.description.value } </div>
+    <!-- <span class="npcBold">Weapons </span>{ thing.weapons } -->
+    <!-- <span class="npcBold">Tools </span>{ thing.tools } -->
 
-  <div> { drawBackgroundFeat(thing,owner, notes) } </div>
-  {EndCollapsible()}
-</div>
+    <div> { drawBackgroundFeat(thing,owner, notes) } </div>
+    {EndCollapsible()}
+  </div>
