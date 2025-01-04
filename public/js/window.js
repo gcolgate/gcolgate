@@ -139,21 +139,37 @@ let ButtonTitles = {
     newPlayer: "New Player",
     popout: "PopOut",
     up: "<---",
+    newScene: "New Scene",
 };
+
+
+function removePunctuation(string) {
+    return string.replace(/[!"#$%&'()*+,-./:;<=>?@[\]/^\s+$/"^`{|}~]/g, "_");
+  }
+
 
 function DoButton(id) {
     switch (id) {
         case "newPlayer":
             console.log("New Player");
             socket.emit('newPlayer');
-
             break;
         case "up": {
             GoUpOneDirectory("images");
-
+            break;
         }
-    }
+        case "newScene":
+            {
+                let name = prompt("New scene's name", "");
+                name = removePunctuation(name);
+                console.log(name);
+                if (name != null && name != "") {
+                    socket.emit('newScene', { name: name });
+                }
 
+            }
+            break;
+    }
 }
 
 function CreateWindowTitle(w, windowName, Title, closes = true, has_popout = false, newButton = undefined) {
@@ -601,7 +617,5 @@ export function fadeOut(elmnt) {
                 break;
             }
         }
-
-
     }
 }

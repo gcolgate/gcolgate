@@ -8,6 +8,7 @@ const rawfs = require('fs');
 const path = require('path');
 const jsonHandling = require('./json_handling.js');
 const { timeLog } = require('console');
+const uuid = require('uuid');
 
 // a promise that resolves when the boolean function is true
 function until(booleanFunction, pollTimeMs = 400) {
@@ -98,9 +99,7 @@ async function loadScene(scene) {
 }
 
 function uuidv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
+    return   uuid.v4() ;
 }
 
 function cleanFileName(destString) {
@@ -135,7 +134,7 @@ function generateNewTileId(scene, tile) {
     // it will have the name of the first texture used
 
     tile.tile_id = cleanTileId(tile.texture + "_" + uuidv4());
-    tile.tile_json = path.join(__dirname, 'public', 'SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
+    tile.tile_json = path.join('SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
     console.log("Tile id ", tile.tile_id);
 }
 
@@ -143,10 +142,10 @@ function getTileFileJsonFileName(scene, tile) {
 
     if (!tile.tile_json) {
         tile.tile_id = cleanTileId(tile.texture + "_" + uuidv4());
-        tile.tile_json = path.join(__dirname, 'public', 'SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
+        tile.tile_json = path.join('SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
     }
 
-    return tile.tile_json;
+    return path.normalize(path.join(__dirname, 'public',tile.tile_json));
 }
 
 function addTile(scene, tile) {

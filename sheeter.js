@@ -3,7 +3,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const jsonHandling = require('./json_handling.js');
-const crypto = require('crypto');
+const uuid = require('uuid');
 
 var folders = {
   Compendium: [],
@@ -15,11 +15,7 @@ var folders = {
 };
 
 function uuidv4() {
-  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
-    .replace(
-      /[018]/g,
-      c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4)
-        .toString(16));
+  return uuid.v4();
 }
 
 function ensureExists(thing, template, field) {
@@ -112,7 +108,7 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
       let result = await fs.readFile(filePath);
       template = jsonHandling.ParseJson(filePath, result);
     }
-    console.log('rep' + replacement);
+    console.log('rep ' + replacement);
     if (replacement.indexOf(']') >= 0) {
       console.log('Do something');
     }
@@ -148,7 +144,13 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
       let tag = jsonHandling.ParseJson(tag_filePath, result);
 
       for (let i = 0; i < folder.length; i++) {
-        let entry = jsonHandling.ParseJson('inline', folder[i]);
+
+        try {
+          var entry = jsonHandling.ParseJson('inline', folder[i]);
+        } catch {
+          console.error("Err " + folder[i]);
+
+        }
         console.log(entry.file + ' vs ' + tag.file);
         console.log('%o', folder[i]);
 

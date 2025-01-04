@@ -2,8 +2,9 @@
     <div class="body">
         <div>
             <h1 class="itemsetheader">
-                { thing.directory }
-                <button onclick="LoadScene('{ thing.name }')">LOAD</button>
+
+                <!-- <button onclick="LoadScene('{ thing.name }')">LOAD</button> -->
+                 { thing.name }
             </h1>
         </div>
         <div style="box-sizing: border-box;
@@ -20,8 +21,15 @@
         <div> topDown : {thing.topDown}</div>
         <div> cameraStartX : {thing.cameraStartX}</div>
         <div> cameraStartY : {thing.cameraStartY}</div>
-        <div> #tiles : {thing.tiles.length}</div>
-        <div>nextZ: {thing.nextZ}</div>
-        <div>next_tile_id: {thing.next_tile_id}</div>
+
+        <p class="itemsetheader"> Grid:
+            {thing.typeOfGrid}
+        <select  class="itemsetheader" onChange="htmlContext.ChangeGrid(this.options[this.selectedIndex].value)">
+            <option value="">Change</option>
+            <option value="square">square</option>
+            <option  value="hex">hex</option>
+            <option  value="none">none</option>
+        </select>
+
     </div>
 </div>

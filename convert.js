@@ -74,6 +74,7 @@ function writeJsonFileInPublic(dir, fileName, json) {
 
     } catch (err) {
         console.log(err + " Error with " + dir + " " + fileName);
+        throw "badness"
     }
 }
 
@@ -1465,6 +1466,113 @@ var items = [
 /////////// PTBA source
 
 var feats = {
+
+
+
+    ElvenMagic: {
+
+        name: "Elven Magic",
+        description: "You draw upon the natural magic of elves",
+
+    },
+    DwarvenMagic: {
+
+        name: "Dwarven Magic",
+        description: "You draw upon the natural magic of dwarves",
+
+    },
+
+
+    TrollishMagic: {
+        name: "Trollish Magic",
+        description: "You draw upon the natural magic of trolls",
+    },
+
+    ChaosMagic: {
+        name: "Chaos Magic",
+        description: "You can draw upon the unpredicatable power of Chaos to create great works of sorcery",
+    },
+    CelestialMagic: {
+        name: "Celestial Magic",
+        description: "You can draw upon the power of the celestials",
+    },
+
+    HexesMagic: {
+        name: "Hex Magic",
+        description: "You can draw upon the unlucky power of hexes and curses",
+    },
+    OtherworldMagic: {
+        name: "Otherworld Magic",
+        description: "You can channel power from beyond the stars",
+    },
+
+    FireMagic: {
+        name: "Fire Magic",
+        description: "You can channel the energy of fire",
+    },
+
+    WinterMagic: {
+        name: "Winter Magic",
+        description: "You can channel the energy of winter",
+    },
+
+    StormMagic: {
+        name: "Winter Magic",
+        description: "You can channel the energy of storms",
+    },
+
+    NatureMagic: {
+        name: "Nature Magic",
+        description: "You can draw upon the magic of the earth and nature",
+    },
+
+    DivinationMagic: {
+        name: "Divinitation Magic",
+        description: "You can open your inner vision to realms of magic",
+    },
+
+    NecromancyMagic: {
+        name: "Necromancy Magic",
+        description: "You can deal with the afterlife",
+    },
+
+    ChiMagic: {
+        name: "Chi Magic",
+        description: "You can open up your body to the energy that flows through it",
+    },
+
+    DarknessMagic: {
+        name: "Darkness Magic",
+        description: "You can summon the shadow",
+    },
+
+    HealingMagic: {
+        name: "Healing Magic",
+        description: "Your care can heal wounds",
+    },
+
+    ProtectionMagic: {
+        name: "Protection Magic",
+        description: "Protection versus the dark arts",
+    },
+    SunAllergy: {
+        name: "Sun Allergy",
+        description: "You don't like bright sun light and see in sunlight as if it were dim light",
+    },
+
+    BlindCombat: {
+        name: "Blind Combat",
+        description: "You are unaffected by vision when attacking in melee. This does not let you easily do other activities, just grappling and swinging weapons at targets.",
+    },
+
+    StarVision: {
+        name: "Star Vision",
+        description: "You can on clear starry nights, and dawn or dusk see as well as daytime. Cloudy nights or underground, you are as blind as a human. If the stars are obscured due to fires or nearby cities, you see as dim light",
+    },
+    DarkTravel: {
+        name: "Dark Travel",
+        description: "Although you can't see in the dark, you move surely at full speed, and will not collide with obstacles, fall into pits, as you can sense the presence of terrain naturally as if you can see in dim light",
+    },
     Anatomy: {
         name: "Anatomy",
         description: "Do +5 damage to an on a surprise attack.",
@@ -1635,11 +1743,11 @@ var feats = {
     },
     Show_Off: {
         name: "Show Off",
-        description: "You can spend Effort to get +1 (once per roll) on your display of might and power.",
+        description: "You can spend Effort to reroll a display of might and power.",
     },
     Sniper: {
         name: "Sniper",
-        description: "Spend Effort (once per roll) to get +1 to ranged ambush rolls.",
+        description: "Spend Effort  to reroll a ranged attack roll",
     },
     Sorceror_Kings: {
         name: "Sorceror Kings",
@@ -1777,10 +1885,6 @@ var feats = {
         name: "Mobile Archer",
         description: "You can both move and shoot, normally when shooting bows you forgo movement that turn",
     },
-    Sniper: {
-        name: "Sniper",
-        description: "Spend a point (once per roll) to get +1 to ranged ambush rolls",
-    },
     Shield_Master: {
         name: "Shield Master",
         description: "+1 to resist damage when carrying a shield.",
@@ -1894,18 +1998,7 @@ var feats = {
         name: "Diver",
         description: "Hold your breath and dive deep, swim at +2 speed",
     },
-    Area_of_Magic: {
-        name: "Area of Magic",
-        description: "You unlock the power of another area of magic.",
-    },
-    Area_of_Magic2: {
-        name: "Area of Magic 2",
-        description: "You unlock the power of another area of magic.",
-    },
-    Area_of_Magic3: {
-        name: "Area of Magic 3",
-        description: "You unlock the power of another area of magic.",
-    },
+
     Blood_Sacrifice: {
         name: "Blood Sacrifice",
         description: "You have advantage resisting damage from self harm for casting magic and recieve triple mana value",
@@ -1981,14 +2074,76 @@ var tribal_languages = [
 
 ];
 
+var backgrounds = {
+    Elf: {
+
+        name: "Elf",
+        description: "Elves are graceful, tolkienesque beings devote to the contemplative life. You must choose Allure as your best stat.",
+        feats: ["StarVision,ElvishMagic"],
+
+        languages: ["Elvish"],
+
+
+    },
+    Dwarf: {
+
+        name: "Dwarf",
+        description: "Dwarves are short, tokeienesque beings who live under the ground.",
+        feats: ["DarkTravel, DwarvishMagic"],
+
+        languages: ["Dwarvish"],
+
+
+    },
+
+    Human: {
+
+        name: "Human",
+        description: "A man or a woman.  ",
+        feats: ["HumanCompensation"],
+        magic: [],
+
+        languages: [],
+
+
+    },
+
+    PartTroll: {
+
+        name: "Part Troll",
+        description: "You are blood related to giants or trolls. You must choose Strength as your best stat.",
+        feats: ["SunAllergy",
+            "BlindCombat", "TrollishMagic"],
+
+        languages: [],
+
+
+    },
+
+    Goblin: {
+
+        name: "Goblin",
+        description: "You are a nasty, vicious goblin. Your worst stat must be allure. People will tend to have a bad reaction to you. Massive hindrance",
+        feats: ["SunAllergy",
+            "BlindCombat",
+            "DarkTravel", "HexMagic"],
+
+        languages: [],
+
+
+    },
+
+};
 
 var careers = {
+
+
     Assassin: {
         name: "Assassin",
         type: "Rogue",
         weapons: ["Assassin"],
         description: "Blades-for-hire, perhaps agents in the service of the king, spies and assassins make killing and stealing in a discreet manner a way of life. They are adept at sneak attacks, killing, information gathering, disguises, city lore, persuasion, poisons, and lock picking. Their methods involve gathering intelligence on their subject from various (sometimes seedy) sources, circumventing security measures of all types, adopting disguises that allow them to get close to the target, and building up a broad selection of contacts. They are also patient, sometimes hiding out in a single spot for days to await the perfect opportunity to strike. ",
-        feats: ["Holdout_Weapon", "Wicked_Lie", "Anatomy", "Poison_Master", "Sniper", "Disguise_Master", "Master_of_Stealth"],
+        feats: ["Holdout_Weapon", "Wicked_Lie", "Anatomy", "Poison_Master", "Sniper", "Disguise_Master", "Master_of_Stealth", "DarknessMagic", "ChiMagic"],
 
         languages: [],
         tools: "By Feat"
@@ -2101,13 +2256,39 @@ var careers = {
         tools: "Lockpick, Cards"
     },
     Priest: {
-        name: "Priest or Cultist",
+        name: "Priest",
         description: "A priest or cultist leads ceremonies for one of the relgions:\n " +
             "*Church Of Law: Think medieval Catholicism , they are opposed to the forces of Chaos who are said to one day destroy the world, and fearful of sorcerers\n " +
             "*Nordic: Players can freely mix and match gaelic and nordic religions up in crazy combos\n " +
             "*Greek:Players can mix up greek and persian and egyptian religions up in crazy combos\n " +
-            "*Cult of he Red Moon: The Church of Law opposes the cult, they say they are chaotic, for more material look up Runequest materials. They are a super magic and strange high level area always thinking about expanding westward, after they are done swallowing the east. When the Red Moon’s glowspot shines, a red moon at night rises and causes weird manifestations.\n " +
-            "*Cults ofChaos: Many dark cults who worship hellish beings\n " +
+            "A priest wll get a usage dice to call on his deity to help with mana generation when calling on Planar Forces (see magic):\n " +
+            "0 = 1d4\n" +
+            "1 = 1d6\n" +
+            "2 = 1d8\n" +
+            "3 = 1d10\n" +
+            "4 = 1d12\n",
+        feats: [
+            "CelestialMagic",
+            "ProtectionMagic",
+            "HealingMagic",
+            "StormMagic",
+            "NatureMagic",
+            "Zealot",
+            "Polytheist",
+            "Secrets",
+            "God_Talker",
+            "Monotheist",
+            "Taboo",
+            "Religious_Lore"],
+        languages: [],
+        tools: "Tomes, Religious symbols, Magic Religious Devices",
+        mana: 1,
+    },
+
+    Cultist: {
+        name: "Cultist",
+        description: "A priest or cultist leads ceremonies for one of the relgions:\n " +
+            "*Cults of Chaos: Many dark cults who worship hellish beings\n " +
             "*Cults ofThe Deep: Many dark cults who worships outsiders  “Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn.\n " +
             "A priest wll get a usage dice to call on his deity to help with mana generation when calling on Planar Forces (see magic):\n " +
             "0 = 1d4\n" +
@@ -2116,6 +2297,11 @@ var careers = {
             "3 = 1d10\n" +
             "4 = 1d12\n",
         feats: [
+            "OtherworldMagic",
+            "ChaosMagic",
+            "HexesMagic",
+            "DarknessMagic",
+            "NecromancyMagic",
             "Zealot",
             "Polytheist",
             "Secrets",
@@ -2136,6 +2322,7 @@ var careers = {
             "Tree_bends_in_the_Wind",
             "The_dance_of_the_seven_veils",
             "Kata",
+            "ChiMagic",
         ],
         languages: [],
         mana: 1,
@@ -2153,7 +2340,8 @@ var careers = {
             "Climber",
             "Commune",
             "Brawler",
-            "Wrestler"
+            "Wrestler",
+            "ChiMagic"
         ],
         languages: [],
         mana: 1,
@@ -2165,7 +2353,7 @@ var careers = {
             "Commune",
             "Mercy",
             "Pack_Rat",
-            "Wasnt_here",
+            "Wasnt_Here",
             "Animal_Influence",
         ],
         languages: [],
@@ -2191,6 +2379,7 @@ var careers = {
             "Master_of_Stealth",
             "Commune",
             "Climber",
+            "NatureMagic",
         ],
         languages: [],
         tools: "Animals, Animal Traps, Camping, Tracking"
@@ -2200,6 +2389,7 @@ var careers = {
         description: "The Fire Priests of Far Dur worship Chiteng of the Red Dancing flame, and they scour the world for holy orphans, who hold the power of Fire within them. To choose this you must first choose FIRE as your magic power, as only those innately tied to fire can  become immolators. Immolators are not necessarily priests, but are not allowed by the priesthood to wander freely, the Priests of Far Dur have an agenda that only the Fire Master knows. It is possible the player will be a rogue immolator, escaped from the Priests, or a willing servant of the Red Chiteng.",
         weapons: ["Immolator"],
         feats: [
+            "FireMagic",
             "Burning_Brand",
             "God_Fire",
             "Resist_Fire",
@@ -2227,7 +2417,7 @@ var careers = {
     },
     Archer: {
         name: "Archer",
-        description: "A Solider. Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
+        description: "A Soldier. Fighting with ranged weapons, especially in a group,  living off the land, pillaging, marching, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
         weapons: ["Archer", "LightArmor"],
         feats: [
             "Artillery",
@@ -2247,6 +2437,9 @@ var careers = {
             "Wizard",
             "Demonology_And_Cults",
             "Sorceror_Kings",
+            "FireMagic",
+            "HealingMagic",
+            "ProtectionMagic",
             "Religious_Lore",
             "Trade",
             "Dynasties",
@@ -2263,7 +2456,9 @@ var careers = {
         feats: [
             "Master_Surgeon",
             "Exorcist",
+            "HealingMagic",
             "Potion_Maker",],
+        mana: 1,
         languages: [],
         tools: "Herbs, Medical Kit, Alchemical Kit"
     },
@@ -2293,7 +2488,13 @@ var careers = {
         description: "You apprenticed to one of the witches or hags that dot the land. Did you leave on good terms? Are you a good witch or bad witch?\n",
         weapons: ["Assassin"],
         feats: [
-            "Area_of_Magic",
+            "ChaosMagic",
+            "HexesMagic",
+            "WinterMagic",
+            "StormMagic",
+            "NatureMagic",
+            "DivinationMagic",
+            "HealingMagic",
             "Blood_Sacrifice",
             "Disguise_Master",
             "Tough",
@@ -2328,6 +2529,8 @@ var careers = {
             "Smite",
             "Channel_Divinity",
             "Aura",
+            "HealingMagic",
+            "ProtectionMagic",
         ],
         languages: [],
         tools: ""
@@ -2378,31 +2581,37 @@ var careers = {
             "Magicians are both respected and feared. There are few who will deal with them willingly without great need, as a great many magicians are amoral at best, exceedingly evil at worst, and all of them are at least slightly unhinged. Magicians often live alone, with only a few servants or the occasional apprentice to attend them.",
         weapons: ["Sorcerer"],
         feats: [
-            "Area_of_Magic",
-            "Area_of_Magic2",
-            "Area_of_Magic3",
+            "ChaosMagic",
+            "HexesMagic",
+            "FireMagic",
+            "WinterMagic",
+            "StormMagic",
+            "NatureMagic",
+            "DivinationMagic",
+            "DarknessMagic",
+            "NecromancyMagic",
             "Blood_Sacrifice",
             "SubtleSpell", "Taboo"],
         languages: [magic_languages],
         tools: "Magical Devices",
         mana: 1,
     },
-    Strength: {
-        name: "Strength",
-        weapons: ["Brawling", "Strength"],
-        description: "Being big and tall and imposing. Not a career as such but this ability will be able to carry you through life.\nWill let you wield larger weapons and possibly inflict more harm. This will give you a bonus  to Steel  as well.). You can carry and lift more. You can perform feats of strength. Each level of strength increases your Health points by 1.\n" +
-            "4 = A Freak of Nature\n" +
-            "3 = Massive\n" +
-            "2 = Huge\n" +
-            "1 = Muscular",
-        feats: [
-            "Brawler",
-            "Wrestler",
-            "Tough",
-            "Reach",],
-        languages: [],
-        tools: ""
-    },
+    // Strength: {
+    //     name: "Strength",
+    //     weapons: ["Brawling", "Strength"],
+    //     description: "Being big and tall and imposing. Not a career as such but this ability will be able to carry you through life.\nWill let you wield larger weapons and possibly inflict more harm. This will give you a bonus  to Steel  as well.). You can carry and lift more. You can perform feats of strength. Each level of strength increases your Health points by 1.\n" +
+    //         "4 = A Freak of Nature\n" +
+    //         "3 = Massive\n" +
+    //         "2 = Huge\n" +
+    //         "1 = Muscular",
+    //     feats: [
+    //         "Brawler",
+    //         "Wrestler",
+    //         "Tough",
+    //         "Reach",],
+    //     languages: [],
+    //     tools: ""
+    // },
     Thug: {
         name: "Thug",
         weapons: ["Brawling", "Martial", "Urban", "LightArmor"],
@@ -3112,7 +3321,7 @@ function convertPTBA() {
     Object.keys(feats).forEach(function (key, index) {
         let feat = feats[key];
         let tags = {
-            "file": "CompendiumFiles/feat_" + key,
+            "file": "CompendiumFiles/" + key,
             "page": "feats",
             "source": "Gil",
             "type": "feat",
@@ -3153,7 +3362,7 @@ function convertPTBA() {
             "source": "Gil",
             "type": "careers",
             "name": career.name,
-            "img": "images/modules/plutonium/media/icon/mighty-force.svg" /// need this
+            "img": "images/careers/" + career + ".jpg" /// need this
         };
 
         career.owner_level = 0;
@@ -3171,6 +3380,53 @@ function convertPTBA() {
                 career.description + "</p></div>",
         };
         item = career;
+
+        console.log("Writing career");
+
+        writeJsonFileInPublic('Compendium', "tag_" + key, tags);
+
+
+        writeJsonFileInPublic('CompendiumFiles', key, item);
+    });
+
+    Object.keys(backgrounds).forEach(function (key, index) {
+
+
+
+        let background = backgrounds[key];
+        console.error("bp");
+        console.error(key);
+        console.error(background);
+        let tags = {
+            "file": "CompendiumFiles/" + key,
+            "page": "background",
+            "source": "Gil",
+            "type": "backgrounds",
+            "name": background.name,
+            "img": "images/backgrounds/" + background + ".jpg" /// need this
+        };
+        background.owner = {}
+        background.owner_level = 1;
+        background.owner_careerPointsSpent = 1;
+        background.owner_featsChosen = {};
+        for (let i = 0; i < background.feats.length; i++) {
+            let f = background.feats[i];
+            background.owner_featsChosen[f] = true;
+        }
+
+        let item = {
+            name: background.name,
+            type: "career",
+            "img": "images/backgrounds/" + key + ".avif" /// need this
+        };
+
+        background.description = {
+            value: " <div class=\"rd__b  rd__b--3\"><p>" +
+                background.description + "</p></div>",
+        };
+        item = background;
+
+        console.log("Writing career");
 
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
 
@@ -3200,6 +3456,7 @@ function convertPTBA() {
 }
 // note, run convertDnD5e and do not translate feats
 //makeTrainingData();
+
 convertPTBA();
 //convertDnD5e();
-console.log("Converted");
+// console.log("Converted D&D5e");pe

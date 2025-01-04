@@ -1,13 +1,13 @@
 
 
-import { current_scene, three_camera, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
-import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow } from './directoryWindow.js';
+import { current_scene, three_camera, pinger, set_three_camera_xy, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
+import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow, folders, GetDirectory } from './directoryWindow.js';
 import { createOrGetLoginWindow, windowsInit } from './window.js';
 import { showChatWindow, setLogin, addChat } from './chat.js';
-import { UpdateNPC, RemoveFromNPC, AddItemToNPC } from "./characters.js";
+import { UpdateNPC, RemoveFromNPC, AddItemToNPC, showThing } from "./characters.js";
 import { fetchJson } from './fetchJson.js';
 import { thingDragged } from './drag.js';
-///////// 
+/////////
 
 windowsInit();
 let players = { hero: "" };
@@ -56,6 +56,15 @@ addEventListener("mousemove", (event) => {
     }
 
 });
+socket.on('pingDo', function (msg) {
+    pinger.pingdo(msg);
+});
+
+socket.on('set_three_camera_xy', function(msg) {
+    // perhaps this should be an animation
+    set_three_camera_xy(msg);
+});
+
 
 
 socket.on('mousemove', function (msg) {
@@ -73,12 +82,12 @@ socket.on('newTile', function (msg) {
 });
 
 
-window.LoadScene = function (name) {
-    socket.emit("loadScene", name);
+window.LoadScene = function (msg) {
+    socket.emit("loadScene", msg);
 }
 
 socket.on('displayScene', function (msg) {
-    three_replaceScene(msg.name, msg.sceneType, msg.array);
+    three_replaceScene(msg.name, msg.sceneType, msg.array, msg.camera);
 });
 
 socket.on('updatedTile', function (msg) {
@@ -146,6 +155,9 @@ socket.on('login_success', function (msg) {
 
 });
 
+socket.on('refresh_scenes', function () {
+    GetDirectory('Scenes', true).then((c) => { folders.Scenes = c; });
+});
 
 ////// login handling
 const Login = document.getElementById("Login");
@@ -201,6 +213,16 @@ editMap.onclick = function () {
         alert("Please log in");
     } else {
         three_setEditMode(editMap.checked);
+    };
+}
+
+const settings = document.getElementById("Settings");
+settings.onclick = function () {
+    if (!players.hero) {
+        alert("Please log in");
+    } else {
+        showThing("Scenes/tag_" + current_scene.name + ".json", "scene");
+
     };
 }
 // main code falls through to here
@@ -358,4 +380,3 @@ three_renderer.domElement.ondrop = function (e) {
 
 
 three_animate();
-

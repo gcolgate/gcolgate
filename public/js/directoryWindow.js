@@ -6,7 +6,7 @@ import { parseSheet, MakeAvailableToHtml, GetRegisteredThing, MakeAvailableToPar
 import { socket } from './main.js';
 
 
-var folders = {
+export var folders = {
     Compendium: {},
     Party: {},
     Favorites: {},
@@ -19,7 +19,7 @@ var dirWindowCustomization = {
     Party: { newButton: "newPlayer", dimensions: [.2, .6, .2, .2] },
     Favorites: { dimensions: [.2, .6, .2, .2] },
     Uniques: { dimensions: [.2, .6, .2, .2] },
-    Scenes: { dimensions: [.2, .6, .2, .2] },
+    Scenes: { newButton: "newScene", dimensions: [.2, .6, .2, .2] },
     images: { newButton: "up", dimensions: [.6, .6, .2, .2], divHolder: "twocolumns" },
 };
 export function GetMainDirectories() {
@@ -75,7 +75,7 @@ export function processDirectory(jsonData) {
     return jsonData;
 }
 
-async function GetDirectory(directory, processDir) {
+export async function GetDirectory(directory, processDir) {
 
     try {
         let response = await fetch("./" + directory);
@@ -119,21 +119,50 @@ function itemToolTip(name, owner, on) {
 }
 MakeAvailableToHtml('itemToolTip', itemToolTip);
 
-function extractFromCompendium(filter_array, owner) {
+
+
+
+function createFilterButtonsText(allTypes) {
+    let answer = "";
+    for (const item of allTypes.keys()) {
+
+
+        answer += ' <input type="checkbox" id="' + 'chk' + item + '" name="' + item + '" />' +
+            ' <label for="' + 'chk' + item + '>' + item + '</label>';
+
+
+    }
+}
+
+function extractFromCompendium(filter_array, owner, types, matches) {
 
     if (!folders.Compendium) {
         return [];
     }
+
+    let answer = "";
     let whole = folders.Compendium;
 
     let array = filter(whole, filter_array);
 
+    // if(types)
+    // {
+
+    //  answer += createFilterButtonsText(types);
+
+    // }
+
+    // filtering these requires loading them all first
     let search_in_directory = new searchInDirectory(array);
     let searched = search_in_directory.search();
 
-    let answer = "";
     answer += "<ul>";
     for (let i = 0; i < searched.length; i++) {
+
+
+        if (!(!types || !matches || matches( searched[i], types))) {
+            continue;
+        }
 
         let quote = '"';
         console.log(owner.id);
@@ -149,10 +178,12 @@ function extractFromCompendium(filter_array, owner) {
             answer += '<div class="tooltip" id="' + searched[i].file + owner.id + '">';
             if (!GetRegisteredThing(searched[i].file)) {
                 ensureThingLoadedElem(searched[i].file, searched[i].file + owner.id).then(data => {
-                    let a = parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
-                    document.getElementById(data).innerHTML = a;
+
+                        let a = parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
+                        document.getElementById(data).innerHTML = a;
+
                 });
-            } else {
+            } else    {
                 answer += parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
             }
             //parseSheet(thing, sheetName, w, owner, notes, additionalParms)
@@ -180,6 +211,7 @@ function extractFromCompendium(filter_array, owner) {
     }
     answer += "</ul>";
     return chkDiv(answer);
+
 }
 MakeAvailableToParser('extractFromCompendium', extractFromCompendium);
 
@@ -189,11 +221,13 @@ function clickOnThing(event) {
 
     // hack to handle scenes, which don't have a seperate file. TODO: make more readable
     if (name === undefined) {
-        let thing = SetRegisteredThing("SCENE" + this.references, this.references);
-        name = thing.registeredId;
-    }
+        //let thing = SetRegisteredThing("SCENE" + this.references, this.references);
+        // name = thing.registeredId;
+        window.LoadScene({ name: this.references.name });
+    } else {
 
-    showThing(name, this.references.page);
+        showThing(name, this.references.page);
+    }
 }
 
 
@@ -533,7 +567,40 @@ class searchInDirectory {
 
 };
 
+function createFilterButtons(id, array, allTypes, checkDiv, title) {
+    title.filterButtons = [];
+    title.filterTitles = [];
+    for (const item of allTypes.keys()) {
 
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = 'chk' + item;
+        checkbox.name = item;
+        //  checkbox.checked = true;
+        checkbox.windowId = id;
+        checkbox.array = array;
+        checkbox.removable = true;
+
+
+        checkbox.onchange = function () {
+            refreshDirectoryWindow(this.windowId, this.array);
+        }
+
+        title.filterButtons.push(checkbox);
+        title.filterTitles.push(item);
+
+        let label = document.createElement('label')
+        label.htmlFor = 'chk' + item;
+        label.appendChild(document.createTextNode(item + "      ")); // todo: use style, margin isnt working
+        label.removable = true;
+        //checkDiv.className = "searchHTMLCheckBox";
+        checkDiv.removable = true;
+        checkDiv.appendChild(checkbox);
+        checkDiv.appendChild(label);
+
+
+    }
+}
 
 function showDirectoryWindow(id, array) {
 
@@ -636,43 +703,12 @@ function showDirectoryWindow(id, array) {
 
     // title.whiteSpace = "normal";
     //title.style.display = "block";
+    let checkDiv = document.createElement('div');
 
 
-    title.filterButtons = [];
-    title.filterTitles = [];
-    for (const item of allTypes.keys()) {
+    createFilterButtons(id, array, allTypes, checkDiv, title);
 
-        let checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = 'chk' + item;
-        checkbox.name = item;
-        //  checkbox.checked = true;
-        checkbox.windowId = id;
-        checkbox.array = array;
-        checkbox.removable = true;
-
-        let checkDiv = document.createElement('div');
-
-        checkbox.onchange = function () {
-            refreshDirectoryWindow(this.windowId, this.array);
-        }
-
-        title.filterButtons.push(checkbox);
-        title.filterTitles.push(item);
-
-        let label = document.createElement('label')
-        label.htmlFor = 'chk' + item;
-        label.appendChild(document.createTextNode(item + "      ")); // todo: use style, margin isnt working
-        label.removable = true;
-        //checkDiv.className = "searchHTMLCheckBox";
-        checkDiv.removable = true;
-        checkDiv.appendChild(checkbox);
-        checkDiv.appendChild(label);
-        window.search_in_directory.searchHTML.appendChild(checkDiv);
-
-
-    }
-
+    window.search_in_directory.searchHTML.appendChild(checkDiv);
 
 
     refreshDirectoryWindow(id, array);
