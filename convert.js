@@ -1625,9 +1625,9 @@ var feats = {
 
 
 
-    ElvenMagic: {
+    ElvishMagic: {
 
-        name: "Elven Magic",
+        name: "Elviush Magic",
         description: "You draw upon the natural magic of elves",
 
     },
@@ -2241,7 +2241,7 @@ var backgrounds = {
 
         name: "Elf",
         description: "Elves are graceful, tolkienesque beings devote to the contemplative life. You must choose Allure as your best stat.",
-        feats: ["StarVision,ElvishMagic"],
+        feats: ["StarVision", "ElvishMagic"],
 
         languages: ["Elvish"],
 
@@ -2251,7 +2251,7 @@ var backgrounds = {
 
         name: "Dwarf",
         description: "Dwarves are short, tokeienesque beings who live under the ground.",
-        feats: ["DarkTravel, DwarvishMagic"],
+        feats: ["DarkTravel", "DwarvishMagic"],
 
         languages: ["Dwarvish"],
 
@@ -2442,7 +2442,7 @@ var careers = {
             "Taboo",
             "Religious_Lore"],
         languages: [],
-        tools: "Tomes, Religious symbols, Magic Religious Devices",
+        tools: "Planar Forces, Religious symbols, Magic Religious Devices",
         mana: 1,
     },
 
@@ -2471,7 +2471,7 @@ var careers = {
             "Taboo",
             "Religious_Lore"],
         languages: [],
-        tools: "Tomes, Religious symbols, Magic Religious Devices",
+        tools: "Planar Forces, Religious symbols, Magic Religious Devices",
         mana: 1,
     },
     Dancer: {
@@ -2608,7 +2608,7 @@ var careers = {
             "Scholars_Guild",
         ],
         languages: [tribal_languages, languages, magic_languages],
-        tools: "Tomes, Magic Devices",
+        tools: "Magic Words, Tomes, Magical Devices",
         mana: 1,
     },
     Medecine: {
@@ -2735,8 +2735,8 @@ var careers = {
         languages: [],
         tools: ""
     },
-    Sorcerer: {
-        name: "Sorcerer",
+    Sorceror: {
+        name: "Sorceror",
         description: "Sorcery is dark.. Sorcery does not imply literacy if you come from a barbarian place, though but does imply you know the names of spirits and demons, and the use of dreadful potions and words, and you can sense sorcery. Sorcery involves dealing with dark powers.\n" +
             "You get to learn 1 magical language per level (from the list of languages, but only magical ones).\n" +
             "Magicians are both respected and feared. There are few who will deal with them willingly without great need, as a great many magicians are amoral at best, exceedingly evil at worst, and all of them are at least slightly unhinged. Magicians often live alone, with only a few servants or the occasional apprentice to attend them.",
@@ -2754,7 +2754,7 @@ var careers = {
             "Blood_Sacrifice",
             "SubtleSpell", "Taboo"],
         languages: [magic_languages],
-        tools: "Magical Devices",
+        tools: "Magic Words, Blood, Magical Devices",
         mana: 1,
     },
 

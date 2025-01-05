@@ -158,7 +158,7 @@ function extractFromCompendium(filter_array, owner, types, matches) {
     for (let i = 0; i < searched.length; i++) {
 
 
-        if (!(!types || !matches || matches( searched[i], types))) {
+        if (!(!types || !matches || matches(searched[i], types))) {
             continue;
         }
 
@@ -177,11 +177,11 @@ function extractFromCompendium(filter_array, owner, types, matches) {
             if (!GetRegisteredThing(searched[i].file)) {
                 ensureThingLoadedElem(searched[i].file, searched[i].file + owner.id).then(data => {
 
-                        let a = parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
-                        document.getElementById(data).innerHTML = a;
+                    let a = parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
+                    document.getElementById(data).innerHTML = a;
 
                 });
-            } else    {
+            } else {
                 answer += parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
             }
             //parseSheet(thing, sheetName, w, owner, notes, additionalParms)
@@ -189,22 +189,11 @@ function extractFromCompendium(filter_array, owner, types, matches) {
             answer += '</div>';
         }
         answer += '<img src="' + (searched[i].image != undefined ? searched[i].image : searched[i].img) + '" width="32" height="32"></img>';
-        answer += '</div>';
         answer += searched[i].name;
         if (searched[i].price) answer += '<span class="bold"> ' + searched[i].price + "</span > "
+        answer += '</div>';
 
-        // does not work because thing not loaded
 
-
-        // li.references = array[i];
-        // li.draggable = true;
-        // li.onmousedown = function (event) { clickOne(this); };
-        // li.ondblclick = clickOnThing;
-        // li.ondragstart = function (event) {
-        //     thingDragged = this.references;
-        //     thingDragged.windowId = id;
-
-        // }
         answer += "</li>";
     }
     answer += "</ul>";

@@ -85,10 +85,10 @@
             <div id="columntwo" class="columntwo">
 
                 <p class="npcBold"><span class="c12 ">Wounds Taken: { Editable(thing,
-                        "thing.counters.hurt",
+                        "thing.counters.hurt.cur",
                         "itemsetheader numberinput") } of { getMaxHealth(thing) }</span></p>
                 <p class="npcBold"><span class="c12 ">Exhaustion Suffered: { Editable(thing,
-                        "thing.counters.exhaustion",
+                        "thing.counters.exhaustion.cur",
                         "itemsetheader numberinput") } of 12</span></p>
 
                 <div class="padded speedline ">
@@ -217,7 +217,7 @@
     <div id="spells" { tabClass( thing.tab && thing.tab=="spells" )}>
 
         <p class="npcBold"><span class="c12">Mana in aura: { Editable(thing,
-                "thing.counters.manaInAura",
+                "thing.counters.manaInAura.cur",
                 "itemsetheader numberinput") } of { (getMaxMageLevel(thing)+1) }</span></p>
         <p class="npcBold"> Raise Mana </p>
 
@@ -226,9 +226,19 @@
         <button onclick="htmlContext.addManaStab(this,'{thing.id}')">Action: Cut yourself (blood magic) </button>
         <button onclick="htmlContext.addManaStabAnother(this,'{thing.id}')">Action: Stab another </button>
         <button onclick="htmlContext.addManaSpendIngredients(this,'{thing.id}')">Action: Spend ingredients</button>
-        <button onclick="htmlContext.AddManaWorldsOfPower(this,'{thing.id}')">Bonus Action: Say Words of Power</button>
-        <button onclick="htmlContext.AddManaPLanarFOrces(this,'{thing.id}')">Bonus Action: call on Planar
-            Forces</button>
+        {
+        ( KnowsWordsOfPower(thing)>0 ?
+        '<button onclick="htmlContext.AddManaWordsOfPower(this,\'' + thing.id  +'\')">Bonus Action: Call upon Planar
+            Forces</button>'
+        : "" )
+        }
+
+        {
+        ( KnowsChannelling(thing)>0 ?
+        '<button onclick="htmlContext.AddManaPlanarForces(this,\'' + thing.id  +'\')">Bonus Action: Call upon Planar
+            Forces</button>'
+        : "" )
+        }
         <button onclick="htmlContext.AddManaGotCritOrFumble(this,'{thing.id}')">Got a crit or fumble</button>
         { drawItems(thing, IsSpellIngredient, undefined) }
         <button onclick="htmlContext.resetManaButtons(this.parentElement,'{thing.id}')">reset turn</button>

@@ -634,7 +634,7 @@ function HasFeat(thingId, featName) {
 
 function getStrength(owner) {
 
-    return owner.stats.strength;
+    return Number(owner.stats.strength);
 }
 
 function getMaxMageLevel(owner) {
@@ -652,6 +652,37 @@ function getMaxMageLevel(owner) {
     return answer;
 }
 MakeAvailableToParser('getMaxMageLevel', getMaxMageLevel);
+
+function KnowsTool(owner, tool) {
+    let answer = 0;
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "careers") {
+            let career = GetRegisteredThing(item.file);
+
+            if (career.tools.includes(tool))
+                answer = Math.max(Number(career.owner_level), answer);
+
+        }
+    }
+    return answer;
+
+}
+
+function KnowsWordsOfPower(owner) {
+
+    return KnowsTool(owner, "Magic Words");
+
+}
+MakeAvailableToParser('KnowsWordsOfPower', KnowsWordsOfPower);
+
+
+function KnowsChannelling(owner) {
+    return KnowsTool(owner, "Planar Forces");
+
+
+}
+MakeAvailableToParser('KnowsChannelling', KnowsChannelling);
 
 function getMaxHealth(owner) {
     return 20 + Number(owner.stats.strength) + Number(owner.stats.will) + Number(owner.stats.health) * 5;
@@ -2259,10 +2290,10 @@ let maxExhaustion = 12;
 function addMana(thingId, amt) {
     let thing = GetRegisteredThing(thingId);
     amt = Number(amt);
-    let newMana = (Number(thing.counters.manaInAura) + (amt));
+    let newMana = (Number(thing.counters.manaInAura.cur) + (amt));
     sendChat("Added " + amt + " mana   now " + newMana);
     socket.emit('change', {
-        change: 'thing.counters.manaInAura = ' + (newMana),
+        change: 'thing.counters.manaInAura.cur = ' + (newMana),
         thing: thingId
     });
 }
@@ -2299,10 +2330,10 @@ MakeAvailableToHtml('addManaOncePerTurn', addManaOncePerTurn);
 
 function addManaExhaust(button, thingId) {
     let thing = GetRegisteredThing(thingId);
-    if (thing.counters.exhaustion.cur <= thing.counters.exhaustion.max - 1) {
+    if (thing.counters.exhaustion.cur <= maxExhaustion - 1) {
         exhaust(thingId, 1);
 
-        addMana(thingId, 1);
+        addMana(thingId, 3);
 
     } else {
 
@@ -2383,14 +2414,18 @@ function addManaSpendIngredients(button, thingId) {
 MakeAvailableToHtml('addManaSpendIngredients', addManaSpendIngredients);
 
 function AddManaWorldsOfPower(button, thingId) {
-    addMana(thingId, 1);
+    let thing = GetRegisteredThing(thingId);
+
+    addMana(thingId, KnowsWordsOfPower(thing));
 }
 MakeAvailableToHtml('AddManaWorldsOfPower', AddManaWorldsOfPower);
 
-function AddManaPLanarFOrces(button, thingId) {
-    addMana(thingId, 1);
+function AddManaPlanarForces(button, thingId) {
+    let thing = GetRegisteredThing(thingId);
+    addMana(thingId, KnowsChannelling(thing));
+
 }
-MakeAvailableToHtml('AddManaPLanarFOrces', AddManaPLanarFOrces);
+MakeAvailableToHtml('AddManaPlanarForces', AddManaPlanarForces);
 
 function AddManaGotCritOrFumble(button, thingId) {
     addMana(thingId, 1);
@@ -2411,7 +2446,7 @@ function CastSpell(thingId, ownerId, advantage) {
     let thing = GetRegisteredThing(thingId);
     let owner = GetRegisteredThing(ownerId);
     let cost = getModifiedManaCost(thing);
-    if (cost <= Number(owner.counters.manaInAura)) {
+    if (cost <= Number(owner.counters.manaInAura.cur)) {
         addMana(ownerId, -getModifiedManaCost(thing));
         let a = parseSheet(thing, "spell_chat", undefined, owner, undefined, undefined); // no w
 
