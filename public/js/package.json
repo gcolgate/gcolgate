@@ -10,8 +10,9 @@
     "author": "Gil Colgate",
     "license": "ISC",
     "dependencies": {
-        "ejs": "^3.1.9",
         "drag-drop": "7.2.0",
+        "ejs": "^3.1.9",
+        "quill": "^2.0.3",
         "three": "^0.152.2"
     }
 }

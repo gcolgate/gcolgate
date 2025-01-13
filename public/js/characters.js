@@ -45,6 +45,7 @@ ensureSheetLoaded("itemSummary");
 ensureSheetLoaded("spell_chat");
 ensureSheetLoaded("spell_tooltip");
 ensureSheetLoaded("weapon_tooltip");
+ensureSheetLoaded("moveroll");
 
 function ClickCollapsible(evt, ownerid, id) {
 
@@ -76,10 +77,10 @@ function Collapsible(text, owner, thing) {
     let shown = false;
     let id = SanitizeNonAlphanumeric(thing.id);
 
-    if(!owner) return "";
+    if (!owner) return "";
     else
-    if (owner.notCollapsed)
-        shown = owner.notCollapsed[id];
+        if (owner.notCollapsed)
+            shown = owner.notCollapsed[id];
 
     let a = '<button class=lbl-collapsible-toggle ' +
         ' onclick="htmlContext.ClickCollapsible(event, \'' + owner.id + '\',\'' + id + '\')">' + text + ' </button>';
@@ -192,9 +193,9 @@ export async function ensureThingLoaded(thingName) {
         console.log(file);
         try {
             let response = await fetch(file);
-          //  console.log("Fetched " + file);
+            //  console.log("Fetched " + file);
             let thing = await response.json();
-           // console.log("json " + file);
+            // console.log("json " + file);
             thing.id = (thingName);
 
             if (thing.template) {
@@ -589,14 +590,14 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
                     }
                     state--;
                     if (state == 0) {
-                      //  try {
+                        //  try {
 
-                            newText += eval(code);
+                        newText += eval(code);
 
 
-                     //   } catch (error) {
-                     //       throw new Error(error + "  fileSOFar: " + newText + "\ncodeBeingEvaluated " + error.stack + "\n" + code);
-                     //   }
+                        //   } catch (error) {
+                        //       throw new Error(error + "  fileSOFar: " + newText + "\ncodeBeingEvaluated " + error.stack + "\n" + code);
+                        //   }
                     }
                     else {
                         code += '}';
@@ -612,7 +613,7 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
     return newText;
 }
 
-  async function displayThing(fullthingname, sheetName) {
+async function displayThing(fullthingname, sheetName) {
 
     /// TODO: needs to save and restore any scrolling or window resizing
     fullthingname = SanitizeSlashes(fullthingname);
@@ -626,6 +627,8 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
     let thing = GetRegisteredThing(fullthingname);
     let body = document.getElementById("window_" + fullthingname + "_body");
     body.innerHTML = parseSheet(thing, sheetName, w, undefined);
+
+
 
     let draggables = body.getElementsByClassName("dragitem");
     for (let i = 0; i < draggables.length; i++) {
@@ -645,7 +648,7 @@ export function formatRemoveButton(ownerid, itemid) {
 }
 
 function LineOfCareer(owner, thing, notes) {
-    if(!thing) return "";
+    if (!thing) return "";
     if (notes == undefined && owner != undefined)
         return div(
             div(Editable(thing, "thing.name", "itemsetheadershort crit")) +
@@ -654,7 +657,7 @@ function LineOfCareer(owner, thing, notes) {
             //  div(span("CP spent", Editable(thing, "thing.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")) +
             formatRemoveButton(owner.id, thing.id),
             'class="fourcolumncareers"');
-    else if(notes)
+    else if (notes)
         return div(
             div("Career:", 'class="basicFont italic"') +
             div(thing.name, "itemsetheadershort") +
@@ -664,7 +667,7 @@ function LineOfCareer(owner, thing, notes) {
     else {
         return div(
             div("Career:", 'class="basicFont italic"') +
-            div(thing.name, "itemsetheadershort") );
+            div(thing.name, "itemsetheadershort"));
 
 
     }

@@ -3,7 +3,7 @@
 import { current_scene, three_camera, pinger, set_three_camera_xy, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
 import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow, folders, GetDirectory } from './directoryWindow.js';
 import { createOrGetLoginWindow, windowsInit } from './window.js';
-import { showChatWindow, setLogin, addChat } from './chat.js';
+import { showChatWindow, setLogin, addChat, update_roll } from './chat.js';
 import { UpdateNPC, RemoveFromNPC, AddItemToNPC, showThing } from "./characters.js";
 import { fetchJson } from './fetchJson.js';
 import { thingDragged } from './drag.js';
@@ -11,6 +11,7 @@ import { thingDragged } from './drag.js';
 
 windowsInit();
 let players = { hero: "" };
+
 
 
 ////////
@@ -60,7 +61,7 @@ socket.on('pingDo', function (msg) {
     pinger.pingdo(msg);
 });
 
-socket.on('set_three_camera_xy', function(msg) {
+socket.on('set_three_camera_xy', function (msg) {
     // perhaps this should be an animation
     set_three_camera_xy(msg);
 });
@@ -96,15 +97,25 @@ socket.on('updatedTile', function (msg) {
 });
 
 socket.on('chat', function (msg) {
-    console.log(" got result %o", msg);
+    console.log("Got chat msg ");
+    console.log(msg);
     addChat(msg);
+
 });
 
-socket.on('change', function (msg) {
-    UpdateNPC(msg);
-    if (msg.updateAppearance) {
 
-        three_updateAllUsingProto(msg.thing);
+
+socket.on('change', function (msg) {
+    if (msg.thing.startsWith("roll_")) {
+
+        update_roll(msg);
+    }
+    else {
+        UpdateNPC(msg);
+        if (msg.updateAppearance) {
+
+            three_updateAllUsingProto(msg.thing);
+        }
     }
 });
 
@@ -148,7 +159,10 @@ socket.on('login_success', function (msg) {
     setLogin(msg);
     Login.innerText = msg;
     GetMainDirectories();
-
+    fetchJson("/previous_chats").then(chats => {
+        console.log("pChats %o", chats);
+        showChatWindow(chats);
+    });
     // GetDirectory('CurrentOpenScene').then((c) => { three_replaceScene(c); });
 
 });
@@ -198,7 +212,10 @@ chatButton.onclick = function () {
     if (!players.hero) {
         alert("Please log in");
     } else {
-        showChatWindow([]);
+        fetchJson("/previous_chats").then(chats => {
+            console.log("Chats %o", chats);
+            showChatWindow(chats);
+        });
     }
 
 
@@ -227,8 +244,6 @@ settings.onclick = function () {
 
 init();
 
-
-showChatWindow([]);
 
 class Scene {
 

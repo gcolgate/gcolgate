@@ -1,0 +1,34 @@
+<div id="{thing.id}">
+    <div class="body">
+        <div>
+            <div class="npcheader">
+                { owner.name } </div>
+            Advantage/Disadvantage: { Editable(thing,
+            "thing.advantage",
+            "itemsetheader numberinput width32px")} <br>
+            <div>
+                Skill: { Editable(thing,"thing.skill","width100px")}
+                <span class="bold"> { GetCareerLevel(owner, thing.skill) } </span><br>
+            </div>
+            <div>
+                Stat: { Editable(thing,"thing.stat", "width100px")}
+                <span class="bold"> { GetStatBonus(owner, thing.stat) } </span>
+            </div>
+            Difficulty: <span class="bold"> { Editable(thing,"thing.difficulty", "itemsetheader numberinput width32px")
+                }<br>
+                Move:<span class="bold chatroll"> { thing.move } </span>
+            </span><br>
+
+
+
+            <div class="chatroll">{ GetRollResult(thing,owner)+ ':' + GetRollCategory(thing,owner) }</div>
+            <div class=" chatresults">
+
+                <div class=" italic"> { GetRollResults(thing,owner) } </div>
+                <div class=" bold"> { GetRollTextResult(thing,owner) } </div>
+                { thing.damageResults ? thing.damageResults : "" }
+            </div>
+
+        </div>
+    </div>
+</div>

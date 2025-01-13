@@ -112,10 +112,10 @@ export const moves = {
         <li> &#x25BA; Sorcerous Power The character’s flashy and  dark and unnatural arts is enough to terrify many foes</li>\
         <li> &#x25BA; Stain the Soil Red Following the death of several foes and the shedding of copious amounts of blood, the character lets out a savage, primordial cry</li>\
         <li> &#x25BA; Divine Power Against the superstitious and the extraplanar, the words of a priest can compel</li></ul>",
-        "Critical": "Foes are frightened of you,  and  take another, different, action ",
-        "success": "Foes are frightened of you and may flee (Wis Save or Circumstances): take another, different, action",
-        "mixed": "Foes are frightened",
-        "fail": "None or reverse effect"
+        "Critical": "Foes are very frightened of you, they may become stunned (save) and you can take another, different, action ",
+        "success": "Foes are frightened of you and they may flee (save): and you take another, different, action",
+        "mixed": "Foes are frightened of you but try to treat you as the main threat",
+        "fail": "None or reverse effect, maybe their morale raises"
     },
     "Attack": {
         "stat": [
@@ -448,6 +448,51 @@ export const moves = {
         <li> &#x25BA; they will believe you if you do something or spend something to show your commitment</li>\
         <li> &#x25BA; they believe you if you show them some kind of evidence</li></ul>",
         "fail": "On a miss: they don't believe you. Maybe this has other consequences"
+    },
+    "Devices": {
+        "stat": [
+            "cunning", "intelligence",
+        ],
+        "tooltip": "Craft, lockpick, trap removal, anything technical",
+        "Comments": "Craft, lockpick, trap removal, anything technical.",
+        "Critical": "",
+        "success": "You successfully deal with the obstacle",
+        "mixed": "GM choose 1:<ul>\
+        <li> &#x25BA; You made noise and alerted enemies</li>\
+        <li> &#x25BA; You break one of your tools or lockpicks</li>\
+        <li> &#x25BA; It takes a long time</li>\
+        <li> &#x25BA; There is another roll required for some new step required</li></ul>",
+        "fail": "On a miss: Either you don't solve the issue or the issue is solved with some major problem, like guards showing up"
+    },
+    "Hard Physical Work": {
+        "stat": [
+            "strength", "will",
+        ],
+        "tooltip": "Craft, lockpick, trap removal, anything technical",
+        "Comments": "Craft, lockpick, trap removal, anything technical.",
+        "Critical": "",
+        "success": "You successfully deal with the obstacle",
+        "mixed": "GM choose 1:<ul>\
+        <li> &#x25BA; You made noise and alerted enemies</li>\
+        <li> &#x25BA; You break one of your tools or lockpicks</li>\
+        <li> &#x25BA; It takes a long time</li>\
+        <li> &#x25BA; There is another roll required for some new step required</li></ul>",
+        "fail": "On a miss: Either you don't solve the issue or the issue is solved with some major problem, like guards showing up"
+    },
+    "Hard Mental Work": {
+        "stat": [
+            "intelligence", "will",
+        ],
+        "tooltip": "Craft, lockpick, trap removal, anything technical",
+        "Comments": "Craft, lockpick, trap removal, anything technical.",
+        "Critical": "",
+        "success": "You successfully deal with the obstacle",
+        "mixed": "GM choose 1:<ul>\
+        <li> &#x25BA; You made noise and alerted enemies</li>\
+        <li> &#x25BA; You break one of your tools or lockpicks</li>\
+        <li> &#x25BA; It takes a long time</li>\
+        <li> &#x25BA; There is another roll required for some new step required</li></ul>",
+        "fail": "On a miss: Either you don't solve the issue or the issue is solved with some major problem, like guards showing up"
     },
     "Steal": {
         "stat": [
@@ -793,6 +838,16 @@ function takeDamage(ownerId, damage, damageType, advantage) {
         resultsTable: takeDamageMove
     });
 
+
+    socket.emit('roll', {
+        owner: owner.name,
+        title: owner.name + "<ul><li> Resist Damage </li><li> Damage: " + damage + " armor: " + armor + " mod " + mod_damage + " " + advantage + "</li></ul>",
+        style: "dual-move",
+        advantage: advantage,
+        roll: baseDice + (mod_damage >= 0 ? "+" + mod_damage : mod_damage),
+        resultsTable: takeDamageMove
+    });
+
 }
 
 MakeAvailableToParser("takeDamage", takeDamage);
@@ -810,6 +865,8 @@ function getTakenDamageType(thingId) {
 MakeAvailableToHtml("getTakenDamage", getTakenDamage);
 MakeAvailableToHtml("getTakenDamageType", getTakenDamageType);
 
+
+// input: owner, node, output [ damage, skill]
 function FindBestCareerNode(owner, node) {
 
     let bonus = 0;
@@ -849,6 +906,7 @@ function FindBestCareerNode(owner, node) {
             }
         }
     }
+    console.log(career_string);
     return [bonus + strbonus, career_string];
 }
 
@@ -897,7 +955,7 @@ function showArmorBenefit(thing, owner) {
     answer += div(span("bonus ", armor.bonus + ""));
 
     let steel = FindBestCareerNode(owner, armor);
-    answer += div(span("Steel ", steel + ""));
+    answer += div(span("Steel ", steel[0] + ""));
     answer += div(span("Sacrifice", (armor.usedSacrifice ? armor.sacrifice - armor.usedSacrifice : armor.sacrifice) + "/" + armor.sacrifice));
 
     return div(answer);
@@ -1816,35 +1874,72 @@ function hideInventoryTooltip(thingId) {
 }
 MakeAvailableToParser('hideInventoryTooltip', hideInventoryTooltip);
 
+function quote(x) {
+    return "'" + x + "'";
+}
 
-function rollMoveStat(ownerId, stat, mv, advantage, weapon_id, weapon_mode) {
+function CreateRollMoveStatString(buttonClass, buttonText, ownerId, stat, mv, skill, advantage, weapon_id, defense_or_offset, weapon_mode) {
+    let comma = ",";
+    return "<button class=\""
+        + buttonClass + "\" onclick =\"htmlContext.rollMoveStat(" + quote(ownerId) + comma + quote(stat) + comma + quote(mv) + comma + quote(skill) + comma + quote(advantage) + comma +
+        quote(weapon_id) + comma + quote(defense_or_offset) + comma + quote(weapon_mode) + ")\">"
+        + quote(buttonText) +
+        "</button>";
+
+}
+MakeAvailableToParser('CreateRollMoveStatString', CreateRollMoveStatString);
+
+
+function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDefense, weapon_mode) {
     let owner = GetRegisteredThing(ownerId);
     let damage = []
     let bonus = owner.stats[stat];
-    if (!weapon_id) {
+    if (!weapon_id || weapon_id == "undefined") {
 
-        socket.emit('roll', {
-            title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + "</li></ul>",
-            style: "dual-move",
+        socket.emit('rollmove', {
+            ownerId: ownerId,
+            stat: stat,
+            statBonus: owner.stats[stat],
+            skill: skill,
+            skillDice: GetCareerLevel(owner, skill),
+            move: mv,
+            difficulty: 0,
             advantage: advantage,
-            roll: baseDice + signed(bonus),
             resultsTable: moves[mv]
         });
+
+        // socket.emit('roll', {
+        //     title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + "</li></ul>",
+        //     style: "dual-move",
+        //     advantage: advantage,
+        //     roll: baseDice + signed(bonus),
+        //     resultsTable: moves[mv]
+        // });
     } else {
         let weapon = GetRegisteredThing(weapon_id);
         if (!weapon) throw ("err");
-        let mode = weapon.weapon_modes[weapon_mode];
-        if (Expend(weapon_id, weapon_mode)) {
+        let mode = (weapon[attackOrDefense][weapon_mode]); // weaksauce fix
+        if (Expend(weapon_id, mode)) {
             RedrawWindow(owner)
         }
-        socket.emit('roll', {
-            title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + weapon.name + "</li></ul>",
-            style: "dual-move",
+        let skill = FindBestCareerNode(owner, mode)[1];
+        console.log(skill);
+        socket.emit('rollmove', {
+
+            ownerId: ownerId,
+            stat: stat,
+            statBonus: owner.stats[stat],
+            skill: skill,
+            skillDice: GetCareerLevel(owner, skill),
+            move: mv,
+            difficulty: 0,
             advantage: advantage,
-            roll: baseDice + signed(bonus),
+            resultsTable: moves[mv],
+            weapon_name: weapon.name,
             damage: mode.damage,
             damage_bonus: FindBestCareerNode(owner, mode)[0],
-            resultsTable: moves[mv]
+
+
         });
 
 
@@ -1856,7 +1951,7 @@ MakeAvailableToParser("rollMoveStat", rollMoveStat);
 MakeAvailableToHtml("rollMoveStat", rollMoveStat);
 
 /// TODO rearrange data so this isn';t a seprate function
-function rollSpellMoveStat(ownerId, stat, mv, advantage, spell_id, spell_node) {
+function rollSpellMoveStat(ownerId, stat, mv, skill, advantage, spell_id, spell_node) {
     let owner = GetRegisteredThing(ownerId);
     let damage = []
     let bonus = owner.stats[stat];
@@ -1880,7 +1975,204 @@ function rollSpellMoveStat(ownerId, stat, mv, advantage, spell_id, spell_node) {
 }
 
 
+function GetCareerLevel(owner, skill) {
 
+    for (let i = 0; i < owner.items.length; i++) {
+
+        let item = owner.items[i];
+        if (item.page == "careers" && item.name == skill) {
+            let career = GetRegisteredThing(item.file);
+            let level = Number(career.owner_level);
+            return level;
+        }
+    }
+    return 0;
+
+}
+
+
+
+MakeAvailableToParser("GetCareerLevel", GetCareerLevel);
+
+
+
+
+function GetStatBonus(owner, stat) {
+
+    return Number(owner.stats[stat]);
+}
+
+
+
+MakeAvailableToParser("GetStatBonus", GetStatBonus);
+
+function getRollAndRollResults(thing, owner) {
+
+    let index = 0;
+
+    let outputD10s = thing.d10.slice();
+    let results = "";
+    let numdice = 2;
+    if (thing.advantage != 0) {
+        numdice += Math.abs(thing.advantage);
+    }
+    if (thing.advantage < 0)
+        outputD10s.sort(function (a, b) { return Number(a.val) - Number(b.val) });
+    if (thing.advantage > 0)
+        outputD10s.sort(function (a, b) { return Number(b.val) - Number(a.val) });
+
+    results += "d10s: <b> " + (outputD10s[0].val) + "," + (outputD10s[1].val) + " " + "</b>";
+    for (let j = 2; j < numdice; j++) {
+        results += "," + (outputD10s[j].val);
+    }
+
+    let result = Number(outputD10s[0].val) + Number(outputD10s[1].val);
+
+    let natural = result;
+
+    let max = 0;
+    let numSixes = 0;
+
+    let skill = GetCareerLevel(owner, thing.skill);
+
+    if (skill > 0)
+        results += "d6s:(";
+    for (let i = 0; i < skill; i++) {
+        if (i > 0) results += ",";
+        results += (thing.skillDice[i].val);
+        max = Math.max(max, thing.skillDice[i].val);
+        if (thing.skillDice[i].val == 6) numSixes++;
+    }
+    result += Number(max);
+    if (max) results += ") " + max;
+    if (numSixes > 1) {
+        result += numSixes - 1;
+        results += " <span class='redtext'>" + (numSixes - 1) + "</span>";
+    }
+    result += Number(thing.statBonus);
+    results += (thing.statBonus > 0 ? " +" : "") + thing.statBonus;
+    result -= Number(thing.difficulty);
+    results += " -" + thing.difficulty;
+    let text = "";
+
+    if (natural == 2)
+        text = ("fail");
+    else if (natural == 20)
+        text = ("critical");
+    else if (result < 10)
+        text = ("fail");
+    else if (result < 16)
+        text = ("mixed");
+    else if (result < 23)
+        text = ("success");
+    else
+        text = ("critical");
+
+
+    return { result: result, results: results, natural: natural, category: text }
+
+}
+
+//     let results = "";
+
+//     results += "<b> " + (thing.d10[index].val) + "," + (thing.d10[index + 1].val) + " " + "</b>";
+//     if (thing.advantage != 0)
+//         results += (thing.d10[index ^ 2].val) + "," + (thing.d10[(index ^ 2) + 1].val) + " ";
+
+//     let result = Number(thing.d10[index].val) + Number(thing.d10[index + 1].val);
+
+//     let natural = result;
+
+//     let max = 0;
+//     let numSixes = 0;
+
+//     let skill = GetCareerLevel(owner, thing.skill);
+
+//     if (skill > 0)
+//         results += "(";
+//     for (let i = 0; i < skill; i++) {
+//         if (i > 0) results += ",";
+//         results += (thing.skillDice[i].val);
+//         max = Math.max(max, thing.skillDice[i].val);
+//         if (thing.skillDice[i].val == 6) numSixes++;
+//     }
+//     result += Number(max);
+//     if (max) results += ") = " + max;
+//     if (numSixes > 1) {
+//         result += numSixes - 1;
+//         results += " <span class='redtext'>" + (numSixes - 1) + "</span>";
+//     }
+//     result += Number(thing.statBonus);
+//     results += " + " + thing.statBonus;
+//     result -= Number(thing.difficulty);
+//     results += " -  " + thing.difficulty;
+//     let text = "";
+
+//     if (natural == 2)
+//         text = ("fail");
+//     else if (natural == 20)
+//         text = ("critical");
+//     else if (result < 10)
+//         text = ("fail");
+//     else if (result < 16)
+//         text = ("mixed");
+//     else if (result < 23)
+//         text = ("success");
+//     else
+//         text = ("critical");
+
+
+//     return { result: result, results: results, natural: natural, category: text }
+
+// }
+
+function GetRollResult(thing, owner) {
+
+
+    return getRollAndRollResults(thing, owner).result;
+
+}
+MakeAvailableToParser("GetRollResult", GetRollResult);
+
+
+function GetRollCategory(thing, owner) {
+
+
+    return getRollAndRollResults(thing, owner).category;
+
+}
+MakeAvailableToParser("GetRollCategory", GetRollCategory);
+
+
+
+function GetRollResults(thing, owner) {
+
+
+    return getRollAndRollResults(thing, owner).results;
+
+}
+MakeAvailableToParser("GetRollResults", GetRollResults);
+
+
+function ptbaResult(nat, r, resultsTable) {
+
+    console.log(resultsTable);
+    console.log(resultsTable.Critical);
+    if (nat == 2) return (resultsTable.fail);
+    if (nat == 20) return (resultsTable.Critical.empty() ? resultsTable.success : resultsTable.Critical);
+    if (r < 10) return (resultsTable.fail);
+    if (r < 16) return (resultsTable.mixed);
+    if (r < 23) return (resultsTable.success);
+    return (resultsTable.Critical == "" ? resultsTable.success : resultsTable.Critical);
+}
+
+function GetRollTextResult(thing, owner) {
+
+    let a = getRollAndRollResults(thing, owner);
+    return ptbaResult(a.natural, a.result, thing.resultsTable)
+
+}
+MakeAvailableToParser("GetRollTextResult", GetRollTextResult);
 
 function rollPTBAStat(ownerId, stat, isSave) {
     let owner = GetRegisteredThing(ownerId);
@@ -1957,15 +2249,12 @@ function WeaponMoves(owner, weaponId) {
                 for (let j = 0; j < moves[key].stat.length; j++) {
                     let stat = moves[key].stat[j];
                     answer += "<div>"
-                    answer += "<button class=\"greentintButton roundbutton \" onclick =\"htmlContext.rollMoveStat('" + owner.id + "','" + stat + "', '" + 'Attack' + "',1,'" + weaponId + "'," + m + ")\">"
-                        + "+" +
-                        "</button>";
-                    answer += "<button class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + owner.id + "','" + stat + "', '" + 'Attack' + "',0,'" + weaponId + "'," + m + ")\">"
-                        + ' ' + mode.name + '  +' + stat + "(" + owner.stats[stat] + ') ST(' + bonus[0] + ") " + 'Rng(' + mode.range + ")" +
-                        "</button>";
-                    answer += "<button class=\"redtintButton roundbutton\" onclick=\"htmlContext.rollMoveStat('" + owner.id + "','" + stat + "', '" + 'Attack' + "',-1,'" + weaponId + "'," + m + ")\">"
-                        + "-" +
-                        "</button>";
+                    answer += CreateRollMoveStatString("greentintButton roundbutton", "+",
+                        owner.id, stat, 'Attack', bonus[1], 1, weaponId, "weapon_modes", m);
+                    answer += CreateRollMoveStatString("middleButton", mode.name + '  +' + stat + "(" + owner.stats[stat] + ') ST(' + bonus[0] + ") " + 'Rng(' + mode.range + ")",
+                        owner.id, stat, 'Attack', bonus[1], 0, weaponId, "weapon_modes", m);
+                    answer += CreateRollMoveStatString("redtintButton roundbutton", '-',
+                        owner.id, stat, 'Attack', bonus[1], -1, weaponId, "weapon_modes", m);
                     answer += "</div>"
                 }
             }
@@ -1975,7 +2264,7 @@ function WeaponMoves(owner, weaponId) {
 
 MakeAvailableToParser('WeaponMoves', WeaponMoves);
 
-function WeaponParries(thing, weaponId,) {
+function WeaponParries(thing, weaponId) {
 
     if (!isEquipped(thing.id, weaponId)) return "";
     let answer = "";
@@ -1985,30 +2274,35 @@ function WeaponParries(thing, weaponId,) {
     if (weapon.weapon_defenses)
         for (let m = 0; m < weapon.weapon_defenses.length; m++) {
             if (isExpended(weaponId, m)) continue;
+
             let mode = weapon.weapon_defenses[m];
-            // if (mode.range) answer += div(span("range ", mode.range));
-            // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
-            // if (mode.radius) answer += div(span("radius range ", mode.radius));
-            // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
-            let bonus = FindBestCareerNode(thing, mode);
+            if (mode.move)
+                for (let k = 0; k < mode.move.length; k++) {
+
+                    // if (mode.range) answer += div(span("range ", mode.range));
+                    // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
+                    // if (mode.radius) answer += div(span("radius range ", mode.radius));
+                    // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
+                    let bonus = FindBestCareerNode(thing, mode);
 
 
-            let stats = ["Bravery", "Avoid"];
-            for (let j = 0; j < stats.length; j++) {
-                let stat = stats[j];
-                answer += "<div>"
-                answer += "<button class=\"greentintButton roundbutton \" onclick =\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',1,'" + weaponId + "'," + m + ")\">"
-                    + "+" +
-                    "</button>";
-                answer += "<button class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',0,'" + weaponId + "'," + m + ")\">"
-                    + ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + "(" + stat + ")" +
-                    "</button>";
-                answer += "<button class=\"redtintButton roundbutton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + mode.name + "',-1,'" + weaponId + "'," + m + ")\">"
-                    + "-" +
-                    "</button>";
-                answer += "</div>"
+                    let stats = ["avoidance"];
+                    console.log(mode);
+                    if (mode.move[k] == "Parry") stats.push("bravery");
+                    for (let j = 0; j < stats.length; j++) {
+                        let stat = stats[j];
+                        answer += "<div>"
+                        answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
+                            thing.id, stat, mode.move, bonus[1], 1, weaponId, "weapon_defenses", m);
+                        answer += CreateRollMoveStatString("middleButton", ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + "(" + stat + ")",
+                            thing.id, stat, mode.move, bonus[1], 0, weaponId, "weapon_defenses", m);
+                        answer += CreateRollMoveStatString("redtintButton roundbutton ", '-',
+                            thing.id, stat, mode.move, bonus[1], -1, weaponId, "weapon_defenses", m);
 
-            }
+                        answer += "</div>"
+
+                    }
+                }
         }
     return answer;
 }
@@ -2049,10 +2343,18 @@ function PTBAMoves(thing) {
                 answer += WeaponMoves(thing, weapons[w]);
             }
 
-        } else
+        } else {
+            let skill = "";
             for (let j = 0; j < moves[key].stat.length; j++) {
                 let stat = moves[key].stat[j];
                 answer += "<div class=\"padded\" >";
+                answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
+                    thing.id, stat, key, skill, 1);
+                answer += CreateRollMoveStatString("middleButton ", key + "(" + stat + ":" + thing.stats[stat] + ")",
+                    thing.id, stat, key, skill, 0);
+                answer += CreateRollMoveStatString("redtintButton roundbutton ", '+',
+                    thing.id, stat, key, skill, -1);
+
                 answer += "<button class=\"greentintButton roundbutton \"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',1)\">"
                     + "+" +
                     "</button>";
@@ -2064,6 +2366,7 @@ function PTBAMoves(thing) {
                     + "-" +
                     "</button></div>";
             }
+        }
     }
     return (answer);
 }
@@ -2085,7 +2388,7 @@ function PTBADefenses(thing) {
         }
     }
     let a = "Dodge";
-    let stat = "Avoid";
+    let stat = "avoidance";
     answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',1)\">"
         + "+" +
         "</button>";

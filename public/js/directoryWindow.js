@@ -12,6 +12,7 @@ export var folders = {
     Favorites: {},
     Uniques: {},
     Scenes: {},
+    Documents: {},
     images: {},
 };
 var dirWindowCustomization = {
@@ -20,6 +21,7 @@ var dirWindowCustomization = {
     Favorites: { dimensions: [.2, .6, .2, .2] },
     Uniques: { dimensions: [.2, .6, .2, .2] },
     Scenes: { newButton: "newScene", dimensions: [.2, .6, .2, .2] },
+    Documents: { newButton: "newPOI", dimensions: [.2, .6, .2, .2] },
     images: { newButton: "up", dimensions: [.6, .6, .2, .2], divHolder: "twocolumns" },
 };
 export function GetMainDirectories() {
@@ -28,6 +30,7 @@ export function GetMainDirectories() {
     GetDirectory('Favorites', true).then((c) => { folders.Favorites = c; });
     GetDirectory('Uniques', true).then((c) => { folders.Uniques = c; });
     GetDirectory('Scenes', true).then((c) => { folders.Scenes = c; });
+    GetDirectory('Documents', true).then((c) => { folders.Documents = c; });
     //GetDirectory('images').then((c) => { folders.images = c; }); // todo remove
 
     setUpDirButton('Compendium');
@@ -36,6 +39,7 @@ export function GetMainDirectories() {
     setUpDirButton('Uniques');
     setUpDirButton('Scenes');
     setUpDirButton('images');
+    setUpDirButton('Documents');
 }
 
 function setUpDirButton(buttonName) {
@@ -107,6 +111,7 @@ async function addToPlayerFromDropdown(thing_file, ownerid) {
     // dropDownToggle('dropdown_' + ownerid);
 }
 MakeAvailableToHtml('addToPlayerFromDropdown', addToPlayerFromDropdown);
+
 
 function itemToolTip(name, owner, on) {
     let t = document.getElementById(name + owner);

@@ -530,6 +530,15 @@
       text-transform: capitalize;
     }
 
+    .width32px {
+      width: 32px;
+    }
+
+    .width100px {
+      width: 100px;
+    }
+
+
     .indented12x {
       text-indent: 12px;
     }
@@ -556,7 +565,8 @@
       width: 75px;
     }
 
-    ,margin20x {
+    ,
+    margin20x {
       margin-left: 20px;
     }
 
@@ -799,8 +809,8 @@
 
 
 
-      /* CSS */
-      .injuryButton {
+    /* CSS */
+    .injuryButton {
       background-image: linear-gradient(#b8a04b, #2f221d);
       border: 2px solid #260404;
       border-radius: 12px;
@@ -842,9 +852,11 @@
     .displayblock {
       display: block;
     }
+
     .verticalLine {
-  border-left: thick solid #ff0000;
-}
+      border-left: thick solid #ff0000;
+    }
+
     .blueButton:active {
       background-image: linear-gradient(#3D94D9, #0067B9);
       border-color: #006DBC;
@@ -1181,7 +1193,40 @@
       color: #3d0dad;
       background-color: burlywood;
       font-style: italic;
-      border-bottom: #3d0dad groove
+      border-bottom: #3d0dad groove;
+      border-top: #3d0dad groove;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .chatresults {
+      color: black;
+      background-color: white;
+      border-style: outset;
+      font-family: sans-serif;
+      font-weight: Normal;
+      font-size: 12px;
+      text-align: left;
+      text-decoration: none;
+    }
+
+    .chatroll {
+      font-style: bold;
+      text-align: center;
+      font-size: 24px;
+      border-top: rgb(88, 23, 13);
+      border-right: rgb(88, 23, 13);
+      border-left: rgb(88, 23, 13);
+      border-bottom: rgb(88, 23, 13);
+
+      color: rgb(88, 23, 13);
+      background-color: white;
+      color-scheme: light dark;
+
+      font-weight: 700;
+
+
+
     }
 
     .chattext {
@@ -1314,6 +1359,10 @@
 
 
   </script>
+
+  <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+
   <script>  var htmlContext = {}; // how to trade variables cross window </script>
   <script type="text/javascript" src="./js/socket.io/client-dist/socket.io.js"></script>
   <script type="module" src="./js/fetchJson.js"></script>
@@ -1343,6 +1392,7 @@
     <button type="button" id="Uniques">Uniques </button>
     <button type="button" id="Favorites">Favorites </button>
     <button type="button" id="Compendium">Compendium</button>
+    <button type="button" id="Documents">Documents</button>
     <button type="button" id="Settings">Settings </button>
     <button type="button" id="Chat">Chat </button>
     <input type="checkbox" id="EditMap" name="EditMap">

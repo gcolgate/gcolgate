@@ -3,7 +3,7 @@
 // metaTag.content = "user-scalable=0";
 // document.getElementsByTagName("head")[0].appendChild(metaTag);
 
-import { MakeAvailableToHtml } from "./characters.js";
+import { MakeAvailableToHtml, MakeAvailableToParser } from "./characters.js";
 import { socket } from './main.js';
 import { setThingDragged } from './drag.js';
 import { GoUpOneDirectory } from './directoryWindow.js';
@@ -137,6 +137,7 @@ export function windowShowing(name) {
 
 let ButtonTitles = {
     newPlayer: "New Player",
+    newPOI: "New New Doc",
     popout: "PopOut",
     up: "<---",
     newScene: "New Scene",
@@ -145,7 +146,7 @@ let ButtonTitles = {
 
 function removePunctuation(string) {
     return string.replace(/[!"#$%&'()*+,-./:;<=>?@[\]/^\s+$/"^`{|}~]/g, "_");
-  }
+}
 
 
 function DoButton(id) {
@@ -153,6 +154,10 @@ function DoButton(id) {
         case "newPlayer":
             console.log("New Player");
             socket.emit('newPlayer');
+            break;
+        case "newPOI":
+            console.log("New Player");
+            socket.emit('newPOI');
             break;
         case "up": {
             GoUpOneDirectory("images");
@@ -619,3 +624,98 @@ export function fadeOut(elmnt) {
         }
     }
 }
+
+
+// move thjese into quill file
+
+var quill_options = {
+    modules: {
+        toolbar: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            ['image', 'code-block'],
+        ],
+    },
+    placeholder: 'Compose an epic...',
+    theme: 'snow', // or 'bubble'
+};
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+function updateDocument(windowname) {
+    let w = document.getElementById(windowname);
+
+    let q = w.quill;
+
+    let evaluation = "thing.text = " + JSON.stringify(w.quill.getContents());;
+    let thing = w.thing;
+
+    console.log(evaluation);
+    console.log(w);
+
+    socket.emit('change', {
+        change: evaluation,
+        thing: thing.id
+    });
+}
+MakeAvailableToHtml('updateDocument', updateDocument);
+
+async function attachQuill(id, w, thing) { // todo just waiting is lame
+    console.log("OK");
+    await delay(500); // this is lame
+
+    // if (w.quill) {
+    //     let under = w.firstChild;
+    //     while (under.firstChild) {
+    //         under.removeChild(under.lastChild);
+    //     }
+    // }
+    if (w.quill) delete (w.quill);
+    w.quill = new window.Quill("#editor" + id, quill_options);
+    w.thing = thing;
+
+    w.quill.setContents(thing.text);
+
+    console.log(w.quill);
+
+    // w.quill.on('text-change', (delta, oldDelta, source) => {
+    //     // if (source == 'api') {
+    //     //     console.log('An API call triggered this change.');
+    //     // } else if (source == 'user') {
+    //     //     let q = w.quill;
+    //     //     console.log('A user action triggered this change.', source);
+    //     //     let evaluation = "thing.text = " + JSON.stringify(q.getContents());
+    //     //     let thing = w.thing;
+
+    //     //     console.log(evaluation);
+    //     //     console.log(w);
+
+    //     //     socket.emit('change', {
+    //     //         change: evaluation,
+    //     //         thing: thing.id
+    //     //     })
+    //     // }
+    //     w.quill_contents = JSON.stringify(w.quill.getContents());
+    // });
+    w.addEventListener("focusin", (event) => {
+        event.target.style.background = "pink";
+    });
+
+    w.addEventListener("focusout", (event) => {
+        event.target.style.background = "";
+    });
+
+    w.addEventListener('unload', function (event) {
+        console.log(this);
+        console.log(w);
+        updateDocument(w);
+
+        alert("Unload");
+        // Custom logic when the window is closed
+        delete this.quill;
+        w.quill = null;
+        console.log('Window has been closed, quill removed?.');
+    });
+}
+
+MakeAvailableToParser('attachQuill', attachQuill);
