@@ -11,12 +11,16 @@ var folders = {
   Uniques: [],
   Party: [],
   Scenes: [],
-  ScenesParsed: []
+  ScenesParsed: [],
+  Documents: []
 };
 
 function uuidv4() {
   return uuid.v4();
 }
+
+
+var chats = []; // chats so far
 
 function ensureExists(thing, template, field) {
   if (thing[field] == undefined) {
@@ -73,6 +77,13 @@ function getAppearanceImage(thing, type) {
 function getPortrait(thing) {
   return getAppearanceImage(thing, 'portrait');
 }
+
+function stripRoll(id) {
+  if (id.startsWith("roll_")) {
+    return id.substr(5);
+  }
+  return id;
+}
 /***
  *  ChangeThing
  *
@@ -93,13 +104,21 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
   if (replacement) {
     // Need to put these in a cache and write them out over time for speed
     // this should go through a cache
+    let thing;
+    let has_file = true;
+    if (!thingName.startsWith("roll_")) {
+      var filePath = path.normalize(
+        path.join(__dirname, 'public', optionallyAddExt(thingName, '.json')));
 
-    let filePath = path.normalize(
-      path.join(__dirname, 'public', optionallyAddExt(thingName, '.json')));
+      let result = await fs.readFile(filePath);
+      thing = jsonHandling.ParseJson(
+        filePath, result);  // for eval to work we need a thing
+    } else {
 
-    let result = await fs.readFile(filePath);
-    let thing = jsonHandling.ParseJson(
-      filePath, result);  // for eval to work we need a thing
+      thing = chats[stripRoll(thingName)].rollMove; // skip roll_ make this neater so origin of thing is hidden
+      has_file = false;
+
+    }
     // console.log(thing);
     let template = undefined;
     if (thing.template && replacement.indexOf('template' >= 0)) {
@@ -116,15 +135,17 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
     console.log(thing);
 
     //  console.log('writeFile ', filePath);
-    await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
-      if (err)
-        console.log(err);
-      else {
-        console.log('File written successfully\n');
-        console.log('The written has the following contents:');
-        //  console.log(fs.readFileSync("books.txt", "utf8"));
-      }
-    });
+    if (has_file) {
+      await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
+        if (err)
+          console.log(err);
+        else {
+          console.log('File written successfully\n');
+          console.log('The written has the following contents:');
+          //  console.log(fs.readFileSync("books.txt", "utf8"));
+        }
+      });
+    }
     msg.updateAppearance = updateAppearance;
     io.emit('change', msg);
     if (updateAppearance && thing.appearance && msg.updatePortrait) {
@@ -376,5 +397,6 @@ module.exports = {
   folders: folders,
   findInNamedArray,
   RemoveItemFromThing: RemoveItemFromThing,
-  optionallyAddExt: optionallyAddExt
+  optionallyAddExt: optionallyAddExt,
+  chats: chats
 };

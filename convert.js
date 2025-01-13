@@ -234,17 +234,17 @@ function writeJsonFileInPublic(dir, fileName, json) {
     }
 }
 
-function writeText(pathName, text) {
+// function writeText(pathName, text) {
 
-    try {
+//     try {
 
-        rawfs.writeFileSync(pathName, text);
-        console.log(pathName);
+//         rawfs.writeFileSync(pathName, text);
+//         console.log(pathName);
 
-    } catch (err) {
-        console.log(err + " Error with " + pathName);
-    }
-}
+//     } catch (err) {
+//         console.log(err + " Error with " + pathName);
+//     }
+// }
 const EnsureDestinationExists = async (fullFilePath) => {
 
     let dir = path.dirname(path.normalize(fullFilePath));
@@ -488,7 +488,8 @@ var items = [
         wealth: 2,
         price: 10,
         weapon_defenses: [{
-            name: "Parry",
+            name: "Shield Block",
+            move: ["Parry"],
             range: 1,
             hands: 1,
             type: "Melee",
@@ -509,7 +510,8 @@ var items = [
         wealth: 2,
         price: 20,
         weapon_defenses: [{
-            name: "Parry",
+            name: "Shield Block",
+            move: [""],
             range: 1,
             hands: 1,
             type: "Melee",
@@ -534,6 +536,7 @@ var items = [
         price: 2,
         weapon_defenses: [{
             name: "Quaterstaff Block",
+            move: [""],
             range: 1,
             hands: 2,
             type: "Melee",
@@ -567,6 +570,7 @@ var items = [
         price: 0.5,
         weapon_defenses: [{
             name: "Quaterstaff Block",
+            move: [""],
             range: 1,
             move: ["Attack", "Ambush"],
             hands: 2,
@@ -602,6 +606,7 @@ var items = [
         price: 20,
         weapon_defenses: [{
             name: "Quaterstaff Block",
+            move: [""],
             range: 1,
             hands: 2,
             type: "Melee",
@@ -646,6 +651,7 @@ var items = [
         price: 5,
         weapon_defenses: [{
             name: "Quaterstaff Block",
+            move: [""],
             range: 1,
             hands: 2,
             type: "Melee",
@@ -692,6 +698,7 @@ var items = [
         price: 20,
         weapon_defenses: [{
             name: "Parry",
+            move: [""],
             range: 1,
             hands: 2,
             type: "Melee",
@@ -736,6 +743,7 @@ var items = [
         wealth: 3,
         weapon_defenses: [{
             name: "Parry",
+            move: [""],
             range: 1,
             hands: 1,
             type: "Melee",
@@ -769,7 +777,7 @@ var items = [
             hands: 0,
             advantage: 1,
             type: "Melee",
-            move: ["Avoid"],
+            move: ["Dodge"],
             career: ["Mounted"],
         }],
         weapon_modes:
@@ -791,7 +799,7 @@ var items = [
             hands: 0,
             advantage: 1,
             type: "Melee",
-            move: ["Avoid"],
+            move: ["Dodge"],
             career: ["Mounted"],
         }],
         weapon_modes:
@@ -806,6 +814,7 @@ var items = [
         price: 20,
         weapon_defenses: [{
             name: "Parry",
+            move: [""],
             range: 1,
             hands: 1,
             type: "Melee",
@@ -2307,7 +2316,8 @@ var careers = {
         feats: ["Holdout_Weapon", "Wicked_Lie", "Anatomy", "Poison_Master", "Sniper", "Disguise_Master", "Master_of_Stealth", "DarknessMagic", "ChiMagic"],
 
         languages: [],
-        tools: "By Feat"
+        tools: "By Feat",
+        moves: ["Ambush", "Avoid", "Backstab", "Dodge", "Feint", "Gossip", "Investigate/Insight", "Scout", "Wicked Lie"],
     },
     Beggar: {
         name: "Beggar",
@@ -2316,6 +2326,7 @@ var careers = {
             "Beggars are vagrants or tramps, aimlessly wandering from place to place. They may do casual work here and there, they may sell a few small trinkets that they carry about in their backpacks, or they may have to beg for a few coins when times are really hard. Some even turn their hands to dishonest pursuits.",
         feats: ["Mercy", "Expert_Pickpocket", "Pack_Rat", "Wasnt_Here"],
         languages: [],
+        moves: ["Avoid", "Dodge", "Gossip", "Investigate/Insight", "Scout", "Wicked Lie"],
         tools: ""
     },
     Viking: {
@@ -2328,6 +2339,7 @@ var careers = {
             "Berserk",
             "Whirlwind",
         ],
+        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)"],
         languages: [],
         tools: "Camping"
     },
@@ -2344,6 +2356,9 @@ var careers = {
             "Musical_Virtuoso"],
         languages: [languages, tribal_languages],
         mana: 1,
+        moves: ["Confront", "Display of Might and Power", "Bargain", "Calm", "Feint", "Gossip", "Investigate/Insight", "Perilous Journey", "Purchase", "Seduce/Flirt/Entertain",
+            "Spout Lore", "Steal", "Wicked Lie", "Performance"
+        ],
         tools: "Musical Instrument"
     },
     Beast: {
@@ -2351,6 +2366,7 @@ var careers = {
         description: "For animal companions. Animal companions can choose from Beast, also Slave, Strong, perhaps Mother as their careers. Note, animals don't naturally fight well, this could represent a gerbil, choose strong if you want skill at claw and teeth",
         weapons: ["Brawling"],
         feats: ["Tracking_Scent", "Animal_Influence", "Animal_Communication", "Human_Communication", "Commune", "Swift"],
+        moves: ["Scout", "Ambush", "Perilous Journey",],
         languages: [],
         tools: ""
     },
@@ -2359,6 +2375,7 @@ var careers = {
         name: "Cavalry",
         description: "Raiding and soldiers: Fighting with cavalry weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
         weapons: ["Martial", "Mounted", "HeavyArmor"],
+        moves: ["Scout", "Control Mount", "Perilous Journey", "Display of Might and Power",],
 
         feats: [
             "Ride_By",
@@ -2381,6 +2398,7 @@ var careers = {
             "Mobile_Archer",
             "Weapon_Choices",
         ],
+        moves: ["Scout", "Control Mount", "Perilous Journey", "Ambush"],
         languages: [],
         tools: "Horses, Camping"
     },
@@ -2388,6 +2406,7 @@ var careers = {
         name: "Craft",
         description: "Ability to make and repair things.\n" +
             "Specialty:  such as blacksmith, jeweler, carpenter, architect, weaver, drug maker. Your first feat Must be a specialty, after you can take more or take other feats",
+        moves: ["Bargain", "Purchase", "Gossip", "Investigate/Insight", "Devices"],
 
         feats: [
             "Specialty_Weapon_Smith",
@@ -2413,6 +2432,7 @@ var careers = {
             "Expert_Pickpocket",
             "Pack_Rat",
             "Crime_Lord",],
+        moves: ["Bargain", "Purchase", "Gossip", "Investigate/Insight", "Steal", "Wicked Lie", "Backstab", "Ambush", "Feint", "Devices"],
         languages: [],
         tools: "Lockpick, Cards"
     },
@@ -2421,13 +2441,8 @@ var careers = {
         description: "A priest or cultist leads ceremonies for one of the relgions:\n " +
             "*Church Of Law: Think medieval Catholicism , they are opposed to the forces of Chaos who are said to one day destroy the world, and fearful of sorcerers\n " +
             "*Nordic: Players can freely mix and match gaelic and nordic religions up in crazy combos\n " +
-            "*Greek:Players can mix up greek and persian and egyptian religions up in crazy combos\n " +
-            "A priest wll get a usage dice to call on his deity to help with mana generation when calling on Planar Forces (see magic):\n " +
-            "0 = 1d4\n" +
-            "1 = 1d6\n" +
-            "2 = 1d8\n" +
-            "3 = 1d10\n" +
-            "4 = 1d12\n",
+            "*Greek:Players can mix up greek and persian and egyptian religions up in crazy combos\n ",
+
         feats: [
             "CelestialMagic",
             "ProtectionMagic",
@@ -2442,6 +2457,8 @@ var careers = {
             "Taboo",
             "Religious_Lore"],
         languages: [],
+        moves: ["Seduce/Flirt/Entertain", "Gossip", "Investigate/Insight", "Performance"
+            , "Wicked Lie", "Gossip", "Spout Lore", "Heal", "Calm", "Planar Forces"],
         tools: "Planar Forces, Religious symbols, Magic Religious Devices",
         mana: 1,
     },
@@ -2450,13 +2467,7 @@ var careers = {
         name: "Cultist",
         description: "A priest or cultist leads ceremonies for one of the relgions:\n " +
             "*Cults of Chaos: Many dark cults who worship hellish beings\n " +
-            "*Cults ofThe Deep: Many dark cults who worships outsiders  “Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn.\n " +
-            "A priest wll get a usage dice to call on his deity to help with mana generation when calling on Planar Forces (see magic):\n " +
-            "0 = 1d4\n" +
-            "1 = 1d6\n" +
-            "2 = 1d8\n" +
-            "3 = 1d10\n" +
-            "4 = 1d12\n",
+            "*Cults of The Deep: Many dark cults who worships outsiders  “Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn.\n ",
         feats: [
             "OtherworldMagic",
             "ChaosMagic",
@@ -2471,6 +2482,7 @@ var careers = {
             "Taboo",
             "Religious_Lore"],
         languages: [],
+        moves: ["Seduce/Flirt/Entertain", "Gossip", "Investigate/Insight", "Ambush", "Wicked Lie", "Gossip", "Spout Lore", "Planar Forces"],
         tools: "Planar Forces, Religious symbols, Magic Religious Devices",
         mana: 1,
     },
@@ -2485,6 +2497,7 @@ var careers = {
             "Kata",
             "ChiMagic",
         ],
+        moves: ["Seduce/Flirt/Entertain", "Dodge", "Avoid", "Performance", "Feint"],
         languages: [],
         mana: 1,
         tools: ""
@@ -2504,6 +2517,7 @@ var careers = {
             "Wrestler",
             "ChiMagic"
         ],
+        moves: ["Feint", "Dodge", "Avoid", "Wrestle", "Wrestle (defense)"],
         languages: [],
         mana: 1,
         tools: ""
@@ -2517,6 +2531,7 @@ var careers = {
             "Wasnt_Here",
             "Animal_Influence",
         ],
+        moves: ["Scout", "Avoid", "Hard Physical Work"],
         languages: [],
         tools: "Camping"
     }, Gladiator: {
@@ -2527,6 +2542,7 @@ var careers = {
             "Wrestler",
             "Whip_Master",
             "Show_Off",],
+        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)"],
         languages: [],
         tools: ""
     },
@@ -2543,6 +2559,7 @@ var careers = {
             "NatureMagic",
         ],
         languages: [],
+        moves: ["Avoid", "Scout", "Perilous Journeys", "Ambush"],
         tools: "Animals, Animal Traps, Camping, Tracking"
     },
     Immolator: {
@@ -2557,6 +2574,7 @@ var careers = {
             "By_Fire_Restored",
             "Fuel",
         ],
+        moves: ["On Fire", "Extinguish",],
         languages: [],
         tools: "Chiteng Talismans",
         mana: 1,
@@ -2573,6 +2591,7 @@ var careers = {
             "Armor_Master",
             "Weapon_Choices",
         ],
+        moves: ["Scout", "Perilous Journeys", "Display of Might and Power", "Hard Physical Work"],
         languages: [],
         tools: "Camping"
     },
@@ -2587,6 +2606,7 @@ var careers = {
             "Sniper",
             "Weapon_Choices",
         ],
+        moves: ["Scout", "Perilous Journeys", "Ambush", "Hard Physical Work"],
         languages: [],
         tools: "Camping"
     },
@@ -2608,6 +2628,7 @@ var careers = {
             "Scholars_Guild",
         ],
         languages: [tribal_languages, languages, magic_languages],
+        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Words of Power", "Devices"],
         tools: "Magic Words, Tomes, Magical Devices",
         mana: 1,
     },
@@ -2621,6 +2642,7 @@ var careers = {
             "Potion_Maker",],
         mana: 1,
         languages: [],
+        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Heal", "Calm"],
         tools: "Herbs, Medical Kit, Alchemical Kit"
     },
     Merchant: {
@@ -2629,6 +2651,7 @@ var careers = {
             "You get one extra non-magic language per level of merchant",
         feats: [],
         languages: [tribal_languages, languages,],
+        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Perilous Journeys", "Bargain"],
         tools: "Ledger, Caravan, Wagon, Camping"
     }, Mother: {
         name: "Mother",
@@ -2636,11 +2659,13 @@ var careers = {
             "FYI: Supporting documents: https://getpocket.com/explore/item/part-of-being-a-domestic-goddess-in-17th-century-europe-was-making-medicines?utm_source=pocket-newtab \n" +
             "Where are your kids now? That might be a story in itself.Maybe some of the  other player characters are your offspring?\n" +
             "Of course caring for adventurers is an easier job than caring for kids.", weapons: [],
+        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Perilous Journeys", "Bargain"],
         feats: [
             "Tough",
             "Mama_Lion",
             "Guilt_Trip",
         ],
+        moves: ["Hard Physical Work", "Heal", "Gossip", "Harm", "Seduce/Flirt/Entertain", "Bargain"],
         languages: [],
         tools: "Herbs, Medical Kit"
     },
@@ -2664,6 +2689,7 @@ var careers = {
             "Familiar",
             "SubtleSpell", "Taboo"],
         languages: [],
+        moves: ["Bargain", "Heal", "Gossip", "Perilous Journeys", "Hard Mental Work", "Seduce/Flirt/Entertain", "Planar Forces"],
         tools: "Herbs, Medical Kit",
         mana: 1
     },
@@ -2678,12 +2704,13 @@ var careers = {
             "Devoted_Servant",
             "Vicious_Mockery",
         ],
+        moves: ["Seduce/Flirt/Entertain", "Gossip", "Perilous Journeys", "Performance", "Purchase"],
         languages: [],
         tools: ""
     },
     Paladin: {
         name: "Paladin",
-        weapons: ["Paladin", "Martial", "Brawling", "LightArmor", "HeavyArmor"],
+        weapons: ["Paladin", "Martial", "Brawling", "LightArmor", "HeavyArmor", "Mounted"],
         description: "A classic paladin, who swears an oath (pick one from the lists in the feats) who fights for justice (or maybe injustice). You may want to round your conception with Cavalry and Noble… note weapon skills do not come from your oath",
         feats: [
             "Lay_On_Hands",
@@ -2693,6 +2720,7 @@ var careers = {
             "HealingMagic",
             "ProtectionMagic",
         ],
+        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)", "Calm Mount", "Heal", "Calm"],
         languages: [],
         tools: ""
     },
@@ -2706,6 +2734,7 @@ var careers = {
             "Fisherman",
             "Sea_Captain",
             "Diver",],
+        moves: ["Avoid", "Dodge", "Wrestle", "Wrestle (defense)", "Devices"],
         languages: [tribal_languages, languages,],
         tools: "Boating, ropes"
     },
@@ -2721,6 +2750,7 @@ var careers = {
             "Sea_Captain",
             "Diver",],
         languages: [tribal_languages, languages,],
+        moves: ["Avoid", "Dodge", "Wrestle", "Wrestle (defense)", "Devices", "Confront"],
         tools: "Boating, ropes"
     },
     Slave: {
@@ -2732,6 +2762,7 @@ var careers = {
             "Invisible_Man",
             "Master_of_Stealth",
         ],
+        moves: ["Avoid", "Hard Physical Work",],
         languages: [],
         tools: ""
     },
@@ -2755,6 +2786,7 @@ var careers = {
             "SubtleSpell", "Taboo"],
         languages: [magic_languages],
         tools: "Magic Words, Blood, Magical Devices",
+        moves: ["Spout Lore", "Words of Power", "Planar Forces"],
         mana: 1,
     },
 
@@ -2765,6 +2797,7 @@ var careers = {
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
+        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)"],
         languages: [],
         tools: ""
     },
@@ -2775,7 +2808,7 @@ var careers = {
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
-        languages: [],
+        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)"], languages: [],
         tools: ""
     },
 };

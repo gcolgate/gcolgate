@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public'))); //Serves resources from
 
 var passwords, players;
 
-var chats = []; // chats so far
+
 app.use(fileUpload());
 
 var init = { inited: false }
@@ -37,6 +37,8 @@ function waitInit() {
     }
     return new Promise(poll);
 }
+
+
 
 async function justAnUpload(res, req) {
 
@@ -189,6 +191,7 @@ async function InitialDiskLoad() {
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Party'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Uniques'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Scenes'))); // TODO: use file cache
+    promises.push(fs.readdir(path.join(__dirname, 'public', 'Documents'))); // TODO: use file cache
 
     let results = await Promise.all(promises);
     passwords = jsonHandling.ParseJson('passwords.json', results[0]);
@@ -201,6 +204,7 @@ async function InitialDiskLoad() {
     promises.push(jsonHandling.fillDirectoryTable("Party", results[4]));
     promises.push(jsonHandling.fillDirectoryTable("Uniques", results[5]));
     promises.push(jsonHandling.fillDirectoryTable("Scenes", results[6]));
+    promises.push(jsonHandling.fillDirectoryTable("Documents", results[7]));
 
 
     results = await Promise.all(promises);
@@ -210,10 +214,10 @@ async function InitialDiskLoad() {
     sheeter.folders.Party = results[2];
     sheeter.folders.Uniques = results[3];
     sheeter.folders.Scenes = results[4];
-    sheeter.folders.uploadedImages = results[7];
+    sheeter.folders.Documents = results[5];
 
 
-    for (i = 0; i < sheeter.folders.Scenes.length; i++) {
+    for (let i = 0; i < sheeter.folders.Scenes.length; i++) {
         let unparsed = sheeter.folders.Scenes[i];
         let scene = jsonHandling.ParseJson(i, unparsed);
         let nom = scene.name;
@@ -500,6 +504,69 @@ async function NewPlayer(socket, msg) {
 }
 
 
+function SanitizeNonAlphanumeric(id) {
+
+    return id.replace(/[^a-z0-9]/gi, '');
+
+}
+
+async function NewPOI(socket, msg) {
+
+    let dir = "Documents";
+
+    let baseName = await UniqueName(path.join(__dirname, "public", dir), ".json");
+    //   let indexFolderDir = dir.substring(0, dir.length - 5);
+
+    console.log("New baseName " + baseName);
+
+    let newPOI = {
+        id: SanitizeNonAlphanumeric(baseName),
+        name: baseName,
+        text: "",
+        tooltip: "",
+
+    };
+
+
+    let newPOITag = {
+        id: SanitizeNonAlphanumeric(baseName),
+        file: "DocumentsFiles/" + baseName,
+        page: "Document",
+        source: "",
+        type: "",
+        name: baseName,
+        img: "images/questionMark.png"
+    };
+
+
+    // let srcName = p.name;
+    // let srcDir = dir;
+
+    console.log("New baseName " + baseName);
+
+    let dest1 = path.join(__dirname, "public", dir + "Files", baseName + '.json');
+
+    // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + name + '.json');
+    let dest2 = path.join(__dirname, "public", dir, "tag_" + baseName + '.json');
+
+    console.log(" to " + dest1);
+    console.log(" to " + dest2);
+    // warning overwrites msg.from.file, poor form
+
+
+    await Promise.all([
+        fs.writeFile(dest1, JSON.stringify(newPOI)),
+        fs.writeFile(dest2, JSON.stringify(newPOITag)),
+
+    ]);
+    sheeter.folders[dir].push(newPOITag);
+
+    socket.emit('updateDir', { id: dir, folder: sheeter.folders[dir] });
+
+
+}
+
+
 
 async function NewScene(socket, msg) {
 
@@ -673,6 +740,9 @@ io.on('connection', (socket) => {
     socket.on('newPlayer', (msg) => {
         NewPlayer(socket, msg);
     });
+    socket.on('newPOI', (msg) => {
+        NewPOI(socket, msg);
+    });
     socket.on('newScene', (msg) => {
         NewScene(socket, msg);
     });
@@ -690,11 +760,13 @@ io.on('connection', (socket) => {
         ReBroadCast(socket, 'set_three_camera_xy', msg);
     });
     socket.on('chat', (msg) => {
+
         let sender = getUser(socket);
         if (sender) {
-            let formatted = '<div class=chatsender>' + sender + '</div><div classname="chattext">' + msg + '</div';
-            chats.push(formatted);
-            ReBroadCast(socket, formatted);
+            msg.sender = sender;
+            console.log(msg);
+            sheeter.chats[msg.id] = (msg);
+            io.emit("chat", msg);
         }
     });
     socket.on('changeName', (msg) => {
@@ -927,26 +999,89 @@ io.on('connection', (socket) => {
     }
 
 
+    function processRollMove(m, id) {
+
+        let outmsg = m;
+        // if (m.title.length > 15)
+        //    outmsg += div("rolltitle", m.title);
+        //else
+        outmsg.d10 = [];
+        for (let i = 0; i < 4; i++)
+            outmsg.d10.push(dice("1d10"))
+        outmsg.skillDice = [];
+        for (let i = 0; i < 6; i++)
+            outmsg.skillDice.push(dice("1d6"))
+        outmsg.page = "moveroll";
+        outmsg.id = "roll_" + id;
+
+        if (m.damage) {
+            let damageString = "";
+
+            for (let d = 0; d < m.damage.length; d++) {
+                let dam = m.damage[d];
+                let r = dice(dam.damage + (d == 0 ? "+" + m.damage_bonus : ""));
+                damageString += div("oneroll", "Damage " + strong(r.val)
+                    + (r.rolls ? parens(r.rolls) : "")
+                    + (dam.condition ? dam.condition : "")
+                    + dam.type + " " + (dam.when ? dam.when : ""));
+
+
+            }
+
+            outmsg.damageResults = damageString;
+        }
+
+        return outmsg;
+
+    }
+
+    var chat_id = 0;
+    function addToChatAndEmit(msg) {
+        chat_id++;
+        msg.id = chat_id;
+
+        sheeter.chats[msg.id] = msg;
+        console.log("emit chat  %o", sheeter.chats[msg.id]);
+        io.emit('chat', sheeter.chats[msg.id]);
+    }
+
     socket.on('roll', (msg) => {
 
         let sender = getUser(socket);
 
 
         if (sender) {
-            let outmsg = div('chatsender', sender);
-            outmsg += processRoll(msg);
-            io.emit('chat', div("chatmsg", outmsg));
+
+            let outmsg = processRoll(msg);
+            console.log("emit chat  %o", { sender: sender, chat: outmsg });
+
+            addToChatAndEmit({ sender: sender, rollMove: outmsg });
+
         }
+
     });
 
     socket.on('rolls', (msg) => {
         let sender = getUser(socket);
         if (sender) {
-            let outmsg = div('chatsender', sender);
+            let outmsg = "";
             for (let i = 0; i < msg.length; i++) {
                 outmsg += processRoll(msg[i]);
             }
-            io.emit('chat', div("chatmsg", outmsg));
+            addToChatAndEmit({ sender: sender, rollMove: outmsg });
+        }
+    });
+
+    socket.on('rollmove', (msg) => {
+
+        let sender = getUser(socket);
+
+
+        if (sender) {
+            let chatId = chat_id; chat_id++;
+            let outmsg = processRollMove(msg, chatId);
+            sheeter.chats[chatId] = { sender: sender, rollMove: outmsg, id: chatId };
+            io.emit('chat', sheeter.chats[chatId]);
         }
     });
 
@@ -961,7 +1096,8 @@ io.on('connection', (socket) => {
         sheeter.RemoveItemFromThing(socket, msg);
 
     });
-});
+}
+);
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
@@ -974,6 +1110,14 @@ app.get("/Compendium", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
     res.end(JSON.stringify(sheeter.folders.Compendium));
+});
+
+// todo make shorter
+app.get("/Documents", (req, res) => {
+    // Error here need to bulletproof server not being ready?
+    res.setHeader("Content-Type", "application/json");
+    res.writeHead(200);
+    res.end(JSON.stringify(sheeter.folders.Documents));
 });
 
 app.get("/Scenes", (req, res) => {
@@ -1156,7 +1300,7 @@ app.get("/previous_chats", (req, res) => {
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    res.end(JSON.stringify(chats));
+    res.end(JSON.stringify(sheeter.chats));
 
 });
 
