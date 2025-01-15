@@ -41,6 +41,7 @@ var registeredSheets = {};
 var sheetDependencies = null;
 // preload
 ensureSheetLoaded("hud");
+ensureSheetLoaded("tooltip_hud");
 ensureSheetLoaded("itemSummary");
 ensureSheetLoaded("spell_chat");
 ensureSheetLoaded("spell_tooltip");

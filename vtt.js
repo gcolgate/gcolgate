@@ -520,22 +520,26 @@ async function NewPOI(socket, msg) {
     console.log("New baseName " + baseName);
 
     let newPOI = {
+        type: 'poi',
         id: SanitizeNonAlphanumeric(baseName),
         name: baseName,
         text: "",
         tooltip: "",
+        tooltip_html: "",
+        hud: "tooltip_hud"
 
     };
 
 
     let newPOITag = {
+        type: 'poi_tag',
         id: SanitizeNonAlphanumeric(baseName),
         file: "DocumentsFiles/" + baseName,
         page: "Document",
         source: "",
         type: "",
         name: baseName,
-        img: "images/questionMark.png"
+        img: "images/icons/pin.webp"
     };
 
 

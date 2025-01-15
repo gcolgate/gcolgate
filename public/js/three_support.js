@@ -1006,9 +1006,15 @@ function ChangeTileZ(id, changeAmt) {
   if (tile) {
     tile.z += changeAmt;
     socket.emit('updateTile', { tile: tile, scene: current_scene.name });
-    hud.innerHTML = parseSheet(tile.reference, 'hud', tile)
+    let hudSheet = 'hud';
+    if (tile.reference.hud) {
+      hudSheet = tile.reference.hud;
+    }
+
+    hud.innerHTML = parseSheet(tile.reference, hudSheet, tile);
   }
 }
+
 MakeAvailableToHtml('ChangeTileZ', ChangeTileZ);
 
 
@@ -1111,11 +1117,10 @@ export function three_mouseMove(event) {
         hud.style.left = Math.trunc(screenPos.x) + 'px';
         hud.style.top = Math.trunc(screenPos.y) + 'px';
         let thang = intersect.object.tile?.reference;
-        if (thang) {
-          hud.innerHTML = parseSheet(thang, 'hud', intersect.object.tile);
-        } else
-          hud.innerHTML = o.name;
-        ;
+
+        let thing = GetRegisteredThing(thang.file)
+        hud.innerHTML = parseSheet(thing, thing.hud ? thing.hud : 'hud', intersect.object.tile);
+
 
 
         if (!card) {
@@ -1557,6 +1562,7 @@ async function CreateToken(thingDragged, event) {
     y: img.scaleY * kGridSize,
     z: 1
   };
+  console.log(thingDragged);
   newTile.reference = thingDragged;
 
   console.log('Create Token New Tile ', newTile);

@@ -145,7 +145,7 @@ let ButtonTitles = {
 
 
 function removePunctuation(string) {
-    return string.replace(/[!"#$%&'()*+,-./:;<=>?@[\]/^\s+$/"^`{|}~]/g, "_");
+    return string.replace(/[!"#$%&'()*+,-./:;<=>\b?@[\]/^\s+$/"^`{|}~]/g, "_");
 }
 
 
@@ -632,7 +632,9 @@ var quill_options = {
     modules: {
         toolbar: [
             [{ header: [1, 2, false] }],
-            ['bold', 'italic', 'underline'],
+
+            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
             ['image', 'code-block'],
         ],
     },
@@ -645,9 +647,11 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 function updateDocument(windowname) {
     let w = document.getElementById(windowname);
 
-    let q = w.quill;
 
-    let evaluation = "thing.text = " + JSON.stringify(w.quill.getContents());;
+    let evaluation = "thing.text = " + JSON.stringify(w.quill.getContents());
+    evaluation += "; thing.tooltip = " + JSON.stringify(w.quill_tooltip.getContents());;
+    evaluation += "; thing.tooltip_html =  " + JSON.stringify(w.quill_tooltip.getSemanticHTML());
+
     let thing = w.thing;
 
     console.log(evaluation);
@@ -672,11 +676,15 @@ async function attachQuill(id, w, thing) { // todo just waiting is lame
     // }
     if (w.quill) delete (w.quill);
     w.quill = new window.Quill("#editor" + id, quill_options);
+
+    if (w.quill_tooltip) delete (w.quill2);
+    w.quill_tooltip = new window.Quill("#tooltip" + id, quill_options);
+
     w.thing = thing;
 
     w.quill.setContents(thing.text);
+    w.quill_tooltip.setContents(thing.tooltip);
 
-    console.log(w.quill);
 
     // w.quill.on('text-change', (delta, oldDelta, source) => {
     //     // if (source == 'api') {
@@ -714,6 +722,8 @@ async function attachQuill(id, w, thing) { // todo just waiting is lame
         // Custom logic when the window is closed
         delete this.quill;
         w.quill = null;
+        delete this.quill_tooltip;
+        w.quill_tooltip = null;
         console.log('Window has been closed, quill removed?.');
     });
 }
