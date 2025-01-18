@@ -300,6 +300,18 @@ async function EnsureLoaded(sheetName, thingName) {
 // each editable will have a thing id
 // and a field id
 
+
+function emitChange(id, evaluation) {
+
+    socket.emit('change', {
+        change: evaluation,
+        thing: id
+    })
+
+}
+MakeAvailableToParser('emitChange', emitChange);
+MakeAvailableToHtml('emitChange', emitChange);
+
 function changeSheet(button) {
     let id = button.dataset.thingid; // the window id is window_fullthingname
     console.log(id);
@@ -619,7 +631,7 @@ async function displayThing(fullthingname, sheetName) {
     /// TODO: needs to save and restore any scrolling or window resizing
     fullthingname = SanitizeSlashes(fullthingname);
     let w = createOrGetWindow(fullthingname, 0.6, 0.4, 0.3, 0.3, true, true); // todo better window placement
-
+    if (w.when_closed) w.when_closed();
     w.sheet = sheetName;
     let rw = fetchRealWindow(fullthingname);
     if (!rw)

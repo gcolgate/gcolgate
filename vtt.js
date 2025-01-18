@@ -282,7 +282,7 @@ async function login(socket, credentials) {
 
 
 async function CopyThingFIles(socket, msg) {
-
+    if (!msg.from.file) return; // what the hell bug with documents
 
 
     let p = path.parse(path.normalize(msg.from.file));
@@ -417,7 +417,6 @@ async function NewPlayer(socket, msg) {
     let dir = "Party";
 
     let baseName = await UniqueName(path.join(__dirname, "public", dir), ".json");
-    //   let indexFolderDir = dir.substring(0, dir.length - 5);
 
     console.log("New baseName " + baseName);
     let newPartyMember = {
@@ -526,7 +525,15 @@ async function NewPOI(socket, msg) {
         text: "",
         tooltip: "",
         tooltip_html: "",
-        hud: "tooltip_hud"
+        hud: "tooltip_hud",
+
+        appearance: [{
+            name: "normal", portrait: { image: "images/icons/pin.webp" },
+            token: { image: "images/icons/pin.webp" },
+
+        }
+        ],
+        current_appearance: "normal", name: baseName,
 
     };
 
@@ -849,7 +856,8 @@ io.on('connection', (socket) => {
 
 
     socket.on('change', (msg) => {
-        sheeter.ChangeThing(msg.thing, msg.change, io, msg, false);
+        if (msg.change != '') // allow scripts to send empty changes, todo: maybe fix this differently. See moveroll.html
+            sheeter.ChangeThing(msg.thing, msg.change, io, msg, false);
     });
     socket.on('addItem', (msg) => {
 

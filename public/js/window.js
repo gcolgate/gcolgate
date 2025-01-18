@@ -67,8 +67,8 @@ function closeAllWindows() {
 
     for (let i = 0; i < realWindows.length; i++) {
 
-        if (!realWindows[i].window.closed) {
-            realWindows[i].window.close();
+        if (!realWindows[i].window.when_closed) {
+            realWindows[i].window.when_closed();
         }
     }
 
@@ -189,6 +189,7 @@ function CreateWindowTitle(w, windowName, Title, closes = true, has_popout = fal
         title.appendChild(closeButton);
         closeButton.onclick = function () {
             fadeOut(w);
+
         };
     }
 
@@ -484,6 +485,7 @@ export function createOrGetLoginWindow(width, height, left, top, players) {
                 okButton.selected = li;
                 socket.emit('join', { player: okButton.selected.innerText, password: okButton.password });
                 fadeOut(w);
+
                 window.onkeydown = function (event) {
                 };
 
@@ -523,6 +525,7 @@ export function createOrGetLoginWindow(width, height, left, top, players) {
             if (okButton.selected) {
                 socket.emit('join', { player: okButton.selected.innerText, password: okButton.password });
                 fadeOut(w);
+
                 window.onkeydown = function (event) {
                 };
             }
@@ -601,6 +604,9 @@ export function fadeIn(elmnt) {
 }
 
 export function fadeOut(elmnt) {
+
+
+    if (elmnt.when_closed) elmnt.when_closed();
     if (elmnt.classList.contains("fade")) {
         var opacity = 1;
         var timer = setInterval(function () {
@@ -644,9 +650,7 @@ var quill_options = {
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
-function updateDocument(windowname) {
-    let w = document.getElementById(windowname);
-
+function updateDocument(w) {
 
     let evaluation = "thing.text = " + JSON.stringify(w.quill.getContents());
     evaluation += "; thing.tooltip = " + JSON.stringify(w.quill_tooltip.getContents());;
@@ -662,22 +666,56 @@ function updateDocument(windowname) {
         thing: thing.id
     });
 }
-MakeAvailableToHtml('updateDocument', updateDocument);
 
+
+function updateDocumentbyId(id) {
+    let windowName = "window_" + id;
+    let w = document.getElementById(windowName);
+    if (w)
+        updateDocument(w);
+
+}
+MakeAvailableToHtml("updateDocumentbyId", updateDocumentbyId);
+
+// function getElementByRole(w, role) {
+//     var divList = w.getElementsByTagName("div");
+//     for (var i = 0, len = spanList.length; i < len; i++) {
+//         if (divList[i].role === role) // use .innerHTML if you need IE compatibility
+//             return divList[i]
+//     }
+// }
+
+function resetQuill(w, id) {
+    if (w.quill) {
+        // Destroy the Quill instance
+        w.quill = null;
+    }
+
+    // Remove the editor's container from the DOM
+    let editorContainer = document.getElementById("editor" + id);
+    if (editorContainer) {
+        editorContainer.remove();
+    }
+
+    if (!w.quill_tooltip) {
+        w.quill_tooltip = null;
+
+    }
+
+    editorContainer = document.getElementById("tooltip" + id);
+    if (editorContainer) {
+        editorContainer.remove();
+    }
+
+}
 async function attachQuill(id, w, thing) { // todo just waiting is lame
     console.log("OK");
     await delay(500); // this is lame
 
-    // if (w.quill) {
-    //     let under = w.firstChild;
-    //     while (under.firstChild) {
-    //         under.removeChild(under.lastChild);
-    //     }
-    // }
-    if (w.quill) delete (w.quill);
+
+    w.quillId = id;
     w.quill = new window.Quill("#editor" + id, quill_options);
 
-    if (w.quill_tooltip) delete (w.quill2);
     w.quill_tooltip = new window.Quill("#tooltip" + id, quill_options);
 
     w.thing = thing;
@@ -713,19 +751,14 @@ async function attachQuill(id, w, thing) { // todo just waiting is lame
         event.target.style.background = "";
     });
 
-    w.addEventListener('unload', function (event) {
-        console.log(this);
-        console.log(w);
-        updateDocument(w);
+    w.when_closed = function () {
+        updateDocument(w, id);
+        resetQuill(w, id);
 
-        alert("Unload");
-        // Custom logic when the window is closed
-        delete this.quill;
-        w.quill = null;
-        delete this.quill_tooltip;
-        w.quill_tooltip = null;
+
+
         console.log('Window has been closed, quill removed?.');
-    });
+    };
 }
 
 MakeAvailableToParser('attachQuill', attachQuill);

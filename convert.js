@@ -510,7 +510,7 @@ var items = [
         wealth: 2,
         price: 20,
         weapon_defenses: [{
-            name: "Shield Block",
+            name: "Large Shield Block",
             move: [""],
             range: 1,
             hands: 1,
@@ -535,7 +535,7 @@ var items = [
         wealth: 1,
         price: 2,
         weapon_defenses: [{
-            name: "Quaterstaff Block",
+            name: "Quaterstaff(spear) Block",
             move: [""],
             range: 1,
             hands: 2,
@@ -544,7 +544,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Stab",
+                name: "Spear Stab",
                 range: 2,
                 hands: 1,
                 move: ["Attack", "Ambush"],
@@ -552,12 +552,12 @@ var items = [
                 damage: [{ damage: "2d8", type: "piercing", when: "" }],
                 career: ["Martial"],
             }, {
-                name: "Staff",
+                name: "Spear Clobber",
                 range: 1,
                 hands: 2,
                 move: ["Attack", "Ambush"],
                 type: "Melee",
-                damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
+                damage: [{ damage: "2d4", type: "bludgeoning", when: "" }],
                 career: ["Brawling"],
             }]
     },
@@ -579,23 +579,14 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Staff",
+                name: "Quarterstaff clobber",
                 range: 1,
                 hands: 2,
                 move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
                 career: ["Brawling"],
-            },
-            {
-                name: "Grapple",
-                range: 0,
-                hands: 2,
-                move: ["Attack", "Ambush"],
-                type: "Grapple",
-                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawling"],
-            }],
+            }]
     },
     {
         name: "Glaive ",
@@ -605,7 +596,7 @@ var items = [
         wealth: 3,
         price: 20,
         weapon_defenses: [{
-            name: "Quaterstaff Block",
+            name: "Quaterstaff (Glaive) Block",
             move: [""],
             range: 1,
             hands: 2,
@@ -614,7 +605,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Polearm",
+                name: "Polearm Attack",
                 range: 2,
                 min_range: 2,
                 hands: 2,
@@ -624,23 +615,14 @@ var items = [
                 career: ["Martial"],
             },
             {
-                name: "Staff",
+                name: "Polearm Clobber",
                 range: 1,
                 hands: 2,
                 move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawling"],
-            },
-            {
-                name: "Grapple",
-                range: 0,
-                hands: 2,
-                move: ["Attack", "Ambush"],
-                type: "Grapple",
-                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawling"],
-            }],
+                career: ["Brawling"]
+            }]
     },
     {
         name: "Pike ",
@@ -659,7 +641,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Stab",
+                name: "Pike Stab",
                 range: 3,
                 min_range: 2,
                 hands: 2,
@@ -669,7 +651,7 @@ var items = [
                 career: ["Martial"],
             },
             {
-                name: "Staff",
+                name: "Pike Clobber",
                 range: 1,
                 hands: 2,
                 move: ["Attack", "Ambush"],
@@ -677,16 +659,7 @@ var items = [
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
                 career: ["Brawling"],
 
-            },
-            {
-                name: "Grapple",
-                range: 0,
-                hands: 2,
-                type: "Grapple",
-                move: ["Attack", "Ambush"],
-                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawling"],
-            }],
+            }]
     },
     {
         name: "Long Sword",
@@ -697,16 +670,16 @@ var items = [
         wealth: 3,
         price: 20,
         weapon_defenses: [{
-            name: "Parry",
+            name: "Long Sword Parry",
             move: [""],
             range: 1,
-            hands: 2,
+            hands: 1,
             type: "Melee",
             career: ["Paladin", "Martial", "Noble"],
         }],
         weapon_modes:
             [{
-                name: "Slice",
+                name: "Longsword Slice",
                 range: 1,
                 hands: 1,
                 career: ["Paladin", "Martial", "Noble"],
@@ -715,16 +688,17 @@ var items = [
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
             },
             {
-                name: "Horseback Charge",
+                name: "Longsword Horseback Charge",
                 range: 1.5,
                 hands: 1,
                 career: ["Mounted"],
+                requirements: ["Mounted"],
                 move: ["Attack"],
                 type: "Melee",
                 damage: [{ damage: "2d10", type: "slashing", when: "" }],
             },
             {
-                name: "Pommel",
+                name: "Longsword Pommel Smash",
                 range: 0,
                 type: "Grapple",
                 career: ["Brawling"],
@@ -742,7 +716,7 @@ var items = [
         hands: 1,
         wealth: 3,
         weapon_defenses: [{
-            name: "Parry",
+            name: "Battleaxe Parry",
             move: [""],
             range: 1,
             hands: 1,
@@ -752,7 +726,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Chop",
+                name: "BattleAxe Chop",
                 range: 1,
                 hands: 1,
                 career: ["Martial"],
@@ -813,7 +787,7 @@ var items = [
         wealth: 2,
         price: 20,
         weapon_defenses: [{
-            name: "Parry",
+            name: "Cutlass Parry",
             move: [""],
             range: 1,
             hands: 1,
@@ -822,7 +796,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Slash",
+                name: "Cutlass Slash",
                 range: 1,
                 type: "Melee",
                 hands: 1,
@@ -832,16 +806,17 @@ var items = [
             },
             {
 
-                name: "Horseback Charge",
+                name: "Cutlass Horseback Charge",
                 range: 1.5,
                 type: "Melee",
                 hands: 1,
+                requirements: ["Mounted"],
                 move: ["Attack"],
                 damage: [{ damage: "3d6", type: "piercing or slashing", when: "" }],
                 career: ["Cavalry"],
             },
             {
-                name: "Pommel",
+                name: "Cutlass Pommel",
                 range: 0,
                 type: "Grapple",
                 hands: 1,
@@ -869,7 +844,7 @@ var items = [
         weapon_modes:
             [{
                 range: 2,
-                name: "Horseback Charge",
+                name: "Lance Horseback Charge",
                 type: "Melee",
                 hands: 1,
                 damage: [{ damage: "2d12+4", type: "Piercing", when: "" }],
@@ -878,7 +853,7 @@ var items = [
             },
             {
                 range: 2,
-                name: "Spear",
+                name: "Lance Spear",
                 type: "Melee",
                 hands: 2,
                 damage: [{ damage: "2d8", type: "Piercing", when: "" }],
@@ -898,7 +873,7 @@ var items = [
         weapon_defenses: [],
         weapon_modes:
             [{
-                name: "Swing",
+                name: "Clib Smash",
                 range: 1,
                 type: "Melee",
                 hands: 1,
@@ -918,7 +893,7 @@ var items = [
         weapon_defenses: [],
         weapon_modes:
             [{
-                name: "Swing",
+                name: "Mace Swing",
                 range: 1,
                 type: "Melee",
                 hands: 1,
@@ -944,7 +919,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Fist",
+                name: "Punch",
                 range: 1,
                 type: "Melee",
                 hands: 1,
@@ -980,7 +955,7 @@ var items = [
         price: 75,
         weapon_modes:
             [{
-                name: "Shoot",
+                name: "Shoot Hand Crossbow",
                 range: 6,
                 type: "Ranged",
                 hands: 1,
@@ -1003,7 +978,7 @@ var items = [
         price: 50,
         weapon_modes:
             [{
-                name: "Shoot",
+                name: "Shoot Crossbow",
                 range: 30,
                 type: "Ranged",
                 hands: 2,
@@ -1027,7 +1002,7 @@ var items = [
         price: 50,
         weapon_modes:
             [{
-                name: "Shoot",
+                name: "Shoot Longbow",
                 range: 30,
                 type: "Ranged",
                 hands: 2,
@@ -1050,7 +1025,7 @@ var items = [
         price: 50,
         weapon_modes:
             [{
-                name: "Shoot",
+                name: "Shoot Horse Bow",
                 range: 30,
                 type: "Ranged",
                 hands: 2,
@@ -1073,7 +1048,7 @@ var items = [
         price: 25,
         weapon_modes:
             [{
-                name: "Shoot",
+                name: "Shoot Short Bow",
                 range: 20,
                 type: "Ranged",
                 hands: 2,
@@ -1096,7 +1071,7 @@ var items = [
         price: 25,
 
         weapon_defenses: [{
-            name: "Parry",
+            name: "Rapier Parry",
             range: 1,
             hands: 1,
             type: "Melee",
@@ -1105,7 +1080,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Stab",
+                name: "Rapier Lunge",
                 type: "Melee",
                 range: 1.5,
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
@@ -1114,7 +1089,7 @@ var items = [
             },
 
             {
-                name: "Feint",
+                name: "Rapier Feint",
                 range: 1,
                 hands: 1,
                 type: "Melee",
@@ -1122,7 +1097,7 @@ var items = [
                 career: ["Noble", "Urban"],
             },
             {
-                name: "Pommel",
+                name: "Rapier Pommel",
                 type: "Melee",
                 range: 0,
                 move: ["Attack", "Ambush"],
@@ -1139,7 +1114,7 @@ var items = [
         wealth: 4,
         price: 100,
         weapon_defenses: [{
-            name: "Parry",
+            name: "Rapier Parry",
             range: 1,
             hands: 1,
             type: "Melee",
@@ -1148,7 +1123,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Stab",
+                name: "Rapier Stab",
                 type: "Melee",
                 range: 1.5,
                 move: ["Attack", "Ambush"],
@@ -1157,14 +1132,14 @@ var items = [
             },
 
             {
-                name: "Feint",
+                name: "Rapier Feint",
                 range: 1,
                 hands: 1,
                 type: "Melee",
                 move: ["Feint"],
                 career: ["Noble", "Assassin", "Urban"],
             }, {
-                name: "Pommel Stab",
+                name: "Hidden Knife Pommel Stab",
                 type: "Grapple",
                 range: 0,
                 move: ["Ambush", "Attack"],
@@ -1181,7 +1156,7 @@ var items = [
         price: 5,
         weapon_modes:
             [{
-                name: "Stab",
+                name: "Throwing dagger Stab",
                 type: "Melee",
                 range: 0.5,
                 move: ["Attack", "Ambush"],
@@ -1189,7 +1164,7 @@ var items = [
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
             },
             {
-                name: "Feint",
+                name: "Throwing dagger Feint",
                 range: 1,
                 hands: 1,
                 type: "Melee",
@@ -1197,7 +1172,7 @@ var items = [
                 career: ["Brawling", "Assassin", "Urban"],
             },
             {
-                name: "Stab at close range",
+                name: "Dagger Stab at close range",
                 type: "Grapple",
                 range: 0,
                 move: ["Attack", "Ambush"],
@@ -1205,7 +1180,7 @@ var items = [
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
             },
             {
-                name: "Thrown",
+                name: "Thrown Dagger",
                 type: "Thrown",
                 career: ["Noble", "Urban", "Assassin"],
                 range: 10,
@@ -1226,7 +1201,7 @@ var items = [
         price: 5,
         weapon_modes:
             [{
-                name: "Chop",
+                name: "Hand Axe Chop",
                 type: "Melee",
                 range: 0.5,
                 move: ["Attack", "Ambush"],
@@ -1234,7 +1209,7 @@ var items = [
                 damage: [{ damage: "2d6", type: "slashing", when: "" }],
             },
             {
-                name: "Thrown",
+                name: "Hand Axe Thrown",
                 type: "Thrown",
                 career: ["Gladiator", "Hunter", "Pirate", "Assassin"],
                 move: ["Attack", "Ambush"],
@@ -1255,7 +1230,7 @@ var items = [
         price: 0.5,
         weapon_modes:
             [{
-                name: "Stab",
+                name: "Javelin Stab",
                 type: "Melee",
                 range: 1,
                 move: ["Attack", "Ambush"],
@@ -1263,7 +1238,7 @@ var items = [
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
             },
             {
-                name: "Thrown",
+                name: "Throw Javelin",
                 type: "Thrown",
                 career: ["Hunter", "Infantry", "Gladiator", "Athlete"],
                 range: 10,
@@ -1283,7 +1258,7 @@ var items = [
         price: 1,
         weapon_modes:
             [{
-                name: "Stab",
+                name: "Knife Stab",
                 type: "Melee",
                 move: ["Attack", "Ambush"],
                 range: 0.5,
@@ -1292,7 +1267,7 @@ var items = [
             },
 
             {
-                name: "Feint",
+                name: "Knife Feint",
                 range: 1,
                 hands: 1,
                 type: "Melee",
@@ -1306,7 +1281,7 @@ var items = [
                 career: ["Assassin", "Brawling"],
             },
             {
-                type: "Thrown",
+                type: "Knife Thrown",
                 range: 10,
                 move: ["Attack", "Ambush"],
                 awkward: true,
@@ -1326,7 +1301,7 @@ var items = [
         price: 10,
         weapon_modes:
             [{
-                name: "Swing",
+                name: "Flail Swing",
                 type: "Melee",
                 range: 1.1,
                 move: ["Attack", "Ambush"],
@@ -1334,7 +1309,7 @@ var items = [
                 career: ["Gladiator", "Paladin"],
             },
             {
-                name: "Extended Swing",
+                name: "Flail Extended Swing",
                 type: "Melee",
                 range: 1.1,
                 move: ["Attack", "Ambush"],
@@ -1353,7 +1328,7 @@ var items = [
         wealth: 4,
         price: 30,
         weapon_defenses: [{
-            name: "Block",
+            name: "Great Axe Block",
             range: 1,
             move: ["Attack", "Ambush"],
             hands: 2,
@@ -1362,7 +1337,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Chop",
+                name: "Great Axe Chop",
                 type: "Melee",
                 hands: 2,
                 move: ["Attack", "Ambush"],
@@ -1371,7 +1346,7 @@ var items = [
                 career: ["Martial"],
             },
             {
-                name: "Pommel",
+                name: "Great Axe Pommel",
                 type: "Grapple",
                 move: ["Attack", "Ambush"],
                 range: 0,
@@ -1391,6 +1366,7 @@ var items = [
         price: 0.1,
         weapon_modes:
             [{
+                name: "Great Club Smash",
                 type: "Melee",
                 hands: 2,
                 range: 1.1,
@@ -1399,7 +1375,7 @@ var items = [
                 career: ["Martial", "Strenth"],
             },
             {
-                name: "Pommel",
+                name: "Great Club Pommel",
                 type: "Grapple",
                 move: ["Attack", "Ambush"],
                 range: 0,
@@ -1418,7 +1394,7 @@ var items = [
         wealth: 1,
         price: 1,
         weapon_defenses: [{
-            name: "Block",
+            name: "Net Block",
             range: 1,
             move: ["Parry"],
             hands: 2,
@@ -1427,7 +1403,7 @@ var items = [
         }],
         weapon_modes:
             [{
-                name: "Entangle",
+                name: "Entangle with Net",
                 type: "Ranged",
                 hands: 2,
                 range: 2,
@@ -1447,7 +1423,7 @@ var items = [
         wealth: 5,
         price: 50,
         weapon_defenses: [{
-            name: "Parry",
+            name: "Great Sword Parry",
             range: 1,
             hands: 2,
             move: ["Attack", "Ambush"],
@@ -1456,6 +1432,7 @@ var items = [
         }],
         weapon_modes:
             [{
+                name: "Great Sword Swong",
                 type: "Melee",
                 hands: 2,
                 range: 1.1,
@@ -1464,7 +1441,7 @@ var items = [
                 career: ["Martial"],
             },
             {
-                name: "Pommel",
+                name: "Great Sword Pommel",
                 type: "Grapple",
                 move: ["Attack", "Ambush"],
                 range: 0,
@@ -1484,7 +1461,7 @@ var items = [
         weapon_modes:
             [
                 {
-                    name: "Blast",
+                    name: "Fireball Wand Blast",
                     type: "Blast",
                     radius: 2,
                     career: ["Immolator", "Sorcerer"],
@@ -1507,7 +1484,7 @@ var items = [
         price: 25,
         weapon_modes:
             [{
-                name: "Splattered",
+                name: "Throw Acid from vial",
                 range: 4,
                 hands: 1,
                 type: "Thrown",
@@ -1528,7 +1505,7 @@ var items = [
         price: 50,
         weapon_modes:
             [{
-                name: "Shatter",
+                name: "Shatter Alchemist FIre",
                 range: 4,
                 radius: 1,
                 hands: 1,
@@ -1552,7 +1529,7 @@ var items = [
         price: 25,
         use:
             [{
-                name: "Use",
+                name: "Use Arcane Ingredients-Common",
                 range: 1,
                 hands: 1,
                 type: "Ingrediant",
@@ -1573,7 +1550,7 @@ var items = [
         wealth: 4,
         use:
             [{
-                name: "Use",
+                name: "Use Arcane Ingredients- Rare",
                 range: 1,
                 hands: 1,
                 type: "Ingrediant",
@@ -1594,7 +1571,7 @@ var items = [
         wealth: 8,
         use:
             [{
-                name: "Use",
+                name: "Use Arcane Ingredients- Legendary",
                 range: 1,
                 hands: 1,
                 type: "Ingrediant",
@@ -1615,7 +1592,7 @@ var items = [
         price: 5,
         weapon_modes:
             [{
-                name: "Thrown",
+                name: "Throw Boomerang",
                 range: 12,
                 hands: 1,
                 type: "Thrown",

@@ -64,13 +64,11 @@ function createDirWindow(buttonName) {
 export function processDirectory(jsonData) {
 
     for (let i = 0; i < jsonData.length; i++) {
-        if (jsonData[i])
+        if (typeof (jsonData[i]) == "string")
             try {
                 jsonData[i] = JSON.parse(jsonData[i]);
-                if (jsonData[i].page == "spell")
-                    console.log(jsonData[i]);
-            } catch (err) {
 
+            } catch (err) {
                 console.log("Error in parsing " + i + " " + jsonData[i]);
             }
     }

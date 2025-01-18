@@ -9,6 +9,9 @@ Need to access globals through this? probaly window.opener is working now
 https://stackoverflow.com/questions/17493027/can-i-open-a-new-window-and-populate-it-with-a-string-variable
 https://daily-dev-tips.com/posts/javascript-sending-data-between-windows/
 
+  
+  Documents: pulling out as maps, text, tooltip, icon. Default icon is red pin, double clicking to open it
+
 Issue: if closing main window window copy screws up, add button to make main window hide and copy window open. When closing copy window make copy main window visible
 For slow network, need to put up clock when loading initial scene, as each character sheet is loaded.
 Working 30%
@@ -30,7 +33,7 @@ buy item is broken  not verified
 large creatures scaled tokens
 
 Game:
-1. Damage on players maybe too variable. Added Supremacy mechanic
+1. Damage on players maybe too variable. add MERP rules for both players and monsters.
 2. Damage on monsters not variable enough , inflicting conditions
 3. Mount required
 
@@ -40,15 +43,16 @@ Bugs:
     Can we get rid of tag files completely? Or necc for compendiums for quick loading
 Instances:
 
-Bug: Weapon proficiencies should be seen on weapons in buy list somehow
+Bug: Weapon proficiencies should be seen on weapons in buy list somehow.. tooltip needs your proficiency rank
 Bug: selecting more than one in directory window
 Bug: popping out should be option on window panel
 Bug: Would like to pop out chat window
 Bug: Finish spell casting. Use moves. Also add in areas of power.
-Bug: spells need 'show description' button not just cast. All objects do
+Bug: spells need 'show description' button not just cast. Spell rolls broken.
 
-Bug: All rolls need modifiers doable afterwards
+ 
 Bug: Changes to inventory etc should be printed out to chat
+Need transaction history
 Seems to break if left alone for a while
 Careers should show feats chosen without opening panel. feats should hover
 

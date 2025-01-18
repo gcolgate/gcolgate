@@ -167,7 +167,8 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
       for (let i = 0; i < folder.length; i++) {
 
         try {
-          var entry = jsonHandling.ParseJson('inline', folder[i]);
+          // todo fix this seriously
+          var entry = typeof (folder[i]) == 'string' ? jsonHandling.ParseJson('inline', folder[i]) : entry;
         } catch {
           console.error("Err " + folder[i]);
 
