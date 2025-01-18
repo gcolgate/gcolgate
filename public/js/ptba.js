@@ -33,7 +33,7 @@ export const moves = {
         "mixed": "Your mount acts panicked or with another emotion, doing something you don't want it to, but you stay on, it takes your action",
         "fail": "Your mount acts panicked or with another emotion, and you fall off of it, this takes your action"
     },
-    "Feint (free action)": {
+    "Feint": {
         "stat": [
             "cunning"
         ],
