@@ -135,7 +135,7 @@ function createFilterButtonsText(allTypes) {
     }
 }
 
-function extractFromCompendium(filter_array, owner, types, matches) {
+export function extractFromCompendium(filter_array, owner, types, matches) {
 
     if (!folders.Compendium) {
         return [];

@@ -1,10 +1,32 @@
 import { slotList } from './drag.js';
 import { sendChat } from './chat.js';
-import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, MakeAvailableToParser, MakeAvailableToHtml } from './characters.js'
+import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, MakeAvailableToParser, MakeAvailableToHtml, chkDiv } from './characters.js'
 import { socket } from './main.js';
+import { extractFromCompendium } from './directoryWindow.js';
 
 
 export const moves = {
+
+    "Stat Check": {
+        "stat": [
+            "allure",
+            "avoidance",
+            "bravery",
+            "caring",
+            "cunning",
+            "health",
+            "intelligence",
+            "strength",
+            "will",
+        ],
+        "action": "Stat",
+        "tooltip": "Basic Stat Check",
+
+        "Critical": "You overkill. If this is a save, you avoid ill effect and possibly get some advantage ",
+        "success": "You meet the challenge. If this is a save, avoid ill effct",
+        "mixed": "You win with a cost or else you lose. If this is a save, take half damage.",
+        "fail": "You lose"
+    },
     "Confront": {
         "stat": [
             "bravery"
@@ -26,8 +48,7 @@ export const moves = {
             "bravery", "caring"
         ],
         "action": "MaybeAction",
-        "tooltip": "Control your horse. If you are skilled at Cavalry or a similar career, roll with advantage",
-        "Comments": "Control your horse. If you are skilled at Cavalry or a similar career, roll with advantage",
+        "tooltip": "Control your horse. ",
         "Critical": "You control your mount, it is a free action",
         "success": "You control your mount",
         "mixed": "Your mount acts panicked or with another emotion, doing something you don't want it to, but you stay on, it takes your action",
@@ -103,25 +124,82 @@ export const moves = {
         "fail": "You waste your turn, and take damage from the fire",
         "fumble": "You spread the fire to a nearby object."
     },
-    "Display of Might and Power": {
+    "Challenge": {
+        "stat": [
+            "bravery", "strength"
+        ],
+        "action": "MaybeAction",
+        "tooltip": "When you challenge or trash talk your opponent. This may be difficult in some cirumstances. It usually cannot be repeated against the same enemies",
+        "Critical": "Foes are panicked, you can take another, different, action ",
+        "success": "Foes are cowed and you take another, different, action",
+        "mixed": "Foes are cowed but afterwards treat you as the main threat",
+        "fail": "None or reverse effect, perhaps they are frenzied"
+    },
+    "Grisly Display": {
         "stat": [
             "bravery"
         ],
         "action": "MaybeAction",
-        "tooltip": "Display of Might and Power:  When you take an action which is intimidating",
-        "Comments": "Some actions which get you a bonus to your steel for this purpose  of intimidation: <ul>\
-        <li> &#x25BA; A Mighty Name The character’s reputation alone is enough to make enemies hesitate</li>\
-        <li> &#x25BA; Dead Man’s Stare The character brandishes the severed head of an enemy at arm’s length, raising the grim trophy high for all to see. This violent action, drenched in gore, deters all but the most hardened foes. For extra emphasis, the head can be dropped dramatically, cast away as refuse, or tossed into the hands of a hapless target. </li>\
-        <li> &#x25BA; Flaming Brand: Against  beasts, the threat of fire is something that inspires a primal dread. </li>\
-        <li> &#x25BA; Impossible Feat of Might The character pulls out all the stops and overturns a massive statue or stone, or something similar,  sending it crashing to the ground</li>\
-        <li> &#x25BA; Knife to the Throat A particularly intimate form of intimidation, holding a foe at the point or edge of a blade can cause them to swiftly capitulate</li>\
-        <li> &#x25BA; Sorcerous Power The character’s flashy and  dark and unnatural arts is enough to terrify many foes</li>\
-        <li> &#x25BA; Stain the Soil Red Following the death of several foes and the shedding of copious amounts of blood, the character lets out a savage, primordial cry</li>\
-        <li> &#x25BA; Divine Power Against the superstitious and the extraplanar, the words of a priest can compel</li></ul>",
-        "Critical": "Foes are very frightened of you, they may become stunned (save) and you can take another, different, action ",
-        "success": "Foes are frightened of you and they may flee (save): and you take another, different, action",
-        "mixed": "Foes are frightened of you but try to treat you as the main threat",
-        "fail": "None or reverse effect, maybe their morale raises"
+        "tooltip": "Raise the severed head of an enemy, raising the grim trophy high, or some other fearful action",
+        "Critical": "Foes are panicked, you can take another, different, action ",
+        "success": "Foes are cowed and you take another, different, action",
+        "mixed": "Foes are cowed but afterwards treat you as the main threat",
+        "fail": "None or reverse effect, perhaps they are frenzied"
+    },
+    "Flaming Brand": {
+        "stat": [
+            "bravery"
+        ],
+        "action": "MaybeAction",
+        "tooltip": "Against  beasts, the threat of fire is something that inspires a primal dread. Waving fire about or using magic fire can frighten them",
+        "Critical": "Beasts are panicked, you can take another, different, action ",
+        "success": "Beasts are cowed and you take another, different, action",
+        "mixed": "Beasts are cowed but afterwards angered",
+        "fail": "None or reverse effect, perhaps they are frenzied"
+    },
+    "Must Keep going": {
+        "stat": [
+            "bravery", "will", "health"
+        ],
+        "action": "MaybeAction",
+        "tooltip": "When sick or stunned, you can try to keep acting, possibly acting or failing to act",
+        "Critical": "You can act normally. You are no longer stunned but are still sick",
+        "success": "You can act normally. You are no longer stunned but are still sick",
+        "mixed": "Choose 1: You can act normally this round, but are still stunned OR you end the stun but can't act, in either case if sick still sick",
+        "fail": "You cannot act this round and fall prone. If sick, maybe you barf or otherwise expel fluids"
+    },
+    "Knife to the Throat": {
+        "stat": [
+            "cunning"
+        ],
+        "action": "Action",
+        "tooltip": "A particularly intimate form of intimidation that requires surprise, you sneak up and hold a foe at the point or edge of a blade can cause them to swiftly capitulate, will not work on fully armored or unintelligent beings",
+        "Critical": "You have a knife to their throad, they are helpless ",
+        "success": "Your opponent is cowed, and may surrender, if he tries to escape you hit for a critical hit",
+        "mixed": "Your opponent is cowed, if he tries to escape you get to roll a backstab",
+        "fail": "On a failure your foe gets a free action"
+    },
+    "Fear my Magic": {
+        "stat": [
+            "bravery"
+        ],
+        "action": "FreeAction",
+        "tooltip": "Immediately after a sufficiently scary spell, you keep the spell moaning or humming around you, as to indicate more is coming. Costs 1 mana",
+        "Critical": "Foes are panicked",
+        "success": "Foes are cowed",
+        "mixed": "Foes are cowed but afterwards treat you as the main threat",
+        "fail": "None or reverse effect, perhaps they are frenzied"
+    },
+    "Fear my blade": {
+        "stat": [
+            "bravery"
+        ],
+        "action": "FreeAction",
+        "tooltip": "Immediately after a certain critical hit, your foes may become frightened",
+        "Critical": "Foes are panicked",
+        "success": "Foes are cowed",
+        "mixed": "Foes are cowed but afterwards treat you as the main threat",
+        "fail": "None or reverse effect, perhaps they are frenzied"
     },
     "Attack": {
         "stat": [
@@ -136,7 +214,7 @@ export const moves = {
                 <div class="tooltip">\
        <ul><li> &#x25BA; You hit him in a vulnerable spot. Add another x1 damage, and he is bleeding or stunned</li>\
         <li> &#x25BA; You can immediately act again, maybe attacking a different foe</li>\
-        <li> &#x25BA; You use brutal strength. Add your Strength x4 more damage, foe is prone (Str Save), and you get a free action (display of might and power) to intimidate all enemies</li></ul> \
+        <li> &#x25BA; You use brutal strength. Add your Strength x4 more damage, foe is prone (Str Save), and you get a free action (Stain the Soils Red) to intimidate all enemies</li></ul> \
         </div>\
         </div>\
         </a>',
@@ -343,12 +421,12 @@ export const moves = {
         <li> &#x25BA; The deal is shaky, and might break at any time</li></ul>",
         "fail": "You fail to make the deal. Maybe something bad happens. Did you insult them?"
     },
-    "Investigate/Insight": {
+    "Investigate": {
         "stat": [
             "intelligence"
         ],
         "action": "Scene",
-        "tooltip": "Investigate/Insight  when understnding or investigating",
+        "tooltip": "When you closely study something or someone, ask the GM questions",
         "Comments": "When you closely study something or someone, ask the GM questions. such as <ul>\
         <li> &#x25BA; What happened here recently?</li>\
         <li> &#x25BA; What is about to happen?</li>\
@@ -362,9 +440,32 @@ export const moves = {
         <li> &#x25BA; What secret thing can I spot that might open up more things?</li>\
         <li> &#x25BA; Can this merchant be bargained down?</li>\
         <li> &#x25BA; What does this person really want in exchange?</li>\
-        <li> &#x25BA; What will make this person do what I say so I can get something?</li>\
         <li> &#x25BA; What is this creature’s weak point?</li>\
         <li> &#x25BA; How can this be dispelled?</li></ul>",
+        "Critical": "",
+        "success": "Ask 3 questions",
+        "mixed": "Ask 1 question, or some sort of negative happens and you can ask 3 questions",
+        "fail": "The GM has a long list of ways to twist the information he gives",
+    },
+    "Insight": {
+        "stat": [
+            "caring"
+        ],
+        "action": "Scene",
+        "tooltip": "Insight gives you insight into other people's motive and agendas, lets you read poeple",
+        "Comments": "When you closely study something or someone, ask the GM questions. such as <ul>\
+        <li> &#x25BA; What do they want?</li>\
+        <li> &#x25BA; Are they hiding something and what is it??</li>\
+        <li> &#x25BA; What should I be on the lookout for?</li>\
+        <li> &#x25BA; Who’s their boss?</li>\
+        <li> &#x25BA; What is their plan?</li>\
+        <li> &#x25BA; Are they injured, tired, upset?</li>\
+        <li> &#x25BA; What is the relationship between those two people</li>\
+         <li> &#x25BA; Can this merchant be bargained down?</li>\
+        <li> &#x25BA; What does this person really want in exchange?</li>\
+        <li> &#x25BA; What will make this person do what I say so I can get something?</li>\
+        <li> &#x25BA; What are this creature’s weak point?</li>\
+        <li> &#x25BA; Are they under an enchantment?</li></ul>",
         "Critical": "",
         "success": "Ask 3 questions",
         "mixed": "Ask 1 question, or some sort of negative happens and you can ask 3 questions",
@@ -489,7 +590,7 @@ export const moves = {
     },
     "Hard Physical Work": {
         "stat": [
-            "strength", "will",
+            "strength", "will", "health"
         ],
         "action": "Scene",
         "tooltip": "Hard physical work",
@@ -574,7 +675,7 @@ export const moves = {
         <li> &#x25BA; Are engaged</li>\
         <li> &#x25BA; Get your weapon entangled, lose some gear,  are knocked prone or otherwise put into a bad position</li>\
         <li> &#x25BA; Miss instead, since you decided to wait for a better time, stay hiding and not attack now, maybe you can try next turn</li></ul>",
-        "fail": "On a failure you lose the initiative and probably the ire of the person you tried to backstab."
+        "fail": "On a failure your foe gets a free action"
     },
     "Gossip": {
         "stat": [
@@ -896,6 +997,32 @@ function getTakenDamageType(thingId) {
 MakeAvailableToHtml("getTakenDamage", getTakenDamage);
 MakeAvailableToHtml("getTakenDamageType", getTakenDamageType);
 
+function FindBestCareer(owner, move_name) {
+
+    let bonus = 0;
+    let career_string = "";
+
+    if (!owner) { return [0, ""] }
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "careers") {
+            let career = GetRegisteredThing(item.file);
+            let level = Number(career.owner_level);
+            if (level > bonus) {
+                if (career?.moves?.length) {
+                    for (let i = 0; i < career.moves.length; i++) {
+                        if (career.moves[i] == move_name) {
+                            bonus = level;
+                            career_string = career.name;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return [bonus, career_string]
+
+}
 
 // input: owner, node, output [ damage, skill]
 function FindBestCareerNode(owner, node) {
@@ -1916,11 +2043,11 @@ function quote(x) {
     return "'" + x + "'";
 }
 
-function CreateRollMoveStatString(buttonClass, buttonText, ownerId, stat, mv, skill, advantage, weapon_id, defense_or_offset, weapon_mode) {
+function CreateRollMoveStatString(buttonClass, buttonText, description, ownerId, stat, mv, skill, advantage, weapon_id, defense_or_offset, weapon_mode) {
     let comma = ",";
     return "<button class=\""
         + buttonClass + "\" onclick =\"htmlContext.rollMoveStat(" + quote(ownerId) + comma + quote(stat) + comma + quote(mv) + comma + quote(skill) + comma + quote(advantage) + comma +
-        quote(weapon_id) + comma + quote(defense_or_offset) + comma + quote(weapon_mode) + ")\">"
+        quote(weapon_id) + comma + quote(defense_or_offset) + comma + quote(weapon_mode) + comma + quote(description) + ")\">"
         + quote(buttonText) +
         "</button>";
 
@@ -1928,7 +2055,7 @@ function CreateRollMoveStatString(buttonClass, buttonText, ownerId, stat, mv, sk
 MakeAvailableToParser('CreateRollMoveStatString', CreateRollMoveStatString);
 
 
-function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDefense, weapon_mode) {
+function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDefense, weapon_mode, description) {
     let owner = GetRegisteredThing(ownerId);
     let damage = []
     let bonus = owner.stats[stat];
@@ -1936,6 +2063,7 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
 
         socket.emit('rollmove', {
             ownerId: ownerId,
+            description: description,
             stat: stat,
             statBonus: owner.stats[stat],
             skill: skill,
@@ -1966,6 +2094,7 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
 
             ownerId: ownerId,
             stat: stat,
+            description: description,
             statBonus: owner.stats[stat],
             skill: skill,
             skillDice: GetCareerLevel(owner, skill),
@@ -2197,7 +2326,7 @@ function ptbaResult(nat, r, resultsTable) {
     console.log(resultsTable);
     console.log(resultsTable.Critical);
     if (nat == 2) return (resultsTable.fail);
-    if (nat == 20) return (resultsTable.Critical.empty() ? resultsTable.success : resultsTable.Critical);
+    if (nat == 20) return (resultsTable.Critical ? resultsTable.success : resultsTable.Critical);
     if (r < 10) return (resultsTable.fail);
     if (r < 16) return (resultsTable.mixed);
     if (r < 23) return (resultsTable.success);
@@ -2212,23 +2341,22 @@ function GetRollTextResult(thing, owner) {
 }
 MakeAvailableToParser("GetRollTextResult", GetRollTextResult);
 
-function rollPTBAStat(ownerId, stat, isSave) {
-    let owner = GetRegisteredThing(ownerId);
-    let bonus = owner.stats[stat];
-    socket.emit('roll', {
-        title: owner.name + ' ' + stat.toUpperCase() + " Check ",
-        style: "dual-move",
-        roll: baseDice + signed(bonus),
-        resultsTable: { Critical: "Crit", success: "Success", mixed: "Mixed", fail: "Failure" }
-    });
+// function rollPTBAStat(ownerId, stat, isSave) {
+//     let owner = GetRegisteredThing(ownerId);
+//     let bonus = owner.stats[stat];
+//     socket.emit('roll', {
+//         title: owner.name + ' ' + stat.toUpperCase() + " Check ",
+//         style: "dual-move",
+//         roll: baseDice + signed(bonus),
+//         resultsTable: { Critical: "Crit", success: "Success", mixed: "Mixed", fail: "Failure" }
+//     });
 
-}
-MakeAvailableToParser("rollPTBAStat", rollPTBAStat);
-MakeAvailableToHtml("rollPTBAStat", rollPTBAStat);
+// }
+// MakeAvailableToParser("rollPTBAStat", rollPTBAStat);
+// MakeAvailableToHtml("rollPTBAStat", rollPTBAStat);
 
 function PTBAAbility(thing, stat) {
-    let answer = Editable(thing, " thing.stats['" + stat + "'] ", "npcNum") +
-        "<button onclick=\"htmlContext.rollPTBAStat('" + thing.id + "','" + stat + "', false)\">Check</button>";
+    let answer = Editable(thing, " thing.stats['" + stat + "'] ", "npcNum");
     return answer;
 }
 
@@ -2288,16 +2416,17 @@ function WeaponMoves(owner, weaponId) {
                     let stat = moves[key].stat[j];
                     answer += "<div>"
                     answer += CreateRollMoveStatString("greentintButton roundbutton", "+",
-                        owner.id, stat, 'Attack', bonus[1], 1, weaponId, "weapon_modes", m);
-                    answer += CreateRollMoveStatString("middleButton", mode.name + '  +' + stat + "(" + owner.stats[stat] + ') ST(' + bonus[0] + ") " + 'Rng(' + mode.range + ")",
-                        owner.id, stat, 'Attack', bonus[1], 0, weaponId, "weapon_modes", m);
+                        mode.name, owner.id, stat, 'Attack', bonus[1], 1, weaponId, "weapon_modes", m);
+                    answer += CreateRollMoveStatString("middleButton", mode.name + '  +' + stat + "(" + owner.stats[stat] + ') ' + bonus[1] + '(' + bonus[0] + ") " + 'Rng(' + mode.range + ")",
+                        mode.name, owner.id, stat, 'Attack', bonus[1], 0, weaponId, "weapon_modes", m);
                     answer += CreateRollMoveStatString("redtintButton roundbutton", '-',
-                        owner.id, stat, 'Attack', bonus[1], -1, weaponId, "weapon_modes", m);
+                        mode.name, owner.id, stat, 'Attack', bonus[1], -1, weaponId, "weapon_modes", m);
                     answer += "</div>"
+
                 }
             }
         }
-    return answer;
+    return chkDiv(answer);
 }
 
 MakeAvailableToParser('WeaponMoves', WeaponMoves);
@@ -2331,18 +2460,18 @@ function WeaponParries(thing, weaponId) {
                         let stat = stats[j];
                         answer += "<div>"
                         answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
-                            thing.id, stat, mode.move, bonus[1], 1, weaponId, "weapon_defenses", m);
-                        answer += CreateRollMoveStatString("middleButton", ' ' + mode.name + ' ST(' + bonus[0] + ") " + 'RA(' + mode.range + ")" + "(" + stat + ")",
-                            thing.id, stat, mode.move, bonus[1], 0, weaponId, "weapon_defenses", m);
+                            mode.name, thing.id, stat, mode.move, bonus[1], 1, weaponId, "weapon_defenses", m);
+                        answer += CreateRollMoveStatString("middleButton", ' ' + mode.name + ' ' + bonus[1] + "(" + bonus[0] + ") " + 'Rng(' + mode.range + ")" + "(" + stat + ")",
+                            mode.name, thing.id, stat, mode.move, bonus[1], 0, weaponId, "weapon_defenses", m);
                         answer += CreateRollMoveStatString("redtintButton roundbutton ", '-',
-                            thing.id, stat, mode.move, bonus[1], -1, weaponId, "weapon_defenses", m);
+                            mode.name, thing.id, stat, mode.move, bonus[1], -1, weaponId, "weapon_defenses", m);
 
                         answer += "</div>"
 
                     }
                 }
         }
-    return answer;
+    return chkDiv(answer);
 }
 
 
@@ -2379,8 +2508,12 @@ function PTBAMoves(thing) {
 
         if (one.action > two.action) return 1;
         if (one.action < two.action) return -1;
-        if (one.name > two.name) return 1;
-        if (one.name < two.name) return -1;
+        if (a > b) {
+            return 1;
+        }
+        if (a < b) {
+            return -1;
+        }
         return 0;
 
     });
@@ -2396,29 +2529,40 @@ function PTBAMoves(thing) {
             let weapons = GetWeaponsList(thing);
             for (let w = 0; w < weapons.length; w++) {
                 answer += WeaponMoves(thing, weapons[w]);
+                answer += WeaponParries(thing, weapons[w]);
             }
+
         } else {
-            let skill = "";
+            let bonus = FindBestCareer(thing, key);
+            let skill = bonus[1];
             for (let j = 0; j < moves[key].stat.length; j++) {
                 let stat = moves[key].stat[j];
-                answer += "<div class=\"padded\" >";
-                answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
-                    thing.id, stat, key, skill, 1);
-                answer += CreateRollMoveStatString("middleButton ", key + "(" + stat + ":" + thing.stats[stat] + ")",
-                    thing.id, stat, key, skill, 0);
-                answer += CreateRollMoveStatString("redtintButton roundbutton ", '+',
-                    thing.id, stat, key, skill, -1);
 
-                // answer += "<button class=\"greentintButton roundbutton \"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',1)\">"
-                //     + "+" +
-                //     "</button>";
-                // answer += "<button title=\"" + moves[key].tooltip
-                //     + "\" class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',0)\">"
-                //     + key + "(" + stat + ":" + thing.stats[stat] + ")" +
-                //     "</button>";
-                // answer += "<button class=\"redtintButton roundbutton\"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + key + "',-1)\">"
-                //     + "-" +
-                //     "</button></div>";
+                answer += "<div class=\"padded\" >";
+
+
+                answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
+                    key, thing.id, stat, key, skill, 1);
+
+                answer += CreateRollMoveStatString("middleButton ",
+                    key + "+ " + stat + "(" + thing.stats[stat] + ") " + skill + '(' + bonus[0] + ")",
+                    key, thing.id, stat, key, skill, 0);
+                answer += CreateRollMoveStatString("redtintButton roundbutton ", '+',
+                    key, thing.id, stat, key, skill, -1);
+
+                chkDiv('<a href="#"> Info  ' +
+                    '<div class="tooltipcontainer">' +
+                    '<div class="tooltip moveright">'
+                    + moves[key].tooltip
+                    + '</div>  </div>  </a> ');
+
+                answer += '<a href="#"> Info  ' +
+                    '<div class="tooltipcontainer">' +
+                    '<div class="tooltip moveright">'
+                    + moves[key].tooltip
+                    + '</div>  </div>  </a>  </div>';
+
+
             }
         }
     }
@@ -2441,17 +2585,15 @@ function PTBADefenses(thing) {
 
         }
     }
-    let a = "Dodge";
+    let mv = "Dodge";
     let stat = "avoidance";
-    answer += "<div class=\"padded\" ><button class=\"greentintButton roundbutton \"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',1)\">"
-        + "+" +
-        "</button>";
-    answer += "<button  class=\"middleButton\" onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',0)\">"
-        + a + (moves[a].stat.length > 1 ? "(" + stat + ")" : "") +
-        "</button>";
-    answer += "<button class=\"redtintButton roundbutton\"  onclick=\"htmlContext.rollMoveStat('" + thing.id + "','" + stat + "', '" + a + "',-1)\">"
-        + "-" +
-        "</button></div>";
+
+    let bonus = FindBestCareerNode(thing, mv);
+
+    answer += CreateRollMoveStatString("greentintButton roundbutton", "+", "Dodge", thing.id, stat, mv, bonus[1], 1);
+    answer += CreateRollMoveStatString("middleButton", "+ ", "Dodge", thing.id, stat, mv, bonus[1], 0);
+    answer += CreateRollMoveStatString("redtintButton roundbutton", "-", "Dodge", thing.id, stat, mv, bonus[1], -1);
+
 
 
     return answer;

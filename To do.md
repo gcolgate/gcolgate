@@ -1,59 +1,52 @@
 To do
 
-pain :
-
+pain POP-OUT:
  This sounds like it will take some days to work out:
 Need to be able to POP OUT sub windows and scale them smaller/bigger. Lots of work on appearance.
 https://stackoverflow.com/questions/21671218/window-opener-not-working-in-chrome
 Need to access globals through this? probaly window.opener is working now
 https://stackoverflow.com/questions/17493027/can-i-open-a-new-window-and-populate-it-with-a-string-variable
 https://daily-dev-tips.com/posts/javascript-sending-data-between-windows/
-
-  
-  Documents: pulling out as maps, text, tooltip, icon. Default icon is red pin, double clicking to open it
-
 Issue: if closing main window window copy screws up, add button to make main window hide and copy window open. When closing copy window make copy main window visible
+
+
+
 For slow network, need to put up clock when loading initial scene, as each character sheet is loaded.
-Working 30%
-Finish image server
-Fix non-fighty characters dancer based had no weapons
-Appearance window doesn't work: buttons work but changin the image does not change it. It is responsive though to the normal window.You can't change mode
-dragging doesn't work: these might be the same as the bluebutton fix
-Make armor proficiencies more known not verified
+ 
+Finish image server: Images should be able to have color and shaders changed on them.
 
-Need to make a new kind of object, a wound/condition/bless, that can be added to a player and displayed.
-
-Bug when dragging the name gets changed
-CHange  and include hover of entire thing including bonuses not verified
+Fix non-fighty characters dancer based had no , still an issue.   
+Make armor proficiencies more known on the sheet currently they are hidden.
+Add a place to add conditions
+See if any of the spell or spell results should be conditions. Figure out how to use conditions in rolls  
+   
 Remember camera position, a little more complicated because it is camera position per player per scene
 Find token from sheet button
-group things to scroll
-every so often moving things becomes unresponvive
-buy item is broken  not verified
+group things to scroll 
+Hovering tooltips should be click -thru
+buy item doesn't deduct money
 large creatures scaled tokens
-
-Game:
-1. Damage on players maybe too variable. add MERP rules for both players and monsters.
-2. Damage on monsters not variable enough , inflicting conditions
-3. Mount required
+ 
+1. Damage on players maybe too variable. add MERP rules for both players and monsters. 
+3. Mount required for certain moves, don't allow them without mount?
 
 Reorganization:
-5. reorganize bestiary and monsters to be simpler and better. Do this after getting image server working
+5. reorganize bestiary and monsters to be simpler and better. Try for a variant of Document where you can list conditions, hit points, etc. per token. Maybe support Armed, Sleeping, Bloodied, etc
 Bugs:
     Can we get rid of tag files completely? Or necc for compendiums for quick loading
 Instances:
-
-Bug: Weapon proficiencies should be seen on weapons in buy list somehow.. tooltip needs your proficiency rank
+ 
 Bug: selecting more than one in directory window
 Bug: popping out should be option on window panel
 Bug: Would like to pop out chat window
-Bug: Finish spell casting. Use moves. Also add in areas of power.
+Bug: Finish spell casting. Use moves. Also add in areas of power. sort of done.
 Bug: spells need 'show description' button not just cast. Spell rolls broken.
 
  
 Bug: Changes to inventory etc should be printed out to chat
 Need transaction history
-Seems to break if left alone for a while
+Need UNDO
+Seems to break if left alone for a while (like 3 hours)
 Careers should show feats chosen without opening panel. feats should hover
 
 alternate layout that doesn't show image and window is smaller for players
@@ -61,7 +54,6 @@ Tighten space for players sheets
 
 Layout: Spell window has lots of wasted space, Features too
 
-Feature: All windows pop out
 
 Game: Is mana generating fun? NO
 Game: maybe cursor keys scroll map. Maybe control also controls map.
@@ -78,10 +70,7 @@ Game: maybe cursor keys scroll map. Maybe control also controls map.
 
 
 future: provide Transactions tag where all transactions are recorded, with running total of money
-
-3. Improve rolling
-    Allow dice to be rerolled once they are in the chat as advantage/disadvantate +bonus -bonus
-    Allow editing of rolls on sheet to set bonus before rolling
+ 
 
 3. Image library required on server 50%
 

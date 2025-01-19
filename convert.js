@@ -84,18 +84,23 @@ var conditions = {
 
     Slowed: {
         name: "Slowed",
-        description: "You must move at 50% speed",
+        description: "You move at 50% speed",
         stackable: "Yes",
     },
     Distracted: {
         name: "Distracted",
-        description: "You can take only actions or reactions this turn",
+        description: "You can take only actions or reactions this next turn",
+        stackable: "No",
+    },
+    Cowed: {
+        name: "Cowed",
+        description: "You can take only  reactions this next turn",
         stackable: "No",
     },
     Burning: {
         name: "You are burning",
-        description: "You must roll Move:OnFire each turn",
-        stackable: "Yes, adds damage",
+        description: "You must roll On Fire each turn until extinguished",
+        stackable: "Yes, adds damage"
     },
     Bleeding: {
         name: "Bleeding",
@@ -104,17 +109,17 @@ var conditions = {
     },
     Concussed: {
         name: "Concussed",
-        description: "May take actions OR reactions each turn.",
+        description: "May take actions OR reactions each turn until your concussion is healed.",
         stackable: "No",
     },
     Prone: {
         name: "Prone",
-        description: "A prone creature’s only movement option is to crawl, unless it stands up and thereby ends the condition. The creature has disadvantage on attack rolls. An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage.",
+        description: "Your only movement option is to crawl, unless you stands up (takes 50% movement). The creature has disadvantage on attack rolls. An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage.",
         stackable: "No",
     },
     Stunned: {
         name: "Stunned",
-        description: "Take only reactions next turn, may not act on your turn",
+        description: "You cannot take actions or reactions until no longer stunned, creatures can roll 'Must Keep going' each action  after they miss one round,some results indicate you are not stunned",
         stackable: "No",
     },
     Blinded: {
@@ -129,7 +134,7 @@ var conditions = {
     },
     Charmed: {
         name: "Charmed",
-        description: "A charmed creature can’t attack the charmer or target the charmer with harmful abilities or magical effects. The charmer has advantage on any ability check to interact socially with the creature.",
+        description: "You can’t attack the charmer or target the charmer with harmful abilities or magical effects. The charmer has advantage on any ability check to interact socially with you.",
         stackable: "No",
     },
     Deafened: {
@@ -140,6 +145,14 @@ var conditions = {
     Frightened: {
         name: "Frightned",
         description: "A frightened creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature can’t willingly move closer to the source of its fear.",
+    },
+    Panicked: {
+        name: "Frightned",
+        description: "A panicked creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature must move away from the source of his fear.",
+    },
+    Frenzied: {
+        name: "Frenzied",
+        description: "A Frenzied creature has advantage on attack rolls against the source of his frenzy.",
     },
     Wrestled: {
         name: "Wrestled",
@@ -153,12 +166,16 @@ var conditions = {
         name: "Incapacitated",
         description: "An incapacitated creature can’t take actions or reactions.",
     },
+    Unconcious: {
+        name: "Unconcious",
+        description: "An unconcous  creature is prone and paralyzed"
+    },
 
     Paralyzed: {
         name: "Paralyzed",
         description: "A paralyzed creature  can't take actions, reactions, and can’t move or speak. Attack rolls against the creature have advantage. Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.",
     },
-    Sickened: { name: "Sickened", description: "A sickened creature must roll 'Move:overcome sickness' to act whenever it tries" },
+    Sickened: { name: "Sickened", description: "A sickened creature must roll 'Must Keep going' to act whenever it tries" },
 
 };
 
@@ -1891,7 +1908,7 @@ var feats = {
     },
     Show_Off: {
         name: "Show Off",
-        description: "You can spend Effort to reroll a display of might and power.",
+        description: "You can spend Effort to reroll a Challenge,Grisly Display,Fear my blade roll.",
     },
     Sniper: {
         name: "Sniper",
@@ -2106,20 +2123,20 @@ var feats = {
         name: "Channel Divinity",
         description: "Once per short rest, based on your oath: :\n" +
             "Oath of the Ancients: A creature is restrained by Vines, difficult strength save, or, turn fey and fiends  \n" +
-            "Oath of Conquest: Inflict fear on all nearby, advantage on your Display of Might and Power for entire battle\n" +
+            "Oath of Conquest: Inflict fear on all nearby, Roll Challenge with advantage\n" +
             "Oath of Devotion: You sword becomes magic +2 steel and +1 damage  and radiates light for 1 minute, or fiends and undead are turned\n" +
             "Oath of Glory: Advantage on Athletics , or, Smite all creatures nearby when you smite (doing just the bonus damge, not weapon damage, to creatures not targeted)\n" +
             "Oath of Redemption: Emissary of Peace: advantage on peaecful negotiation, OR Rebuke the violent cause someone to hurt himself the amount of damage he caused this round\n" +
             "Oath of Vengeance: Target one foe and getting advantage on attacks and +1 forward for the rest of the battle\n" +
             "Oath of the Watchers: Turn aberrations, celestials, elementals, fey, and fiends, OR, block one spell affect from affecting one target\n" +
-            "Oathbreaker: Control nearby undead, or frighten all beings nearby, advantage on a display of might and power\n" +
+            "Oathbreaker: Control nearby undead, or frighten all beings nearby, advantage on a Sorcerous Might roll\n" +
             "Oath of the Open Sea: Create marine fog, channel water violence\n",
     },
     Aura: {
         name: "Aura",
         description: "Your aura has an effect based on your oath to those allies and friends nearby or to your enemies\n" +
             "Oath of the Ancients: Advantage on defenses versus spells\n" +
-            "Oath of Conquest: +1 forward always on Display of Might and Power by you or friends\n" +
+            "Oath of Conquest: +1 forward always on Challenge, Grisly Display, Fear My Blade, Sorcerous Might, by you or friends\n" +
             "Oath of Devotion: Allies nearby cannot be magically charmed\n" +
             "Oath of Glory:  Spend effort to reroll your or your ally's attack\n" +
             "Oath of Vengeance: Sped effort to reroll your or your ally's damage\n" +
@@ -2294,7 +2311,7 @@ var careers = {
 
         languages: [],
         tools: "By Feat",
-        moves: ["Ambush", "Avoid", "Backstab", "Dodge", "Feint", "Gossip", "Investigate/Insight", "Scout", "Wicked Lie"],
+        moves: ["Ambush", "Avoid", "Backstab", "Dodge", "Feint", "Gossip", "Investigate", "Scout", "Wicked Lie"],
     },
     Beggar: {
         name: "Beggar",
@@ -2303,7 +2320,7 @@ var careers = {
             "Beggars are vagrants or tramps, aimlessly wandering from place to place. They may do casual work here and there, they may sell a few small trinkets that they carry about in their backpacks, or they may have to beg for a few coins when times are really hard. Some even turn their hands to dishonest pursuits.",
         feats: ["Mercy", "Expert_Pickpocket", "Pack_Rat", "Wasnt_Here"],
         languages: [],
-        moves: ["Avoid", "Dodge", "Gossip", "Investigate/Insight", "Scout", "Wicked Lie"],
+        moves: ["Avoid", "Dodge", "Gossip", "Insight", "Scout", "Wicked Lie"],
         tools: ""
     },
     Viking: {
@@ -2316,7 +2333,7 @@ var careers = {
             "Berserk",
             "Whirlwind",
         ],
-        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)"],
+        moves: ["Grisly Display", "Challenge", "Fear My Blade", "Confront", "Wrestle", "Wrestle (defense)"],
         languages: [],
         tools: "Camping"
     },
@@ -2333,7 +2350,7 @@ var careers = {
             "Musical_Virtuoso"],
         languages: [languages, tribal_languages],
         mana: 1,
-        moves: ["Confront", "Display of Might and Power", "Bargain", "Calm", "Feint", "Gossip", "Investigate/Insight", "Perilous Journey", "Purchase", "Seduce/Flirt/Entertain",
+        moves: ["Confront", "Challenge", "Bargain", "Calm", "Feint", "Gossip", "Investigate", "Insight", "Perilous Journey", "Purchase", "Seduce/Flirt/Entertain",
             "Spout Lore", "Steal", "Wicked Lie", "Performance"
         ],
         tools: "Musical Instrument"
@@ -2351,8 +2368,8 @@ var careers = {
     Cavalry: {
         name: "Cavalry",
         description: "Raiding and soldiers: Fighting with cavalry weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Martial", "Mounted", "HeavyArmor"],
-        moves: ["Scout", "Control Mount", "Perilous Journey", "Display of Might and Power",],
+        weapons: ["Martial", "Mounted", "HeavyArmor", "Cavalry"],
+        moves: ["Scout", "Control Mount", "Perilous Journey", "Fear My Blade",],
 
         feats: [
             "Ride_By",
@@ -2383,7 +2400,7 @@ var careers = {
         name: "Craft",
         description: "Ability to make and repair things.\n" +
             "Specialty:  such as blacksmith, jeweler, carpenter, architect, weaver, drug maker. Your first feat Must be a specialty, after you can take more or take other feats",
-        moves: ["Bargain", "Purchase", "Gossip", "Investigate/Insight", "Devices"],
+        moves: ["Bargain", "Purchase", "Gossip", "Investigate", "Devices"],
 
         feats: [
             "Specialty_Weapon_Smith",
@@ -2409,13 +2426,13 @@ var careers = {
             "Expert_Pickpocket",
             "Pack_Rat",
             "Crime_Lord",],
-        moves: ["Bargain", "Purchase", "Gossip", "Investigate/Insight", "Steal", "Wicked Lie", "Backstab", "Ambush", "Feint", "Devices"],
+        moves: ["Bargain", "Purchase", "Gossip", "Investigate", "Steal", "Wicked Lie", "Backstab", "Ambush", "Feint", "Devices"],
         languages: [],
         tools: "Lockpick, Cards"
     },
     Priest: {
         name: "Priest",
-        description: "A priest or cultist leads ceremonies for one of the relgions:\n " +
+        description: "A priest leads ceremonies for one of the relgions:\n " +
             "*Church Of Law: Think medieval Catholicism , they are opposed to the forces of Chaos who are said to one day destroy the world, and fearful of sorcerers\n " +
             "*Nordic: Players can freely mix and match gaelic and nordic religions up in crazy combos\n " +
             "*Greek:Players can mix up greek and persian and egyptian religions up in crazy combos\n ",
@@ -2434,7 +2451,7 @@ var careers = {
             "Taboo",
             "Religious_Lore"],
         languages: [],
-        moves: ["Seduce/Flirt/Entertain", "Gossip", "Investigate/Insight", "Performance"
+        moves: ["Seduce/Flirt/Entertain", "Gossip", "Investigate", "Insight", "Performance"
             , "Wicked Lie", "Gossip", "Spout Lore", "Heal", "Calm", "Planar Forces"],
         tools: "Planar Forces, Religious symbols, Magic Religious Devices",
         mana: 1,
@@ -2442,7 +2459,7 @@ var careers = {
 
     Cultist: {
         name: "Cultist",
-        description: "A priest or cultist leads ceremonies for one of the relgions:\n " +
+        description: "A  cultist leads ceremonies for one of the forbidden relgions:\n " +
             "*Cults of Chaos: Many dark cults who worship hellish beings\n " +
             "*Cults of The Deep: Many dark cults who worships outsiders  “Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn.\n ",
         feats: [
@@ -2456,10 +2473,11 @@ var careers = {
             "Secrets",
             "God_Talker",
             "Monotheist",
+            "Blood_Sacrifice",
             "Taboo",
             "Religious_Lore"],
         languages: [],
-        moves: ["Seduce/Flirt/Entertain", "Gossip", "Investigate/Insight", "Ambush", "Wicked Lie", "Gossip", "Spout Lore", "Planar Forces"],
+        moves: ["Knife to the Throat", "Seduce/Flirt/Entertain", "Gossip", "Investigate", "Ambush", "Wicked Lie", "Gossip", "Spout Lore", "Planar Forces"],
         tools: "Planar Forces, Religious symbols, Magic Religious Devices",
         mana: 1,
     },
@@ -2474,7 +2492,7 @@ var careers = {
             "Kata",
             "ChiMagic",
         ],
-        moves: ["Seduce/Flirt/Entertain", "Dodge", "Avoid", "Performance", "Feint"],
+        moves: ["Seduce/Flirt/Entertain", "Dodge", "Avoid", "Performance", "Feint", "Insight"],
         languages: [],
         mana: 1,
         tools: ""
@@ -2494,7 +2512,7 @@ var careers = {
             "Wrestler",
             "ChiMagic"
         ],
-        moves: ["Feint", "Dodge", "Avoid", "Wrestle", "Wrestle (defense)"],
+        moves: ["Feint", "Dodge", "Avoid", "Wrestle", "Wrestle (defense)", "Insight"],
         languages: [],
         mana: 1,
         tools: ""
@@ -2519,7 +2537,7 @@ var careers = {
             "Wrestler",
             "Whip_Master",
             "Show_Off",],
-        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)"],
+        moves: ["Challenge", "Grisly Display", "Fear My Blade", "Confront", "Wrestle", "Wrestle (defense)"],
         languages: [],
         tools: ""
     },
@@ -2568,7 +2586,7 @@ var careers = {
             "Armor_Master",
             "Weapon_Choices",
         ],
-        moves: ["Scout", "Perilous Journeys", "Display of Might and Power", "Hard Physical Work"],
+        moves: ["Scout", "Perilous Journeys", "Fear My Blade", "Hard Physical Work"],
         languages: [],
         tools: "Camping"
     },
@@ -2619,7 +2637,7 @@ var careers = {
             "Potion_Maker",],
         mana: 1,
         languages: [],
-        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Heal", "Calm"],
+        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Heal", "Insight", "Calm"],
         tools: "Herbs, Medical Kit, Alchemical Kit"
     },
     Merchant: {
@@ -2628,7 +2646,7 @@ var careers = {
             "You get one extra non-magic language per level of merchant",
         feats: [],
         languages: [tribal_languages, languages,],
-        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Perilous Journeys", "Bargain"],
+        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Perilous Journeys", "Bargain", "Insight"],
         tools: "Ledger, Caravan, Wagon, Camping"
     }, Mother: {
         name: "Mother",
@@ -2636,7 +2654,7 @@ var careers = {
             "FYI: Supporting documents: https://getpocket.com/explore/item/part-of-being-a-domestic-goddess-in-17th-century-europe-was-making-medicines?utm_source=pocket-newtab \n" +
             "Where are your kids now? That might be a story in itself.Maybe some of the  other player characters are your offspring?\n" +
             "Of course caring for adventurers is an easier job than caring for kids.", weapons: [],
-        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Perilous Journeys", "Bargain"],
+        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Perilous Journeys", "Bargain", "Insight"],
         feats: [
             "Tough",
             "Mama_Lion",
@@ -2666,7 +2684,7 @@ var careers = {
             "Familiar",
             "SubtleSpell", "Taboo"],
         languages: [],
-        moves: ["Bargain", "Heal", "Gossip", "Perilous Journeys", "Hard Mental Work", "Seduce/Flirt/Entertain", "Planar Forces"],
+        moves: ["Bargain", "Heal", "Gossip", "Perilous Journeys", "Hard Mental Work", "Seduce/Flirt/Entertain", "Insight", "Planar Forces"],
         tools: "Herbs, Medical Kit",
         mana: 1
     },
@@ -2697,7 +2715,7 @@ var careers = {
             "HealingMagic",
             "ProtectionMagic",
         ],
-        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)", "Calm Mount", "Heal", "Calm"],
+        moves: ["Challenge", "Fear My Blade", "Confront", "Wrestle", "Wrestle (defense)", "Calm Mount", "Heal", "Insight", "Calm"],
         languages: [],
         tools: ""
     },
@@ -2739,7 +2757,7 @@ var careers = {
             "Invisible_Man",
             "Master_of_Stealth",
         ],
-        moves: ["Avoid", "Hard Physical Work",],
+        moves: ["Avoid", "Hard Physical Work", "Insight"],
         languages: [],
         tools: ""
     },
@@ -2774,7 +2792,7 @@ var careers = {
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
-        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)"],
+        moves: ["Knife to the Throat", "Fear My Blade", "Challenge", "Confront", "Wrestle", "Wrestle (defense)"],
         languages: [],
         tools: ""
     },
@@ -2785,7 +2803,7 @@ var careers = {
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
-        moves: ["Display of Might and Power", "Confront", "Wrestle", "Wrestle (defense)"], languages: [],
+        moves: ["Fear My Blade", "Challenge", "Confront", "Wrestle", "Wrestle (defense)"], languages: [],
         tools: ""
     },
 };
