@@ -123,3 +123,8 @@ future: provide Transactions tag where all transactions are recorded, with runni
         7. add 3d modes for map
 
 8. Audio: Chat received sound, roll dice sound. Good thing Dave hates music when playing or I do that
+
+Window functionality
+New player picks random name, as does new document, also new scene doesn't update
+Delete item
+Scene editor is broken! Must be merge error, the Zs look very wrong
