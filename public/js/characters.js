@@ -419,21 +419,24 @@ function MultilineEditText(thing, clause, className, rows, columns) { // thing m
 }
 
 
-export async function showThing(name, sheet) {
+export async function showThing(name, sheet, editMode) {
     //  then get the sheet
     let key = SanitizeSlashes(name);
 
-    await EnsureLoaded(sheet, key);
+    let s = sheet;
+    if (editMode) s = sheet + "_edit";
+
+    await EnsureLoaded(s, key);
 
 
-    displayThing(key, sheet);
+    displayThing(key, s);
 }
 
 function showThingInline(thing, sheet) {
     //  then get the sheet
     let key = SanitizeSlashes(name);
 
-    //   EnsureLoaded(sheet, key).then(
+    //   EnsureLoaded(sheet, key).then(np
 
 
     return parseSheet(thing, sheet, undefined, undefined);

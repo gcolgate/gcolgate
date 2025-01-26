@@ -99,6 +99,10 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
   console.log(thingName);
   console.log(replacement);
 
+  if (!thingName || typeof (thingName) != "string") {
+    console.error("CHange thing passed evil thingname " + thingName);
+    return;
+  }
   // replacement = SanitizeThing(replacement); // protect vs hacks, todo: see if
   // screws up string assignments
   if (replacement) {
@@ -164,7 +168,7 @@ async function ChangeThing(thingName, replacement, io, msg, updateAppearance) {
       result = await fs.readFile(tag_filePath);
       let tag = jsonHandling.ParseJson(tag_filePath, result);
 
-      for (let i = 0; i < folder.length; i++) {
+      if (folder) for (let i = 0; i < folder.length; i++) {
 
         try {
           // todo fix this seriously

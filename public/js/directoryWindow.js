@@ -65,12 +65,13 @@ export function processDirectory(jsonData) {
 
     for (let i = 0; i < jsonData.length; i++) {
         if (typeof (jsonData[i]) == "string")
-            try {
-                jsonData[i] = JSON.parse(jsonData[i]);
+            if (jsonData[i] && jsonData[i] != "")
+                try {
+                    jsonData[i] = JSON.parse(jsonData[i]);
 
-            } catch (err) {
-                console.log("Error in parsing " + i + " " + jsonData[i]);
-            }
+                } catch (err) {
+                    console.log("Error in parsing " + i + " " + jsonData[i]);
+                }
     }
     return jsonData;
 }

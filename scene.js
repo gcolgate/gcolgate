@@ -44,6 +44,7 @@ var loadedScenes = [];
 
 // due to wierd javascript this handling, made static
 function isLoaded(scene) {
+    if (!scene || scene.loaded == undefined) return false;
     return loadedScenes[scene.loaded] == true;
 
 }
@@ -68,7 +69,7 @@ function SanitizeSlashes(a) {
 }
 
 async function loadScene(scene) {
-
+    if (!scene) return;
     if (isLoaded(scene)) return; // already loaded.
 
     scene.loaded == "InProgress";
@@ -77,7 +78,7 @@ async function loadScene(scene) {
 
     let result = (await fs.readFile(filepath)).toString();
 
-    info = jsonHandling.ParseJson(filepath, result); // for eval to work we need a thing
+    let info = jsonHandling.ParseJson(filepath, result); // for eval to work we need a thing
 
     let dir = await fs.readdir(path.join(__dirname, 'public', 'SceneFiles', scene.directory)); // TODO: use file cache
 
@@ -87,19 +88,22 @@ async function loadScene(scene) {
     // TODO parrallize? will it speed up with disk, I doubt it
     for (let i = 0; i < dir.length; i++) {
 
-        let result = (await fs.readFile(path.join(__dirname, 'public', 'SceneFiles',
-            scene.directory, dir[i]))).toString();
-        let tile = jsonHandling.ParseJson(dir[i], result); // for eval to work we need a thing
-        tile.tile_id = (dir[i]);
+        if (dir[i].endsWith(".json")) {
 
-        scene.tiles[tile.tile_id] = tile;
+            let result = (await fs.readFile(path.join(__dirname, 'public', 'SceneFiles',
+                scene.directory, dir[i]))).toString();
+            let tile = jsonHandling.ParseJson(dir[i], result); // for eval to work we need a thing
+            tile.tile_id = (dir[i]);
+
+            scene.tiles[tile.tile_id] = tile;
+        }
     }
     loadedScenes[scene] = true;
 
 }
 
 function uuidv4() {
-    return   uuid.v4() ;
+    return uuid.v4();
 }
 
 function cleanFileName(destString) {
@@ -145,7 +149,7 @@ function getTileFileJsonFileName(scene, tile) {
         tile.tile_json = path.join('SceneFiles', scene.directory, "tag_" + tile.tile_id + "_" + ".json");
     }
 
-    return path.normalize(path.join(__dirname, 'public',tile.tile_json));
+    return path.normalize(path.join(__dirname, 'public', tile.tile_json));
 }
 
 function addTile(scene, tile) {
@@ -197,4 +201,4 @@ function removeSceneTile(scene, tile) {
 }
 
 
-module.exports = { loadScene, addTile, waitForLoaded, updateSceneTile, removeSceneTile, sceneSetSocket, uuidv4 };
+module.exports = { loadScene, generateNewTileId, addTile, waitForLoaded, updateSceneTile, removeSceneTile, sceneSetSocket, uuidv4 };

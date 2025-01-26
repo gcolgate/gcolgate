@@ -2,6 +2,7 @@
 
 //const debugfs = require('fs');
 const fs = require('fs').promises;
+const rawfs = require('fs');
 const path = require('path');
 const express = require('express');
 const http = require('http');
@@ -509,14 +510,64 @@ function SanitizeNonAlphanumeric(id) {
 
 }
 
+async function EnsureEnsureDirExists(path) {
+
+
+    if (rawfs.existsSync(path)) return;
+    try {
+        await fs.mkdir(path, { recursive: true });
+    } catch (error) {
+        console.error("Error making directory " + path, error);
+    }
+
+}
+
+
+async function GetImageFor(thing_tag, thing, current_scene) {
+    // based on scene we may want to do something different
+    let name = thing_tag.file;
+
+    console.log('Current scene', current_scene);
+    console.log('Current scene t' + current_scene.type);
+
+    switch (current_scene.type) {
+        case '2d': {
+            ;
+            if (thing.prototypeToken?.texture?.src)
+
+                return {
+                    img: thing.prototypeToken.texture.src,
+                    scaleX: thing.prototypeToken.texture.scaleX,
+                    scaleY: thing.prototypeToken.texture.scaleY
+                };
+            return { img: thing_tag.img, scaleX: 1, scaleY: 1 };
+        }
+        default:
+        case 'theatreOfTheMind':
+        case '3d':
+            return { img: thing_tag.img, scaleX: 1, scaleY: 1 };
+    }
+    // {"file":"CompendiumFiles/_plus_1_allpurpose_tool_tce","page":"items","source":"TCE","droppable":"item","type":"equipment","name":"+1
+    // All-Purpose
+    // Tool","img":"images/modules/plutonium/media/icon/crossed-swords.svg"}
+}
+
 async function NewPOI(socket, msg) {
 
-    let dir = "Documents";
+    let dir = "DocumentsFiles/";
+    let dir_tag = "Documents/";
 
-    let baseName = await UniqueName(path.join(__dirname, "public", dir), ".json");
     //   let indexFolderDir = dir.substring(0, dir.length - 5);
 
-    console.log("New baseName " + baseName);
+
+    if (msg.scene) {
+        dir = msg.scene_subdir;
+        dir_tag = msg.scene_subdir_tag;
+
+    }
+
+    let baseName = await UniqueName(path.join(__dirname, "public", dir), ".json");
+
 
     let newPOI = {
         type: 'poi',
@@ -541,7 +592,7 @@ async function NewPOI(socket, msg) {
     let newPOITag = {
         type: 'poi_tag',
         id: SanitizeNonAlphanumeric(baseName),
-        file: "DocumentsFiles/" + baseName,
+        file: dir + baseName,
         page: "Document",
         source: "",
         type: "",
@@ -555,10 +606,13 @@ async function NewPOI(socket, msg) {
 
     console.log("New baseName " + baseName);
 
-    let dest1 = path.join(__dirname, "public", dir + "Files", baseName + '.json');
+    await EnsureEnsureDirExists(path.join(__dirname, "public", dir_tag));
+    await EnsureEnsureDirExists(path.join(__dirname, "public", dir));
+
+    let dest1 = path.join(__dirname, "public", dir, baseName + '.json');
 
     // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + name + '.json');
-    let dest2 = path.join(__dirname, "public", dir, "tag_" + baseName + '.json');
+    let dest2 = path.join(__dirname, "public", dir_tag, "tag_" + baseName + '.json');
 
     console.log(" to " + dest1);
     console.log(" to " + dest2);
@@ -570,9 +624,44 @@ async function NewPOI(socket, msg) {
         fs.writeFile(dest2, JSON.stringify(newPOITag)),
 
     ]);
-    sheeter.folders[dir].push(newPOITag);
 
-    socket.emit('updateDir', { id: dir, folder: sheeter.folders[dir] });
+    if (msg.scene) {
+        let scene = sheeter.folders.ScenesParsed[msg.scene];
+        let newTile = {
+            'x': msg.x,
+            'y': msg.y,
+            'z': 100,
+            guiLayer: 'tile',
+            sheet: newPOITag,
+        };
+        const kGridSize = 100;
+        let img = await GetImageFor(newPOITag, newPOI, scene);
+        newTile.texture = img.img;
+        newTile.scale = {
+            x: img.scaleX * kGridSize,  // todo should be tile size
+            y: img.scaleY * kGridSize,
+            z: 1
+        };
+
+        Scene.generateNewTileId(scene, newTile)
+        Scene.updateSceneTile(scene, newTile);
+
+
+        newTile.reference = newPOITag;
+
+
+
+        msg.scene = { name: msg.scene };
+        Scene.updateSceneTile(scene, newTile);
+        io.emit('newTile', { tile: newTile, scene: scene });
+
+    }
+    else {
+        sheeter.folders[dir].push(newPOITag);
+        socket.emit('updateDir', { id: dir, folder: sheeter.folders[dir] });
+    }
+
+    socket.emit('newPOIid', { id: newPOITag });
 
 
 }
@@ -746,6 +835,10 @@ io.on('connection', (socket) => {
         }
         login(socket, credentials);
         console.log('Login connection: %o', socket.rooms.values());
+    });
+
+    socket.on('rereadgraphics', () => {
+        recurseReadImageDir(path.join(__dirname, 'public', 'images'));
     });
 
     socket.on('newPlayer', (msg) => {
@@ -1047,10 +1140,10 @@ io.on('connection', (socket) => {
 
     }
 
-    var chat_id = 0;
+    var chat_id;
     function addToChatAndEmit(msg) {
-        chat_id++;
-        msg.id = chat_id;
+
+        msg.id = Scene.uuidv4();
 
         sheeter.chats[msg.id] = msg;
         console.log("emit chat  %o", sheeter.chats[msg.id]);
@@ -1090,7 +1183,7 @@ io.on('connection', (socket) => {
 
 
         if (sender) {
-            let chatId = chat_id; chat_id++;
+            let chatId = Scene.uuidv4();
             let outmsg = processRollMove(msg, chatId);
             sheeter.chats[chatId] = { sender: sender, rollMove: outmsg, id: chatId };
             io.emit('chat', sheeter.chats[chatId]);

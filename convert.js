@@ -1734,6 +1734,10 @@ var feats = {
         name: "Star Vision",
         description: "You can on clear starry nights, and dawn or dusk see as well as daytime. Cloudy nights or underground, you are as blind as a human. If the stars are obscured due to fires or nearby cities, you see as dim light",
     },
+    DimVision: {
+        name: "Dim Vision",
+        description: "You can on see in dim light (such as the glowing caverns of Menzobarren) as if it were bright light. In the precense of close bright light, Dim Vision doesn't work though.",
+    },
     DarkTravel: {
         name: "Dark Travel",
         description: "Although you can't see in the dark, you move surely at full speed, and will not collide with obstacles, fall into pits, as you can sense the presence of terrain naturally as if you can see in dim light",
@@ -1982,10 +1986,7 @@ var feats = {
         name: "I Wasn't Here",
         description: "Spend Effort to opt out of a scene at the beginning",
     },
-    Weapon_Choices: {
-        name: "Weapon Choices",
-        description: "Gain the other set of weapons: so shield and armor if you have bow, or bow if you have shield and armor",
-    },
+
     Whip_Master: {
         name: "Whip Master",
         description: "You can attack at 2 hexes with a whip, disarming a foe on a success instead of damage, you can use the whip for swinging across chasms or putting out a candle or grabbing things. It doesn’t count as a reach weapon for defense against charges though.",
@@ -2250,6 +2251,16 @@ var backgrounds = {
 
 
     },
+    Drow: {
+
+        name: "Drow",
+        description: "Albino .",
+        feats: ["SunAllergy", "DarkTravel", "DimVision", "DrowMagic"],
+
+        languages: ["Elvish"],
+
+
+    },
     Dwarf: {
 
         name: "Dwarf",
@@ -2307,11 +2318,24 @@ var careers = {
         type: "Rogue",
         weapons: ["Assassin"],
         description: "Blades-for-hire, perhaps agents in the service of the king, spies and assassins make killing and stealing in a discreet manner a way of life. They are adept at sneak attacks, killing, information gathering, disguises, city lore, persuasion, poisons, and lock picking. Their methods involve gathering intelligence on their subject from various (sometimes seedy) sources, circumventing security measures of all types, adopting disguises that allow them to get close to the target, and building up a broad selection of contacts. They are also patient, sometimes hiding out in a single spot for days to await the perfect opportunity to strike. ",
-        feats: ["Holdout_Weapon", "Wicked_Lie", "Anatomy", "Poison_Master", "Sniper", "Disguise_Master", "Master_of_Stealth", "DarknessMagic", "ChiMagic"],
+        feats: ["Holdout_Weapon", "Wicked_Lie", "Anatomy", "Poison_Master", "Sniper", "Disguise_Master", "Two_Weapon_Fighting",
+            "Master_of_Stealth", "DarknessMagic", "ChiMagic"],
 
         languages: [],
         tools: "By Feat",
-        moves: ["Ambush", "Avoid", "Backstab", "Dodge", "Feint", "Gossip", "Investigate", "Scout", "Wicked Lie"],
+        moves: ["Ambush", "Avoid", "Backstab", "Dodge", "Feint", "Gossip", "Investigate", "Scout", "Wicked Lie", "Knife to the Throat"],
+    },
+    DrowBlademaster: {
+        name: "Drow Blademaster",
+        type: "Rogue",
+        weapons: ["Assassin"],
+        description: "The proffessional but polite killers who guard the ladies of Drow Society",
+
+        feats: ["Master_Acrobat", "Two_Weapon_Fighting", "Reflexes", "Poison_Master", "Sniper", "Master_of_Stealth", "Bodyguard", "DarknessMagic"],
+
+        languages: [],
+        tools: "By Feat",
+        moves: ["Fear My Blade", "Challenge", "Ambush", "Avoid", "Backstab", "Dodge", "Feint", "Gossip", "Investigate", "Scout", "Wicked Lie", "Knife to the Throat"],
     },
     Beggar: {
         name: "Beggar",
@@ -2375,7 +2399,6 @@ var careers = {
             "Ride_By",
             "Swift_Rider",
             "Spirited_Charge",
-            "Weapon_Choices",
             "Shield_Master",
             "Armor_Master",
         ],
@@ -2390,7 +2413,6 @@ var careers = {
             "Ride_By",
             "Swift_Rider",
             "Mobile_Archer",
-            "Weapon_Choices",
         ],
         moves: ["Scout", "Control Mount", "Perilous Journey", "Ambush"],
         languages: [],
@@ -2584,7 +2606,6 @@ var careers = {
             "Tough",
             "Shield_Master",
             "Armor_Master",
-            "Weapon_Choices",
         ],
         moves: ["Scout", "Perilous Journeys", "Fear My Blade", "Hard Physical Work"],
         languages: [],
@@ -2599,7 +2620,6 @@ var careers = {
             "Tough",
             "Mobile_Archer",
             "Sniper",
-            "Weapon_Choices",
         ],
         moves: ["Scout", "Perilous Journeys", "Ambush", "Hard Physical Work"],
         languages: [],
@@ -2792,7 +2812,7 @@ var careers = {
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
-        moves: ["Knife to the Throat", "Fear My Blade", "Challenge", "Confront", "Wrestle", "Wrestle (defense)"],
+        moves: ["Knife to the Throat""Knife to the Throat", "Fear My Blade", "Challenge", "Confront", "Wrestle", "Wrestle (defense)"],
         languages: [],
         tools: ""
     },

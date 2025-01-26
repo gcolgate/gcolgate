@@ -2055,6 +2055,47 @@ function CreateRollMoveStatString(buttonClass, buttonText, description, ownerId,
 MakeAvailableToParser('CreateRollMoveStatString', CreateRollMoveStatString);
 
 
+
+function changeChatSkill(id, career, divElement) {
+    let menu = document.getElementById(divElement);
+    menu.classList.remove("active")
+    socket.emit('change', {
+        change: "thing.skill = '" + career + "'",
+        thing: id
+    })
+
+}
+MakeAvailableToParser('changeChatSkill', changeChatSkill);
+MakeAvailableToHtml('changeChatSkill', changeChatSkill);
+
+
+function ShowAllPlayerSkills(owner, id, divElement) {
+
+    let answer = "";
+    let quote = "'";
+    let comma = ",";
+    for (let i = 0; i < owner.items.length; i++) {
+
+        let item = owner.items[i];
+        if (item.page == "careers") {
+            let career = GetRegisteredThing(item.file);
+            let level = Number(career.owner_level);
+            answer += '<div onclick="changeChatSkill('
+                + quote + id + quote + comma + quote + career.name + quote + comma + quote
+                + divElement + quote + ')">' + career.name + '</div>';
+        }
+    }
+    answer += ' <div onclick="changeChatSkill("' + id + quote + comma + quote + divElement + '\')">  None  </div>';
+    return answer;
+
+}
+
+
+MakeAvailableToParser('ShowAllPlayerSkills', ShowAllPlayerSkills);
+MakeAvailableToHtml('ShowAllPlayerSkills', ShowAllPlayerSkills);
+
+
+
 function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDefense, weapon_mode, description) {
     let owner = GetRegisteredThing(ownerId);
     let damage = []

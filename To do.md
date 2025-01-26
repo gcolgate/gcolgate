@@ -1,5 +1,14 @@
 To do
 
+
+Editing map pain.
+
+1) Downloading new art to the server folders don't make the server aware of them unless you restart
+ 
+5) Scaling is terribly implemented.  
+6) sheets should be able to scale themselves, perhaps based on content. So tooltip not edit should be skinnier
+ 
+
 pain POP-OUT:
  This sounds like it will take some days to work out:
 Need to be able to POP OUT sub windows and scale them smaller/bigger. Lots of work on appearance.
@@ -127,4 +136,7 @@ future: provide Transactions tag where all transactions are recorded, with runni
 Window functionality
 New player picks random name, as does new document, also new scene doesn't update
 Delete item
-Scene editor is broken! Must be merge error, the Zs look very wrong
+Scene editor scaling tiles not working well. 
+1) Need to create handles
+2) Drag handles
+3) Create scene documents from a click that don't appear in documents but appear under the scene

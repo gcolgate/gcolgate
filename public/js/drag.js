@@ -3,6 +3,7 @@ import { setSlot, findInNamedArray, isEquipped, setAppearanceImage } from './ptb
 export var thingDragged = null;
 
 export function setThingDragged(t) {
+    if (t === undefined) throw ("setThingDragged error");
     thingDragged = t;
 }
 

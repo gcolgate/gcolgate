@@ -648,6 +648,16 @@ var quill_options = {
     theme: 'snow', // or 'bubble'
 };
 
+
+var quill_options_readonly = {
+    modules: {
+        "toolbar": false
+    },
+    readonly: true,
+    placeholder: '....',
+    theme: 'bubble', // or 'bubble'
+};
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 function updateDocument(w) {
@@ -708,20 +718,22 @@ function resetQuill(w, id) {
     }
 
 }
-async function attachQuill(id, w, thing) { // todo just waiting is lame
+async function attachQuill(id, w, thing, readonly) { // todo just waiting is lame
     console.log("OK");
     await delay(500); // this is lame
 
+    let options = readonly ? quill_options_readonly : quill_options;
 
     w.quillId = id;
-    w.quill = new window.Quill("#editor" + id, quill_options);
+    w.quill = new window.Quill("#editor" + id, options);
 
-    w.quill_tooltip = new window.Quill("#tooltip" + id, quill_options);
+    w.quill_tooltip = new window.Quill("#tooltip" + id, options);
 
     w.thing = thing;
 
     w.quill.setContents(thing.text);
     w.quill_tooltip.setContents(thing.tooltip);
+    quill_options.readyOnly = false;
 
 
     // w.quill.on('text-change', (delta, oldDelta, source) => {

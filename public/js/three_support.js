@@ -722,6 +722,7 @@ async function three_setTileImage(tile, plane) {
   let textureScaleX = tile.scale.x;
   let textureScaleY = tile.scale.y;
   texture.colorSpace = THREE.SRGBColorSpace;
+  // texture.magFilter = THREE.LinearFilter;
   plane.baseScale =
     new THREE.Vector2(texture.image.width, texture.image.height);
   plane.material = material;
@@ -922,6 +923,7 @@ var mouseMode = 'none';
 var scalingX = false;
 var scalingY = false;
 var editMode = false;
+var editThingMode = false;
 var mouseButtonsDown = [false, false, false, false, false, false];
 
 
@@ -931,12 +933,33 @@ const rightMouseButton = 2;
 
 var mainButton = leftMouseButton;
 var scrollButton = middleMouseButton;
+var popupButton = rightMouseButton;
 
+function GetDimensions() {
+  let canvas = three_renderer.domElement;
+  return {
+    left: canvas.offsetLeft,
+    top: canvas.offsetTop,
+    width: canvas.width,
+    height: canvas.height,
+
+  };
+}
+function localSpace(x, y) {
+
+  let dim = GetDimensions()
+  x -= dim.left;
+  y -= dim.top;
+
+  return new THREE.Vector3(
+    (x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
+}
 
 function three_xyinMouseToWorld(x, y) {
-  let vec = new THREE.Vector3(
-    (x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
 
+
+  let vec = localSpace(x, y);
+  // (x / dim.width) * 2 - 1, -(y / dim.height) * 2 + 1, 0.5);
   vec.unproject(three_camera);
   if (!three_camera.isOrthographicCamera) {
     // point where z is zero
@@ -963,11 +986,16 @@ export function three_mousePositionToWorldPosition(event) {
 export function three_setEditMode(on) {
   editMode = on;
   selection = [];
+
 }
+
+export function three_setEditThingMode(on) {
+  editThingMode = on;
+  selection = [];
+
+}
+
 function worldToScreen(worldPos) {
-
-
-
 
   let dim = three_renderer_dimensions()
   var screenPos = worldPos.clone();
@@ -1098,9 +1126,12 @@ export function three_mouseMove(event) {
     //    console.log(event.timeStamp, "x " + (newMouse.x - three_lastMouse.x) +
     //    " y " + (newMouse.y - three_lastMouse.y));
   } else if (!mouseButtonsDown[mainButton]) {
-    let pointer = new THREE.Vector2(
-      (event.clientX / window.innerWidth) * 2 - 1,
-      -(event.clientY / window.innerHeight) * 2 + 1);
+
+    //    let pointer = new THREE.Vector2(
+    //   (event.clientX / window.innerWidth) * 2 - 1,
+    //   -(event.clientY / window.innerHeight) * 2 + 1);
+    let pointer = localSpace(event.clientX, event.clientY);
+
     three_rayCaster.setFromCamera(pointer, three_camera);
     // if ortho
 
@@ -1165,9 +1196,9 @@ three_renderer.domElement.onmouseup = (ev) => {
 };
 
 function three_intersect(ev) {
-  let pointer = new THREE.Vector2(
-    (ev.clientX / window.innerWidth) * 2 - 1,
-    -(ev.clientY / window.innerHeight) * 2 + 1);
+
+  // let pointer = new localSpace(ev.clientX, ev.clientY);
+
   let intersects = three_rayCaster.intersectObjects(layers.token.selectables);
   if (intersects.length > 0) {
     return intersects[0];
@@ -1219,6 +1250,8 @@ class Pinger {
   }
   mouseDown(event) {
     if (this.mouseDownTimer) { alert("WTF"); }
+
+
     this.initialMousePosition = { x: event.clientX, y: event.clientY };
     this.isMouseStill = true;
 
@@ -1246,10 +1279,14 @@ class Pinger {
     if (this.cameraToo) {
       socket.emit('set_three_camera_xy', msg);
     }
+    let dim = GetDimensions()
+    let x = this.initialMousePosition.x -= dim.left;
+    let y = this.initialMousePosition.y -= dim.top;
     let m = {
-      x: this.initialMousePosition.x / window.innerWidth,
-      y: this.initialMousePosition.y / window.innerHeight
+      x: x / window.innerWidth,
+      y: y / window.innerHeight
     };
+
     waterTexture.addRing(m);
     this.pingdo(msg);
     clearTimeout(this.mouseDownTimer);
@@ -1278,16 +1315,15 @@ three_renderer.domElement.ondblclick =
     ev.preventDefault();
     console.log('Double click');
     three_lastMouse = three_mousePositionToWorldPosition(ev);
-    let pointer = new THREE.Vector2(
-      (ev.clientX / window.innerWidth) * 2 - 1,
-      -(ev.clientY / window.innerHeight) * 2 + 1);
+    let pointer = localSpace(ev.clientX, ev.clientY);
+
     three_rayCaster.setFromCamera(pointer, three_camera);
 
     let intersect = three_intersect(ev);
     if (intersect?.object) {
       let o = intersect.object?.tile?.reference;
       if (o) {
-        showThing(o.file, o.page);
+        showThing(o.file, o.page, editThingMode);
       }
     }
   }
@@ -1298,13 +1334,19 @@ three_renderer.domElement.oncontextmenu =
     event.stopPropagation();
   }
 
+function getBoundaryForScaling(x) {
+  let b = x / 8;
+  if (b < 8) b = 8;
+  if (b > 64) b = 64;
+  return b;
+
+}
 three_renderer.domElement.onmousedown =
   function (event) {
     event.preventDefault();
     selection = [];
-    let pointer = new THREE.Vector2(
-      (event.clientX / window.innerWidth) * 2 - 1,
-      -(event.clientY / window.innerHeight) * 2 + 1);
+    let pointer = localSpace(event.clientX, event.clientY);
+
 
     mouseButtonsDown[event.button] = true;
     three_lastMouse = three_mousePositionToWorldPosition(event);
@@ -1319,16 +1361,19 @@ three_renderer.domElement.onmousedown =
       if (intersect?.object) {
         let obj = intersect.object;
         if (editMode && obj.tile.guiLayer == 'tile') {
-          const minim = 64;
           let tile = obj.tile;
           // this works only for tiles. To do make it a function added to each
           // kind of thing maybe better to do icon -> world
           let maxx = 1 * tile.scale.x;
+          const minimX = getBoundaryForScaling(maxx);
+
           let x = intersect.uv.x * maxx;
           let maxy = 1 * tile.scale.y;
+          const minimY = getBoundaryForScaling(maxy);
+
           let y = intersect.uv.y * maxy;
-          scalingX = scalingX = x < minim || x > maxx - minim;
-          scalingY = scalingY = y < minim || y > maxy - minim;
+          scalingX = scalingX = x < minimX || x > maxx - minimX;
+          scalingY = scalingY = y < minimY || y > maxy - minimY;
           if (scalingX || scalingY) {
             mouseMode = 'scaling';
 
@@ -1360,8 +1405,46 @@ three_renderer.domElement.onmousedown =
           selection.push(obj);
         }
       }
+
+      pinger.mouseDown(event);
+    } else if (popupButton == event.button) {
+
+      // Show context menu here 
+      // One option is new point of interest
+      // 1. create a new POI  socket.emit('newPOI');
+      // add a new message to pick a subdirectory of the scene, maybe with routing  and a world coordinate
+      //
+
+      const popupMenu = document.getElementById("popupMenu");
+      const ul = popupMenu.children[0]; // todo change to id
+      ul.replaceChildren();
+      let menuOptions = ["New Point of Interest"];
+      for (let i = 0; i < menuOptions.length; i++) {
+        let li = document.createElement("li");
+        li.appendChild(document.createTextNode(menuOptions[i]));
+        ul.appendChild(li);
+
+        li.onmouseup = function () {
+          {
+            let msg = {
+              x: three_lastMouse.x,
+              y: three_lastMouse.y,
+              scene: current_scene.name,
+              scene_subdir_tag: './SceneFiles/' + current_scene.name + '/Documents/',
+              scene_subdir: './SceneFiles/' + current_scene.name + '/DocumentsFiles/'
+            };
+            socket.emit('newPOI', msg);
+
+          };
+        }
+      }
+      popupMenu.style.display = "block";
+      popupMenu.style.visibility = "visible";
+      popupMenu.style.left = event.clientX + "px";
+      popupMenu.style.top = event.clientY + "px";
+
+      // have images remember the last folder you used. Maybe save this? 
     }
-    pinger.mouseDown(event);
   }
 
 export function
@@ -1582,6 +1665,10 @@ function topTileZ() {
 
 three_renderer.domElement.acceptDrag =
   function (thingDragged, event) {
+    if (thingDragged == undefined) {
+      console.log("ERR");
+      return;
+    }
     switch (thingDragged.type) {
       case 'dir':
         break;
@@ -1595,7 +1682,7 @@ three_renderer.domElement.acceptDrag =
           let newTile = {
             'x': mouse.x,
             'y': mouse.y,
-            'z': topTileZ() + 1,
+            'z': undefined,
             guiLayer: 'tile',
             sheet: thingDragged
           };

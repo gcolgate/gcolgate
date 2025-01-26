@@ -1,1 +1,33 @@
-{"type":"poi","id":"agekius","name":"agekius","text":{"ops":[{"insert":"\n"}]},"tooltip":{"ops":[{"insert":"\n"}]},"tooltip_html":"<p></p>","hud":"tooltip_hud","appearance":[{"name":"normal","portrait":{"image":"images/300px-Crooked_Wand_of_Fireballs_Icon.png"},"token":{"image":"images/300px-Crooked_Wand_of_Fireballs_Icon.png"}}],"current_appearance":"normal"}
+{
+    "type": "poi",
+    "id": "agekius",
+    "name": "agekius",
+    "text": {
+        "ops": [
+            {
+                "insert": "\n"
+            }
+        ]
+    },
+    "tooltip": {
+        "ops": [
+            {
+                "insert": "\n"
+            }
+        ]
+    },
+    "tooltip_html": "<p></p>",
+    "hud": "tooltip_hud",
+    "appearance": [
+        {
+            "name": "normal",
+            "portrait": {
+                "image": "images/300px-Crooked_Wand_of_Fireballs_Icon.png"
+            },
+            "token": {
+                "image": "images/300px-Crooked_Wand_of_Fireballs_Icon.png"
+            }
+        }
+    ],
+    "current_appearance": "normal"
+}
