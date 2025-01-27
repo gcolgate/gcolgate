@@ -302,6 +302,7 @@ export function createOrGetChatWindow(id, width, height, left, top) {
         let group = document.getElementById("windowGroup");
         w = document.createElement("div");
 
+
         width *= window.innerWidth;
         height *= window.innerHeight;
         left *= window.innerWidth;
@@ -310,9 +311,10 @@ export function createOrGetChatWindow(id, width, height, left, top) {
 
         w.contentHeight = height - 80;
 
-        CreateWindowTitle(w, windowName, id, true);
+        CreateWindowTitle(w, windowName, id, true, false); // last parameter adds popup button
 
-
+        // for popping out, the list will have to be in the body (and some formatting issues fixed)
+        // but then it stil does not work as typing into the chat fails.
 
         let list = document.createElement("ul");
         list.className = "compendiumSyle";
@@ -339,8 +341,28 @@ export function createOrGetChatWindow(id, width, height, left, top) {
         // Event listener for clicks
         w.addEventListener('mousedown', clickToBringWindowIntoFocus);
 
+        w.addEventListener('mousedown', clickToBringWindowIntoFocus);
+
+        w.resizeObserver = new ResizeObserver((entries) => {
+            // w.addEventListener('mouseup', function (evt) {6main.js
+            //     console.log("Mou8se up");
+            //     w = evt.currentTarget;
+            //     w.body.style.height = (w.clientHeight - 40) + "px";
+            //     // w.body.style.width = w.width;
+            // });
+            if (w.style) {
+                w.style.width = body.style.width;
+                w.style.height = body.style.height;
+                console.log("Size changed " + w);
+                // w.parentElement.style.height = w.style.height + 16;
+                // w.parentElement.style.width = w.style.width + 16;
+            } else
+                console.log("WTF");
+        });
+
 
         window.windows.push(w);
+
     }
 
 
@@ -632,145 +654,5 @@ export function fadeOut(elmnt) {
 }
 
 
-// move thjese into quill file
-
-var quill_options = {
-    modules: {
-        toolbar: [
-            [{ header: [1, 2, false] }],
-
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
-            ['image', 'code-block'],
-        ],
-    },
-    placeholder: 'Compose an epic...',
-    theme: 'snow', // or 'bubble'
-};
-
-
-var quill_options_readonly = {
-    modules: {
-        "toolbar": false
-    },
-    readonly: true,
-    placeholder: '....',
-    theme: 'bubble', // or 'bubble'
-};
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
-
-function updateDocument(w) {
-
-    let evaluation = "thing.text = " + JSON.stringify(w.quill.getContents());
-    evaluation += "; thing.tooltip = " + JSON.stringify(w.quill_tooltip.getContents());;
-    evaluation += "; thing.tooltip_html =  " + JSON.stringify(w.quill_tooltip.getSemanticHTML());
-
-    let thing = w.thing;
-
-    console.log(evaluation);
-    console.log(w);
-
-    socket.emit('change', {
-        change: evaluation,
-        thing: thing.id
-    });
-}
-
-
-function updateDocumentbyId(id) {
-    let windowName = "window_" + id;
-    let w = document.getElementById(windowName);
-    if (w)
-        updateDocument(w);
-
-}
-MakeAvailableToHtml("updateDocumentbyId", updateDocumentbyId);
-
-// function getElementByRole(w, role) {
-//     var divList = w.getElementsByTagName("div");
-//     for (var i = 0, len = spanList.length; i < len; i++) {
-//         if (divList[i].role === role) // use .innerHTML if you need IE compatibility
-//             return divList[i]
-//     }
-// }
-
-function resetQuill(w, id) {
-    if (w.quill) {
-        // Destroy the Quill instance
-        w.quill = null;
-    }
-
-    // Remove the editor's container from the DOM
-    let editorContainer = document.getElementById("editor" + id);
-    if (editorContainer) {
-        editorContainer.remove();
-    }
-
-    if (!w.quill_tooltip) {
-        w.quill_tooltip = null;
-
-    }
-
-    editorContainer = document.getElementById("tooltip" + id);
-    if (editorContainer) {
-        editorContainer.remove();
-    }
-
-}
-async function attachQuill(id, w, thing, readonly) { // todo just waiting is lame
-    console.log("OK");
-    await delay(500); // this is lame
-
-    let options = readonly ? quill_options_readonly : quill_options;
-
-    w.quillId = id;
-    w.quill = new window.Quill("#editor" + id, options);
-
-    w.quill_tooltip = new window.Quill("#tooltip" + id, options);
-
-    w.thing = thing;
-
-    w.quill.setContents(thing.text);
-    w.quill_tooltip.setContents(thing.tooltip);
-    quill_options.readyOnly = false;
-
-
-    // w.quill.on('text-change', (delta, oldDelta, source) => {
-    //     // if (source == 'api') {
-    //     //     console.log('An API call triggered this change.');
-    //     // } else if (source == 'user') {
-    //     //     let q = w.quill;
-    //     //     console.log('A user action triggered this change.', source);
-    //     //     let evaluation = "thing.text = " + JSON.stringify(q.getContents());
-    //     //     let thing = w.thing;
-
-    //     //     console.log(evaluation);
-    //     //     console.log(w);
-
-    //     //     socket.emit('change', {
-    //     //         change: evaluation,
-    //     //         thing: thing.id
-    //     //     })
-    //     // }
-    //     w.quill_contents = JSON.stringify(w.quill.getContents());
-    // });
-    w.addEventListener("focusin", (event) => {
-        event.target.style.background = "pink";
-    });
-
-    w.addEventListener("focusout", (event) => {
-        event.target.style.background = "";
-    });
-
-    w.when_closed = function () {
-        updateDocument(w, id);
-        resetQuill(w, id);
-
-
-
-        console.log('Window has been closed, quill removed?.');
-    };
-}
-
-MakeAvailableToParser('attachQuill', attachQuill);

@@ -1,15 +1,9 @@
 <div>
     <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
-        style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"></image>
+        style="max-width:512px{FetchStyleFromAppearanceArray(thing, 'portrait')}"></image>
 
 
 
-    { attachQuill (thing.name, w, thing, true ) ? "" :"" }
-
-    <div class="quilltooltip">
-        <div id="tooltip{thing.name}"></div>
-    </div>
-
-    <div id="editor{thing.name}">
-    </div>
+    <!-- Tooltip: { Editable(thing, "thing.tooltip", "") } -->
+    <br> { thing.text }
 </div>

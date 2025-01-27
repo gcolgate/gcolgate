@@ -12,7 +12,7 @@ import { ensureThingLoaded, GetRegisteredThing, MakeAvailableToHtml, parseSheet,
 import { dragDrop, setThingDragged } from './drag.js';
 /////// TODO put in seperate file
 import { socket } from './main.js';
-import { getAppearanceImage } from './ptba.js';
+import { getAppearanceImage, getAppearanceTintForHTML } from './ptba.js';
 import { waterShader, waterTexture } from './water_texture.js';
 
 var origTime = Date.now(); // current time
@@ -621,11 +621,17 @@ export function three_findMouseShapes(who) {
 let baseMaterial =
   new THREE.MeshBasicMaterial({ color: 0x0, transparent: false });
 
+
+function HtmlHEXToThreeJsColor(rrggbb) {
+  return parseInt(rrggbb.substr(1), 16);
+}
+
 async function three_setTileImage(tile, plane) {
   if (tile.texture == undefined) {
     console.log('Error Bad texture for %o', tile);
     return;
   }
+  let color = 0xffffff;
 
   // TODO: Fix calling this with two kinds of parameters and get rid of this
   // line
@@ -639,10 +645,12 @@ async function three_setTileImage(tile, plane) {
   if (tile.sheet?.file) {
     await ensureThingLoaded(tile.sheet.file);
     //   add style here
-    let token =
-      getAppearanceImage(GetRegisteredThing(tile.sheet.file), 'token');
+    let thing = GetRegisteredThing(tile.sheet.file);
+    let token = getAppearanceImage(thing, 'token');
     if (token) {
       tname = token;
+      color = HtmlHEXToThreeJsColor(getAppearanceTintForHTML(thing, 'token'));
+
     }
   }
 
@@ -697,7 +705,7 @@ async function three_setTileImage(tile, plane) {
   } else {
     material = new THREE.MeshBasicMaterial({
       map: texture,
-      color: 0xffffff,
+      color: color,
       transparent: true,
       // onBeforeCompile: (shader) => {
       //   console.log('ZZZYX');
@@ -1095,13 +1103,16 @@ export function three_mouseMove(event) {
           let plane = selection[i];
           let scale = plane.tile.scale;
 
-          plane.tile.x += (newMouse.x - three_lastMouse.x) / 2;
-          plane.tile.y += (newMouse.y - three_lastMouse.y) / 2;
+          let cx = (newMouse.x - three_lastMouse.x);
+          let cy = (newMouse.y - three_lastMouse.y);
+
+          plane.tile.x += cx / 2;
+          plane.tile.y += cy / 2;
 
           scale.x =
-            scalingX ? (newMouse.x - three_lastMouse.x) + scale.x : scale.x;
+            scalingX ? cx + scale.x : scale.x;
           scale.y =
-            scalingY ? (newMouse.y - three_lastMouse.y) + scale.y : scale.y;
+            scalingY ? cy + scale.y : scale.y;
           selection[i].material.highLight();
 
           fixTile(plane.tile);
@@ -1422,22 +1433,23 @@ three_renderer.domElement.onmousedown =
       for (let i = 0; i < menuOptions.length; i++) {
         let li = document.createElement("li");
         li.appendChild(document.createTextNode(menuOptions[i]));
+        li.mouse_x = three_lastMouse.x;
+        li.mouse_y = three_lastMouse.y;
         ul.appendChild(li);
 
         li.onmouseup = function () {
-          {
-            let msg = {
-              x: three_lastMouse.x,
-              y: three_lastMouse.y,
-              scene: current_scene.name,
-              scene_subdir_tag: './SceneFiles/' + current_scene.name + '/Documents/',
-              scene_subdir: './SceneFiles/' + current_scene.name + '/DocumentsFiles/'
-            };
-            socket.emit('newPOI', msg);
 
+          let msg = {
+            x: this.mouse_x,
+            y: this.mouse_y,
+            scene: current_scene.name,
+            scene_subdir_tag: './SceneFiles/' + current_scene.name + '/Documents/',
+            scene_subdir: './SceneFiles/' + current_scene.name + '/DocumentsFiles/'
           };
-        }
+          socket.emit('newPOI', msg);
+        };
       }
+
       popupMenu.style.display = "block";
       popupMenu.style.visibility = "visible";
       popupMenu.style.left = event.clientX + "px";

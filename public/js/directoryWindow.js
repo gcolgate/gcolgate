@@ -9,8 +9,8 @@ import { socket } from './main.js';
 export var folders = {
     Compendium: {},
     Party: {},
-    Favorites: {},
-    Uniques: {},
+    //   Favorites: {},
+    //  Uniques: {},
     Scenes: {},
     Documents: {},
     images: {},
@@ -18,8 +18,8 @@ export var folders = {
 var dirWindowCustomization = {
     Compendium: { dimensions: [.2, .6, .2, .2] },
     Party: { newButton: "newPlayer", dimensions: [.2, .6, .2, .2] },
-    Favorites: { dimensions: [.2, .6, .2, .2] },
-    Uniques: { dimensions: [.2, .6, .2, .2] },
+    //  Favorites: { dimensions: [.2, .6, .2, .2] },
+    //    Uniques: { dimensions: [.2, .6, .2, .2] },
     Scenes: { newButton: "newScene", dimensions: [.2, .6, .2, .2] },
     Documents: { newButton: "newPOI", dimensions: [.2, .6, .2, .2] },
     images: { newButton: "up", dimensions: [.6, .6, .2, .2], divHolder: "twocolumns" },
@@ -27,16 +27,16 @@ var dirWindowCustomization = {
 export function GetMainDirectories() {
     GetDirectory('Compendium', true).then((c) => { folders.Compendium = c; });
     GetDirectory('Party', true).then((c) => { folders.Party = c; });
-    GetDirectory('Favorites', true).then((c) => { folders.Favorites = c; });
-    GetDirectory('Uniques', true).then((c) => { folders.Uniques = c; });
+    //   GetDirectory('Favorites', true).then((c) => { folders.Favorites = c; });
+    //    GetDirectory('Uniques', true).then((c) => { folders.Uniques = c; });
     GetDirectory('Scenes', true).then((c) => { folders.Scenes = c; });
     GetDirectory('Documents', true).then((c) => { folders.Documents = c; });
     //GetDirectory('images').then((c) => { folders.images = c; }); // todo remove
 
     setUpDirButton('Compendium');
     setUpDirButton('Party');
-    setUpDirButton('Favorites');
-    setUpDirButton('Uniques');
+    //   setUpDirButton('Favorites');
+    //   setUpDirButton('Uniques');
     setUpDirButton('Scenes');
     setUpDirButton('images');
     setUpDirButton('Documents');

@@ -312,11 +312,17 @@ function emitChange(id, evaluation) {
 MakeAvailableToParser('emitChange', emitChange);
 MakeAvailableToHtml('emitChange', emitChange);
 
+function SanitizeText(x) {
+    return JSON.stringify(x).slice(1, -1); // does not fix ' but fixes " so use " when building these
+}
+
+
+
 function changeSheet(button) {
     let id = button.dataset.thingid; // the window id is window_fullthingname
     console.log(id);
     let clause = button.dataset.clause; // the window id is window_fullthingname
-    let evaluation = clause + " = '" + button.value + "'";
+    let evaluation = clause + ' = "' + SanitizeText(button.innerHTML) + '"';
     console.log(clause);
     console.log(evaluation);
 
@@ -399,24 +405,21 @@ export function Editable(thing, clause, className, listName) { // thing must be 
     let id = thing.id;
 
     if (listName != undefined) {
-        return '<input list="' + listName + '" class="' + className + '" data-clause="' + clause + '"  data-thingid="' + id + '" value="' + t +
-            '" onchange="htmlContext.changeSheet(this)">';
-
-
+        return '<div contenteditable list="' + listName + '" class="' + className + '" data-clause="' + clause + '"  data-thingid="' + id + ' onfocusout="htmlContext.changeSheet(this)">' + t + ' </div>';
     } else
-        return '<input class="' + className + '" type="text" data-clause="' + clause + '"  data-thingid="' + id + '" value="' + t +
-            '" onchange="htmlContext.changeSheet(this)">';
+        return '<div contenteditable class="' + className + '" type="text" data-clause="' + clause + '"  data-thingid="' + id +
+            '" onfocusout="htmlContext.changeSheet(this)">' + t + ' </div>';
 }
 MakeAvailableToParser('Editable', Editable);
 
 
-function MultilineEditText(thing, clause, className, rows, columns) { // thing must be here because the eval might use it
-    let t = eval(clause);
+// function MultilineEditText(thing, clause, className, rows, columns) { // thing must be here because the eval might use it
+//     let t = eval(clause);
 
-    let id = thing.id;
-    return '<textarea class="' + className + '" type="text"  cols="' + columns + '" rows="' + rows + '" data-clause="' + clause + '"  data-thingid="' + id +
-        '" onchange="htmlContext.changeSheet(this)">' + t + '</textarea>';
-}
+//     let id = thing.id;
+//     return '<textarea class="' + className + '" type="text"  cols="' + columns + '" rows="' + rows + '" data-clause="' + clause + '"  data-thingid="' + id +
+//         '" onchange="htmlContext.changeSheet(this)">' + t + '</textarea>';
+// }
 
 
 export async function showThing(name, sheet, editMode) {

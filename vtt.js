@@ -188,34 +188,36 @@ async function InitialDiskLoad() {
     promises.push(fs.readFile(path.join(__dirname, 'public', 'players/players.json'))); // TODO: use file cache
 
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Compendium'))); // TODO: use file cache
-    promises.push(fs.readdir(path.join(__dirname, 'public', 'Favorites'))); // TODO: use file cache
+    //  promises.push(fs.readdir(path.join(__dirname, 'public', 'Favorites'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Party'))); // TODO: use file cache
-    promises.push(fs.readdir(path.join(__dirname, 'public', 'Uniques'))); // TODO: use file cache
+    //  promises.push(fs.readdir(path.join(__dirname, 'public', 'Uniques'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Scenes'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Documents'))); // TODO: use file cache
 
     let results = await Promise.all(promises);
-    passwords = jsonHandling.ParseJson('passwords.json', results[0]);
-    players = jsonHandling.ParseJson('players.json', results[1]);
+
+    let index = 0;
+    passwords = jsonHandling.ParseJson('passwords.json', results[index]); index++;
+    players = jsonHandling.ParseJson('players.json', results[index]); index++;
 
     promises = [];
-
-    promises.push(jsonHandling.fillDirectoryTable("Compendium", results[2]));
-    promises.push(jsonHandling.fillDirectoryTable("Favorites", results[3]));
-    promises.push(jsonHandling.fillDirectoryTable("Party", results[4]));
-    promises.push(jsonHandling.fillDirectoryTable("Uniques", results[5]));
-    promises.push(jsonHandling.fillDirectoryTable("Scenes", results[6]));
-    promises.push(jsonHandling.fillDirectoryTable("Documents", results[7]));
-
+    promises.push(jsonHandling.fillDirectoryTable("Compendium", results[index])); index++;
+    //  promises.push(jsonHandling.fillDirectoryTable("Favorites", results[index])); index++;
+    promises.push(jsonHandling.fillDirectoryTable("Party", results[index])); index++;
+    //  promises.push(jsonHandling.fillDirectoryTable("Uniques", results[index])); index++;
+    promises.push(jsonHandling.fillDirectoryTable("Scenes", results[index])); index++;
+    promises.push(jsonHandling.fillDirectoryTable("Documents", results[index])); index++;
 
     results = await Promise.all(promises);
 
-    sheeter.folders.Compendium = results[0];
-    sheeter.folders.Favorites = results[1];
-    sheeter.folders.Party = results[2];
-    sheeter.folders.Uniques = results[3];
-    sheeter.folders.Scenes = results[4];
-    sheeter.folders.Documents = results[5];
+
+    index = 0;
+    sheeter.folders.Compendium = results[index]; index++;
+    //sheeter.folders.Favorites =results[index]; index++;
+    sheeter.folders.Party = results[index]; index++;
+    //sheeter.folders.Uniques =results[index]; index++;
+    sheeter.folders.Scenes = results[index]; index++;
+    sheeter.folders.Documents = results[index]; index++;
 
 
     for (let i = 0; i < sheeter.folders.Scenes.length; i++) {
@@ -869,6 +871,12 @@ io.on('connection', (socket) => {
         if (sender) {
             msg.sender = sender;
             console.log(msg);
+            msg.time = Date.now();
+
+            if (!msg.id) {
+                msg.id = Scene.uuidv4()
+            }
+
             sheeter.chats[msg.id] = (msg);
             io.emit("chat", msg);
         }
@@ -1144,6 +1152,7 @@ io.on('connection', (socket) => {
     function addToChatAndEmit(msg) {
 
         msg.id = Scene.uuidv4();
+        msg.time = Date.now();
 
         sheeter.chats[msg.id] = msg;
         console.log("emit chat  %o", sheeter.chats[msg.id]);
@@ -1185,7 +1194,11 @@ io.on('connection', (socket) => {
         if (sender) {
             let chatId = Scene.uuidv4();
             let outmsg = processRollMove(msg, chatId);
-            sheeter.chats[chatId] = { sender: sender, rollMove: outmsg, id: chatId };
+            outmsg.time = Date.now();
+
+            sheeter.chats[chatId] = { sender: sender, rollMove: outmsg, id: chatId, time: outmsg.time };
+            msg.time = Date.now();
+
             io.emit('chat', sheeter.chats[chatId]);
         }
     });
@@ -1405,7 +1418,8 @@ app.get("/previous_chats", (req, res) => {
     // Error here need to bulletproof server not being ready?
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    res.end(JSON.stringify(sheeter.chats));
+    console.log(JSON.stringify({ chats: sheeter.chats }));
+    res.end(JSON.stringify({ chats: sheeter.chats }));
 
 });
 

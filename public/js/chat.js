@@ -9,6 +9,7 @@ var login;
 var savedChats = [];
 
 export function sendChat(msg) {
+
     socket.emit('chat', msg);
      
 }
@@ -38,9 +39,11 @@ export function update_roll(change) {
  
 
 }
+function compareChatTimes(a, b) {
+    return a.time - b.time;
+  }
 
-
-export function showChatWindow(array) {
+export function showChatWindow(chatObject) {
     const chat_window_name = "window_chat";
     let w = createOrGetChatWindow("chat", .2, .9, .8, 0);
     bringToFront(w);
@@ -53,9 +56,17 @@ export function showChatWindow(array) {
     //  ul.style.minHeight = "100%";
     //  ul.style.marginBottom = "-50px";
 
-    for (let i = 0; i < array.length; i++) {
-        addChat(array[i]);
+    let keys = Object.keys(chatObject);
+    let array = [];
+    for (let i = 0; i < keys.length; i++) {
+        array.push(chatObject[keys[i]]);
 
+    } 
+     array.sort(compareChatTimes);
+
+    for (let i = 0; i < array.length; i++) {
+        console.log(array[i].time)
+        addChat(array[i]);
     }
     var footer = document.createElement("footer");
     var chatInput = document.createElement("input");

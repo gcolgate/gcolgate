@@ -1,5 +1,3 @@
-
-
 import { current_scene, three_camera, pinger, set_three_camera_xy, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditThingMode, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
 import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow, folders, GetDirectory } from './directoryWindow.js';
 import { createOrGetLoginWindow, windowsInit } from './window.js';
@@ -167,7 +165,7 @@ socket.on('login_success', function (msg) {
     GetMainDirectories();
     fetchJson("/previous_chats").then(chats => {
         console.log("pChats %o", chats);
-        showChatWindow(chats);
+        showChatWindow(chats.chats);
     });
     // GetDirectory('CurrentOpenScene').then((c) => { three_replaceScene(c); });
 
@@ -220,7 +218,7 @@ chatButton.onclick = function () {
     } else {
         fetchJson("/previous_chats").then(chats => {
             console.log("Chats %o", chats);
-            showChatWindow(chats);
+            showChatWindow(chats.chats);
         });
     }
 

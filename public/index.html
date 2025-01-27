@@ -1,3 +1,4 @@
+f
 <!DOCTYPE HTML>
 <html lang="en">
 
@@ -16,7 +17,21 @@
       background-color: rgb(255, 215, 170);
     } */
 
+    .buttonlike {
 
+      border-style: groove;
+      border-width: 5px;
+      border-radius: 5px;
+    }
+
+    .no-border {
+
+      border-style: none;
+    }
+
+    .display_inline {
+      display: inline-block;
+    }
 
     .menu-container {
       width: 100%;
@@ -150,6 +165,10 @@
       left: 250px;
     }
 
+    .hud-no-pointer-events {
+      pointer-events: none;
+    }
+
     .no-context-menu {
       -webkit-touch-callout: none;
       /* Disable callout, image save panel (iOS) */
@@ -189,6 +208,12 @@
       /* Additional positioning, height, width, etc. */
       top: -40px;
       width: 500px;
+    }
+
+    .reset_top {
+
+      /* Additional positioning, height, width, etc. */
+      top: -5px;
     }
 
     a:hover .tooltip {
@@ -313,8 +338,8 @@
       top: 4%;
       z-index: 9;
       background-color: rgb(255, 215, 170);
-      width: 800px;
-      height: 600px;
+      width: 100%;
+      height: 100%;
       opacity: 0.9;
       display: initial;
       resize: both;
@@ -1139,9 +1164,8 @@
     } */
 
     .popup-menu {
-      display: none;
-      position: absolute;
       background: white;
+      position: absolute;
       border: 1px solid #ccc;
       padding: 0;
       list-style: none;
@@ -1494,9 +1518,6 @@
 
   </script>
 
-  <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
-
 
   <script>  var htmlContext = {}; // how to trade variables cross window </script>
   <script type="text/javascript" src="./js/socket.io/client-dist/socket.io.js"></script>
@@ -1534,7 +1555,7 @@
     <label for="EditThings"> Edit Things... </label>
     Left mouse selects, right mouse scales (edit on) and middle mouse drags, wheel zooms
     <div class="windowGroup" id="windowGroup"></div>
-    <div id="hud" class="hud no-context-menu"></div>
+    <div id="hud" class="hud no-context-menu hud-no-pointer-events"></div>
 
     <div id="popupMenu" class="popup-menu">
       <ul id="popupMenu_ul ">

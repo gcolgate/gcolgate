@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Gil's vtt",
     "main": "main.js",
+    "type": "module",
     "scripts": {
         "test": "nodemon convert.js",
         "start": "nodemon vtt.js"
@@ -12,7 +13,6 @@
     "dependencies": {
         "drag-drop": "7.2.0",
         "ejs": "^3.1.9",
-        "quill": "^2.0.3",
         "three": "^0.152.2"
     }
 }

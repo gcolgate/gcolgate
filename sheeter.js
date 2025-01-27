@@ -7,8 +7,8 @@ const uuid = require('uuid');
 
 var folders = {
   Compendium: [],
-  Favorites: [],
-  Uniques: [],
+  // Favorites: [],
+  //  Uniques: [],
   Party: [],
   Scenes: [],
   ScenesParsed: [],
@@ -20,7 +20,7 @@ function uuidv4() {
 }
 
 
-var chats = []; // chats so far
+var chats = {}; // chats so far
 
 function ensureExists(thing, template, field) {
   if (thing[field] == undefined) {

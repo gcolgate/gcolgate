@@ -1171,17 +1171,32 @@ MakeAvailableToParser('findInNamedArray', findInNamedArray);
 var missingImage = "images/questionMark.png";
 
 export function getAppearanceImage(thing, type) {
-
     let answer = findInNamedArray(thing.appearance, thing.current_appearance);
     if (!answer) return missingImage;
     answer = answer[type];
     if (!answer) return missingImage;
     return answer.image ? answer.image : missingImage;
-
 }
 MakeAvailableToParser('getAppearanceImage', getAppearanceImage);
 
+function setAppearanceColor(thingId, type) {
 
+    let thing = GetRegisteredThing(thingId);
+    const colorPicker = document.getElementById(thingId + "colorPicker");
+    let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).' + type + '.color =  "' + colorPicker.value + '"';
+    socket.emit("change_appearance", { thing: thingId, change: evaluation, updatePortrait: true });
+}
+MakeAvailableToHtml('setAppearanceColor', setAppearanceColor);
+
+export function getAppearanceTintForHTML(thing, type) {
+
+    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
+    if (!answer) return '#ffffff';
+    answer = answer[type];
+    if (!answer) return '#ffffff';
+    return answer.color != undefined ? answer.color : '#ffffff';
+}
+MakeAvailableToParser('getAppearanceTintForHTML', getAppearanceTintForHTML);
 
 export function setAppearanceImage(thingId, image_type, path) {
 
@@ -1198,12 +1213,8 @@ export function setAppearanceImage(thingId, image_type, path) {
 
     }
     let evaluation = 'findInNamedArray(thing.appearance, thing.current_appearance).' + image_type + '.image =  "' + path + '"';
-
     console.log('evaluation is ' + evaluation);
-
     socket.emit("change_appearance", { thing: thingId, change: evaluation, updatePortrait: true });
-
-
 }
 MakeAvailableToParser('setAppearanceImage', setAppearanceImage);
 
@@ -1385,6 +1396,11 @@ function FetchStyleFromAppearanceArray(thing, type) {
         parms += ';transform:rotate(' + answer.rotation + 'deg)';
 
     }
+    // if (answer.color != undefined && answer.color != 0xffffff) {  I have to switch to canvas to do this right, low priority
+    //     parms += '; mix-blend-mode: multiply;  background-color:' + answer.color.toString(16);
+
+
+    // }
     return parms;
 }
 MakeAvailableToParser('FetchStyleFromAppearanceArray', FetchStyleFromAppearanceArray);
@@ -2057,8 +2073,9 @@ MakeAvailableToParser('CreateRollMoveStatString', CreateRollMoveStatString);
 
 
 function changeChatSkill(id, career, divElement) {
-    let menu = document.getElementById(divElement);
-    menu.classList.remove("active")
+    //let menu = document.getElementById(divElement);
+    //  menu.classList.remove("active")
+    console.log("Chaning skill to " + career + "for id " + id);
     socket.emit('change', {
         change: "thing.skill = '" + career + "'",
         thing: id
@@ -2071,7 +2088,7 @@ MakeAvailableToHtml('changeChatSkill', changeChatSkill);
 
 function ShowAllPlayerSkills(owner, id, divElement) {
 
-    let answer = "";
+    let answer = "<ul class='popup-menu'>";
     let quote = "'";
     let comma = ",";
     for (let i = 0; i < owner.items.length; i++) {
@@ -2080,12 +2097,14 @@ function ShowAllPlayerSkills(owner, id, divElement) {
         if (item.page == "careers") {
             let career = GetRegisteredThing(item.file);
             let level = Number(career.owner_level);
-            answer += '<div onclick="changeChatSkill('
+            answer += '<li onclick="changeChatSkill('
                 + quote + id + quote + comma + quote + career.name + quote + comma + quote
-                + divElement + quote + ')">' + career.name + '</div>';
+                + divElement + quote + ')">' + career.name + '</li>';
         }
     }
-    answer += ' <div onclick="changeChatSkill("' + id + quote + comma + quote + divElement + '\')">  None  </div>';
+    answer += '<li onclick="changeChatSkill(' + quote + id + quote + comma + quote + "" + quote + comma + quote
+        + divElement + quote + ')">' + 'None</li>';
+    answer += '</ul>'
     return answer;
 
 }
@@ -2396,19 +2415,21 @@ MakeAvailableToParser("GetRollTextResult", GetRollTextResult);
 // MakeAvailableToParser("rollPTBAStat", rollPTBAStat);
 // MakeAvailableToHtml("rollPTBAStat", rollPTBAStat);
 
-function PTBAAbility(thing, stat) {
-    let answer = Editable(thing, " thing.stats['" + stat + "'] ", "npcNum");
-    return answer;
+function PTBAAbility(thing, stat, readonly) {
+    if (!readonly)
+        return Editable(thing, " thing.stats['" + stat + "'] ", "npcNum");
+    else
+        return '<div class="npcNum" >' + thing.stats[stat] + '</div >';
 }
 
-function PTBAAbilities(thing) {
+function PTBAAbilities(thing, readonly) {
     let answer = "";
     let keys = Object.keys(thing.stats);
     for (let i = 0; i < keys.length; i++) {
         answer += '<div class=outlined style = "font-weight: 700;font-size: 12px;display: inline-block">';
         answer += '<span>' + keys[i].toUpperCase() + '</span><br>';
         answer += '<div style="font-weight: 400; font-size: 12px;">';
-        answer += PTBAAbility(thing, keys[i]);
+        answer += PTBAAbility(thing, keys[i], readonly);
         answer += '</div>';
         answer += '</div>';
     }
