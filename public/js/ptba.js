@@ -183,7 +183,7 @@ export const moves = {
         "stat": [
             "bravery"
         ],
-        "action": "FreeAction",
+        "action": "FreeReaction",
         "tooltip": "Immediately after a sufficiently scary spell, you keep the spell moaning or humming around you, as to indicate more is coming. Costs 1 mana",
         "Critical": "Foes are panicked",
         "success": "Foes are cowed",
@@ -194,7 +194,7 @@ export const moves = {
         "stat": [
             "bravery"
         ],
-        "action": "FreeAction",
+        "action": "FreeReaction",
         "tooltip": "Immediately after a certain critical hit, your foes may become frightened",
         "Critical": "Foes are panicked",
         "success": "Foes are cowed",
@@ -244,6 +244,54 @@ export const moves = {
             </div>\
             </a>',
 
+    },
+    "ResistDamage": {
+        "stat": [
+            "health"
+        ],
+        "action": "FreeReaction",
+        "tooltip": "When you get hurt, difficulty is the damage minus your armor",
+
+        "Comments": "Resisting damage",
+        "Critical": "You escape scott free!",
+        "success": 'You are fine, but in the case of overwhelming attacks like a huge explosion or a giant’s club the GM might <a href="#">choose 1 or 2\
+         <div class="tooltipcontainer"> \
+                <div class="tooltip"> \
+                <ul> \
+                  <li>● You lose your footing. </li> \
+                  <li>● You lose your grip on whatever you’re holding. </li> \
+                  <li>● You lose track of someone or something you’re attending to.  </li>\
+                  <li>● You miss noticing something important.  </li>\
+                  <li>● You take half damage.</li> \
+                  <li>● You take a level of exhaustion.  </li>\
+                 </ul> \
+                 </div></div></a>',
+
+        "mixed": 'Take the indicated damage and <a href="#">choose 1 GM chooses 1: \
+     <div class="tooltipcontainer">\
+                <div class="tooltip">\
+                 <ul> \
+                    <li>● You lose your footing. </li> \
+                    <li>● You lose your grip on whatever you’re holding.</li> \
+                    <li>● You lose track of someone or something you’re attending to</li> \
+                    <li>● You miss noticing something important.</li> \
+                    <li>● You take double damage.</li>\
+                    <li>● You take a level of exhaustion. \
+                 </ul> \
+                </div></div></a>',
+
+        "fail": 'Take double damage wounds and the   <a href="#"> choose 1 GM chooses 1 \
+            <div class="tooltipcontainer">\
+                <div class="tooltip">\
+                 <ul> \
+                    <li>● You’re out of action: unconscious, trapped, incoherent or panicked.</li> \
+                    <li>● It’s worse than it seemed. Lose double damage. </li>\
+                    <li>● You have an injury, like a hurt leg (slowed), bleeding (lose additional damage with a chance each round, \
+                          each 6 for light bleeding or greater than 1 for heavy), a hurt arm (-1 with actions from that arm),\
+                          partial blindness (-3 to steel, many actions become more difficult) Certain weapons get bonuses to some kinds of injuries, so if you get struck by those you might be in worse shape. \
+                    <li>● You are stunned, for a moment you can’t do anything. </li>\
+                 </ul> \
+            </div></div></a>',
     },
     "Artillery": {
         "stat": [
@@ -794,6 +842,42 @@ function ListAllMagicPowers(owner) {
 }
 MakeAvailableToParser('ListAllMagicPowers', ListAllMagicPowers);
 
+
+function Listify(list, owner, sheet) {
+    let output = "<ul>"
+
+    for (let i = 0; i < list.length; i++) {
+        output += "<li>" + parseSheet(list[i], sheet, undefined, owner) + "</li>";
+
+    }
+    return output + "</ul>";
+}
+
+function ListAllFeats(owner) {
+
+    let list = [];
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "careers" || item.page == "background") {
+            let career = GetRegisteredThing(item.file);
+            let keys = Object.keys(career.owner_featsChosen);
+            for (let k = 0; k < keys.length; k++) {
+                if (career.owner_featsChosen[keys[k]]) {
+                    let name = "CompendiumFiles/" + keys[k];
+
+                    let featSheet = GetRegisteredThing(name);
+
+                    list.push(featSheet);
+                }
+            }
+        }
+    }
+
+    return Listify(list, owner, "feats");
+}
+
+MakeAvailableToParser('ListAllFeats', ListAllFeats);
+
 function HasFeat(thingId, featName) {
 
     let owner = GetRegisteredThing(thingId);
@@ -962,23 +1046,27 @@ function takeDamage(ownerId, damage, damageType, advantage) {
     let armor = getArmor(owner, damageType);
     let mod_damage = Math.floor((-(damage - 3) + armor * 2) / 2);
 
-    socket.emit('roll', {
-        title: owner.name + "<ul><li> Resist Damage </li><li> Damage: " + damage + " armor: " + armor + " mod " + mod_damage + " " + advantage + "</li></ul>",
-        style: "dual-move",
-        advantage: advantage,
-        roll: baseDice + (mod_damage >= 0 ? "+" + mod_damage : mod_damage),
-        resultsTable: takeDamageMove
-    });
+    rollMoveStat(ownerId, "health", "ResistDamage", "", advantage,
+        undefined, undefined, undefined, "");
 
 
-    socket.emit('roll', {
-        owner: owner.name,
-        title: owner.name + "<ul><li> Resist Damage </li><li> Damage: " + damage + " armor: " + armor + " mod " + mod_damage + " " + advantage + "</li></ul>",
-        style: "dual-move",
-        advantage: advantage,
-        roll: baseDice + (mod_damage >= 0 ? "+" + mod_damage : mod_damage),
-        resultsTable: takeDamageMove
-    });
+    // socket.emit('roll', {
+    //         title: owner.name + "<ul><li> Resist Damage </li><li> Damage: " + damage + " armor: " + armor + " mod " + mod_damage + " " + advantage + "</li></ul>",
+    //         style: "dual-move",
+    //         advantage: advantage,
+    //         roll: baseDice + (mod_damage >= 0 ? "+" + mod_damage : mod_damage),
+    //         resultsTable: takeDamageMove
+    //     });
+
+
+    // socket.emit('roll', {
+    //     owner: owner.name,
+    //     title: owner.name + "<ul><li> Resist Damage </li><li> Damage: " + damage + " armor: " + armor + " mod " + mod_damage + " " + advantage + "</li></ul>",
+    //     style: "dual-move",
+    //     advantage: advantage,
+    //     roll: baseDice + (mod_damage >= 0 ? "+" + mod_damage : mod_damage),
+    //     resultsTable: takeDamageMove
+    // });
 
 }
 
@@ -3026,29 +3114,27 @@ function CastSpell(thingId, ownerId, advantage) {
                 stat = "Cunning";
             }
 
-            socket.emit('roll', {
-                title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + thing.name + "</li></ul>",
-                style: "dual-move",
-                advantage: advantage,
-                roll: baseDice + signed(bonus),
-                damage: thing.Damage,
-                damage_bonus: 0,
-                resultsTable: moves[mv]
-            });
+            rollMoveStat(ownerId, stat, mv, "", advantage,
+                undefined, undefined, undefined, "");
+
+            // socket.emit('roll', {
+            //     title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + thing.name + "</li></ul>",
+            //     style: "dual-move",
+            //     advantage: advantage,
+            //     roll: baseDice + signed(bonus),
+            //     damage: thing.Damage,
+            //     damage_bonus: 0,
+            //     resultsTable: moves[mv]
+            // });
 
         } else if (moves[thing.Move]) {
             let mv = moves[thing.Move];
             let stat = mv.stat[0]; // todo pick best for player
             let bonus = owner.stats[stat];
-            socket.emit('roll', {
-                title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + thing.Move + ' ' + thing.name + "</li></ul>",
-                style: "dual-move",
-                advantage: advantage,
-                roll: baseDice + signed(bonus),
-                damage: thing.Damage,
-                damage_bonus: 0,
-                resultsTable: mv
-            });
+
+            rollMoveStat(ownerId, stat, mv, "", advantage,
+                undefined, undefined, undefined, "");
+
 
 
         }

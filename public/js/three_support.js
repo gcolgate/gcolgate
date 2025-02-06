@@ -6,7 +6,7 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 
-import { ensureThingLoaded, GetRegisteredThing, MakeAvailableToHtml, parseSheet, showThing } from './characters.js';
+import { ensureThingLoaded, GetRegisteredThing, MakeAvailableToHtml, parseSheet, showThing, emitChange } from './characters.js';
 // import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 
 import { dragDrop, setThingDragged } from './drag.js';
@@ -20,6 +20,7 @@ var theTime = 0; // current time since program start
 var grid;
 var hexgrid;
 let kGridSize = 100;
+var three_scaling_factor = 0;
 let kWidthHeightOffsetTimesTwo = 32; // 2x the margins from the window to the canvas
 class InfiniteGrid extends THREE.Mesh {
   constructor(size1, size2, color, opacity, distance, axes = 'xyz') {
@@ -344,7 +345,7 @@ function three_renderer_dimensions() {
     aspect: (width / height)
   }
 }
-
+var originalX, originalY;
 function three_setDimension() {
   // fetch target renderer size
   var rendererSize = three_renderer_dimensions();
@@ -354,10 +355,17 @@ function three_setDimension() {
   if (three_camera.isOrthographicCamera) {
     // const camera = new THREE.PerspectiveCamera(75, window.innerWidth /
     // window.innerHeight, 0.1, 1000);
-    three_camera.left = rendererSize.width / -2;
-    three_camera.right = rendererSize.width / 2;
-    three_camera.top = rendererSize.height / 2;
-    three_camera.bottom = rendererSize.height / -2;
+
+    let d = three_scaling_factor;
+    let wd = d * three_renderer_dimensions().aspect;
+
+    originalX = rendererSize.width / -2;
+    originalY = rendererSize.height / -2;
+
+    three_camera.left = (rendererSize.width / -2) + wd;
+    three_camera.right = (rendererSize.width / 2) - wd;
+    three_camera.top = (rendererSize.height / 2) - d;
+    three_camera.bottom = (rendererSize.height / -2) + d;
   }
   else {
     three_camera.aspect = rendererSize.width / rendererSize.height
@@ -855,6 +863,14 @@ export function three_replaceScene(sceneName, sceneType, c, cameraPos) {
   ensureThingLoaded(name).then(thing => {
     if (thing.typeOfGrid != 'hex') hexgrid.visible = false;
     if (thing.typeOfGrid != 'square') grid.visible = false;
+    three_camera.position.x = thing.cameraStartX;
+    three_camera.position.y = thing.cameraStartY;
+    let dim = three_renderer_dimensions();
+    if (thing.scalingFactor != undefined) {
+      three_scaling_factor = thing.scalingFactor;
+      three_setDimension();
+      three_camera.updateProjectionMatrix();
+    }
   });
 
   let keys = Object.keys(c);
@@ -940,7 +956,7 @@ const middleMouseButton = 1;
 const rightMouseButton = 2;
 
 var mainButton = leftMouseButton;
-var scrollButton = middleMouseButton;
+var scrollButton = rightMouseButton;
 var popupButton = rightMouseButton;
 
 function GetDimensions() {
@@ -990,6 +1006,14 @@ export function three_mousePositionToWorldPosition(event) {
 }
 
 
+
+function SetSceneStartingCamera(id) {
+  let evaluation = 'thing.cameraStartX = ' + three_camera.position.x +
+    '; thing.cameraStartY = ' + three_camera.position.y +
+    '; thing.scalingFactor = ' + three_scaling_factor;
+  emitChange(id, evaluation);
+}
+MakeAvailableToHtml('SetSceneStartingCamera', SetSceneStartingCamera);
 
 export function three_setEditMode(on) {
   editMode = on;
@@ -1122,7 +1146,7 @@ export function three_mouseMove(event) {
         break;
     }
   }
-  if (mouseButtonsDown[scrollButton]) {
+  if (mouseButtonsDown[scrollButton] && !event.shiftKey) {
     // if (three_camera.isOrthographicCamera) {
     console.log('Scroll');
     let dim = three_renderer_dimensions()
@@ -1195,11 +1219,14 @@ export function three_mouseMove(event) {
 three_renderer.domElement.onwheel = (event) => {
   let d = event.wheelDelta * 0.6;
   let wd = d * three_renderer_dimensions().aspect;
+
+  three_scaling_factor += d;
   three_camera.left += wd;
   three_camera.right -= wd;
   three_camera.top -= d;
   three_camera.bottom += d
-  three_camera.updateProjectionMatrix()
+
+  three_camera.updateProjectionMatrix();
 };
 
 three_renderer.domElement.onmouseup = (ev) => {
@@ -1418,7 +1445,7 @@ three_renderer.domElement.onmousedown =
       }
 
       pinger.mouseDown(event);
-    } else if (popupButton == event.button) {
+    } else if (popupButton == event.button && event.shiftKey) {
 
       // Show context menu here 
       // One option is new point of interest

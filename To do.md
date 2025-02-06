@@ -17,15 +17,20 @@ Editing map pain.
         The corners can move freely
 
 6) sheets should be able to scale themselves, perhaps based on content. So tooltip not edit should be skinnier
+
+7) make add POI go to grid boundaries
  
 Creating new: Players, documents, need to use the typed in name, not a random name, in the displays. File id should be an uuid not a random name
 
 special weapon player defenses not shown or not working or something
 
 There should be a spell to conjure or enhance weapons that add extra actions like burnify
-Add place to add conditions that is for NPCs too.
+Add place to add conditions   for NPCs and to manage health
+Resist damage needs to automatically include armor and have some degree of hit location or maybe attacks allow hitting in the head or body or arms or legs.
+Damage is now all over the map include MERP ideas... weapons include penetration, damage type, 
 Conditions referred to in Moves should be hoverable.
-
+spells need to provide ways to set damage
+Spell casting borked, make moves for every spell
 
 
 pain POP-OUT:
@@ -41,14 +46,16 @@ pain POP-OUT:
 For slow network, need to put up clock when loading initial scene, as each character sheet is loaded.
  
 Tile propoerties: when editing map, allow double clicking on tiles to change properties such as color and shader , so far implented for tokens in documents only
+    note: updating a player does not change the color (or rather it turns it white) until reloading the game
     Shaders: put a json in the shaders folder that details all combinations of shaders. give each one a name
     Create a shader for points of interest that twinkles them by making them more or less opaque or bright in semi random ways
     Put a menu on the appearance for tokens that allows changing the shader.
 
 Fix non-fighty characters dancer based had no , still an issue.   
-Make armor proficiencies more known on the sheet currently they are hidden.  
-   
-A Remember camera position, a little more complicated because it is camera position per player per scene
+Make armor proficiencies more known on the sheet currently they are hidden.
+
+
+    
 B Find token from sheet button
 C group things to scroll 
 D buy item doesn't deduct money
@@ -80,8 +87,7 @@ E Could spend some time to make a context menu for text editing with these
     selectAll: Selects all content. (control a)
     undo: Undoes the last executed command. (control shift z)
     redo: Redoes the last undone command. (control z)
-    
-1. Damage on players maybe too variable. add MERP rules for both players and monsters. 
+1. Damage on players maybe too variable. add MERP rules for both players and monsters. No add weapon effect powers.
 3. Mount required for certain moves, don't allow them without mount?
 4. Need to have stat use a drop down, include Luck which makes a zero stack
 Reorganization:

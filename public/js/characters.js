@@ -47,6 +47,7 @@ ensureSheetLoaded("spell_chat");
 ensureSheetLoaded("spell_tooltip");
 ensureSheetLoaded("weapon_tooltip");
 ensureSheetLoaded("moveroll");
+ensureSheetLoaded("feats");
 
 function ClickCollapsible(evt, ownerid, id) {
 
@@ -301,7 +302,7 @@ async function EnsureLoaded(sheetName, thingName) {
 // and a field id
 
 
-function emitChange(id, evaluation) {
+export function emitChange(id, evaluation) {
 
     socket.emit('change', {
         change: evaluation,

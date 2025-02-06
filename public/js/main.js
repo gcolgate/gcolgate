@@ -260,31 +260,6 @@ settings.onclick = function () {
 init();
 
 
-class Scene {
-
-    constructor(options) {
-        this.topDown = options.topDown;
-        this.gridScaleInPixels = options.gridScaleInPixels;
-        this.gridScaleInUnits = options.gridScaleInPixels;
-        this.typeOfGrid = options.gridScaleInUnits;
-        this.tiles = options.tiles;
-        this.things = options.things;
-
-        three_camera.position.x = options.cameraStartX;
-        three_camera.position.y = options.cameraStartY;
-
-    }
-};
-// let currentScene = new Scene({
-//     topDown: true,
-//     gridScaleInPixels: 100,
-//     gridScaleInUnits: "5ft",
-//     typeOfGrid: "square",
-//     cameraStartX: 0,
-//     cameraStartY: 0,
-//     tiles: [],
-//     things: [],
-// });
 
 function noDragging(e) {
     if (thingDragged) return;

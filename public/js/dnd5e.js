@@ -686,7 +686,18 @@ function IsInjury(item) {
 
 
 }
+
 MakeAvailableToHtml('IsInjury', IsInjury);
+
+
+function IsCondition(item) {
+    return (item.page == "conditions");
+
+
+}
+
+MakeAvailableToHtml('IsCondition', IsCondition);
+
 
 function IsInventoryItem(item) {
     switch (item.page) {

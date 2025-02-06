@@ -4,7 +4,7 @@
             <h1 class="itemsetheader">
 
                 <!-- <button onclick="LoadScene('{ thing.name }')">LOAD</button> -->
-                 { thing.name }
+                { thing.name }
             </h1>
         </div>
         <div style="box-sizing: border-box;
@@ -21,15 +21,17 @@
         <div> topDown : {thing.topDown}</div>
         <div> cameraStartX : {thing.cameraStartX}</div>
         <div> cameraStartY : {thing.cameraStartY}</div>
+        <div> scalingFactor : {thing.scalingFactor}</div>
+        <button onclick="htmlContext.SetSceneStartingCamera('{thing.id}')">Set Camera to Current</button>
 
         <p class="itemsetheader"> Grid:
             {thing.typeOfGrid}
-        <select  class="itemsetheader" onChange="htmlContext.ChangeGrid(this.options[this.selectedIndex].value)">
-            <option value="">Change</option>
-            <option value="square">square</option>
-            <option  value="hex">hex</option>
-            <option  value="none">none</option>
-        </select>
+            <select class="itemsetheader" onChange="htmlContext.ChangeGrid(this.options[this.selectedIndex].value)">
+                <option value="">Change</option>
+                <option value="square">square</option>
+                <option value="hex">hex</option>
+                <option value="none">none</option>
+            </select>
 
     </div>
 </div>

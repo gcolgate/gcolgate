@@ -355,7 +355,7 @@ async function AddItem(thingName, item_tag, io, msg) {
       __dirname, 'public',
       (thingName) + '_' + baseItemName + '_' + uuid + '.json'));
     // promises.push(fs.copyFile(item_filePath, out_item_filePath));
-
+    //  Here add sub items too
 
     let outPutFile = { template: item_tag.file + '.json', owner: thingName };
 
