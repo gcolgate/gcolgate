@@ -1,4 +1,4 @@
-import { current_scene, three_camera, pinger, set_three_camera_xy, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditThingMode, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
+import { current_scene, three_canvas, pinger, set_three_camera_xy, three_tileDeleted, three_deleteSelected, three_mouseMove, three_mousePositionToWorldPosition, three_setEditThingMode, three_setEditMode, three_renderer, three_animate, three_addTile, three_updateAllUsingProto, three_updateTile, three_findMouseShapes, three_replaceScene } from "./three_support.js";
 import { GetMainDirectories, processDirectory, updateDirectoryWindow, refreshDirectoryWindow, folders, GetDirectory } from './directoryWindow.js';
 import { createOrGetLoginWindow, windowsInit } from './window.js';
 import { showChatWindow, setLogin, addChat, update_roll } from './chat.js';
@@ -366,7 +366,7 @@ window.ondragEnter = function (e) { };
 window.ondragLeave = function (e) { };
 window.ondrop = function (e) { noDropping(e); };
 
-three_renderer.domElement.ondrop = function (e) {
+three_canvas.ondrop = function (e) {
     if (thingDragged) {
         // will be handled by canvas
     } else {

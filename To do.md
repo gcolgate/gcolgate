@@ -6,8 +6,7 @@ Conditions
 
 Editing map pain.
 
-1) Downloading new art to the server folders don't make the server aware of them unless you restart
- 
+1) Downloading new art to the server folders don't make the server aware of them unless you restart 
 5) Scaling is terribly implemented.  
         New method: when hovered, show 8 pins as new models
         the pin moves the coordinates so that the pin is in the new mouse point

@@ -15,6 +15,9 @@ import { socket } from './main.js';
 import { getAppearanceImage, getAppearanceTintForHTML } from './ptba.js';
 import { waterShader, waterTexture } from './water_texture.js';
 
+
+export const three_canvas = document.getElementById('canvas');
+var ready = false;
 var origTime = Date.now(); // current time
 var theTime = 0; // current time since program start
 var grid;
@@ -337,8 +340,9 @@ class InfiniteHexGrid extends THREE.Mesh {
 
 
 function three_renderer_dimensions() {
-  let width = window.innerWidth - kWidthHeightOffsetTimesTwo;
-  let height = window.innerHeight - kWidthHeightOffsetTimesTwo;
+
+  let width = three_canvas.width; //window.innerWidth - kWidthHeightOffsetTimesTwo;
+  let height = three_canvas.height; //window.innerHeight - kWidthHeightOffsetTimesTwo;
   return {
     width: width,
     height: height,
@@ -460,8 +464,6 @@ const gridLayer = new THREE.Scene();
 const three_scenes =
   [backgroundLayer, tileLayer, gridLayer, tokenLayer, guiLayer];
 
-var rendererSize = three_renderer_dimensions();
-
 class cleanRenderPass extends RenderPass {
   constructor(
     scene, camera, overrideMaterial = null, clearColor = null,
@@ -481,76 +483,13 @@ class firstRenderPass extends RenderPass {
     this.clearDepth = true;
   }
 }
-export const three_camera = new THREE.OrthographicCamera(
-  rendererSize.width / -2, rendererSize.width / 2, rendererSize.height / 2,
-  rendererSize.height / -2, -10, 1000);
-
-export const three_renderer = new THREE.WebGLRenderer();
-three_renderer.setSize(rendererSize.width, rendererSize.height, true);
-document.body.appendChild(three_renderer.domElement);
-three_renderer.domElement.style.resize = 'both';
-
-
-
-three_renderer.domElement.acceptsDropFile = true;
-
-three_camera.position.z = 1000;
-
-three_window_sizer_watcher(three_renderer, three_camera);
-
-export var current_scene = {
-  name: '',
-  type: '2d',  // types are 2d, theatre_of_the_mind, 3d
-}
-
-
-// postprocessing
-{
-  var three_composer = new EffectComposer(three_renderer);
-
-  three_composer.addPass(new firstRenderPass(backgroundLayer, three_camera));
-  three_composer.addPass(new cleanRenderPass(tileLayer, three_camera));
-  var three_outlinePass_tile = new OutlinePass(
-    new THREE.Vector2(window.innerWidth, window.innerHeight), tileLayer,
-    three_camera);
-  three_composer.addPass(three_outlinePass_tile);
-
-
-  three_composer.addPass(new cleanRenderPass(gridLayer, three_camera));
-  three_composer.addPass(new cleanRenderPass(tokenLayer, three_camera));
-  var three_outlinePass_token = new OutlinePass(
-    new THREE.Vector2(window.innerWidth, window.innerHeight), tokenLayer,
-    three_camera);
-  three_composer.addPass(three_outlinePass_token);
-  three_composer.addPass(new cleanRenderPass(guiLayer, three_camera));
-
-  three_outlinePass_tile.edgeStrenth = 4.79;
-  three_outlinePass_tile.edgeGlow = 4.698;
-  three_outlinePass_tile.edgeThickness = 3.72;
-  three_outlinePass_tile.pulsePeriod = 1.9;
-  three_outlinePass_tile.visibleEdgeColor.set('#ffffff');
-  three_outlinePass_token.hiddenEdgeColor.set('#190a05');
-  three_outlinePass_token.edgeStrenth = 4.79;
-  three_outlinePass_token.edgeGlow = 4.698;
-  three_outlinePass_token.edgeThickness = 1.72;
-  three_outlinePass_token.pulsePeriod = 2.9;
-  three_outlinePass_token.visibleEdgeColor.set('#ffffff');
-  three_outlinePass_token.hiddenEdgeColor.set('#190a05');
-
-  // const textureLoader = new THREE.TextureLoader();
-  const waterPass = new ShaderPass(waterShader);
-  three_composer.addPass(waterPass);
-
-
-
-  three_composer.addPass(new OutputPass());
-
-  // var three_effectFXAA = new ShaderPass(FXAAShader);
-  // three_effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1
-  // / window.innerHeight); three_composer.addPass(three_effectFXAA);
-}
-
+export var three_renderer;
+export var three_camera;
+export var current_scene;
 export var three_mouseShapes = {}
+var three_outlinePass_tile;
+var three_outlinePass_token;
+var three_composer;
 
 const mouse_geometry = new THREE.BoxGeometry(10, 10, 10);
 const mouse_material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -563,31 +502,110 @@ const ring_material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE
 
 var materials = {};
 
-var layers = {
-  tile: {
-    selectables:
-      [],  // for some reason I have both an array and map of this, maybe
-    // because I need array for THREE calls? TODO: investigate
-    selectablesMap: {},
-    protoSheetMap:
-      {},  // if the object has a sheet with  with a file name, this will be
-    // the file name, like PlayerOne. TODO: better name
-    layer: tileLayer,
-  },
-  token: {
-    selectables: [],
-    selectablesMap: {},
-    protoSheetMap: {},
-    layer: tokenLayer,
-  },
-  gui: {
-    selectables: [],
-    selectablesMap: {},
-    protoSheetMap: {},
-    layer: guiLayer,
-  },
-};
+var layers = {};
 
+window.onload = function () {
+  three_renderer = new THREE.WebGLRenderer({ canvas: three_canvas });
+
+  three_canvas.width = three_canvas.clientWidth;
+  three_canvas.height = three_canvas.clientHeight;
+
+  var rendererSize = three_renderer_dimensions();
+
+  three_renderer.setSize(rendererSize.width, rendererSize.height, true);
+  //document.body.appendChild(three_renderer.domElement);
+  //three_canvas.style.resize = 'both';
+
+  three_camera = new THREE.OrthographicCamera(
+    rendererSize.width / -2, rendererSize.width / 2, rendererSize.height / 2,
+    rendererSize.height / -2, -10, 1000);
+
+
+
+  three_canvas.acceptsDropFile = true;
+
+  three_camera.position.z = 1000;
+
+  //three_window_sizer_watcher(three_renderer, three_camera);
+
+  current_scene = {
+    name: '',
+    type: '2d',  // types are 2d, theatre_of_the_mind, 3d
+  }
+
+
+  // postprocessing
+  {
+    three_composer = new EffectComposer(three_renderer);
+
+    three_composer.addPass(new firstRenderPass(backgroundLayer, three_camera));
+    three_composer.addPass(new cleanRenderPass(tileLayer, three_camera));
+    three_outlinePass_tile = new OutlinePass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight), tileLayer,
+      three_camera);
+    three_composer.addPass(three_outlinePass_tile);
+
+
+    three_composer.addPass(new cleanRenderPass(gridLayer, three_camera));
+    three_composer.addPass(new cleanRenderPass(tokenLayer, three_camera));
+    three_outlinePass_token = new OutlinePass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight), tokenLayer,
+      three_camera);
+    three_composer.addPass(three_outlinePass_token);
+    three_composer.addPass(new cleanRenderPass(guiLayer, three_camera));
+
+    three_outlinePass_tile.edgeStrenth = 4.79;
+    three_outlinePass_tile.edgeGlow = 4.698;
+    three_outlinePass_tile.edgeThickness = 3.72;
+    three_outlinePass_tile.pulsePeriod = 1.9;
+    three_outlinePass_tile.visibleEdgeColor.set('#ffffff');
+    three_outlinePass_token.hiddenEdgeColor.set('#190a05');
+    three_outlinePass_token.edgeStrenth = 4.79;
+    three_outlinePass_token.edgeGlow = 4.698;
+    three_outlinePass_token.edgeThickness = 1.72;
+    three_outlinePass_token.pulsePeriod = 2.9;
+    three_outlinePass_token.visibleEdgeColor.set('#ffffff');
+    three_outlinePass_token.hiddenEdgeColor.set('#190a05');
+
+    // const textureLoader = new THREE.TextureLoader();
+    const waterPass = new ShaderPass(waterShader);
+    three_composer.addPass(waterPass);
+
+
+
+    three_composer.addPass(new OutputPass());
+
+    // var three_effectFXAA = new ShaderPass(FXAAShader);
+    // three_effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1
+    // / window.innerHeight); three_composer.addPass(three_effectFXAA);
+  }
+
+  layers = {
+    tile: {
+      selectables:
+        [],  // for some reason I have both an array and map of this, maybe
+      // because I need array for THREE calls? TODO: investigate
+      selectablesMap: {},
+      protoSheetMap:
+        {},  // if the object has a sheet with  with a file name, this will be
+      // the file name, like PlayerOne. TODO: better name
+      layer: tileLayer,
+    },
+    token: {
+      selectables: [],
+      selectablesMap: {},
+      protoSheetMap: {},
+      layer: tokenLayer,
+    },
+    gui: {
+      selectables: [],
+      selectablesMap: {},
+      protoSheetMap: {},
+      layer: guiLayer,
+    },
+  };
+  ready = true;
+};
 // gets the layer associated with a key, logic here only needed because
 // default is tile
 function three_getLayer(n) {
@@ -739,6 +757,8 @@ async function three_setTileImage(tile, plane) {
   let textureScaleY = tile.scale.y;
   texture.colorSpace = THREE.SRGBColorSpace;
   // texture.magFilter = THREE.LinearFilter;
+  texture.anisotropy = 16;
+
   plane.baseScale =
     new THREE.Vector2(texture.image.width, texture.image.height);
   plane.material = material;
@@ -907,24 +927,46 @@ export async function three_updateTile(tile) {
   }
 }
 
+function resizeCanvasToDisplaySize(canvas) {
+  // Lookup the size the browser is displaying the canvas in CSS pixels.
+  const displayWidth = window.innerWidth;
+  const displayHeight = window.innerHeight - 50;
 
+  // Check if the canvas is not the same size.
+  const needResize = canvas.width !== displayWidth ||
+    canvas.height !== displayHeight;
+
+  if (needResize) {
+    // Make the canvas the same size 
+    canvas.width = displayWidth;
+    canvas.height = displayHeight;
+    three_setDimension();
+    console.log("Resized");
+  }
+
+  return needResize;
+}
 
 // main animation function for the game
 export function three_animate() {
   requestAnimationFrame(three_animate);
+  if (ready) {
 
-  theTime = Date.now() - origTime;
+    resizeCanvasToDisplaySize(three_canvas);
 
-  //waterTexture.update();
-  rings.update();
+    theTime = Date.now() - origTime;
 
-  for (const [key, cube] of Object.entries(three_mouseShapes)) {
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    //waterTexture.update();
+    rings.update();
+
+    for (const [key, cube] of Object.entries(three_mouseShapes)) {
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+    }
+    three_renderer.autoClear = true;
+
+    three_composer.render();
   }
-  three_renderer.autoClear = true;
-
-  three_composer.render();
 }
 
 let three_rayCaster = new THREE.Raycaster();
@@ -960,13 +1002,12 @@ var scrollButton = rightMouseButton;
 var popupButton = rightMouseButton;
 
 function GetDimensions() {
-  let canvas = three_renderer.domElement;
+  if (three_canvas.clientWidth == undefined) throw ("Err");
   return {
-    left: canvas.offsetLeft,
-    top: canvas.offsetTop,
-    width: canvas.width,
-    height: canvas.height,
-
+    left: 0,
+    top: 0,
+    width: three_canvas.clientWidth,
+    height: three_canvas.clientHeight
   };
 }
 function localSpace(x, y) {
@@ -1216,7 +1257,7 @@ export function three_mouseMove(event) {
   three_lastRawMouse = { x: event.clientX, y: event.clientY };
   three_lastMouse = newMouse;
 }
-three_renderer.domElement.onwheel = (event) => {
+three_canvas.onwheel = (event) => {
   let d = event.wheelDelta * 0.6;
   let wd = d * three_renderer_dimensions().aspect;
 
@@ -1229,7 +1270,7 @@ three_renderer.domElement.onwheel = (event) => {
   three_camera.updateProjectionMatrix();
 };
 
-three_renderer.domElement.onmouseup = (ev) => {
+three_canvas.onmouseup = (ev) => {
   pinger.mouseUp();
 };
 
@@ -1348,7 +1389,7 @@ export function set_three_camera_xy(msg) {
 
 export var pinger = new Pinger();
 
-three_renderer.domElement.ondblclick =
+three_canvas.ondblclick =
   (ev) => {
     ev.preventDefault();
     console.log('Double click');
@@ -1366,7 +1407,7 @@ three_renderer.domElement.ondblclick =
     }
   }
 
-three_renderer.domElement.oncontextmenu =
+three_canvas.oncontextmenu =
   function (event) {
     event.preventDefault();
     event.stopPropagation();
@@ -1379,7 +1420,7 @@ function getBoundaryForScaling(x) {
   return b;
 
 }
-three_renderer.domElement.onmousedown =
+three_canvas.onmousedown =
   function (event) {
     event.preventDefault();
     selection = [];
@@ -1612,7 +1653,7 @@ window.onmouseup = function (event) {
   setThingDragged(null);
 };
 
-dragDrop(three_renderer.domElement, {
+dragDrop(three_canvas, {
   onDrop: (files, pos, fileList, directories) => {
     console.log('Here are the dropped files', files)
     console.log('Dropped at coordinates', pos.x, pos.y)
@@ -1702,7 +1743,7 @@ function topTileZ() {
   return maxZ;
 }
 
-three_renderer.domElement.acceptDrag =
+three_canvas.acceptDrag =
   function (thingDragged, event) {
     if (thingDragged == undefined) {
       console.log("ERR");
