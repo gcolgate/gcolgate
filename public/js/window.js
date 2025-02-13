@@ -140,6 +140,7 @@ let ButtonTitles = {
     newPOI: "New New Doc",
     popout: "PopOut",
     up: "<---",
+    refresh: "refresh",
     newScene: "New Scene",
 };
 
@@ -161,6 +162,10 @@ function DoButton(id) {
             break;
         case "up": {
             GoUpOneDirectory("images");
+            break;
+        }
+        case "refresh": {
+            socket.emit('rereadgraphics');
             break;
         }
         case "newScene":
@@ -194,13 +199,15 @@ function CreateWindowTitle(w, windowName, Title, closes = true, has_popout = fal
     }
 
     if (newButton) {
-        let createButton = document.createElement("button");
-        createButton.textContent = ButtonTitles[newButton];
-        createButton.className = "blueButton";
-        createButton.onclick = function () {
-            DoButton(newButton);
-        };
-        title.appendChild(createButton);
+        for (let i = 0; i < newButton.length; i++) {
+            let createButton = document.createElement("button");
+            createButton.textContent = ButtonTitles[newButton[i]];
+            createButton.className = "blueButton";
+            createButton.onclick = function () {
+                DoButton(newButton[i]);
+            };
+            title.appendChild(createButton);
+        }
     }
     if (has_popout) {
         let createButton = document.createElement("button");

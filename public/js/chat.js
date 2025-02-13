@@ -9,7 +9,8 @@ var login;
 var savedChats = [];
 
 export function sendChat(msg) {
-
+    if(!msg.chat)
+        msg = {chat: msg};
     socket.emit('chat', msg);
      
 }
@@ -36,6 +37,7 @@ export function update_roll(change) {
     eval(change.change);
   
     d.innerHTML =  parseSheet(thing, "moveroll", null, owner, undefined);
+    dice_sound();
  
 
 }
@@ -92,6 +94,11 @@ export function showChatWindow(chatObject) {
 
 }
 
+export function dice_sound() {
+var audio = document.getElementById('dice_throw_mp3');
+    audio.play();
+}
+
 export async function addChat(chat) {
     const chat_window_name = "window_chat";
     let ul = document.getElementById(chat_window_name + "_list");
@@ -109,7 +116,7 @@ export async function addChat(chat) {
     
         let thing = rollMove; // do I need to register it? 
         text = parseSheet(thing, "moveroll", null, owner, undefined);
-    
+        dice_sound();
     
     }
     li.insertAdjacentHTML('beforeend', "<div class='chatsender' id='"+ chat.id +"'>" + chat.sender + "</div>" + text  );

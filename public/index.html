@@ -196,6 +196,13 @@ f
       width: 500px;
     }
 
+    .box {
+      background: #fff;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+
+    }
+
     .reset_top {
 
       /* Additional positioning, height, width, etc. */
@@ -1355,6 +1362,10 @@ f
       overflow: hidden;
     }
 
+    .wide {
+      width: 100%;
+    }
+
     .chatsender {
       color: #3d0dad;
       background-color: burlywood;
@@ -1369,12 +1380,19 @@ f
       color: black;
       background-color: white;
       border-style: outset;
+      border-bottom: #3d0dad groove;
+      border-top: #3d0dad groove;
       font-family: sans-serif;
       font-weight: Normal;
       font-size: 12px;
       text-align: left;
       text-decoration: none;
     }
+
+    .centertext {
+      text-align: center;
+    }
+
 
     .chatroll {
       font-style: bold;
@@ -1549,7 +1567,9 @@ f
 
 <body>
   <button class="module" id="Login">Login</button>
-  <button type="image" src="" id="avatar" alt="Avatar" width="100" height="100">
+  <audio id="dice_throw_mp3" src="./assets/diceThrow.mp3"></audio>
+  <!-- this can only be used for the most common audio that is always loaded -->
+  <button type=" image" src="" id="avatar" alt="Avatar" width="100" height="100">
     <script type="module" src="./js/main.js"></script>
     <button type="button" id="Scenes">Scenes </button>
     <button type="button" id="images">Images </button>

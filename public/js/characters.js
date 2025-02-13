@@ -2,6 +2,7 @@ import { createOrGetWindow, windowShowing, fetchRealWindow } from './window.js';
 import { dragDrop } from './drag.js';
 import { dragCareersAndItems, sumCareerFeats } from './ptba.js';
 import { socket } from './main.js';
+import { calculate } from './calculator.js';
 
 function SanitizeNonAlphanumeric(id) {
 
@@ -221,8 +222,8 @@ export async function ensureThingLoaded(thingName) {
 
 
     let thing = GetRegisteredThing(thingName);
-    if (thing === undefined) throw ("Could not load " + file);
     try {
+        if (thing === undefined) throw ("Could not load " + file);
         let promises = [];
         if (thing.items) {
             // promises.push(ensureSheetLoaded("itemSummary"));
@@ -317,7 +318,29 @@ function SanitizeText(x) {
     return JSON.stringify(x).slice(1, -1); // does not fix ' but fixes " so use " when building these
 }
 
+function SanitizeNum(x) {
+    return JSON.stringify(x).slice(1, -1); // does not fix ' but fixes " so use " when building these
+}
 
+function changeSheetNum(button) {
+
+    let id = button.dataset.thingid; // the window id is window_fullthingname
+    console.log(id);
+    if (!button.innterHTML) button.innterHTML = "0";
+    let clause = button.dataset.clause; // the window id is window_fullthingname
+    let evaluation = clause + ' = ' + calculate(button.innerHTML);
+    console.log(clause);
+    console.log(evaluation);
+
+    socket.emit('change', {
+        change: evaluation,
+        thing: id
+    })
+
+
+}
+MakeAvailableToParser('changeSheetNum', changeSheetNum);
+MakeAvailableToHtml('changeSheetNum', changeSheetNum);
 
 function changeSheet(button) {
     let id = button.dataset.thingid; // the window id is window_fullthingname
@@ -390,7 +413,6 @@ function DrawImageArray(dir, array, ext) {
     let s = "";
     for (let i = 0; i < array.length; i++) {
         s += ' <img src="' + dir + array[i] + ext + '" width="48" height="48")> </img>'
-
     }
     return s;
 
@@ -398,6 +420,14 @@ function DrawImageArray(dir, array, ext) {
 
 MakeAvailableToHtml('DrawImageArray', DrawImageArray);
 
+function HandleEnter(event, button) {
+    if (event.keyCode == 13) {
+        changeSheetNum(button);
+        event.stopPropagation();
+    }
+}
+
+MakeAvailableToHtml('HandleEnter', HandleEnter);
 
 export function Editable(thing, clause, className, listName) { // thing must be here because the eval might use it
     console.log("clause " + clause);
@@ -405,11 +435,34 @@ export function Editable(thing, clause, className, listName) { // thing must be 
 
     let id = thing.id;
 
+    if (className.includes("npcNum") || className.includes("numeric")) { // if numeric, don't allow bold, italic, etc.
+        if (listName != undefined) {
+            return '<div contenteditable="true" ' +
+                'tabindex="0" ' +
+                'onkeydown="htmlContext.HandleEnter(event,this)" ' +
+                'list="' + listName + '" class="' + className + '" ' +
+                'data-clause="' + clause + '"  data-thingid="' + id + '"' +
+                'onfocusout="htmlContext.changeSheetNum(this)">' + t + ' </div>';
+        }
+        return '<div contenteditable="true" ' +
+            'class="' + className + '" type="text" data-clause="' + clause + '"  data-thingid="' + id + '" ' +
+            'tabindex="0" onfocusout="htmlContext.changeSheetNum(this)" ' +
+            'onkeydown="htmlContext.HandleEnter(event,this)" >' + t + ' </div>';
+    }
+
+    // if (className.includes("npcNum") || className.includes("numeric")) { // if numeric, don't allow bold, italic, etc.
+    //     if (listName != undefined) {
+    //         return '<input list="' + listName + '" class="' + className + '" data-clause="' + clause + '"  data-thingid="' + id + '" value="' + t +
+    //             '" onchange="htmlContext.changeSheetNum(this)">';
+    //     }
+    //     return '<input class="' + className + '" type="text" data-clause="' + clause + '"  data-thingid="' + id + '" value="' + t +
+    //         '" onchange="htmlContext.changeSheetNum(this)">';
+    // }
     if (listName != undefined) {
         return '<div contenteditable list="' + listName + '" class="' + className + '" data-clause="' + clause + '"  data-thingid="' + id + ' onfocusout="htmlContext.changeSheet(this)">' + t + ' </div>';
-    } else
-        return '<div contenteditable class="' + className + '" type="text" data-clause="' + clause + '"  data-thingid="' + id +
-            '" onfocusout="htmlContext.changeSheet(this)">' + t + ' </div>';
+    }
+    return '<div contenteditable class="' + className + '" type="text" data-clause="' + clause + '"  data-thingid="' + id +
+        '" onfocusout="htmlContext.changeSheet(this)">' + t + ' </div>';
 }
 MakeAvailableToParser('Editable', Editable);
 

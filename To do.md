@@ -6,7 +6,8 @@ Conditions
 
 Editing map pain.
 
-1) Downloading new art to the server folders don't make the server aware of them unless you restart 
+1) Downloading new art to the server folders don't make the server aware of them unless you restart Cheat: added button to refresh for now
+
 5) Scaling is terribly implemented.  
         New method: when hovered, show 8 pins as new models
         the pin moves the coordinates so that the pin is in the new mouse point
@@ -18,6 +19,14 @@ Editing map pain.
 6) sheets should be able to scale themselves, perhaps based on content. So tooltip not edit should be skinnier
 
 7) make add POI go to grid boundaries
+
+content: fill out comments for all moves.
+Clean up spacing in move chat
+
+ Rollmove stat formatting and dice
+
+
+ exotic: 3d dice.
  
 Creating new: Players, documents, need to use the typed in name, not a random name, in the displays. File id should be an uuid not a random name
 
@@ -29,7 +38,7 @@ Resist damage needs to automatically include armor and have some degree of hit l
 Damage is now all over the map include MERP ideas... weapons include penetration, damage type, 
 Conditions referred to in Moves should be hoverable.
 spells need to provide ways to set damage
-Spell casting borked, make moves for every spell
+make moves for every spell
 
 
 pain POP-OUT:
@@ -97,8 +106,7 @@ Instances:
  
  
 Bug: Do we need selecting more than one in directory window  for nulti drag? Deprioritized 
-
-Bug: Popup windows on spell screen start open 
+ 
 
  
 Bug: Changes to inventory etc should be printed out to chat

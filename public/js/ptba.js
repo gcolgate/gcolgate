@@ -21,6 +21,7 @@ export const moves = {
         ],
         "action": "Stat",
         "tooltip": "Basic Stat Check",
+        "Comments": "Basaic Stat Check",
 
         "Critical": "You overkill. If this is a save, you avoid ill effect and possibly get some advantage ",
         "success": "You meet the challenge. If this is a save, avoid ill effct",
@@ -33,11 +34,12 @@ export const moves = {
         ],
         "action": "Scene",
         "tooltip": "Confront: Bravely confront someone to his face",
-        "Comments": "<ul>\
-        <li> &#x25BA;  Confronting your mother over whether you can stay out late, </li>\
-        <li> &#x25BA;  Challenging a troll at a bridge, </li>\
-        <li> &#x25BA;  Arguing with the King in his throne room, </li>\
-        <li> &#x25BA;  fighting a horde of guards to let the party escape where you don't play out the rounds </li></ul>",
+        "Comments": "Confront: Bravely confront someone to his face, like, \
+         &#x25BA;  Confronting your mother over whether you can stay out late, \
+        &#x25BA;  Challenging a troll at a bridge, \
+        &#x25BA;  Intimidating a bully, \
+        &#x25BA;  Arguing with the King in his throne room, \
+        &#x25BA;  fighting a horde of guards to let the party escape where you don't play out the rounds",
         "Critical": "You get your way, and things go your way ",
         "success": "You get your way",
         "mixed": "Inconclusive, or get your way but take some pain",
@@ -49,6 +51,7 @@ export const moves = {
         ],
         "action": "MaybeAction",
         "tooltip": "Control your horse. ",
+        "Comments": "When you try to control your horse when it is panicked or you want it to do something crazy",
         "Critical": "You control your mount, it is a free action",
         "success": "You control your mount",
         "mixed": "Your mount acts panicked or with another emotion, doing something you don't want it to, but you stay on, it takes your action",
@@ -72,10 +75,10 @@ export const moves = {
         ],
         "action": "MaybeAction",
         "tooltip": "Extinguish Fire:  When your friend is on fire",
-        "Comments": "<ul>\
-        <li> &#x25BA;  When your friend is on fire </li>\
-        <li> &#x25BA;  Note, doing things like jumping in a lake </li>\
-        <li> &#x25BA;  will not require a roll. </li></li></ul>",
+        "Comments": " \
+         &#x25BA;  When your friend is on fire \
+         &#x25BA;  Note, doing things like jumping in a lake \
+         &#x25BA;  will not require a roll. ",
         "Critical": "The fire is out, and it takes you no time",
         "success": 'You get the fire out, but <a href="#">choose 1\
                     <div class="tooltipcontainer">\
@@ -2174,6 +2177,42 @@ MakeAvailableToParser('changeChatSkill', changeChatSkill);
 MakeAvailableToHtml('changeChatSkill', changeChatSkill);
 
 
+
+
+function changeChatStat(id, stat, divElement) {
+    //let menu = document.getElementById(divElement);
+    //  menu.classList.remove("active")
+    console.log("Chaning stat to " + stat + "for id " + id);
+    socket.emit('change', {
+        change: "thing.stat = '" + stat + "'",
+        thing: id
+    })
+
+}
+MakeAvailableToParser('changeChatStat', changeChatStat);
+MakeAvailableToHtml('changeChatStat', changeChatStat);
+
+
+function ChooseStat(owner, id, divElement) {
+
+    let answer = "<ul class='popup-menu'>";
+    let quote = "'";
+    let comma = ",";
+    let stats = Object.keys(owner.stats);
+    for (let i = 0; i < stats.length; i++) {
+
+        answer += '<li onclick="changeChatStat('
+            + quote + id + quote + comma + quote + stats[i] + quote + comma + quote
+            + divElement + quote + ')">' + stats[i] + '</li>';
+
+
+    }
+    answer += '</ul>'
+    return answer;
+}
+MakeAvailableToParser('ChooseStat', ChooseStat);
+MakeAvailableToHtml('ChooseStat', ChooseStat);
+
 function ShowAllPlayerSkills(owner, id, divElement) {
 
     let answer = "<ul class='popup-menu'>";
@@ -2265,29 +2304,29 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
 MakeAvailableToParser("rollMoveStat", rollMoveStat);
 MakeAvailableToHtml("rollMoveStat", rollMoveStat);
 
-/// TODO rearrange data so this isn';t a seprate function
-function rollSpellMoveStat(ownerId, stat, mv, skill, advantage, spell_id, spell_node) {
-    let owner = GetRegisteredThing(ownerId);
-    let damage = []
-    let bonus = owner.stats[stat];
-    let spell = GetRegisteredThing(spell_id);
-    if (!spell) throw ("err");
-    // let mode = weapon.weapon_modes[weapon_mode];
-    // if (Expend(weapon_id, weapon_mode)) {
-    //     RedrawWindow(owner)
-    // }
-    socket.emit('roll', {
-        title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + spell.name + "</li></ul>",
-        style: "dual-move",
-        advantage: advantage,
-        roll: baseDice + signed(bonus),
-        damage: GetModifiedDamageString(spell),
-        damage_bonus: 0, //FindBestCareerNode(owner, mode)[0],
-        resultsTable: moves[mv]
-    });
+// /// TODO rearrange data so this isn';t a seprate function
+// function rollSpellMoveStat(ownerId, stat, mv, skill, advantage, spell_id, spell_node) {
+//     let owner = GetRegisteredThing(ownerId);
+//     let damage = []
+//     let bonus = owner.stats[stat];
+//     let spell = GetRegisteredThing(spell_id);
+//     if (!spell) throw ("err");
+//     // let mode = weapon.weapon_modes[weapon_mode];
+//     // if (Expend(weapon_id, weapon_mode)) {
+//     //     RedrawWindow(owner)
+//     // }
+//     socket.emit('roll', {
+//         title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + spell.name + "</li></ul>",
+//         style: "dual-move",
+//         advantage: advantage,
+//         roll: baseDice + signed(bonus),
+//         damage: GetModifiedDamageString(spell),
+//         damage_bonus: 0, //FindBestCareerNode(owner, mode)[0],
+//         resultsTable: moves[mv]
+//     });
 
 
-}
+// }
 
 
 function GetCareerLevel(owner, skill) {
@@ -2692,13 +2731,13 @@ function PTBAMoves(thing) {
 
 
                 answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
-                    key, thing.id, stat, key, skill, 1);
+                    moves[key].Comments, thing.id, stat, key, skill, 1);
 
                 answer += CreateRollMoveStatString("middleButton ",
                     key + "+ " + stat + "(" + thing.stats[stat] + ") " + skill + '(' + bonus[0] + ")",
-                    key, thing.id, stat, key, skill, 0);
+                    moves[key].Comments, thing.id, stat, key, skill, 0);
                 answer += CreateRollMoveStatString("redtintButton roundbutton ", '+',
-                    key, thing.id, stat, key, skill, -1);
+                    moves[key].Comments, thing.id, stat, key, skill, -1);
 
                 chkDiv('<a href="#"> Info  ' +
                     '<div class="tooltipcontainer">' +
@@ -2740,9 +2779,9 @@ function PTBADefenses(thing) {
 
     let bonus = FindBestCareerNode(thing, mv);
 
-    answer += CreateRollMoveStatString("greentintButton roundbutton", "+", "Dodge", thing.id, stat, mv, bonus[1], 1);
-    answer += CreateRollMoveStatString("middleButton", "+ ", "Dodge", thing.id, stat, mv, bonus[1], 0);
-    answer += CreateRollMoveStatString("redtintButton roundbutton", "-", "Dodge", thing.id, stat, mv, bonus[1], -1);
+    answer += CreateRollMoveStatString("greentintButton roundbutton", "+", moves[mv].Comments, thing.id, stat, mv, bonus[1], 1);
+    answer += CreateRollMoveStatString("middleButton", "+ ", moves[mv].Comments, thing.id, stat, mv, bonus[1], 0);
+    answer += CreateRollMoveStatString("redtintButton roundbutton", "-", moves[mv].Comments, thing.id, stat, mv, bonus[1], -1);
 
 
 
@@ -2858,7 +2897,7 @@ function SpellToolTip(thing, owner) {
     if (owner.openSpell == thing.name) {
         return '<div class = "tooltip_open" onmouseleave="hidebogusTooltip(this)">';
     }
-    return '<div class = "tooltip_open" onmouseleave="hidebogusTooltip(this)">';
+    return '<div class = "tooltip" onmouseleave="hidebogusTooltip(this)">';
 
 }
 MakeAvailableToParser('SpellToolTip', SpellToolTip);
@@ -3091,6 +3130,7 @@ MakeAvailableToHtml('resetManaButtons', resetManaButtons);
 
 
 function CastSpell(thingId, ownerId, advantage) {
+    ;
 
     let thing = GetRegisteredThing(thingId);
     let owner = GetRegisteredThing(ownerId);
@@ -3107,11 +3147,11 @@ function CastSpell(thingId, ownerId, advantage) {
             let stat;
             if (mv == "Attack") {
                 bonus = owner.stats.bravery;
-                stat = "Bravery";
+                stat = "bravery";
             }
             else {
                 bonus = owner.stats.cunning;
-                stat = "Cunning";
+                stat = "cunning";
             }
 
             rollMoveStat(ownerId, stat, mv, "", advantage,

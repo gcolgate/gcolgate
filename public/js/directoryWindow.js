@@ -17,12 +17,12 @@ export var folders = {
 };
 var dirWindowCustomization = {
     Compendium: { dimensions: [.2, .6, .2, .2] },
-    Party: { newButton: "newPlayer", dimensions: [.2, .6, .2, .2] },
+    Party: { newButton: ["newPlayer"], dimensions: [.2, .6, .2, .2] },
     //  Favorites: { dimensions: [.2, .6, .2, .2] },
     //    Uniques: { dimensions: [.2, .6, .2, .2] },
-    Scenes: { newButton: "newScene", dimensions: [.2, .6, .2, .2] },
-    Documents: { newButton: "newPOI", dimensions: [.2, .6, .2, .2] },
-    images: { newButton: "up", dimensions: [.6, .6, .2, .2], divHolder: "twocolumns" },
+    Scenes: { newButton: ["newScene"], dimensions: [.2, .6, .2, .2] },
+    Documents: { newButton: ["newPOI"], dimensions: [.2, .6, .2, .2] },
+    images: { newButton: ["up", "refresh"], dimensions: [.6, .6, .2, .2], divHolder: "twocolumns" },
 };
 export function GetMainDirectories() {
     GetDirectory('Compendium', true).then((c) => { folders.Compendium = c; });

@@ -840,7 +840,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('rereadgraphics', () => {
+        imageDirMap = {}
         recurseReadImageDir(path.join(__dirname, 'public', 'images'));
+        socket.emit('updateDir', { id: "images", folder: sheeter.folders["images"] });
     });
 
     socket.on('newPlayer', (msg) => {
