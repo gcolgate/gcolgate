@@ -1262,11 +1262,17 @@ MakeAvailableToParser('findInNamedArray', findInNamedArray);
 var missingImage = "images/questionMark.png";
 
 export function getAppearanceImage(thing, type) {
-    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
-    if (!answer) return missingImage;
-    answer = answer[type];
-    if (!answer) return missingImage;
-    return answer.image ? answer.image : missingImage;
+    try {
+        let answer = findInNamedArray(thing.appearance, thing.current_appearance);
+        if (!answer) return missingImage;
+        answer = answer[type];
+        if (!answer) return missingImage;
+        return answer.image ? answer.image : missingImage;
+    } catch {
+
+        return missingImage;
+
+    }
 }
 MakeAvailableToParser('getAppearanceImage', getAppearanceImage);
 
@@ -1280,12 +1286,15 @@ function setAppearanceColor(thingId, type) {
 MakeAvailableToHtml('setAppearanceColor', setAppearanceColor);
 
 export function getAppearanceTintForHTML(thing, type) {
-
-    let answer = findInNamedArray(thing.appearance, thing.current_appearance);
-    if (!answer) return '#ffffff';
-    answer = answer[type];
-    if (!answer) return '#ffffff';
-    return answer.color != undefined ? answer.color : '#ffffff';
+    try {
+        let answer = findInNamedArray(thing.appearance, thing.current_appearance);
+        if (!answer) return '#ffffff';
+        answer = answer[type];
+        if (!answer) return '#ffffff';
+        return answer.color != undefined ? answer.color : '#ffffff';
+    } catch {
+        return '#ffffff';
+    }
 }
 MakeAvailableToParser('getAppearanceTintForHTML', getAppearanceTintForHTML);
 
@@ -2360,6 +2369,14 @@ function GetStatBonus(owner, stat) {
 
 MakeAvailableToParser("GetStatBonus", GetStatBonus);
 
+function GetRollColor(thing, owner) {
+
+    return getRollAndRollResults(thing, owner).color;
+
+
+}
+MakeAvailableToParser("GetRollColor", GetRollColor);
+
 function getRollAndRollResults(thing, owner) {
 
     let index = 0;
@@ -2408,22 +2425,36 @@ function getRollAndRollResults(thing, owner) {
     result -= Number(thing.difficulty);
     results += " -" + thing.difficulty;
     let text = "";
-
-    if (natural == 2)
-        text = ("fail");
-    else if (natural == 20)
+    let color = 'black';
+    if (natural == 2) {
+        color = 'fumble';
+        text = ("fail")
+    } else if (natural == 20) {
+        color = 'crit';
         text = ("critical");
-    else if (result < 10)
+    }
+    else if (result < 10) {
+        color = 'fail';
         text = ("fail");
-    else if (result < 16)
+    }
+    else if (result < 16) {
+        color = 'mixed';
         text = ("mixed");
-    else if (result < 23)
+    }
+    else if (result < 23) {
+        color = 'success';
         text = ("success");
-    else
+    }
+    else if (isNaN(result)) {
+        color = 'fumble';
+        text = ("error");
+    } else {
         text = ("critical");
+        color = 'crit';
+    }
 
 
-    return { result: result, results: results, natural: natural, category: text }
+    return { result: result, results: results, natural: natural, category: text, color: color }
 
 }
 

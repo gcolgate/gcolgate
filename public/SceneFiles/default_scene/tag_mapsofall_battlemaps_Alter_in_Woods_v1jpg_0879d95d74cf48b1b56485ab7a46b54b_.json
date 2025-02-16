@@ -1,1 +1,22 @@
-{"x":749.185647830273,"y":-177.0171428555182,"z":3.00001,"guiLayer":"tile","sheet":{"name":"/images/mapsofall/battlemaps/Alter in Woods v1.jpg","image":"/images/mapsofall/battlemaps/Alter in Woods v1.jpg","type":"tile","windowId":"images"},"texture":"mapsofall/battlemaps/Alter in Woods v1.jpg","scale":{"x":2236.9440205799287,"y":1624.6265925427367,"z":1},"tile_id":"tag_mapsofall_battlemaps_Alter_in_Woods_v1jpg_0879d95d74cf48b1b56485ab7a46b54b_.json","tile_json":"SceneFiles/default_scene/tag_mapsofall_battlemaps_Alter_in_Woods_v1jpg_0879d95d74cf48b1b56485ab7a46b54b_.json"}
+{
+    "x": 749.185647830273,
+    "y": -177.0171428555182,
+    "z": 0.00003,
+    "sort": -1,
+    "guiLayer": "tile",
+    "sheet": {
+        "name": "/images/mapsofall/battlemaps/Alter in Woods v1.jpg",
+        "image": "/images/mapsofall/battlemaps/Alter in Woods v1.jpg",
+        "type": "tile",
+        "windowId": "images"
+    },
+    "texture": "mapsofall/battlemaps/Alter in Woods v1.jpg",
+    "scale": {
+        "x": 2236.9440205799287,
+        "y": 1624.6265925427367,
+        "z": 1
+    },
+    "flat": 1,
+    "tile_id": "tag_mapsofall_battlemaps_Alter_in_Woods_v1jpg_0879d95d74cf48b1b56485ab7a46b54b_.json",
+    "tile_json": "SceneFiles/default_scene/tag_mapsofall_battlemaps_Alter_in_Woods_v1jpg_0879d95d74cf48b1b56485ab7a46b54b_.json"
+}

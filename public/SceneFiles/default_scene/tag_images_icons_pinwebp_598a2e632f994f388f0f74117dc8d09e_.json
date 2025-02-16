@@ -1,0 +1,32 @@
+{
+    "x": 436.2303397477298,
+    "y": 204.60987379998411,
+    "z": 0.0000012,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "Sane",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Sane",
+        "page": "Document",
+        "source": "",
+        "name": "Sane",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 238.80561479220268,
+        "y": 112.5344978165939,
+        "z": 1
+    },
+    "tile_id": "tag_images_icons_pinwebp_598a2e632f994f388f0f74117dc8d09e_.json",
+    "tile_json": "SceneFiles\\default_scene\\tag_images_icons_pinwebp_598a2e632f994f388f0f74117dc8d09e_.json",
+    "reference": {
+        "type": "",
+        "id": "Sane",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Sane",
+        "page": "Document",
+        "source": "",
+        "name": "Sane",
+        "img": "images/icons/pin.webp"
+    }
+}

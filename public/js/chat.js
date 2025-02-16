@@ -68,7 +68,7 @@ export function showChatWindow(chatObject) {
 
     for (let i = 0; i < array.length; i++) {
         console.log(array[i].time)
-        addChat(array[i]);
+        addChat(array[i],false);
     }
     var footer = document.createElement("footer");
     var chatInput = document.createElement("input");
@@ -99,7 +99,7 @@ var audio = document.getElementById('dice_throw_mp3');
     audio.play();
 }
 
-export async function addChat(chat) {
+export async function addChat(chat,audible) {
     const chat_window_name = "window_chat";
     let ul = document.getElementById(chat_window_name + "_list");
 
@@ -116,7 +116,7 @@ export async function addChat(chat) {
     
         let thing = rollMove; // do I need to register it? 
         text = parseSheet(thing, "moveroll", null, owner, undefined);
-        dice_sound();
+        if(audible) dice_sound();
     
     }
     li.insertAdjacentHTML('beforeend', "<div class='chatsender' id='"+ chat.id +"'>" + chat.sender + "</div>" + text  );

@@ -1,0 +1,20 @@
+{
+    "x": -764.5025615241907,
+    "y": 22.678097982708906,
+    "guiLayer": "tile",
+    "sheet": {
+        "name": "/images/girls/1.png",
+        "img": "/images/girls/1.png",
+        "type": "tile",
+        "windowId": "images"
+    },
+    "texture": "girls/1.png",
+    "scale": {
+        "x": 490.22695362381995,
+        "y": 642.6622478386157,
+        "z": 1
+    },
+    "z": 0.00001,
+    "tile_id": "tag_girls_1png_311a6e9f721a43418c17bb470199388f_.json",
+    "tile_json": "SceneFiles\\default_scene\\tag_girls_1png_311a6e9f721a43418c17bb470199388f_.json"
+}

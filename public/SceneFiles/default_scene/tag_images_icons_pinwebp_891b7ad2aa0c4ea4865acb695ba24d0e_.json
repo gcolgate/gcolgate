@@ -1,0 +1,24 @@
+{
+    "x": -840.3268630075859,
+    "y": -208.8089005235602,
+    "z": 0.00002,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "izashan",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/izashan",
+        "page": "Document",
+        "source": "",
+        "name": "izashan",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+    },
+    "tile_id": "images_icons_pinwebp_891b7ad2aa0c4ea4865acb695ba24d0e",
+    "tile_json": "SceneFiles\\default_scene\\tag_images_icons_pinwebp_891b7ad2aa0c4ea4865acb695ba24d0e_.json",
+    "reference": "InScene"
+}

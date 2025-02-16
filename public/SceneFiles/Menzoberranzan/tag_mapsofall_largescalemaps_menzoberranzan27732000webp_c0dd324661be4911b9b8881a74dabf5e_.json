@@ -1,0 +1,21 @@
+{
+    "x": -1524.1108997509446,
+    "y": 4296.129664649594,
+    "sort": -1,
+    "guiLayer": "tile",
+    "sheet": {
+        "name": "/images/mapsofall/largescalemaps/menzoberranzan-2773-2000.webp",
+        "img": "/images/mapsofall/largescalemaps/menzoberranzan-2773-2000.webp",
+        "type": "tile",
+        "windowId": "images"
+    },
+    "texture": "mapsofall/largescalemaps/menzoberranzan-2773-2000.webp",
+    "scale": {
+        "x": 13866.2316,
+        "y": 10000,
+        "z": 1
+    },
+    "z": 0.00002,
+    "tile_id": "tag_mapsofall_largescalemaps_menzoberranzan27732000webp_c0dd324661be4911b9b8881a74dabf5e_.json",
+    "tile_json": "SceneFiles\\Menzoberranzan\\tag_mapsofall_largescalemaps_menzoberranzan27732000webp_c0dd324661be4911b9b8881a74dabf5e_.json"
+}

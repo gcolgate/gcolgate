@@ -8,6 +8,13 @@ Editing map pain.
 
 1) Downloading new art to the server folders don't make the server aware of them unless you restart Cheat: added button to refresh for now
 
+2) make all tiles at same Z be sorted, add widget to sort them. Cease using Z for this alone
+so they can be at the same Z.. added sort order, need to add widget
+
+3) Threed scroll is hacky but no longer flaky, deprioritized
+
+4) setting +z and -z buttons are broken due to mouseclicks beind disable. UI issue since the + and - buttons are in the way a lot
+
 5) Scaling is terribly implemented.  
         New method: when hovered, show 8 pins as new models
         the pin moves the coordinates so that the pin is in the new mouse point
@@ -19,6 +26,8 @@ Editing map pain.
 6) sheets should be able to scale themselves, perhaps based on content. So tooltip not edit should be skinnier
 
 7) make add POI go to grid boundaries
+
+8) destroying items from scenes leaves stuff behind in the directories
 
 content: fill out comments for all moves.
 Clean up spacing in move chat

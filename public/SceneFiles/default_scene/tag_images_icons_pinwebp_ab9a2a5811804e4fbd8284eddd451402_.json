@@ -1,0 +1,32 @@
+{
+    "x": 430.0728804132609,
+    "y": 57.88462174704203,
+    "z": 0.000001,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "ilenor",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/ilenor",
+        "page": "Document",
+        "source": "",
+        "name": "ilenor",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+    },
+    "tile_id": "images_icons_pinwebp_ab9a2a5811804e4fbd8284eddd451402",
+    "tile_json": "SceneFiles\\default_scene\\tag_images_icons_pinwebp_ab9a2a5811804e4fbd8284eddd451402_.json",
+    "reference": {
+        "type": "",
+        "id": "ilenor",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/ilenor",
+        "page": "Document",
+        "source": "",
+        "name": "ilenor",
+        "img": "images/icons/pin.webp"
+    }
+}

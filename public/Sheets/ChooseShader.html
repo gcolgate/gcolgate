@@ -1,0 +1,10 @@
+<div class="inline">
+    Stat: <a href="#"> { thing.shader }
+        <span class="bold"> { thing.shader ? thing.shader : "Normal" } </span>
+        <div class="tooltipcontainer">
+            <div class=" tooltip reset_top" id="chooseShaderMenu{thing.id}">
+                {htmlContext.Choose2DSHader(owner, thing.id, "chooseShaderMenu"+thing.id)}
+            </div>
+        </div>
+    </a>
+</div>

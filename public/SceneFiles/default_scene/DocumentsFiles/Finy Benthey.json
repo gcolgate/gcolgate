@@ -1,0 +1,21 @@
+{
+    "type": "poi",
+    "id": "FinyBenthey",
+    "name": "Finy Benthey",
+    "text": "",
+    "tooltip": "",
+    "tooltip_html": "",
+    "hud": "tooltip_hud",
+    "appearance": [
+        {
+            "name": "normal",
+            "portrait": {
+                "image": "images/princess.jpg"
+            },
+            "token": {
+                "image": "images/spells/hexes.jfif"
+            }
+        }
+    ],
+    "current_appearance": "normal"
+}

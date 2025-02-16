@@ -1,0 +1,14 @@
+{
+    "Normal": {
+        "vertex_shader": "",
+        "texture_shader": "",
+        "uniforms": []
+    },
+    "Fireball": {
+        "vertex_shader": "Shaders/base_effect_vertex.glsl",
+        "fragment_shader": "Shaders/fireball.glsl",
+        "uniforms": {
+            "uTime": "Number"
+        }
+    }
+}

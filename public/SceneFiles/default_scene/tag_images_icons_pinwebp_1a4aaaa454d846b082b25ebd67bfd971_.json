@@ -1,0 +1,32 @@
+{
+    "x": -738.0963084065883,
+    "y": 26.606190020551963,
+    "z": 0.0000012,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "ephevia",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/ephevia",
+        "page": "Document",
+        "source": "",
+        "name": "ephevia",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 131.96278960084373,
+        "y": 223.0639769452449,
+        "z": 1
+    },
+    "tile_id": "tag_images_icons_pinwebp_1a4aaaa454d846b082b25ebd67bfd971_.json",
+    "tile_json": "SceneFiles\\default_scene\\tag_images_icons_pinwebp_1a4aaaa454d846b082b25ebd67bfd971_.json",
+    "reference": {
+        "type": "",
+        "id": "ephevia",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/ephevia",
+        "page": "Document",
+        "source": "",
+        "name": "ephevia",
+        "img": "images/icons/pin.webp"
+    }
+}

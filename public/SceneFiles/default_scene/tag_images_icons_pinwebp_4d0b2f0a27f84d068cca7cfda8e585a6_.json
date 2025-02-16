@@ -1,0 +1,32 @@
+{
+    "x": 237.2739322533137,
+    "y": 60.57625899280575,
+    "z": 0.0000012,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "Beatrey",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Beatrey",
+        "page": "Document",
+        "source": "",
+        "name": "Beatrey",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+    },
+    "tile_id": "images_icons_pinwebp_4d0b2f0a27f84d068cca7cfda8e585a6",
+    "tile_json": "SceneFiles\\default_scene\\tag_images_icons_pinwebp_4d0b2f0a27f84d068cca7cfda8e585a6_.json",
+    "reference": {
+        "type": "",
+        "id": "Beatrey",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Beatrey",
+        "page": "Document",
+        "source": "",
+        "name": "Beatrey",
+        "img": "images/icons/pin.webp"
+    }
+}

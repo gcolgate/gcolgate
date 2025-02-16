@@ -1,0 +1,32 @@
+{
+    "x": 292.8955954702596,
+    "y": 134.47758559191044,
+    "z": 0.0000012,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "HeribRowich",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Herib Rowich",
+        "page": "Document",
+        "source": "",
+        "name": "Herib Rowich",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 87.5582592136117,
+        "y": 100,
+        "z": 1
+    },
+    "tile_id": "tag_images_icons_pinwebp_cc1a3d2369db482c80d982e6c616d0eb_.json",
+    "tile_json": "SceneFiles\\default_scene\\tag_images_icons_pinwebp_cc1a3d2369db482c80d982e6c616d0eb_.json",
+    "reference": {
+        "type": "",
+        "id": "HeribRowich",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Herib Rowich",
+        "page": "Document",
+        "source": "",
+        "name": "Herib Rowich",
+        "img": "images/icons/pin.webp"
+    }
+}

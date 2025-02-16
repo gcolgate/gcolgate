@@ -24,7 +24,11 @@ var grid;
 var hexgrid;
 let kGridSize = 100;
 var three_scaling_factor = 0;
-let kWidthHeightOffsetTimesTwo = 32; // 2x the margins from the window to the canvas
+const kWidthHeightOffsetTimesTwo = 32; // 2x the margins from the window to the canvas
+const kThreeFarClippingPlane = 10000;
+const kThreeNearClippingPlane = 0.1;
+var perspectiveCameraScrollMultiplier = 0;
+var scroll_last_client = {};
 class InfiniteGrid extends THREE.Mesh {
   constructor(size1, size2, color, opacity, distance, axes = 'xyz') {
     color = color || new THREE.Color('white');
@@ -490,6 +494,8 @@ export var three_mouseShapes = {}
 var three_outlinePass_tile;
 var three_outlinePass_token;
 var three_composer;
+var three_d = true;
+var portraits = false;
 
 const mouse_geometry = new THREE.BoxGeometry(10, 10, 10);
 const mouse_material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -504,6 +510,83 @@ var materials = {};
 
 var layers = {};
 
+function resetCamera() {
+  var rendererSize = three_renderer_dimensions();
+
+  if (!three_d) {
+    three_camera = new THREE.OrthographicCamera(
+      rendererSize.width / -2, rendererSize.width / 2, rendererSize.height / 2,
+      rendererSize.height / -2, -10, kThreeFarClippingPlane);
+    three_camera.position.x = 0;
+    three_camera.position.z = 1000;
+    three_camera.position.y = 0;
+  } else {
+
+    three_camera = new THREE.PerspectiveCamera(
+      45, rendererSize.width / rendererSize.height, kThreeNearClippingPlane, kThreeFarClippingPlane);
+    three_camera.position.z = 1000;
+
+    three_camera.position.x = 0;
+    three_camera.position.z = 1000;
+    three_camera.position.y = 0;
+
+    three_camera.lookAt(0, 400, -10);
+
+  }
+
+
+}
+
+function setUpComposers() {
+
+
+  // postprocessing
+
+  three_composer = new EffectComposer(three_renderer);
+
+  three_composer.addPass(new firstRenderPass(backgroundLayer, three_camera));
+  three_composer.addPass(new cleanRenderPass(tileLayer, three_camera));
+  three_outlinePass_tile = new OutlinePass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight), tileLayer,
+    three_camera);
+  three_composer.addPass(three_outlinePass_tile);
+
+
+  three_composer.addPass(new cleanRenderPass(gridLayer, three_camera));
+  three_composer.addPass(new cleanRenderPass(tokenLayer, three_camera));
+  three_outlinePass_token = new OutlinePass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight), tokenLayer,
+    three_camera);
+  three_composer.addPass(three_outlinePass_token);
+  three_composer.addPass(new cleanRenderPass(guiLayer, three_camera));
+
+  three_outlinePass_tile.edgeStrenth = 4.79;
+  three_outlinePass_tile.edgeGlow = 4.698;
+  three_outlinePass_tile.edgeThickness = 3.72;
+  three_outlinePass_tile.pulsePeriod = 1.9;
+  three_outlinePass_tile.visibleEdgeColor.set('#ffffff');
+  three_outlinePass_token.hiddenEdgeColor.set('#190a05');
+  three_outlinePass_token.edgeStrenth = 4.79;
+  three_outlinePass_token.edgeGlow = 4.698;
+  three_outlinePass_token.edgeThickness = 1.72;
+  three_outlinePass_token.pulsePeriod = 2.9;
+  three_outlinePass_token.visibleEdgeColor.set('#ffffff');
+  three_outlinePass_token.hiddenEdgeColor.set('#190a05');
+
+  // const textureLoader = new THREE.TextureLoader();
+  const waterPass = new ShaderPass(waterShader);
+  three_composer.addPass(waterPass);
+
+
+
+  three_composer.addPass(new OutputPass());
+
+  // var three_effectFXAA = new ShaderPass(FXAAShader);
+  // three_effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1
+  // / window.innerHeight); three_composer.addPass(three_effectFXAA);
+
+}
+
 window.onload = function () {
   three_renderer = new THREE.WebGLRenderer({ canvas: three_canvas });
 
@@ -515,70 +598,20 @@ window.onload = function () {
   three_renderer.setSize(rendererSize.width, rendererSize.height, true);
   //document.body.appendChild(three_renderer.domElement);
   //three_canvas.style.resize = 'both';
-
-  three_camera = new THREE.OrthographicCamera(
-    rendererSize.width / -2, rendererSize.width / 2, rendererSize.height / 2,
-    rendererSize.height / -2, -10, 1000);
-
+  resetCamera();
 
 
   three_canvas.acceptsDropFile = true;
 
-  three_camera.position.z = 1000;
 
   //three_window_sizer_watcher(three_renderer, three_camera);
 
   current_scene = {
     name: '',
-    type: '2d',  // types are 2d, theatre_of_the_mind, 3d
+
   }
 
-
-  // postprocessing
-  {
-    three_composer = new EffectComposer(three_renderer);
-
-    three_composer.addPass(new firstRenderPass(backgroundLayer, three_camera));
-    three_composer.addPass(new cleanRenderPass(tileLayer, three_camera));
-    three_outlinePass_tile = new OutlinePass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight), tileLayer,
-      three_camera);
-    three_composer.addPass(three_outlinePass_tile);
-
-
-    three_composer.addPass(new cleanRenderPass(gridLayer, three_camera));
-    three_composer.addPass(new cleanRenderPass(tokenLayer, three_camera));
-    three_outlinePass_token = new OutlinePass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight), tokenLayer,
-      three_camera);
-    three_composer.addPass(three_outlinePass_token);
-    three_composer.addPass(new cleanRenderPass(guiLayer, three_camera));
-
-    three_outlinePass_tile.edgeStrenth = 4.79;
-    three_outlinePass_tile.edgeGlow = 4.698;
-    three_outlinePass_tile.edgeThickness = 3.72;
-    three_outlinePass_tile.pulsePeriod = 1.9;
-    three_outlinePass_tile.visibleEdgeColor.set('#ffffff');
-    three_outlinePass_token.hiddenEdgeColor.set('#190a05');
-    three_outlinePass_token.edgeStrenth = 4.79;
-    three_outlinePass_token.edgeGlow = 4.698;
-    three_outlinePass_token.edgeThickness = 1.72;
-    three_outlinePass_token.pulsePeriod = 2.9;
-    three_outlinePass_token.visibleEdgeColor.set('#ffffff');
-    three_outlinePass_token.hiddenEdgeColor.set('#190a05');
-
-    // const textureLoader = new THREE.TextureLoader();
-    const waterPass = new ShaderPass(waterShader);
-    three_composer.addPass(waterPass);
-
-
-
-    three_composer.addPass(new OutputPass());
-
-    // var three_effectFXAA = new ShaderPass(FXAAShader);
-    // three_effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1
-    // / window.innerHeight); three_composer.addPass(three_effectFXAA);
-  }
+  setUpComposers();
 
   layers = {
     tile: {
@@ -652,7 +685,7 @@ function HtmlHEXToThreeJsColor(rrggbb) {
   return parseInt(rrggbb.substr(1), 16);
 }
 
-async function three_setTileImage(tile, plane) {
+async function three_setTileImage(tile, plane, noz) {
   if (tile.texture == undefined) {
     console.log('Error Bad texture for %o', tile);
     return;
@@ -752,6 +785,10 @@ async function three_setTileImage(tile, plane) {
       this.color.set(0xffffff);
     }.bind(material);;
 
+    if (noz) {
+      material.depthWrite = false;
+    }
+
   }
   let textureScaleX = tile.scale.x;
   let textureScaleY = tile.scale.y;
@@ -798,12 +835,16 @@ async function three_setTileImage(tile, plane) {
 function FinishSetTile(tile, material) {
   const plane = new THREE.Mesh(plane_geometry, material);
 
-
   plane.position.x = tile.x;
   plane.position.y = tile.y;
   plane.position.z = tile.z;
   plane.reference = tile;
+  plane.renderOrder = tile.sort ? tile.sort : 0;
 
+  if (!tile.flat && three_d && tile.guiLayer != "tile") {
+    // plane.setRotationFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+    //  plane.position.z += tile.scale.y / 2;
+  }
 
   let layer = three_getLayer(tile.guiLayer);
   layer.layer.add(plane);
@@ -818,7 +859,7 @@ function FinishSetTile(tile, material) {
   }
 
   plane.tile = tile;
-  three_setTileImage(tile, plane);
+  three_setTileImage(tile, plane, tile.guiLayer == "tile");
 }
 
 export async function three_addTile(tile) {
@@ -857,10 +898,9 @@ function clearThree(obj) {
 
 
 
-export function three_replaceScene(sceneName, sceneType, c, cameraPos) {
+export async function three_replaceScene(sceneName, c, cameraPos) {
   current_scene.name = sceneName;
-  current_scene.type = sceneType;
-
+  current_scene.settings = await ensureThingLoaded("Scenes/tag_" + current_scene.name + ".json");
   Object.keys(layers).forEach((item) => {
     layers[item].selectables = [];
     layers[item].selectablesMap = {};
@@ -871,7 +911,19 @@ export function three_replaceScene(sceneName, sceneType, c, cameraPos) {
     clearThree(three_scenes[i]);
   }
 
+  switch (current_scene.settings.view) {
 
+    case "topdown":
+    case "portraits":
+      three_d = false;
+      break;
+    case "threeD":
+      three_d = true;
+
+  }
+
+  resetCamera();
+  setUpComposers();
 
   hexgrid = new InfiniteHexGrid(kGridSize, kGridSize);
   gridLayer.add(hexgrid);
@@ -972,7 +1024,7 @@ export function three_animate() {
 let three_rayCaster = new THREE.Raycaster();
 let three_lastMouse = null;
 let three_lastRawMouse = null;
-
+var three_lastRawMouseInWorld = null;
 // change these when window size changes, for mouse calculations
 let multiplier =
   new THREE.Vector2(2 / window.innerWidth, 2 / window.innerHeight);
@@ -1001,6 +1053,8 @@ var mainButton = leftMouseButton;
 var scrollButton = rightMouseButton;
 var popupButton = rightMouseButton;
 
+var stillScrolling = false;
+
 function GetDimensions() {
   if (three_canvas.clientWidth == undefined) throw ("Err");
   return {
@@ -1010,33 +1064,38 @@ function GetDimensions() {
     height: three_canvas.clientHeight
   };
 }
-function localSpace(x, y) {
+function normalizedDeviceCoordinates(x, y) {
 
   let dim = GetDimensions()
   x -= dim.left;
   y -= dim.top;
-
+  // pick z halfway to clipping
   return new THREE.Vector3(
-    (x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.5);
+    (x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1, 0.9999);
 }
-
+var dbueg_ = false;
 function three_xyinMouseToWorld(x, y) {
 
-
-  let vec = localSpace(x, y);
+  if (dbueg_) console.log("x y " + x + " " + y);
+  let vec = normalizedDeviceCoordinates(x, y);
+  if (dbueg_) console.log("normalizedDeviceCoordinates" + vec.x + " " + vec.y + " " + vec.z);
   // (x / dim.width) * 2 - 1, -(y / dim.height) * 2 + 1, 0.5);
   vec.unproject(three_camera);
-  if (!three_camera.isOrthographicCamera) {
+  if (!three_camera.isOrthographicCamera && false) {
     // point where z is zero
     vec.sub(three_camera.position).normalize();
-
+    if (dbueg_) console.log("camera %o", three_camera.position);
+    if (dbueg_) console.log("norm %o", vec);
+    // as we don;t change the camera angle or height of the camera, hold the distance constant
+    //as the three.js math seems to be subject to floatin gpoint error 
     let distance = -three_camera.position.z / vec.z;
+    if (dbueg_) console.log("distance " + distance + " " + vec.z);
     let pos = new THREE.Vector3();
     pos.copy(three_camera.position).add(vec.multiplyScalar(distance));
     return pos;
   }
 
-
+  dbueg_ = false;
   return vec;
 }
 
@@ -1134,6 +1193,7 @@ export function three_mouseMove(event) {
   if (mouseMode == 'scrolling') {
     console.log('Scroll');
     if (!mouseButtonsDown[scrollButton]) {
+      stillScrolling = false;
       mouseMode = 'none';
       return;
     }
@@ -1188,25 +1248,58 @@ export function three_mouseMove(event) {
     }
   }
   if (mouseButtonsDown[scrollButton] && !event.shiftKey) {
-    // if (three_camera.isOrthographicCamera) {
-    console.log('Scroll');
-    let dim = three_renderer_dimensions()
 
-    let zoomMulipleX = three_camera.right / (dim.width / 2);
-    //     let zoomMulipleY = three_camera.top / (dim.width/2);
-    three_camera.position.x -=
-      (event.clientX - three_lastRawMouse.x) * zoomMulipleX;
-    three_camera.position.y +=
-      (event.clientY - three_lastRawMouse.y) * zoomMulipleX;
 
-    //    console.log(event.timeStamp, "x " + (newMouse.x - three_lastMouse.x) +
-    //    " y " + (newMouse.y - three_lastMouse.y));
+    if (!stillScrolling && three_d) {
+      // scrolling in 3d is a hack because I don't want to change the camera used
+      // for scrolling calcuations as the camera scrolls
+      // It will not work if the camera is allowed to rotate but could be easily fixed
+      // Note that the scrolling is too fast when zoomed, and too slow when zoomed out
+      // which should be looked into
+      // Right here we use the camera at the start of the scrolling to calculate the scrolling
+      // from then on.
+      var rawMouse = three_xyinMouseToWorld(event.clientX, event.clientY);
+
+      let plusX = three_xyinMouseToWorld(event.clientX + 1, event.clientY);
+
+      plusX.sub(rawMouse);
+      perspectiveCameraScrollMultiplier = plusX.length();
+
+      scroll_last_client = { x: event.clientX, y: event.clientY };
+      stillScrolling = true;
+      return;
+    }
+    dbueg_ = true
+    if (!three_d) {
+      let dim = three_renderer_dimensions()
+
+      let zoomMulipleX = three_camera.right / (dim.width / 2);
+      //     let zoomMulipleY = three_camera.top / (dim.width/2);
+      three_camera.position.x -=
+        (event.clientX - three_lastRawMouse.x) * zoomMulipleX;
+      three_camera.position.y +=
+        (event.clientY - three_lastRawMouse.y) * zoomMulipleX;
+    } else {
+      // sometimes the reported mouse position seems to jump a long distance
+      // on the first frame of scrolling, this distance check hacks around that
+      // by ignoring the first frame of scrolling when it is huge
+      if (Math.abs(event.clientX - scroll_last_client.x) < 50 &&
+        Math.abs(event.clientY - scroll_last_client.y) < 50) {
+
+        // this doesn't obey camera rotation, will need to be fixed if we ever have that feature
+        three_camera.position.x -= perspectiveCameraScrollMultiplier * (event.clientX - scroll_last_client.x);
+        three_camera.position.y += perspectiveCameraScrollMultiplier * (event.clientY - scroll_last_client.y);
+      }
+      scroll_last_client.x = event.clientX;
+      scroll_last_client.y = event.clientY;
+
+    }
   } else if (!mouseButtonsDown[mainButton]) {
 
     //    let pointer = new THREE.Vector2(
     //   (event.clientX / window.innerWidth) * 2 - 1,
     //   -(event.clientY / window.innerHeight) * 2 + 1);
-    let pointer = localSpace(event.clientX, event.clientY);
+    let pointer = normalizedDeviceCoordinates(event.clientX, event.clientY);
 
     three_rayCaster.setFromCamera(pointer, three_camera);
     // if ortho
@@ -1255,17 +1348,27 @@ export function three_mouseMove(event) {
   }
 
   three_lastRawMouse = { x: event.clientX, y: event.clientY };
+
   three_lastMouse = newMouse;
 }
 three_canvas.onwheel = (event) => {
   let d = event.wheelDelta * 0.6;
-  let wd = d * three_renderer_dimensions().aspect;
 
-  three_scaling_factor += d;
-  three_camera.left += wd;
-  three_camera.right -= wd;
-  three_camera.top -= d;
-  three_camera.bottom += d
+  if (!three_d) {
+    let wd = d * three_renderer_dimensions().aspect;
+    three_scaling_factor += d;
+    three_camera.left += wd;
+    three_camera.right -= wd;
+    three_camera.top -= d;
+    three_camera.bottom += d
+  } else {
+    three_camera.fov -= d / 50;
+    if (three_camera.fov < 0.1)
+      three_camera.fov = 0.1;
+    if (three_camera.fov > 170)
+      three_camera.fov = 170;
+
+  }
 
   three_camera.updateProjectionMatrix();
 };
@@ -1276,7 +1379,7 @@ three_canvas.onmouseup = (ev) => {
 
 function three_intersect(ev) {
 
-  // let pointer = new localSpace(ev.clientX, ev.clientY);
+  // let pointer = new normalizedDeviceCoordinates(ev.clientX, ev.clientY);
 
   let intersects = three_rayCaster.intersectObjects(layers.token.selectables);
   if (intersects.length > 0) {
@@ -1394,7 +1497,7 @@ three_canvas.ondblclick =
     ev.preventDefault();
     console.log('Double click');
     three_lastMouse = three_mousePositionToWorldPosition(ev);
-    let pointer = localSpace(ev.clientX, ev.clientY);
+    let pointer = normalizedDeviceCoordinates(ev.clientX, ev.clientY);
 
     three_rayCaster.setFromCamera(pointer, three_camera);
 
@@ -1424,7 +1527,7 @@ three_canvas.onmousedown =
   function (event) {
     event.preventDefault();
     selection = [];
-    let pointer = localSpace(event.clientX, event.clientY);
+    let pointer = normalizedDeviceCoordinates(event.clientX, event.clientY);
 
 
     mouseButtonsDown[event.button] = true;
@@ -1567,7 +1670,7 @@ export function three_updateAllUsingProto(id) {
       for (let i = 0; i < array.length; i++) {
         let plane = array[i];
         let tile = plane.reference;
-        three_setTileImage(tile, plane);
+        three_setTileImage(tile, plane, tile.guiLayer == "tile");
       }
     }
   });
@@ -1589,10 +1692,10 @@ async function GetImageFor(thing) {
   let name = thing.file;
 
   console.log('Current scene', current_scene);
-  console.log('Current scene t' + current_scene.type);
+  console.log('Current scene t' + current_scene.settings.view);
 
-  switch (current_scene.type) {
-    case '2d': {
+  switch (current_scene.settings.view) {
+    case 'topdown': case 'threeD': {
       let t = await ensureThingLoaded(name, '');
       if (t.prototypeToken?.texture?.src)
 
@@ -1603,9 +1706,8 @@ async function GetImageFor(thing) {
         };
       return { img: thing.img, scaleX: 1, scaleY: 1 };
     }
+    case 'portraits':
     default:
-    case 'theatreOfTheMind':
-    case '3d':
       return { img: thing.img, scaleX: 1, scaleY: 1 };
   }
   // {"file":"CompendiumFiles/_plus_1_allpurpose_tool_tce","page":"items","source":"TCE","droppable":"item","type":"equipment","name":"+1
@@ -1804,3 +1906,23 @@ function ChangeGrid(value) {
   if (value != 'hex') hexgrid.visible = false;
   if (value != 'square') grid.visible = false;
 } MakeAvailableToHtml('ChangeGrid', ChangeGrid);
+
+
+function ChangeView(value) {
+  if (value === '') return;
+  let id = 'Scenes/tag_' + current_scene.name +
+    '.json';  // the window id is window_fullthingname
+  console.log(id);
+  let evaluation = 'thing.view = \'' + value + '\'';
+  console.log(evaluation);
+
+  socket.emit('change', { change: evaluation, thing: id });
+
+  // need to send this to everyone
+  var cameraPos = three_camera.position.clone();
+
+
+  window.LoadScene({ name: current_scene.name, camera: cameraPos });
+
+
+} MakeAvailableToHtml('ChangeView', ChangeView);

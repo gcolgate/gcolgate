@@ -92,7 +92,7 @@ window.LoadScene = function (msg) {
 }
 
 socket.on('displayScene', function (msg) {
-    three_replaceScene(msg.name, msg.sceneType, msg.array, msg.camera);
+    three_replaceScene(msg.name, msg.array, msg.camera);
 });
 
 socket.on('updatedTile', function (msg) {
@@ -103,7 +103,7 @@ socket.on('updatedTile', function (msg) {
 socket.on('chat', function (msg) {
     console.log("Got chat msg ");
     console.log(msg);
-    addChat(msg);
+    addChat(msg, true);
 
 });
 

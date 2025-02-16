@@ -690,7 +690,7 @@ async function NewScene(socket, msg) {
         name: msg.name,
         page: "scene",
         image: "modules/plutonium/media/icon/mighty-force.svg",
-        topDown: true,
+        view: "topdown",
         directory: msg.name,
         gridScaleInPixels: 100,
         gridScaleInUnits: "5ft",

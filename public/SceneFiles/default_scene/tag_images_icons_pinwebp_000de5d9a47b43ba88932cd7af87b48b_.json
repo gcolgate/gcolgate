@@ -1,0 +1,32 @@
+{
+    "x": 261.68483063328415,
+    "y": -42.989913544668596,
+    "z": 0.0000012,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "Wena",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Wena",
+        "page": "Document",
+        "source": "",
+        "name": "Wena",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+    },
+    "tile_id": "images_icons_pinwebp_000de5d9a47b43ba88932cd7af87b48b",
+    "tile_json": "SceneFiles\\default_scene\\tag_images_icons_pinwebp_000de5d9a47b43ba88932cd7af87b48b_.json",
+    "reference": {
+        "type": "",
+        "id": "Wena",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Wena",
+        "page": "Document",
+        "source": "",
+        "name": "Wena",
+        "img": "images/icons/pin.webp"
+    }
+}

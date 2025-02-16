@@ -3,7 +3,7 @@
         <div>
             <h1 class="itemsetheader">
 
-                <!-- <button onclick="LoadScene('{ thing.name }')">LOAD</button> -->
+
                 { thing.name }
             </h1>
         </div>
@@ -18,7 +18,14 @@
               line-height: 26.1333px;
               text-transform: lowercase">
         </div>
-        <div> topDown : {thing.topDown}</div>
+        <p class="itemsetheader"> View:
+            {thing.view}
+            <select class="itemsetheader" onChange="htmlContext.ChangeView(this.options[this.selectedIndex].value)">
+                <option value="">Change</option>
+                <option value="topdown">topdown</option>
+                <option value="portraits">portraits</option>
+                <option value="threeD">threeD</option>
+            </select>
         <div> cameraStartX : {thing.cameraStartX}</div>
         <div> cameraStartY : {thing.cameraStartY}</div>
         <div> scalingFactor : {thing.scalingFactor}</div>
@@ -32,6 +39,6 @@
                 <option value="hex">hex</option>
                 <option value="none">none</option>
             </select>
-
+            >
     </div>
 </div>

@@ -1,0 +1,32 @@
+{
+    "x": -208.47991967871488,
+    "y": 260.0240174672489,
+    "z": 0.0000000001,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "Witha",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Witha",
+        "page": "Document",
+        "source": "",
+        "name": "Witha",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+    },
+    "tile_id": "images_icons_pinwebp_d11d47bc10084342a6809e73a70ccc1e",
+    "tile_json": "SceneFiles\\default_scene\\tag_images_icons_pinwebp_d11d47bc10084342a6809e73a70ccc1e_.json",
+    "reference": {
+        "type": "",
+        "id": "Witha",
+        "file": "./SceneFiles/default_scene/DocumentsFiles/Witha",
+        "page": "Document",
+        "source": "",
+        "name": "Witha",
+        "img": "images/icons/pin.webp"
+    }
+}

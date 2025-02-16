@@ -483,16 +483,35 @@ f
       font-weight: bold;
     }
 
+    .diceShadow {
+      font-family: Lucinda Console;
+      text-shadow:
+        1px 1px 1px #5f5353, 1px -1px 1px #5f5353, 1px 0px 1px #5f5353;
+
+      font-weight: bold;
+    }
+
 
     .crit {
-      color: red;
-      font-weight: bold;
+      color: rgb(1, 123, 50);
+    }
+
+    .fail {
+      color: rgb(115, 2, 2);
+    }
+
+    .mixed {
+      color: rgb(149, 98, 39);
+    }
+
+    .success {
+      color: rgb(3, 143, 36);
     }
 
     .fumble {
       color: red;
-      font-weight: bold;
     }
+
 
     .oneroll {
       text-align: center;
@@ -1393,9 +1412,12 @@ f
       text-align: center;
     }
 
+    .mediumrollchatsize {
+      font-size: 16px;
+
+    }
 
     .chatroll {
-      font-style: bold;
       text-align: center;
       font-size: 24px;
       border-top: rgb(88, 23, 13);
@@ -1403,11 +1425,9 @@ f
       border-left: rgb(88, 23, 13);
       border-bottom: rgb(88, 23, 13);
 
-      color: rgb(88, 23, 13);
       background-color: white;
       color-scheme: light dark;
 
-      font-weight: 700;
 
 
 
