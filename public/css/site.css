@@ -100,6 +100,20 @@
 
 
 
+
+ .midtintButton {
+
+     background-color: rgb(136, 200, 138);
+     border-radius: 5%;
+
+ }
+
+ .midtintButton:hover {
+
+     background-color: rgb(217, 157, 7);
+
+ }
+
  .redtintButton {
 
      background-color: rgb(255, 165, 165);
@@ -122,9 +136,6 @@
      background-color: rgb(28, 254, 133)
  }
 
- .middleButton {
-     border-radius: 5px;
- }
 
  .window {
      position: absolute;

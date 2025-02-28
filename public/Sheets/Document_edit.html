@@ -1,4 +1,4 @@
-<button class="middleButton " onclick="htmlContext.updateDocumentbyId('{thing.id}')">
+<button class="midtintButton " onclick="htmlContext.updateDocumentbyId('{thing.id}')">
     Apply
 </button>
 
@@ -20,13 +20,8 @@
     <div>
         <br>
         <div> Token</div>
-        <image src="{getAppearanceImage(thing, 'token')}" alt="{thing.name}"
-            style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'token')}" ondragenter="onDragEnter(event,this)"
-            ondragover="onDragOver(event,this)" ondrop="onDropOnImage(event,this,'{thing.id}', 'token')"
-            ondragleave=" onDragLeave(event,this)">
-            <input type="color" id="{thing.id}colorPicker" name="'{thing.id}colorPicker"
-                value="{getAppearanceTintForHTML(thing,'token')}"
-                oninput="htmlContext.setAppearanceColor('{thing.id}', 'token')">
+        { appearanceDialog(thing) }
+
 
     </div>
 

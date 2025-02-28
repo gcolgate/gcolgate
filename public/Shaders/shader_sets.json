@@ -1,10 +1,10 @@
 {
-    "Normal": {
+    "normal": {
         "vertex_shader": "",
         "texture_shader": "",
         "uniforms": []
     },
-    "Fireball": {
+    "fireball": {
         "vertex_shader": "Shaders/base_effect_vertex.glsl",
         "fragment_shader": "Shaders/fireball.glsl",
         "uniforms": {

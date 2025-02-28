@@ -13,6 +13,17 @@ so they can be at the same Z.. added sort order, need to add widget
 
 3) Threed scroll is hacky but no longer flaky, deprioritized
 
+3) Store feats differently on the character as items when chosen on the career page we can hide and show them, so all itesm can work this way.
+If you are in a rollmove, and the feat applies (move, equipment, stat, etc) show the feat
+There is also a place to see movement and senses feats
+
+The feat can be activated, in which case there is a checkbutton
+The feat can cost effort to use, in which case clicking the checkbutton reduces effort (unclicking returns it)
+The feat can provide a bonus to damage or to hit or grant advantage or some other benefit
+The feat can also provide a minus.
+It seems feats should list each of these as a seperate thing.
+Wounds and conditions and effects also use this system, as do magic items.
+
 4) setting +z and -z buttons are broken due to mouseclicks beind disable. UI issue since the + and - buttons are in the way a lot
 
 5) Scaling is terribly implemented.  

@@ -24,7 +24,7 @@
                     onclick="htmlContext.emitChange('{thing.id}', 'thing.advantage < 1 ? thing.advantage = thing.advantage +1 : \'\' ')">
                     +
                 </button>
-                <button class="middlebutton inline">
+                <button class="midtintButton inline">
                     { (thing.advantage > 0 ? "Advantage" : "")
                     + (thing.advantage == 0 ? "Normal" : "" )
                     + (thing.advantage < 0 ? "Disadvantage" : "" ) } </button>
@@ -64,7 +64,9 @@
                     }
 
             </div>
-
+            <button onclick="htmlContext.StartRecognizingForRollMove('{thing.id}')">
+                Voice
+            </button>
 
 
 

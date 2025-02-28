@@ -1,5 +1,6 @@
 
 const fs = require('fs').promises;
+const { type } = require('express/lib/response');
 const rawfs = require('fs');
 const fsExtra = require('fs-extra');
 const path = require('path');
@@ -805,7 +806,7 @@ var items = [
         price: 20,
         weapon_defenses: [{
             name: "Cutlass Parry",
-            move: [""],
+            move: ["Parry"],
             range: 1,
             hands: 1,
             type: "Melee",
@@ -1632,12 +1633,14 @@ var feats = {
 
         name: "Elviush Magic",
         description: "You draw upon the natural magic of elves",
+        type: "Magic",
 
     },
     DwarvenMagic: {
 
         name: "Dwarven Magic",
         description: "You draw upon the natural magic of dwarves",
+        type: "Magic",
 
     },
 
@@ -1645,435 +1648,607 @@ var feats = {
 
         name: "Human Compensation",
         description: "Change one of your +0 stats to +1",
+        type: "Setup Character"
 
     },
 
     TrollishMagic: {
         name: "Trollish Magic",
         description: "You draw upon the natural magic of trolls",
+        type: "Magic",
     },
 
     ChaosMagic: {
         name: "Chaos Magic",
         description: "You can draw upon the unpredicatable power of Chaos to create great works of sorcery",
+        type: "Magic",
     },
     CelestialMagic: {
         name: "Celestial Magic",
         description: "You can draw upon the power of the celestials",
+        type: "Magic",
     },
 
     HexesMagic: {
         name: "Hex Magic",
         description: "You can draw upon the unlucky power of hexes and curses",
+        type: "Magic",
     },
     OtherworldMagic: {
         name: "Otherworld Magic",
         description: "You can channel power from beyond the stars",
+        type: "Magic",
     },
 
     FireMagic: {
         name: "Fire Magic",
         description: "You can channel the energy of fire",
+        type: "Magic",
     },
 
     WinterMagic: {
         name: "Winter Magic",
         description: "You can channel the energy of winter",
+        type: "Magic",
     },
 
     StormMagic: {
         name: "Winter Magic",
         description: "You can channel the energy of storms",
+        type: "Magic",
     },
 
     NatureMagic: {
         name: "Nature Magic",
         description: "You can draw upon the magic of the earth and nature",
+        type: "Magic",
     },
 
     DivinationMagic: {
         name: "Divinitation Magic",
         description: "You can open your inner vision to realms of magic",
+        type: "Magic",
     },
 
     NecromancyMagic: {
         name: "Necromancy Magic",
         description: "You can deal with the afterlife",
+        type: "Magic",
     },
 
     ChiMagic: {
         name: "Chi Magic",
         description: "You can open up your body to the energy that flows through it",
+        type: "Magic",
     },
 
     DarknessMagic: {
         name: "Darkness Magic",
         description: "You can summon the shadow",
+        type: "Magic",
     },
 
     HealingMagic: {
         name: "Healing Magic",
         description: "Your care can heal wounds",
+        type: "Magic",
     },
 
     ProtectionMagic: {
         name: "Protection Magic",
         description: "Protection versus the dark arts",
+        type: "Magic",
     },
     SunAllergy: {
         name: "Sun Allergy",
         description: "You don't like bright sun light and see in sunlight as if it were dim light",
+        type: "Senses",
+
     },
 
     BlindCombat: {
         name: "Blind Combat",
         description: "You are unaffected by vision when attacking in melee. This does not let you easily do other activities, just grappling and swinging weapons at targets.",
+        type: "Senses",
     },
 
     StarVision: {
         name: "Star Vision",
         description: "You can on clear starry nights, and dawn or dusk see as well as daytime. Cloudy nights or underground, you are as blind as a human. If the stars are obscured due to fires or nearby cities, you see as dim light",
+        type: "Senses",
     },
     DimVision: {
         name: "Dim Vision",
         description: "You can on see in dim light (such as the glowing caverns of Menzobarren) as if it were bright light. In the precense of close bright light, Dim Vision doesn't work though.",
+        type: "Senses",
     },
     DarkTravel: {
         name: "Dark Travel",
         description: "Although you can't see in the dark, you move surely at full speed, and will not collide with obstacles, fall into pits, as you can sense the presence of terrain naturally as if you can see in dim light",
+        type: "Senses",
     },
     Anatomy: {
         name: "Anatomy",
         description: "Do +5 damage to an on a surprise attack.",
+        type: "Combat",
+        bonusType: "Damage",
+        bonus: 5,
+        Moves: ["Ambush", "Backstab"],
     },
     Animal_Communication: {
         name: "Animal Communication",
         description: "For Effort, ‘understand’ an animal and communicate to him your intentions without any sort of roll",
+        type: "Activated",
+        EffortLoss: 1,
     },
     Animal_Companion: {
         name: "Animal Companion",
         description: "Create an adventurer companion. Animal companions can choose from Beast, Strenth, also Slave, perhaps Mother as their careers.",
+        type: "Setup Character"
     },
     Animal_Influence: {
         name: "Animal Influence",
         description: "For Effort, automatically influence an animal.. Calm them, or make them back down due to your superior chest pounding, without any sort of roll",
+        type: "Activated",
+        EffortLoss: 1,
+
     },
     Armor_Master: {
         name: "Armor Master",
-        description: "+1 to resist damage when wearing heavy armor(requires armor choice)",
+        description: "+1 to resist damage when wearing heavy armor(requires profieciency in that)",
+        type: "Combat",
+        EquipmentNeeded: "Heavy Armor",
+        Moves: ["ResistDamage"],
+        bonus: 1,
+
     },
     Artifacts: {
         name: "Artifacts",
         description: "You know about magic items.",
+        type: "Scene",
     },
     Bardic_Lore: {
         name: "Bardic Lore",
         description: "Spend Effort to remember a snatch of a song or history that exactly describes the riddle or problem",
+        type: "Scene",
     },
     Berserk: {
         name: "Berserk",
         description: "Enter a rage, use 1 Effort, +1 forward on offense, -1 forward  on defense until you decide to stop raging",
+        type: "Activated",
+        EffortLoss: 1,
+        Moves: ["Attack", "Ambush"],
+        bonus: 1,
+        HinderedMoves: ["Parry", "Dodge"],
+        minus: 1,
+
     },
     Climber: {
         name: "Climber",
         description: "Easily climb on rocks and trees and walls",
+        type: "Scene",
     },
     Commune: {
         name: "Commune",
         description: "Talk to the local spirits of the land, and ask them questions",
+        type: "Scene",
     },
     Crime_Lord: {
         name: "Crime Lord",
         description: "Knows everyone about crime in a particular city",
+        type: "Scene",
     },
     Critic: {
         name: "Critic",
-        description: "Spend a Effort to automatically point out to the DM the weaknesses in your foe’s equipment (from your specialty), and gain an advantage of some kind.",
+        description: "Spend a Effort to automatically know the weaknesses in your foe’s equipment (from your specialty), and gain an advantage of some kind.",
+        type: "Activated",
+        EffortLoss: 1,
     },
     Demonology_And_Cults: {
         name: "Demonology And Cults",
         description: "You have advantage on questions involving demonology and cults",
+        type: "Scene",
     },
     Disguise_Master: {
         name: "Disguise Master",
         description: "Spend a Effort to make a perfect disguise, or as good as you can with the materials at hand.",
+        type: "Activated",
+        EffortLoss: 1,
     },
     Dynasties: {
         name: "Dynasties",
         description: "You u have advantage on questions involving politics and history.",
+        type: "Scene",
     },
     Expert_Lockpick: {
         name: "Expert Lockpick",
         description: "Spend Effort to pick a lock without any sort of roll.",
+        type: "Activated",
+        EffortLoss: 1,
     },
     Expert_Pickpocket: {
         name: "Expert Pickpocket",
         description: "Spend Effort to steal something without any sort of roll",
+        type: "Activated",
+        EffortLoss: 1,
     },
     Extra: {
         name: "Extra",
         description: "Spend Effort to pull out a backup or extra gear in your specialty from your pack",
+        type: "Activated",
+        EffortLoss: 1,
     },
     God_Talker: {
         name: "God Talker",
         description: "When you visit a temple and pray, you can mystically communicate with your diety.   This will let you find out his/her/it’s will in order to gain favors from him/her/or it  for doing things. A person though who chose Dreams as a boon might be able to do this any time.",
+        type: "Scene",
     },
     Holdout_Weapon: {
         name: "Holdout Weapon",
         description: "conceal a small weapon (or other item) on your person in a way too offensive to consider",
+        type: "Scene",
     },
     Home_Field_Advantage: {
         name: "Home Field Advantage",
         description: "in your home terrain (pick one, like the Swamps of the Dead, or the Mountains of Fear) you are never surprised , and in similar terrain you can travel through this kind of terrain easily without getting tired and can easily forage.",
+        type: "Senses",
     },
     Imbue_Magic: {
         name: "Imbue Magic",
         description: "You can, at great expense, and time, and Effort, make magical versions of your specialty or specialties.",
-    },
-    Kata: {
-        name: "Kata",
-        description: "You dance in a spiritual way.  As you dance, spend a bonus action to gain 2 mana point you can immediately add to your aura (for use in spells)",
-    },
-    Magical_Performance: {
-        name: "Magical Performance",
-        description: " You can cast a spell subtly through your performance that only the most alert will notice, well, as long as the spell results aren’t obvious. Spend Effort to cast a spell by singing it.",
-    },
-    Master_Acrobat: {
-        name: "Master Acrobat",
-        description: "Spend Effort to automatically make a difficult acrobatic move without a roll",
-    },
-    Master_Musician: {
-        name: "Master Musician",
-        description: "You are really good at your instrument. You could beat the devil in a fiddle duel. ",
-    },
-    Master_of_Stealth: {
-        name: "Master of Stealth",
-        description: "Spend Effort to sneak without any sort of roll, you can spend 1 additional effort points for all your friends. Also applies to ‘scout’ rolls",
-    },
-    McGuyver: {
-        name: "McGuyver",
-        description: "You can use your specialty in a quick manner with improper tools, with an Effort point you can acheive unlikely results",
-    },
-    Mercy: {
-        name: "Mercy! Spare Me!",
-        description: "Spend Effort to not be the target of a creature’s attack, lasts until you attack.",
-    },
-    Mobile_Archer: {
-        name: "Mobile Archer",
-        description: "Can both move and shoot your bow. Normally all aimed bows and crossbows require you not to move on the turn you are shooting, this lets you skip that.",
-    },
-    Monotheist: {
-        name: "Monotheist",
-        description: "You believe all other gods are but reflections of your own. This is a heresy, but some gods like this and give you +1 rank in your usage dice.",
-    },
-    Musical_Number: {
-        name: "Musical Number",
-        description: "Explain to the GM the song,  the dance, the scene, and spend Effort. Resolve a problem (like building an orphanage, getting past the guards) after a broadway or bollywood sized dancing and musical number where everyone in the scene participates. Each player must say how he is contributing or fighting against or sitting out the musical number.  Each player can roll to give you a +1 or a -1  to the result.  Then roll Performance. On a hit it’s what you desire. (Note, no-one dies or gets injured during the musical number, although attitudes might change). A failure may indicate a counter narrative gains control of the scene.",
-    },
-    Musical_Virtuoso: {
-        name: "Musical Virtuoso",
-        description: "Be able to play any instrument well, even a klaathian nose flute",
-    },
-    Pack_Rat: {
-        name: "Pack Rat",
-        description: "Carry 50% more than normal",
-    },
-    Poison_Master: {
-        name: "Poison Master",
-        description: "Each Effort spent after an attack deals an additional + 3 damage, or when introduced into drink can incapacitate or kill one individual. Brewing more poison for a bigger set of targets, like a garrison, requires being industrious and spending supplies and money.You can also spend supplies to get various poisons from the poison list.",
-    },
-    Polytheist: {
-        name: "Polytheist",
-        description: "You can call upon other gods, not just your main god, this might help for gaining advantage on planar forces rolls. Still use one usage dice though.",
-    },
-    Reflexes: {
-        name: "Reflexes",
-        description: "When surprised, you still get reactions",
-    },
-    Religious_Lore: {
-        name: "Religious Lore",
-        description: "You have advantage on questions involving religions",
-    },
-    Ride_By: {
-        name: "Ride By",
-        description: "For Effort, gain an extra attack versus a new target that you are moving by",
-    },
-    Scholars_Guild: {
-        name: "Scholars Guild",
-        description: "You have an official degree and title, and  know many other scholars. You can wear a special badge. You are automatically permitted access to every library, due to your status, and might receive an income.",
-    },
-    Secrets: {
-        name: "Secrets",
-        description: "You know the secrets of your religion, the hidden passages behind temple altars, the passwords to get into the chambers, the secrets kept by the masters. You may (with table approval) invent secret facts about your religion that give you advantages",
-    },
-    Shield_Master: {
-        name: "Shield Master",
-        description: "+1 to resist damage when carrying a shield",
-    },
-    Show_Off: {
-        name: "Show Off",
-        description: "You can spend Effort to reroll a Challenge,Grisly Display,Fear my blade roll.",
-    },
-    Sniper: {
-        name: "Sniper",
-        description: "Spend Effort  to reroll a ranged attack roll",
-    },
-    Sorceror_Kings: {
-        name: "Sorceror Kings",
-        description: "You have advantage on questions involving the ancient sorceror kings",
-    },
-    Specialty_Alchemist: {
-        name: "Specialty Alchemist",
-        description: "Drugs and alchemy and brewing craft specialty",
-    },
-    Specialty_Cook: {
-        name: "Specialty Cook",
-        description: "Cooking and brewing craft specialty",
-    },
-    Specialty_Jeweler: {
-        name: "Specialty Jeweler",
-        description: "Jewelry craft specialty",
-    },
-    Specialty_Mason: {
-        name: "Specialty Mason",
-        description: "Buildlings craft specialty",
-    },
-    Specialty_Tailor: {
-        name: "Specialty Tailor",
-        description: "Clothing craft specialty",
-    },
-    Specialty_Weapon_Smith: {
-        name: "Specialty Weapon Smith",
-        description: "Weapons, armor, and metal objects craft specialty",
-    },
-    Spirited_Charge: {
-        name: "Spirited Charge",
-        description: "+1 to melee hit and damage in a charge",
-    },
-    Swift_Rider: {
-        name: "Swift Rider",
-        description: "+1 movement when riding",
-    },
-    Swift: {
-        name: "Swift",
-        description: "+1 Movement on foot or swim",
-    },
-    Taboo: {
-        name: "Taboo",
-        description: "Pick 3 taboos, such as ‘eat no meat’, ‘never speak to a member of the opposite sex directly’, ‘fast while the sun is shining’, ‘never talk after darkness’. ‘Never ride a horse’  ‘always wear priestly vestments’,  ‘never wear armor, always wear a veil. While observing the taboo,  you get +1 rank on your usage dice, when you break it, get disadvantage until spiritually cured.",
-    },
-    The_dance_of_the_seven_veils: {
-        name: "The dance of the seven veils",
-        description: "Your dancing can cause someone to desire you in an almost magical way. Spend Effort to reroll your seduction attempt.",
-    },
-    Trade: {
-        name: "Trade",
-        description: "You know everything about the values of things and where they can be sold, advantage on shopping",
-    },
-    Tree_bends_in_the_Wind: {
-        name: "Tree bends in the Wind",
-        description: "When dodging an enemy, you can use his own force against him, on success or mixed for Effort you can also  knock them prone, make them collide into each other, or crash into walls, within reason",
-    },
-    Two_Weapon_Fighting: {
-        name: "Two Weapon Fighting",
-        description: "When fighting with two weapons, reduce by 1 the cost in Steel if attacking more than one opponent, do the damage of the better weapon",
-    },
-    Vicious_Mockery: {
-        name: "Vicious Mockery",
-        description: "Spend Effort to insult another and make them enraged, they will be berserk and lose defense, as long as this makes sense",
-    },
-    Wasnt_Here: {
-        name: "I Wasn't Here",
-        description: "Spend Effort to opt out of a scene at the beginning",
-    },
+        type: "Downtime",
+        Kata: {
+            name: "Kata",
+            description: "You dance in a spiritual way.  As you dance, spend a bonus action to gain 2 mana point you can immediately add to your aura (for use in spells)",
+            type: "bonus action",
+            stuff: "TODO",
+        },
+        Magical_Performance: {
+            name: "Magical Performance",
+            description: " You can cast a spell subtly through your performance that only the most alert will notice, well, as long as the spell results aren’t obvious. Spend Effort to cast a spell by singing it.",
+            type: "Activated",
+            EffortLoss: 1,
+        },
+        Master_Acrobat: {
+            name: "Master Acrobat",
+            description: "Spend Effort to automatically make a difficult acrobatic move without a roll, or to get advantage on dodge",
+            Moves: ["Dodge"],
+            type: "Activated",
+            EffortLoss: 1,
+        },
+        Master_Musician: {
+            name: "Master Musician",
+            description: "You are really good at your instrument. You could beat the devil in a fiddle duel. ",
+            type: "Scene",
+        },
+        Master_of_Stealth: {
+            name: "Master of Stealth",
+            description: "Spend Effort to sneak without any sort of roll, you can spend 1 additional effort points for all your friends. Also applies to ‘scout’ rolls",
+            type: "Activated",
+            EffortLoss: 1,
+        },
+        McGuyver: {
+            name: "McGuyver",
+            description: "You can use your specialty in a quick manner with improper tools, with an Effort point you can acheive unlikely results",
+            type: "Activated",
+            EffortLoss: 1,
+        },
+        Mercy: {
+            name: "Mercy! Spare Me!",
+            description: "Spend Effort to not be the target of a creature’s attack, lasts until you attack.",
+            type: "Activated",
+            EffortLoss: 1,
+        },
+        Mobile_Archer: {
+            name: "Mobile Archer",
+            description: "Can both move and shoot your bow. Normally all aimed bows and crossbows require you not to move on the turn you are shooting, this lets you skip that.",
+            type: "Combat"
+        },
+        Monotheist: {
+            name: "Monotheist",
+            description: "You believe all other gods are but reflections of your own. This is a heresy, but some gods like this and give you +1 rank in your usage dice.",
+            type: "Scene",
+            stuff: "TODO",
+        },
+        Musical_Number: {
+            name: "Musical Number",
+            description: "Explain to the GM the song,  the dance, the scene, and spend Effort. Resolve a problem (like building an orphanage, getting past the guards) after a broadway or bollywood sized dancing and musical number where everyone in the scene participates. Each player must say how he is contributing or fighting against or sitting out the musical number.  Each player can roll to give you a +1 or a -1  to the result.  Then roll Performance. On a hit it’s what you desire. (Note, no-one dies or gets injured during the musical number, although attitudes might change). A failure may indicate a counter narrative gains control of the scene.",
+            type: "Activated",
+            EffortLoss: 1,
+        },
+        Musical_Virtuoso: {
+            name: "Musical Virtuoso",
+            description: "Be able to play any instrument well, even a klaathian nose flute",
+            type: "Scene",
+        },
+        Pack_Rat: {
+            name: "Pack Rat",
+            description: "Carry 50% more than normal",
+            type: "equipment",
+            stuff: "TODO",
+        },
+        Poison_Master: {
+            name: "Poison Master",
+            description: "Each Effort spent after an attack deals an additional + 3 damage, or when introduced into drink can incapacitate or kill one individual. Brewing more poison for a bigger set of targets, like a garrison, requires being industrious and spending supplies and money.You can also spend supplies to get various poisons from the poison list.",
+            type: "Activated",
+            EffortLoss: 1,
+            Moves: ["Attack", "Backstab"],
+            bonusType: "Damage",
+            bonus: 3,
+        },
+        Polytheist: {
+            name: "Polytheist",
+            description: "You can call upon other gods, not just your main god, this might help for gaining advantage on planar forces rolls. Still use one usage dice though.",
+            stuff: "TODO",
+        },
+        Reflexes: {
+            name: "Reflexes",
+            description: "When surprised, you still get reactions",
+            type: "Scene",
+        },
+        Religious_Lore: {
+            name: "Religious Lore",
+            description: "You have advantage on questions involving religions",
+            type: "Scene",
+        },
+        Ride_By: {
+            name: "Ride By",
+            description: "For Effort, gain an extra attack versus a new target that you are moving by",
+            type: "Activated",
+            EffortLoss: 1,
+            Moves: ["Attack"],
+            EquipmentNeeded: "Mount",
 
-    Whip_Master: {
-        name: "Whip Master",
-        description: "You can attack at 2 hexes with a whip, disarming a foe on a success instead of damage, you can use the whip for swinging across chasms or putting out a candle or grabbing things. It doesn’t count as a reach weapon for defense against charges though.",
-    },
-    Whirlwind: {
-        name: "Whirlwind",
-        description: "for Effort,  attack another adjacent target, roll again, initiative determined by last roll",
-    },
-    Wicked_Lie: {
-        name: "Wicked Lie",
-        description: "Spend Effort to reroll any deception attempt. Take the best roll.",
+        },
+        Scholars_Guild: {
+            name: "Scholars Guild",
+            description: "You have an official degree and title, and  know many other scholars. You can wear a special badge. You are automatically permitted access to every library, due to your status, and might receive an income.",
+            type: "Scene",
+        },
+        Secrets: {
+            name: "Secrets",
+            description: "You know the secrets of your religion, the hidden passages behind temple altars, the passwords to get into the chambers, the secrets kept by the masters. You may (with table approval) invent secret facts about your religion that give you advantages",
+            type: "Scene",
+        },
+        Shield_Master: {
+            name: "Shield Master",
+            EquipmentNeeded: "Shield",
+            description: "+1 to resist damage when carrying a shield",
+            Moves: ["ResistDamage"],
+            bonus: 1,
+        },
+        Show_Off: {
+            name: "Show Off",
+            description: "You can spend Effort to reroll  a Challenge,Grisly Display,Fear my blade roll.",
+            type: "Activated",
+            EffortLoss: 1,
+            Moves: ["Fear my blade", "Challenge", "Grisly Display", "Flaming Brand"],
+            reroll: true,
+
+        },
+        Sniper: {
+            name: "Sniper",
+            description: "Spend Effort  to reroll a ranged attack roll",
+            type: "Activated",
+            EffortLoss: 1,
+            EquipmentNeeded: "Ranged Weapon",
+            Moves: ["Attack"],
+            reroll: true,
+        },
+        Sorceror_Kings: {
+            name: "Sorceror Kings",
+            description: "You have advantage on questions involving the ancient sorceror kings",
+            type: "Scene",
+        },
+        Specialty_Alchemist: {
+            name: "Specialty Alchemist",
+            description: "Drugs and alchemy and brewing craft specialty",
+            type: "Scene",
+        },
+        Specialty_Cook: {
+            name: "Specialty Cook",
+            description: "Cooking and brewing craft specialty",
+            type: "Scene",
+        },
+        Specialty_Jeweler: {
+            name: "Specialty Jeweler",
+            description: "Jewelry craft specialty",
+            type: "Scene",
+        },
+        Specialty_Mason: {
+            name: "Specialty Mason",
+            description: "Buildlings craft specialty",
+            type: "Scene",
+        },
+        Specialty_Tailor: {
+            name: "Specialty Tailor",
+            description: "Clothing craft specialty",
+            type: "Scene",
+        },
+        Specialty_Weapon_Smith: {
+            name: "Specialty Weapon Smith",
+            description: "Weapons, armor, and metal objects craft specialty",
+            type: "Scene",
+        },
+        Spirited_Charge: {
+            name: "Spirited Charge",
+            description: "+2 to  damage in a charge",
+            type: "Optional",
+            bonusType: "Damage",
+            bonus: 2,
+        },
+        Swift_Rider: {
+            name: "Swift Rider",
+            description: "+1 movement when riding",
+            type: "TODO"
+        },
+        Swift: {
+            name: "Swift",
+            description: "+1 Movement on foot or swim",
+            type: "TODO"
+        },
+        Taboo: {
+            name: "Taboo",
+            description: "Pick 3 taboos, such as ‘eat no meat’, ‘never speak to a member of the opposite sex directly’, ‘fast while the sun is shining’, ‘never talk after darkness’. ‘Never ride a horse’  ‘always wear priestly vestments’,  ‘never wear armor, always wear a veil. While observing the taboo,  you get +1 rank on your usage dice, when you break it, get disadvantage until spiritually cured.",
+            type: "TODO"
+        },
+        The_dance_of_the_seven_veils: {
+            name: "The dance of the seven veils",
+            description: "Your dancing can cause someone to desire you in an almost magical way. Spend Effort to reroll your seduction attempt.", type: "Activated",
+            EffortLoss: 1,
+            Moves: ["Seduce/Flirt/Entertain"],
+            reroll: true,
+        },
+        Trade: {
+            name: "Trade",
+            description: "You know everything about the values of things and where they can be sold, advantage on shopping",
+            Moves: ["Shopping"],
+            advantage: true,
+
+        },
+        Tree_bends_in_the_Wind: {
+            name: "Tree bends in the Wind",
+            description: "When dodging an enemy, you can use his own force against him, on success or mixed for Effort you can also  knock them prone, make them collide into each other, or crash into walls, within reason",
+            Moves: ["Dodge"],
+            type: "Activated",
+            EffortLoss: 1,
+        },
+        Two_Weapon_Fighting: {
+            name: "Two Weapon Fighting",
+            description: "When fighting with two weapons, reduce by 1 the cost in Steel if attacking more than one opponent, do the damage of the better weapon",
+            Moves: ["Attack"],
+            stuff: "TODO",
+
+        },
+        Vicious_Mockery: {
+            name: "Vicious Mockery",
+            description: "Spend Effort to insult another and make them enraged, they will be berserk and lose defense, as long as this makes sense",
+            type: "Activated",
+            EffortLoss: 1,
+        },
+        Wasnt_Here: {
+            name: "I Wasn't Here",
+            description: "Spend Effort to opt out of a scene as long as you haven't acted in it yet",
+            type: "Activated",
+            EffortLoss: 1,
+        },
+
+        Whip_Master: {
+            name: "Whip Master",
+            description: "You can attack at 2 hexes with a whip, disarming a foe on a success instead of damage, you can use the whip for swinging across chasms or putting out a candle or grabbing things. It doesn’t count as a reach weapon for defense against charges though.",
+            stuff: "TODO",
+        },
+        Whirlwind: {
+            name: "Whirlwind",
+            description: "for Effort,  attack all  adjacent targets, roll against each one  ",
+            type: "Activated",
+            EffortLoss: 1,
+        },
+        Wicked_Lie: {
+            name: "Wicked Lie",
+            description: "Spend Effort to reroll any deception attempt. Take the best roll.",
+            type: "Activated",
+            Moves: ["Wicked Lie"],
+            EffortLoss: 1,
+        },
     },
     Wizard: {
         name: "Wizard",
-        description: "You can learn spells outside your area of knowledge, and cast spells outside of your known area of magic, but must use Effort when you cast.",
+        description: "You can learn spells outside your area of knowledge, and cast spells outside of your known area of magic, but must use Effort when you cast. You can also fuel your spells with any kind of mana when you do this.",
+        type: "Activated",
+        EffortLoss: 1,
+
     },
     Wrestler: {
         name: "Wrestler",
         description: "Add +1 to rolls involving wrestling",
+        Moves: ["Wrestle", "restle (defense)"],
+        bonus: 1,
     },
     Zealot: {
         name: "Zealot",
         description: "You have +1 on attacks when fighting infidels and supernatural evil",
+        type: "Optional",
+        Moves: ["Attack"],
+        bonus: 1,
     },
     Familiar: {
         name: "Familiar",
         description: "You have a small inoffensive animal you can command mentally. You can possess this creature and see from it's eyes at will. You can only take actions as your familiar or yourself on any round",
+        type: "Scene",
     },
     Burning_Brand: {
         name: "Burning Brand",
         description: "Conjure a weapon of flame, roll +Brave, it is fiery, touch, dangerous, has 3 uses. On success choose 2 more tags, on mixed choose 1: *hand *thrown, near , +1 damage, remove dangerous tag.",
+        stuff: "TODDo",
     },
     God_Fire: {
         name: "God Fire",
         description: "You can use Godfire instead of normal fire in your powers or magic, this magic ignores 2 armor and burns not the body but the souls of the victims. Creatures without souls cannot be damaged by this.",
+        stuff: "TODDo",
     },
     Resist_Fire: {
         name: "Resist Fire",
-        description: "Take half damage from fire, and don’t suffocate from smoke. If you are the recipeint of a Resist Fire spell, you are immune to fire.",
+        description: "Take -3 damage from fire, and don’t suffocate from smoke. If you are the recipeint of a Resist Fire spell, you are immune to fire.",
+        Moves: ["ResistDamage"],
+        type: "Optional",
+        bonus: -3,
     },
     By_Fire_Restored: {
         name: "By Fire Restored",
         description: "Heal all  health points if sleeping overnight near a large fire.",
+        type: "Scene",
     },
     Fuel: {
         name: "Fuel",
         description: "Whenever you wound someone or they wound you gain 2 mana to your aura.",
+        type: "TODO",
     },
     Phalanx: {
         name: "Phalanx",
         description: "+1 on attacks on a reach defense versus charge. If you also have a shield, you can defend even though you used your reaction for a reach attack.",
+        type: "Optional",
+        Moves: ["Attack"],
+        bonus: 1,
     },
     Artillery: {
         name: "Artillery",
         description: "You can operate artillery and catapults, and know about sieges",
+        type: "Scene",
     },
     Tough: {
         name: "Tough",
         description: "Use Effort point to ignore the pain effect of a wound for a scene",
+        type: "Activated",
+        EffortLoss: 1,
     },
     Mobile_Archer: {
         name: "Mobile Archer",
         description: "You can both move and shoot, normally when shooting bows you forgo movement that turn",
+        type: "Scene",
     },
-    Shield_Master: {
-        name: "Shield Master",
-        description: "+1 to resist damage when carrying a shield.",
-    },
-    Armor_Master: {
-        name: "Armor Master",
-        description: "+1 to resist damage when wearing heavy armor.",
-    },
-    Weapon_Choices: {
-        name: "Weapon Choices",
-        description: "Gain the other set of weapons: so shield and armor if you have bow, or bow if you have shield and armor",
-    },
+
     Master_Surgeon: {
         name: "Master Surgeon",
-        description: "Spend a medicine point to automatically succeed at your surgery",
+        description: "You can do surgery to remove limbs or organs, or to heal wounds (triple healing but bad if you roll a failure), or to implant things.s",
+        type: "Scene",
+        stuff: "TODO"
     },
+    Good_bedside_manner: {
+        name: "Good Bedside Manner",
+        description: "All your non magical healing are doubled",
+        type: "Scene",
+        stuff: "TODO"
+    },
+
     Exorcist: {
         name: "Exorcist",
         description: "You can also recognize and diagnose demonic possession and curses, and sometimes can cure it, or at least know what will cure it.",
+        type: "Scene",
     },
     Potion_Maker: {
         name: "Potion Maker",
-        description: "Can make other kinds of potions. For  1 point of supply, have one of the following potions:\n" +
+        description: "Can make other kinds of potions. For  1 point of effort, have three bottles of one of the following potions:\n" +
             "* Dream Essence: Gives a person a dream\n" +
             "* Aphrodisiac: A love potion\n" +
             "* Depilatory: Removes hair on contact\n" +
@@ -2082,128 +2257,143 @@ var feats = {
             "* Purgative: When drunk, removes parasites instantly\n" +
             "*Tirelessness: Drink first, then, when the drinker get tired, roll the potion maker’s medicine, success: prevent exhaustion, mixed: prevent 1 level of exhaustion, fail: gain +1 exhaustion,\n" +
             "You can also create magical potions. When you use a potion, spend one supply, and construct a potion that does a spell of the first magnitude to the person who drinks it. When the person drinks it, roll at that time with your skill for how successful the spell is and whether there are side effects., but spend the power now.",
+        type: "Activated",
+        EffortLoss: 1,
     },
-    Tough: {
-        name: "Tough",
-        description: " Use Effort  point to ignore the pain effect of a wound for a scene",
-    },
+
     Mama_Lion: {
         name: "Mama Lion",
         description: " Reroll dice once whenever you are trying to save or advance or fix your kids or adopted kids",
+        stuff: "TODO"
     },
     Guilt_Trip: {
         name: "Guilt Trip",
         description: " Use Effort to reroll an attempt to guilt someone into obedience",
+        stuff: "TODO"
     },
     Great_Beauty: {
         name: "Great Beauty",
         description: "You are beautiful and desirable, and gain advantages when that matters",
+        type: "Scene",
     },
     Duelist: {
         name: "Duelist",
         description: "You are skilled with melee weapons, and can use Effort (once per attack) to get +1 to damage with a light sword. Weapon Proficiencies:Light sword, dagger",
+        stuff: "TODO"
     },
     Devoted_Servant: {
         name: "Devoted Servant",
         description: "Create an adventurer companion, this can be an animal, or a person",
+        stuff: "Character Setup"
+
     },
-    Vicious_Mockery: {
-        name: "Vicious Mockery",
-        description: "Spend a point to insult another and make them enraged",
-    },
+
     Lay_On_Hands: {
         name: "Lay On Hands",
         description: "Spend Effort to cast Heal Wounds (roll caring) with no Mana,  touch range, or get +1 to Heal Wounds Spell for 1 Effort",
+        stuff: "TODO"
     },
     Smite: {
         name: "Smite",
         description: "Spend 1 Effort to cast Smite Spell",
+        stuff: "TODO"
         // TODO: for paladins pick oath seperately and index
     },
     Channel_Divinity: {
         name: "Channel Divinity",
-        description: "Once per short rest, based on your oath: :\n" +
-            "Oath of the Ancients: A creature is restrained by Vines, difficult strength save, or, turn fey and fiends  \n" +
-            "Oath of Conquest: Inflict fear on all nearby, Roll Challenge with advantage\n" +
+        description: "Once per short rest, take an action do do one of these: :\n" +
             "Oath of Devotion: You sword becomes magic +2 steel and +1 damage  and radiates light for 1 minute, or fiends and undead are turned\n" +
-            "Oath of Glory: Advantage on Athletics , or, Smite all creatures nearby when you smite (doing just the bonus damge, not weapon damage, to creatures not targeted)\n" +
-            "Oath of Redemption: Emissary of Peace: advantage on peaecful negotiation, OR Rebuke the violent cause someone to hurt himself the amount of damage he caused this round\n" +
+            "Oath of Redemption: Emissary of Peace: advantage on a peaecful negotiation\n" +
             "Oath of Vengeance: Target one foe and getting advantage on attacks and +1 forward for the rest of the battle\n" +
-            "Oath of the Watchers: Turn aberrations, celestials, elementals, fey, and fiends, OR, block one spell affect from affecting one target\n" +
-            "Oathbreaker: Control nearby undead, or frighten all beings nearby, advantage on a Sorcerous Might roll\n" +
-            "Oath of the Open Sea: Create marine fog, channel water violence\n",
+            "Turn outsiders: Turn aberrations, undead, celestials, elementals, fey, and fiends, OR, block one spell affect from affecting one target\n",
+        stuff: "TODO"
+
     },
     Aura: {
         name: "Aura",
-        description: "Your aura has an effect based on your oath to those allies and friends nearby or to your enemies\n" +
-            "Oath of the Ancients: Advantage on defenses versus spells\n" +
-            "Oath of Conquest: +1 forward always on Challenge, Grisly Display, Fear My Blade, Sorcerous Might, by you or friends\n" +
-            "Oath of Devotion: Allies nearby cannot be magically charmed\n" +
+        description: "Your aura has an effect based on your oath to those allies and friends nearby or to your enemies. Can be used in one scene per day, Choose:\n" +
+            "Ward Spells: Advantage on defenses versus spells\n" +
+            "Ward Charms: Allies nearby cannot be magically charmed\n" +
             "Oath of Glory:  Spend effort to reroll your or your ally's attack\n" +
             "Oath of Vengeance: Sped effort to reroll your or your ally's damage\n" +
             "Oath of Watchers: Allies nearby can get advantage to gaining initiative at the start of an encounter\n" +
             "Oath of the Open Sea: Allies and yourself  nearby can swim at +2 move and get advantage escaping from grapples",
+        stuff: "TODO"
     },
     Sail_Monkey: {
         name: "Sail Monkey",
         description: "Easily climb and swing from ropes and sails, keep to your feet in the roughest seas",
+        type: "Scene",
     },
     Every_Port: {
         name: "Every Port",
         description: "Familiar with every port city in the Known World, you know the layout, the issues, the best taverns",
+        type: "Scene",
     },
     Fisherman: {
         name: "Fisherman",
         description: "Survive at sea, commune with the ocean spirits",
+        type: "Scene",
     },
     Sea_Captain: {
         name: "Sea Captain",
-        description: "You have captained a ship and get the title , and can navigate. Describe your reputation for recruiting crew",
+        description: "You have captained a ship and get the title, and can navigate. Describe your reputation for recruiting crew. In certain campaigns, you can have a ship.",
+        type: "Scene",
     },
     Diver: {
         name: "Diver",
         description: "Hold your breath and dive deep, swim at +2 speed",
+        type: "Scene",
+        stuff: "TODO"
     },
 
     Blood_Sacrifice: {
         name: "Blood Sacrifice",
-        description: "You have advantage resisting damage from self harm for casting magic and recieve triple mana value",
+        description: "When you slice open your wrist for self sacrifice to gain mana, you don't take damage. Any blood scarfice gives triple mana value",
+        type: "Scene",
+        stuff: "TODO"
     },
     SubtleSpell: {
         name: "Subtle Spell",
         description: "If you take care you can cast your spells more quietly, and low mana spells (<3), may not even appear to be magic.",
+        type: "Scene",
+        stuff: "TODO"
     },
     Brawler: {
         name: "Brawler",
         description: "+1 damage with your bare hands",
+        stuff: "TODO"
     },
-    Wrestler: {
-        name: "Wrestler",
-        description: "Add +1 forward when fighting in a grapple",
-    },
-    Tough: {
-        name: "Tough",
-        description: "Use Effort to ignore the pain effect of a wound for a scene",
-    },
+
+
     Reach: {
         name: "Reach",
+        requirements: "Strength 2 or better",
         description: "Your long arms give you +1 reach: also when attacked by someone with the same length weapon when the enemy is moving into range you have and can use your defense for an attack instead, just as if you were armed with a longer reach weapon",
+        stuff: "TODO"
     },
     Invisible_Man: {
         name: "Invisible Man",
         description: "Use Effort not to be paid attention to during the scene as long as you don’t act up",
+        type: "Activated",
+        EffortLoss: 1,
     },
     Tracking_Scent: {
         name: "Tracking Scent",
         description: "Ability to track unerringly with your nose",
+        type: "Scene",
     },
     Human_Communication: {
         name: "Human Communication",
         description: "For Effort, ‘understand’ a human and communicate to him your intentions without any sort of roll",
+        type: "Activated",
+        EffortLoss: 1,
     },
     Bodyguard: {
         name: "Bodyguard",
         description: "Bodyguard: for Effort out of sequence react to defend another person even if you have already used your turn",
+        type: "Activated",
+        EffortLoss: 1,
     }
 };
 
@@ -2643,7 +2833,7 @@ var careers = {
             "Scholars_Guild",
         ],
         languages: [tribal_languages, languages, magic_languages],
-        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Words of Power", "Devices"],
+        moves: ["Spout Lore", "Hard Mental Work", "Gossip", "Purchase", "Words of Power", "Devices", "Visit a sorcerous library"],
         tools: "Magic Words, Tomes, Magical Devices",
         mana: 1,
     },
@@ -2652,6 +2842,7 @@ var careers = {
         description: "Physicians, and others who can heal injured or sick people, are very important individuals in the cities.. With their great scale of knowledge and the importance of their job, they are held in high esteem in society. Most of the lowest-born citizens cannot afford the services of a physician, and are forced to use the services of charlatans and quacks. Physicians are dispensers of potions and medicines and have practical skills in bone setting, surgery, and child delivery. They are knowledgeable of plant lore, first aid, and diseases and their cures. Many physicians have their own herb gardens, where they grow the exotic plants that are used in their medications.",
         feats: [
             "Master_Surgeon",
+            "Good_bedside_manner",
             "Exorcist",
             "HealingMagic",
             "Potion_Maker",],
@@ -2679,6 +2870,8 @@ var careers = {
             "Tough",
             "Mama_Lion",
             "Guilt_Trip",
+            "Good_bedside_manner"
+
         ],
         moves: ["Hard Physical Work", "Heal", "Gossip", "Harm", "Seduce/Flirt/Entertain", "Bargain"],
         languages: [],
@@ -2704,7 +2897,32 @@ var careers = {
             "Familiar",
             "SubtleSpell", "Taboo"],
         languages: [],
-        moves: ["Bargain", "Heal", "Gossip", "Perilous Journeys", "Hard Mental Work", "Seduce/Flirt/Entertain", "Insight", "Planar Forces"],
+        moves: ["Bargain", "Heal", "Gossip", "Perilous Journeys", "Hard Mental Work", "Seduce/Flirt/Entertain", "Insight", "Planar Forces", "Take mind altering drugs for visions of a spell"],
+        tools: "Herbs, Medical Kit",
+        mana: 1
+    },
+    Druid: {
+        name: "Druid",
+        description: "You are in the priesthood of the barbarians?\n",
+        weapons: ["Assassin"],
+        feats: [
+            "Home_Field_Advantage",
+            "Master_of_Stealth",
+            "Commune",
+            "HexesMagic",
+            "WinterMagic",
+            "StormMagic",
+            "NatureMagic",
+            "DivinationMagic",
+            "HealingMagic",
+            "Blood_Sacrifice",
+            "Tough",
+            "Poison_Master",
+            "Familiar",
+            "Animal_Influence", "Animal_Communication",
+            "SubtleSpell", "Taboo"],
+        languages: [],
+        moves: ["Avoid", "Scout", "Perilous Journeys", "Ambush", "Heal", "Perilous Journeys", "Hard Mental Work", "Seduce/Flirt/Entertain", "Insight", "Planar Forces", "Take mind altering drugs for visions of a spell"],
         tools: "Herbs, Medical Kit",
         mana: 1
     },
@@ -2801,7 +3019,7 @@ var careers = {
             "SubtleSpell", "Taboo"],
         languages: [magic_languages],
         tools: "Magic Words, Blood, Magical Devices",
-        moves: ["Spout Lore", "Words of Power", "Planar Forces"],
+        moves: ["Spout Lore", "Words of Power", "Planar Forces", "Visit a sorcerous library", "Take mind altering drugs for visions of a spell"],
         mana: 1,
     },
 
@@ -2812,7 +3030,7 @@ var careers = {
         feats: ["Brawler",
             "Wrestler",
             "Tough", "Bodyguard"],
-        moves: ["Knife to the Throat""Knife to the Throat", "Fear My Blade", "Challenge", "Confront", "Wrestle", "Wrestle (defense)"],
+        moves: ["Knife to the Throat", "Fear My Blade", "Challenge", "Confront", "Wrestle", "Wrestle (defense)"],
         languages: [],
         tools: ""
     },

@@ -652,7 +652,21 @@ function three_getLayer(n) {
 
 var selection = [];
 
+let shader_sets = {
+  normal: {
+    vertex_shader: "",
+    texture_shader: "",
 
+    uniforms: []
+  },
+  fireball: {
+    vertex_shader: "Shaders/base_effect_vertex.glsl",
+    fragment_shader: "Shaders/fireball.glsl",
+    uniforms: {
+      uTime: "Number"
+    }
+  }
+}
 
 function fixTile(tile) {
   tile.x = Number(tile.x);
@@ -717,16 +731,19 @@ async function three_setTileImage(tile, plane, noz) {
   let texture = await loader.loadAsync(tname);
 
   let material;
-  if (tile.vertex_shader) {
-    let response = await fetch(tile.vertex_shader);
+
+  if (tile.shader_set && tile._shader_set != "normal") {
+
+    let shader_set = shader_sets[tile.shader_set];
+    let response = await fetch(shader_set.vertex_shader);
     let vertexShader = await response.text();
 
-    response = await fetch(tile.fragment_shader);
+    response = await fetch(shader_set.fragment_shader);
     let fragmentShader = await response.text();
 
     let uniforms = {};
 
-    let keys = Object.keys(tile.uniforms);
+    let keys = Object.keys(shader_set.uniforms);
 
     for (let i = 0; i < keys.length; i++) {
 
@@ -737,7 +754,7 @@ async function three_setTileImage(tile, plane, noz) {
           uniforms[key] = { value: 1.0 };
           break;
         case "vec2":
-          uniforms[key] = new Uniform(new THREE.Vector2())
+          uniforms[key] = new THREE.Uniform(new THREE.Vector2())
           break;
         default:
           alert("need to enumerate the other kinds");
@@ -803,17 +820,13 @@ async function three_setTileImage(tile, plane, noz) {
 
 }
 
-// function debugWaterTexture() {
-//   const plane = new THREE.Mesh(plane_geometry, baseMaterial);
-
-
 //   plane.position.x = 0;
 //   plane.position.y = 0;
 //   plane.position.z = 10;
 //   plane.reference = null;
 
 
-//   let layer = three_getLayer("token");
+//   let layer = three_getLayer(\"token");
 //   layer.layer.add(plane);
 
 //   let material = new THREE.MeshBasicMaterial({

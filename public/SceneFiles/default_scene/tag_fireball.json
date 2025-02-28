@@ -16,6 +16,7 @@
     "z": 1
   },
   "tile_id": "tag_fireball.json",
+  "shader_set": "fireball",
   "tile_json": "SceneFiles/default_scene/tag_tag_fireball_.json",
   "vertex_shader": "Shaders/base_effect_vertex.glsl",
   "fragment_shader": "Shaders/fireball.glsl",

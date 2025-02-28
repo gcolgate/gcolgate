@@ -592,9 +592,12 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
     let state = 0;
     let code = "";
     console.log("NOTES ", notes);
-    for (let i = 0; i < text.length; i++) {
+    if (window.bug) console.log(text);
 
+    for (let i = 0; i < text.length; i++) {
+        if (window.bug) console.log(text[i]);
         switch (state) {
+
             case 0:
                 let nextOne = text[i];
                 // remove these characters they cause problems down the line
@@ -604,6 +607,8 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
                 }
                 // remove comments by going to state 2
                 if (isToken(text, i, '<!--')) {
+                    if (window.bug) console.log('comment');
+
                     state = -1;
                 }
                 else {
@@ -627,7 +632,9 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
                         if (text[i + 1] === '{') {
                             newText += '{';
                             i = i + 1;
+
                         } else {
+                            if (window.bug) console.log('1');
                             state = 1; code = "";
                         }
                     }
@@ -655,6 +662,7 @@ export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) {
                 }
                 // reach end of code block
                 if (text[i] == '}') {
+                    if (window.bug) console.log(code);
 
                     if (text[i + 1] === '}') { // not a real code block
                         newText += '}';

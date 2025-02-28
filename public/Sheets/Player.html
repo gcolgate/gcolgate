@@ -73,8 +73,8 @@
                         "thing.counters.exhaustion.cur",
                         "itemsetheader numberinput") } of 12</span></p>
 
-                <div class="padded speedline ">
-                    <button class="greentintButton roundbutton"
+                <!-- <div class="padded speedline ">
+                    <button class="greentintBu6tton roundbutton"
                         onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),1)">
                         +</button>
                     <button class="injuryButton "
@@ -87,7 +87,7 @@
                         <!-- <div class="speedline"> Damage: {Editable(thing, 'thing.counters.damageToTakeAmt' ,
                     "npcNum")}
                     type: {Editable(thing, 'thing.counters.damageToTakeType' , "npcText")}
-                </div> -->
+                </div> --> -->
                 >
             </div>
 
@@ -131,15 +131,9 @@
         </div>
         <div>
             <div> Token</div>
-            <image src="{getAppearanceImage(thing, 'token')}" alt="{thing.name}"
-                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'token')}"
-                onclick="htmlContext.showPasteAndChoose(event, window, 'token_{thing.id}','portrait_{thing.id}')"
-                ondragenter="onDragEnter(event,this)" ondragover="onDragOver(event,this)"
-                ondrop="onDropOnImage(event,this,'{thing.id}', 'token')" ondragleave=" onDragLeave(event,this)">
-            </image>
-            <input type="color" id="{thing.id}colorPicker" name="'{thing.id}colorPicker"
-                value="{getAppearanceTintForHTML(thing,'token')}"
-                oninput="htmlContext.setAppearanceColor('{thing.id}', 'token')">
+            { appearanceDialog(thing) }
+
+
         </div>
     </div>
 </div>
@@ -223,7 +217,7 @@
 
 <div id="features" { tabClass( thing.tab && thing.tab=="features" )}>
 
-    <div> { PTBAMoves(thing) } </div>
+    <div class=" twocolumns"> { PTBAMoves(thing) } </div>
 
 
 </div>

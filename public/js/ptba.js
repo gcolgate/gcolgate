@@ -4,6 +4,13 @@ import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseShe
 import { socket } from './main.js';
 import { extractFromCompendium } from './directoryWindow.js';
 
+const kAction = "1. Action (1 per turn)";
+const kReaction = "2. Reaction (1 type per turn)";
+const kMaybeAction = "3. Maybe Action (If lucky, won't count as action)";
+const kTriggerdReaction = "4. Triggered Reaction (with the trigger, free action)";
+const kScene = "5. Scene";
+const kDowntime = "6. Downtime (Weeks)";
+const kStat = "7. Stat"
 
 export const moves = {
 
@@ -19,9 +26,9 @@ export const moves = {
             "strength",
             "will",
         ],
-        "action": "Stat",
+        "action": kStat,
         "tooltip": "Basic Stat Check",
-        "Comments": "Basaic Stat Check",
+        "Comments": "Basic Stat Check",
 
         "Critical": "You overkill. If this is a save, you avoid ill effect and possibly get some advantage ",
         "success": "You meet the challenge. If this is a save, avoid ill effct",
@@ -32,24 +39,194 @@ export const moves = {
         "stat": [
             "bravery"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Confront: Bravely confront someone to his face",
-        "Comments": "Confront: Bravely confront someone to his face, like, \
-         &#x25BA;  Confronting your mother over whether you can stay out late, \
-        &#x25BA;  Challenging a troll at a bridge, \
-        &#x25BA;  Intimidating a bully, \
-        &#x25BA;  Arguing with the King in his throne room, \
-        &#x25BA;  fighting a horde of guards to let the party escape where you don't play out the rounds",
+        "Comments": "Confront: Bravely confront someone to his face, such as an in argument, or a challenge, whether it is with a king, a troll, or your mother in law.",
+
         "Critical": "You get your way, and things go your way ",
         "success": "You get your way",
         "mixed": "Inconclusive, or get your way but take some pain",
         "fail": "You definitely lose the confrontation, taking pain"
     },
+
+    "Visit a sorcerous library": {
+        "stat": [
+            "intelligence"
+        ],
+        "action": kDowntime,
+        "tooltip": "If one is in this town, one can visit the sorcerous library. ",
+        "Comments": "If one is in this town, one can visit the sorcerous library. The best libraries have a difficulty of zero. ",
+        "Critical": "You find the spell of your choice from those avbailable at the library, and another another ",
+        "success": "You find the spell of the GM's choice from the list of those available at the library",
+        "mixed": 'you find a spell, but  <a href="#">choose 1 \
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; IWt is a lessor version, that has a side effect whenever you cast it</li>\
+                    <li> &#x25BA; It is far away from the library and you will need to convince the party to help you find it</li>\
+                    <li> &#x25BA; An imp will trade you for it for a favor</li>\
+                    <li> &#x25BA; You have to steal the book from the library (roll steal)</li>\
+                    <li> &#x25BA; The book is locked and the you have to unlock it (roll devices)</li>\
+                    <li> &#x25BA; The librarian says this spell is behind lock and key, convince him to see</li>\
+                    <li> &#x25BA; The book is in a strange, unknown tounge</li>\
+                </div >\
+            </div ></a >',
+        "fail": "Nothing good here. Perhaps you are kicked out of the library, perhaps you are banned from the library."
+    },
+    "Take mind altering drugs for visions of a spell": {
+        "stat": [
+            "will"
+        ],
+        "action": kDowntime,
+        "tooltip": "A dangerous way to learn magic",
+        "Comments": "A dangerous way to learn magic ",
+        "Critical": "You find the spell of your choice, perhaps you learn another ",
+        "success": "You find the spell of the GM's choice",
+        "mixed": 'you find a spell, but  <a href="#">choose 1 \
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; You immediately cast it uncontrolled and get a bad result on the t</li>\
+                    <li> &#x25BA; You have to bargain with an astral gatekeepert</li>\
+                    <li> &#x25BA; An imp will trade you for it for a favor</li>\
+                    <li> &#x25BA; You have to avoid the evil inhabitants of the dreamland on a perilous journey</li>\
+                    <li> &#x25BA; You get a level of chaos taint</li>\
+                    <li> &#x25BA; The librarian says this spell is behind lock and key, convince him to see</li>\
+                </div >\
+            </div ></a >',
+        "fail": "Nothing good here."
+    },
+
+    "Apprentice under a master": {
+        "stat": [
+            "cunning",
+            "will",
+            "intelligence"
+        ],
+        "action": kDowntime,
+        "tooltip": "A way to raise your skill",
+        "Comments": "A way to raise your skill, depending on the skill use a different stat. Your master has to have a higher skill than you",
+        "Critical": "You raise your skill by 1 and can choose a feat, and impress your master greatly.",
+        "success": "Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1 and choose a feat",
+        "mixed": 'Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, choose a feat, and choose\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+                    <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
+                    <li> &#x25BA; You relationship with the master is suffering, maybe you must quit</li>\
+                    <li> &#x25BA; You do not get to check the skill you wasted time </li>\
+                    <li> &#x25BA; You must pay something, like supplies or initiation fees </li> \
+                     </ul>\
+                </div >\
+            </div ></a >',
+        "fail": 'choose\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+                    <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
+                    <li> &#x25BA; You relationship with the master is suffering, maybe you are terminated</li>\
+                     <li> &#x25BA; You must pay something, like supplies or initiation fees to continue </li> \
+                    </ul>\
+                </div >\
+                 </div ></a >',
+    },
+
+    "Work at a job": {
+        "stat": [
+            "strength",
+            "cunning",
+            "will",
+            "intelligence"
+        ],
+        "action": kDowntime,
+        "tooltip": "A way to raise your skill and earn a living",
+        "Comments": "A way to raise your skill, depending on the skill use a different stat ",
+        "Critical": "You raise your skill by 1 and can choose a feat, an earn double the normal amount you should get for this skill ",
+        "success": "Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill",
+        "mixed": 'Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill and choose\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; Financial Hardship: You do not earn money and have to dip into savings </li>\
+                     <ul><li> &#x25BA; Your employer is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+                    <li> &#x25BA; Your employer (if any) has a quest for you, refuse and end the job </li>\
+                    <li> &#x25BA; You relationship with the employer is suffering, maybe you must quit</li>\
+                    <li> &#x25BA; You do not get to check the skill you wasted time </li>\
+                    <li> &#x25BA; If your job is dangerous, you might have to save versus injury </li> \
+                     </ul>\
+                </div >\
+            </div ></a >',
+        "fail": 'choose\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+                    <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
+                    <li> &#x25BA; You relationship with the master is suffering, maybe you are terminated</li>\
+                     <li> &#x25BA; You must pay something, like supplies or initiation fees to continue </li> \
+                    </ul>\
+                </div >\
+                 </div ></a >',
+    },
+
+    "Run a business": {
+        "stat": [
+            "cunning",
+            "will",
+            "intelligence"
+        ],
+        "action": kDowntime,
+        "tooltip": "A way to raise your skill and earn a living",
+        "Comments": "A way to raise your skill, depending on the skill use a different stat ",
+        "Critical": "You raise your skill by 1 and can choose a feat, an earn double the normal amount you should get for this business ",
+        "success": "Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill",
+        "mixed": 'Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill and choose\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; Financial Hardship: You do not earn money and have to dip into savings </li>\
+                     <ul><li> &#x25BA; Your business in trouble with a GM plot relevant problemd </li>\
+                      <li> &#x25BA; You relationship with the employer is suffering, maybe you must quit</li>\
+                    <li> &#x25BA; You do not get to check the skill you wasted time </li>\
+                    <li> &#x25BA; If your job is dangerous, you might have to save versus injury </li> \
+                     </ul>\
+                </div >\
+            </div ></a >',
+        "fail": 'choose\
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+                    <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
+                    <li> &#x25BA; You relationship with the master is suffering, maybe you are terminated</li>\
+                     <li> &#x25BA; You must pay something, like supplies or initiation fees to continue </li> \
+                    </ul>\
+                </div >\
+                 </div ></a >',
+    },
+
+
+    "Meditate or pray for a spell": {
+        "stat": [
+            "will"
+        ],
+        "action": kDowntime,
+        "tooltip": "A dangerous way to learn magic",
+        "Comments": "A dangerous way to learn magic ",
+        "Critical": "You find the spell of your choice, perhaps you learn another ",
+        "success": "You find the spell of the GM's choice",
+        "mixed": 'you find a spell, but  <a href="#">choose 1 \
+                    <div class="tooltipcontainer">\
+                    <div class="tooltip">\
+                     <ul><li> &#x25BA; You immediately cast it uncontrolled and get a bad result on the t</li>\
+                    <li> &#x25BA; You have to bargain with an astral gatekeepert</li>\
+                    <li> &#x25BA; An imp will trade you for it for a favor</li>\
+                    <li> &#x25BA; You have to avoid the evil inhabitants of the dreamland on a perilous journey</li>\
+                    <li> &#x25BA; You get a level of chaos taint</li>\
+                    <li> &#x25BA; The librarian says this spell is behind lock and key, convince him to see</li>\
+                </div >\
+            </div ></a >',
+        "fail": "Nothing good here."
+    },
     "Control Mount": {
         "stat": [
             "bravery", "caring"
         ],
-        "action": "MaybeAction",
+        "action": kMaybeAction,
         "tooltip": "Control your horse. ",
         "Comments": "When you try to control your horse when it is panicked or you want it to do something crazy",
         "Critical": "You control your mount, it is a free action",
@@ -61,7 +238,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
-        "action": "MaybeAction",
+        "action": kMaybeAction,
         "tooltip": "In melee, maneuver, can be done before an attack to attack with cunning even without flanking or surprise",
         "Comments": "In melee, can be done before an attack to attack with cunning even without flanking or surprise. Advantage when switching to a new weapon, or narrating something surprising",
         "Critical": "You get advantage on your attacks",
@@ -73,7 +250,7 @@ export const moves = {
         "stat": [
             "caring"
         ],
-        "action": "MaybeAction",
+        "action": kMaybeAction,
         "tooltip": "Extinguish Fire:  When your friend is on fire",
         "Comments": " \
          &#x25BA;  When your friend is on fire \
@@ -102,7 +279,7 @@ export const moves = {
         "stat": [
             "avoidance", "caring"
         ],
-        "action": "MaybeAction",
+        "action": kMaybeAction,
         "tooltip": "Extinguish Fire:   When you are on fire",
         "Comments": "<ul>\
         <li> &#x25BA;  When you are on fire </li>\
@@ -131,7 +308,7 @@ export const moves = {
         "stat": [
             "bravery", "strength"
         ],
-        "action": "MaybeAction",
+        "action": kMaybeAction,
         "tooltip": "When you challenge or trash talk your opponent. This may be difficult in some cirumstances. It usually cannot be repeated against the same enemies",
         "Critical": "Foes are panicked, you can take another, different, action ",
         "success": "Foes are cowed and you take another, different, action",
@@ -142,7 +319,7 @@ export const moves = {
         "stat": [
             "bravery"
         ],
-        "action": "MaybeAction",
+        "action": kMaybeAction,
         "tooltip": "Raise the severed head of an enemy, raising the grim trophy high, or some other fearful action",
         "Critical": "Foes are panicked, you can take another, different, action ",
         "success": "Foes are cowed and you take another, different, action",
@@ -153,7 +330,7 @@ export const moves = {
         "stat": [
             "bravery"
         ],
-        "action": "MaybeAction",
+        "action": kMaybeAction,
         "tooltip": "Against  beasts, the threat of fire is something that inspires a primal dread. Waving fire about or using magic fire can frighten them",
         "Critical": "Beasts are panicked, you can take another, different, action ",
         "success": "Beasts are cowed and you take another, different, action",
@@ -164,7 +341,7 @@ export const moves = {
         "stat": [
             "bravery", "will", "health"
         ],
-        "action": "MaybeAction",
+        "action": kMaybeAction,
         "tooltip": "When sick or stunned, you can try to keep acting, possibly acting or failing to act",
         "Critical": "You can act normally. You are no longer stunned but are still sick",
         "success": "You can act normally. You are no longer stunned but are still sick",
@@ -175,7 +352,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
-        "action": "Action",
+        "action": kAction,
         "tooltip": "A particularly intimate form of intimidation that requires surprise, you sneak up and hold a foe at the point or edge of a blade can cause them to swiftly capitulate, will not work on fully armored or unintelligent beings",
         "Critical": "You have a knife to their throad, they are helpless ",
         "success": "Your opponent is cowed, and may surrender, if he tries to escape you hit for a critical hit",
@@ -186,7 +363,7 @@ export const moves = {
         "stat": [
             "bravery"
         ],
-        "action": "FreeReaction",
+        "action": kTriggerdReaction,
         "tooltip": "Immediately after a sufficiently scary spell, you keep the spell moaning or humming around you, as to indicate more is coming. Costs 1 mana",
         "Critical": "Foes are panicked",
         "success": "Foes are cowed",
@@ -197,7 +374,7 @@ export const moves = {
         "stat": [
             "bravery"
         ],
-        "action": "FreeReaction",
+        "action": kTriggerdReaction,
         "tooltip": "Immediately after a certain critical hit, your foes may become frightened",
         "Critical": "Foes are panicked",
         "success": "Foes are cowed",
@@ -208,7 +385,7 @@ export const moves = {
         "stat": [
             "bravery"
         ],
-        "action": "Action",
+        "action": kAction,
         "tooltip": "Basic Attack (Bravery)",
         "Comments": "Swing your weapon",
         "Critical": 'You hit your foe, do double damage,\
@@ -252,7 +429,7 @@ export const moves = {
         "stat": [
             "health"
         ],
-        "action": "FreeReaction",
+        "action": kTriggerdReaction,
         "tooltip": "When you get hurt, difficulty is the damage minus your armor",
 
         "Comments": "Resisting damage",
@@ -300,7 +477,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
-        "action": "Action",
+        "action": kAction,
         "tooltip": "Artillery: Operate Artillery or certain spells",
         "Comments": "Operate artillery",
         "Critical": 'You hit your target forcefully, Foes cannot avoid damage',
@@ -314,7 +491,7 @@ export const moves = {
         "stat": [
             "strength"
         ],
-        "action": "Action",
+        "action": kAction,
         "tooltip": "Wrestle:  Wrestle someone",
         "Comments": "Wrestle someone",
         "Critical": 'You wrestle your foe <a href="#">and you can choose 2 \
@@ -364,25 +541,23 @@ export const moves = {
             "strength",
             "avoidance"
         ],
-        "action": "Reaction",
+        "action": kReaction,
         "tooltip": "Defend against wrestling with wrestling or squiggling",
         "Comments": "This move can only be used if you are already wrestling with your foe",
         "Critical": "Immediately get to use your wrestle on offense</li>\
         <li> &#x25BA; or get free and get a free move",
         "success": "Your can escape or take the offense",
-        "mixed": 'You wrestle <a href="#"> but  choose 1 \
+        "mixed": 'Avoid wrestling escalation <a href="#"> but  choose 1 \
             <div class="tooltipcontainer">  \
             <div class="tooltip">\
             <ul> \
-            <li> &#x25BA; Take some damage anyway if taking it only(½)</li> \
-            <li> &#x25BA; Take -2 on the next wrestling roll</li> \
-            <li> &#x25BA; End the grapple if the foe wishes this</li> \
+             <li> &#x25BA; Take -2 on the next wrestling roll</li> \
+            <li> &#x25BA; Your foe escapes the grapple (if he wants)</li> \
             <li> &#x25BA; You are knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs \
             </ul></div></div></a>',
-        "fail": 'You are squarely hit, take damage, and the GM  <a href="#">  choose one \
+        "fail": 'Wrestling is escalated, take damage, and the GM  <a href="#">  choose one \
         <div class="tooltipcontainer">  \
             <div class="tooltip">  \
-        <li> &#x25BA; Take some damage anyway if taking it only(½)</li>\
         <li> &#x25BA; Take -2 on the next wrestling roll</li>\
         <li> &#x25BA; End the grapple if the foe wishes this</li>\
         <li> &#x25BA; You are knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs \
@@ -393,7 +568,7 @@ export const moves = {
             "bravery",
             "avoidance"
         ],
-        "action": "Reaction",
+        "action": kReaction,
         "tooltip": "Parry with weapon or shield",
         "Comments": "Parry with weapon or shield",
         "Critical": "you block your foe, and counterattack: damage your foe with your weapon.",
@@ -418,7 +593,7 @@ export const moves = {
         "stat": [
             "avoidance"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Avoid a confrontation or people or trouble",
         "Comments": "Avoid is how to not get yourself into a confrontation.  When an NPC is attempting to confront you, you can Avoid.<ul>\
         <li> &#x25BA; You can avoid trouble by being submissive and accepting punishment, by lying about something, by misdirecting or confusing.</li>\
@@ -434,7 +609,7 @@ export const moves = {
         "stat": [
             "avoidance"
         ],
-        "action": "Reaction",
+        "action": kReaction,
         "tooltip": "Dodge an attack or enemies",
         "Comments": "This roll is used in more detailed combat to represent dodging an attack<ul\
         <li> &#x25BA; It can be difficult to dodge multiple, swarming opponents, or volleys of arrow fire, without running pell mell away… </li>\
@@ -462,7 +637,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Bargain: you need to point out the benefits of a deal (or the consequences of not following the deal) to someone",
         "Comments": "Using logic, and pointing out the mutual benefits of a deal or alliance, or the problem if not doing so, on success, you can get agreement on an issue. The deal must really have benefits for the other party, be sure to point those out",
         "Critical": "You make the deal, it doesn't have to be that fair",
@@ -476,7 +651,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "When you closely study something or someone, ask the GM questions",
         "Comments": "When you closely study something or someone, ask the GM questions. such as <ul>\
         <li> &#x25BA; What happened here recently?</li>\
@@ -502,7 +677,7 @@ export const moves = {
         "stat": [
             "caring"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Insight gives you insight into other people's motive and agendas, lets you read poeple",
         "Comments": "When you closely study something or someone, ask the GM questions. such as <ul>\
         <li> &#x25BA; What do they want?</li>\
@@ -526,7 +701,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Purchase: Downtime purchase of rare things like magic items. ",
         "Comments": "Downtime purchase of rare and unsual things, such as magic items, improved weapons, etc.",
         "Critical": "",
@@ -541,7 +716,7 @@ export const moves = {
         "stat": [
             "intelligence"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Spout Lore : Know something about something ",
         "Comments": "When you search your memories and experiences or library for clues. The knowledge you get is like consulting a bestiary, travel guide, or library. You get facts about the subject matter. This is highly dependent on your careers ",
         "Critical": "",
@@ -553,19 +728,19 @@ export const moves = {
         "stat": [
             "caring"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Heal :  heal some harm",
         "Comments": "It takes a few minutes at least to provide healing, unless provided by a spell of the first magnitude. After each wounding, 1 roll per character who tries to heal, unless a spell. These do not stack, take the best. Heal also reduces the effect of an injury. Injuries commonly last until all harm is gone, and count as one extra harm you need to heal. Without healing it normally it takes 1 day to heal 1 harm, although infected wounds in bad conditions can get worse, 1 day for 1 harm.",
         "Critical": "",
-        "success": "Heal 3 harm plus if you have skill at Medecine or Mom, you can 3 harm per 1 Effort you spend.",
-        "mixed": "Heal 1 harm plusif you have skill at Medecine or Mom,  3 per 1 Effort you spend.",
-        "fail": "if you don’t have medicine or other appropriate career , you make things worse cause 1 harm"
+        "success": "Heal 15 harm.",
+        "mixed": "Heal 3 calm and  bandage  wound.",
+        "fail": "if you don’t have medicine or other appropriate career , you make things worse cause damage or possible infection"
     },
     "Calm": {
         "stat": [
             "caring"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Calm:  Calm someone down or smooth over a situation",
         "Comments": "Calm someone down",
         "Critical": "",
@@ -577,7 +752,7 @@ export const moves = {
         "stat": [
             "allure"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Seduce/Flirt/Entertain  : entertain, get someone to do something, distract them",
         "Comments": "Person to person interaction",
         "Critical": "",
@@ -593,7 +768,7 @@ export const moves = {
         "stat": [
             "allure"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "stat entertain",
         "Comments": "Performance will often require a level of Bard/Dancing/Noble  career to match the difficulty. A Tavern is but 1, but a King’s palace is more difficult (3 or 4). This is used to determine if the roll is easy or difficult.  ",
         "Critical": "",
@@ -609,7 +784,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Wicked Lie con or scam someone (not all lies are Wicked)",
         "Comments": "While a fearful person lies to avoid confrontation, and a lusty person lies to seduce, and a caring person makes white lies to make people feel better, a Wicked Lie is a con, a scam, a ‘Big Lie’. It can be brazen and completely unmoored from reality.</ul>\
         <li> &#x25BA; /li>\
@@ -627,7 +802,7 @@ export const moves = {
         "stat": [
             "cunning", "intelligence",
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Craft, lockpick, trap removal, anything technical",
         "Comments": "Craft, lockpick, trap removal, anything technical.",
         "Critical": "",
@@ -643,7 +818,7 @@ export const moves = {
         "stat": [
             "strength", "will", "health"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Hard physical work",
         "Comments": "Digging, hauling, building, armoring, constructing.",
         "Critical": "You do twice as much work",
@@ -659,7 +834,7 @@ export const moves = {
         "stat": [
             "intelligence", "will",
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Research, study, learn or copy spells",
         "Comments": "Research, study, learn or copy spells",
         "Critical": "You do twice as much work",
@@ -675,7 +850,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
-        "action": "Action",
+        "action": kAction,
         "tooltip": "Steal : steal or pickpocket",
         "Comments": "Stealing, pickpocketing, etc. Might not be possible in some circumstances without magic",
         "Critical": "",
@@ -689,7 +864,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Scout  When you sneak stealthily into a dangerous place",
         "Comments": "When you sneak stealthily into a dangerous place",
         "Critical": "",
@@ -701,7 +876,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Ambush: When you attack by surprise, loose non combat",
         "Comments": "When you describe a plan to inflict pain and suffering or harm on someone by surprise or by suddenly attacking, or executing a helpless person.  ",
         "Critical": "You inflict great pain and suffering and have the option to get away (if that is feasible)",
@@ -716,7 +891,7 @@ export const moves = {
         "stat": [
             "cunning"
         ],
-        "action": "Action",
+        "action": kAction,
         "tooltip": "Backstab:  When you attack by surprise in combat",
         "Comments": "The swing of a sword from behind with stealth. Note that it is difficult to backstab, unless you are entering the combat stealthily, or have been out of sight on the previous round. Then it might instead be easy.",
         "Critical": "Do +6 damage to him, stacks with assassin feats",
@@ -734,7 +909,7 @@ export const moves = {
             "allure",
             "intelligence"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Gossip:  When you seek information from conversation",
         "Comments": "When you chat with NPCs and ask questions, </l>\
         <li> &#x25BA; What is ____ up to?<ul>\
@@ -763,7 +938,7 @@ export const moves = {
             "intelligence",
             "avoidance"
         ],
-        "action": "Scene",
+        "action": kScene,
         "tooltip": "Perilous Journey: For a succesful wilderness journey",
         "Comments": "Describe how you proceed through the wilderness, and how you avoid danger. This can mean that almost any stat can be used, but probably not bravery. I.E. by careful planning you use Intelligence, with a sense of discretion use discretion, by cunning arts use cunning.. If just marching into the unknown and trying to use bravery you probably just automatically fail unless you have a narrative power.",
         "Critical": "You get their pronot without using supplies or exhaustion, not encountering the evil denizens of the land, you can find an adventure spot or a good denizen of the land who can assist you",
@@ -845,6 +1020,22 @@ function ListAllMagicPowers(owner) {
 }
 MakeAvailableToParser('ListAllMagicPowers', ListAllMagicPowers);
 
+
+function appearanceDialog(thing) {
+    let a = " <image src=\"" + getAppearanceImage(thing, 'token') + "\" alt=\"" + thing.name + "\"" +
+        "   style=\"max-width:256px" + FetchStyleFromAppearanceArray(thing, 'token') + "\"" +
+        "   ondragenter=\"onDragEnter(event,this)\" ondragover=\"onDragOver(event,this)\"" +
+        "   ondrop=\"onDropOnImage(event,this,'" + thing.id + "', 'token')\" ondragleave=\"onDragLeave(event,this)\">" +
+        " </image>" +
+        " <input type=\"color\" id=\"" + thing.id + "colorPicker\" name=\"" + thing.id + "colorPicker\"" +
+        "   value=\"" + getAppearanceTintForHTML(thing, 'token') + "\"" +
+        "   oninput=\"htmlContext.setAppearanceColor('" + thing.id + '", "token")>';
+
+
+    return a;
+
+}
+MakeAvailableToParser('appearanceDialog', appearanceDialog);
 
 function Listify(list, owner, sheet) {
     let output = "<ul>"
@@ -1053,23 +1244,6 @@ function takeDamage(ownerId, damage, damageType, advantage) {
         undefined, undefined, undefined, "");
 
 
-    // socket.emit('roll', {
-    //         title: owner.name + "<ul><li> Resist Damage </li><li> Damage: " + damage + " armor: " + armor + " mod " + mod_damage + " " + advantage + "</li></ul>",
-    //         style: "dual-move",
-    //         advantage: advantage,
-    //         roll: baseDice + (mod_damage >= 0 ? "+" + mod_damage : mod_damage),
-    //         resultsTable: takeDamageMove
-    //     });
-
-
-    // socket.emit('roll', {
-    //     owner: owner.name,
-    //     title: owner.name + "<ul><li> Resist Damage </li><li> Damage: " + damage + " armor: " + armor + " mod " + mod_damage + " " + advantage + "</li></ul>",
-    //     style: "dual-move",
-    //     advantage: advantage,
-    //     roll: baseDice + (mod_damage >= 0 ? "+" + mod_damage : mod_damage),
-    //     resultsTable: takeDamageMove
-    // });
 
 }
 
@@ -2172,6 +2346,29 @@ MakeAvailableToParser('CreateRollMoveStatString', CreateRollMoveStatString);
 
 
 
+function FeatsToShow(ownerId, stat, mv, skill, advantage, weapon_id, defense_or_offset, weapon_mode) {
+
+
+    let owner = GetRegisteredThing(ownerId);
+    for (let i = 0; i < owner.items.length; i++) {
+        let item = owner.items[i];
+        if (item.page == "careers" || item.page == "background") {
+            let career = GetRegisteredThing(item.file);
+            let keys = Object.keys(career.owner_featsChosen);
+            for (let k = 0; k < keys.length; k++) {
+                if (career.owner_featsChosen[keys[k]]) {
+                    let name = "CompendiumFiles/" + keys[k];
+
+                    let featSheet = GetRegisteredThing(name);
+
+                    list.push(featSheet);
+                }
+            }
+        }
+    }
+
+}
+
 function changeChatSkill(id, career, divElement) {
     //let menu = document.getElementById(divElement);
     //  menu.classList.remove("active")
@@ -2257,6 +2454,8 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
     let bonus = owner.stats[stat];
     if (!weapon_id || weapon_id == "undefined") {
 
+        if (moves[mv] == undefined) { throw ("err"); }
+
         socket.emit('rollmove', {
             ownerId: ownerId,
             description: description,
@@ -2269,14 +2468,6 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
             advantage: advantage,
             resultsTable: moves[mv]
         });
-
-        // socket.emit('roll', {
-        //     title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + "</li></ul>",
-        //     style: "dual-move",
-        //     advantage: advantage,
-        //     roll: baseDice + signed(bonus),
-        //     resultsTable: moves[mv]
-        // });
     } else {
         let weapon = GetRegisteredThing(weapon_id);
         if (!weapon) throw ("err");
@@ -2286,6 +2477,8 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
         }
         let skill = FindBestCareerNode(owner, mode)[1];
         console.log(skill);
+        if (moves[mv] == undefined) { throw ("err"); }
+
         socket.emit('rollmove', {
 
             ownerId: ownerId,
@@ -2313,29 +2506,7 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
 MakeAvailableToParser("rollMoveStat", rollMoveStat);
 MakeAvailableToHtml("rollMoveStat", rollMoveStat);
 
-// /// TODO rearrange data so this isn';t a seprate function
-// function rollSpellMoveStat(ownerId, stat, mv, skill, advantage, spell_id, spell_node) {
-//     let owner = GetRegisteredThing(ownerId);
-//     let damage = []
-//     let bonus = owner.stats[stat];
-//     let spell = GetRegisteredThing(spell_id);
-//     if (!spell) throw ("err");
-//     // let mode = weapon.weapon_modes[weapon_mode];
-//     // if (Expend(weapon_id, weapon_mode)) {
-//     //     RedrawWindow(owner)
-//     // }
-//     socket.emit('roll', {
-//         title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + spell.name + "</li></ul>",
-//         style: "dual-move",
-//         advantage: advantage,
-//         roll: baseDice + signed(bonus),
-//         damage: GetModifiedDamageString(spell),
-//         damage_bonus: 0, //FindBestCareerNode(owner, mode)[0],
-//         resultsTable: moves[mv]
-//     });
 
-
-// }
 
 
 function GetCareerLevel(owner, skill) {
@@ -2559,19 +2730,6 @@ function GetRollTextResult(thing, owner) {
 }
 MakeAvailableToParser("GetRollTextResult", GetRollTextResult);
 
-// function rollPTBAStat(ownerId, stat, isSave) {
-//     let owner = GetRegisteredThing(ownerId);
-//     let bonus = owner.stats[stat];
-//     socket.emit('roll', {
-//         title: owner.name + ' ' + stat.toUpperCase() + " Check ",
-//         style: "dual-move",
-//         roll: baseDice + signed(bonus),
-//         resultsTable: { Critical: "Crit", success: "Success", mixed: "Mixed", fail: "Failure" }
-//     });
-
-// }
-// MakeAvailableToParser("rollPTBAStat", rollPTBAStat);
-// MakeAvailableToHtml("rollPTBAStat", rollPTBAStat);
 
 function PTBAAbility(thing, stat, readonly) {
     if (!readonly)
@@ -2637,7 +2795,8 @@ function WeaponMoves(owner, weaponId) {
                     answer += "<div>"
                     answer += CreateRollMoveStatString("greentintButton roundbutton", "+",
                         mode.name, owner.id, stat, 'Attack', bonus[1], 1, weaponId, "weapon_modes", m);
-                    answer += CreateRollMoveStatString("middleButton", mode.name + '  +' + stat + "(" + owner.stats[stat] + ') ' + bonus[1] + '(' + bonus[0] + ") " + 'Rng(' + mode.range + ")",
+                    answer += CreateRollMoveStatString("midtintButton", '<span class="superEmphasis">'
+                        + mode.name + ' </span> ' + stat + "(" + owner.stats[stat] + ') ' + bonus[1] + '(' + bonus[0] + ") " + 'Rng(' + mode.range + ")",
                         mode.name, owner.id, stat, 'Attack', bonus[1], 0, weaponId, "weapon_modes", m);
                     answer += CreateRollMoveStatString("redtintButton roundbutton", '-',
                         mode.name, owner.id, stat, 'Attack', bonus[1], -1, weaponId, "weapon_modes", m);
@@ -2681,7 +2840,7 @@ function WeaponParries(thing, weaponId) {
                         answer += "<div>"
                         answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
                             mode.name, thing.id, stat, mode.move, bonus[1], 1, weaponId, "weapon_defenses", m);
-                        answer += CreateRollMoveStatString("middleButton", ' ' + mode.name + ' ' + bonus[1] + "(" + bonus[0] + ") " + 'Rng(' + mode.range + ")" + "(" + stat + ")",
+                        answer += CreateRollMoveStatString("midtintButton", '<span class="superEmphasis">' + mode.name + '</span> ' + bonus[1] + "(" + bonus[0] + ") " + 'Rng(' + mode.range + ")" + "(" + stat + ")",
                             mode.name, thing.id, stat, mode.move, bonus[1], 0, weaponId, "weapon_defenses", m);
                         answer += CreateRollMoveStatString("redtintButton roundbutton ", '-',
                             mode.name, thing.id, stat, mode.move, bonus[1], -1, weaponId, "weapon_defenses", m);
@@ -2698,13 +2857,13 @@ function WeaponParries(thing, weaponId) {
 function BackgroundButton(thing, window) {
 
 
-    let text = `<button onclick="htmlContext.dropDownToggle('backg_` + thing.id + `',window.document)" class="blueButton">Choose Background</button>`;
+    let text = `< button onclick = "htmlContext.dropDownToggle('backg_` + thing.id + `',window.document)" class="blueButton" > Choose Background</button > `;
 
-    text += `<div id="backg_` + thing.id + `" class="dropdown-content itemsetheader short crit">`;
+    text += `< div id = "backg_` + thing.id + `" class="dropdown-content itemsetheader short crit" > `;
 
-    text += `<input type=" text" placeholder="Search.." id="backg_c_` + thing.id + `"
-                onkeyup="filterDropDown('backg_c_`+ thing.id + `','backg_` + thing.id + `')"> </input>
-            `+ extractFromCompendium(["background"], thing);
+    text += `< input type = " text" placeholder = "Search.." id = "backg_c_` + thing.id + `"
+    onkeyup = "filterDropDown('backg_c_`+ thing.id + `','backg_` + thing.id + `')" > </input >
+        `+ extractFromCompendium(["background"], thing);
 
     // text += '<div class="outlined dragitem">'
     //     + drawItems(thing, IsBackgroundItem) +
@@ -2738,18 +2897,27 @@ function PTBAMoves(thing) {
 
     });
     let action = "";
+    let once = false;
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i];
         if (action != moves[key].action) {
+            if (once) answer += "</div>";
+            once = true;
             action = moves[key].action;
-            answer += "<div class=\"npcheader\" >" + action + "</div>"
+            answer += "<div><div class=\"npcheader\" >" + action + "</div>"
 
+        }
+        if (key == "Parry") {
+
+            let weapons = GetWeaponsList(thing);
+            for (let w = 0; w < weapons.length; w++) {
+                answer += WeaponParries(thing, weapons[w]);
+            }
         }
         if (key == "Attack") {
             let weapons = GetWeaponsList(thing);
             for (let w = 0; w < weapons.length; w++) {
                 answer += WeaponMoves(thing, weapons[w]);
-                answer += WeaponParries(thing, weapons[w]);
             }
 
         } else {
@@ -2760,12 +2928,16 @@ function PTBAMoves(thing) {
 
                 answer += "<div class=\"padded\" >";
 
+                if (key == "Confront") {
+                    console.log("jhj");
+                }
+
 
                 answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
                     moves[key].Comments, thing.id, stat, key, skill, 1);
 
-                answer += CreateRollMoveStatString("middleButton ",
-                    key + "+ " + stat + "(" + thing.stats[stat] + ") " + skill + '(' + bonus[0] + ")",
+                answer += CreateRollMoveStatString("midtintButton ",
+                    '<span class="superEmphasis">' + key + '</span> ' + stat + "(" + thing.stats[stat] + ") " + skill + '(' + bonus[0] + ")",
                     moves[key].Comments, thing.id, stat, key, skill, 0);
                 answer += CreateRollMoveStatString("redtintButton roundbutton ", '+',
                     moves[key].Comments, thing.id, stat, key, skill, -1);
@@ -2811,7 +2983,7 @@ function PTBADefenses(thing) {
     let bonus = FindBestCareerNode(thing, mv);
 
     answer += CreateRollMoveStatString("greentintButton roundbutton", "+", moves[mv].Comments, thing.id, stat, mv, bonus[1], 1);
-    answer += CreateRollMoveStatString("middleButton", "+ ", moves[mv].Comments, thing.id, stat, mv, bonus[1], 0);
+    answer += CreateRollMoveStatString("midtintButton", "+ ", moves[mv].Comments, thing.id, stat, mv, bonus[1], 0);
     answer += CreateRollMoveStatString("redtintButton roundbutton", "-", moves[mv].Comments, thing.id, stat, mv, bonus[1], -1);
 
 
@@ -2944,7 +3116,7 @@ function DrawArrayEnhancementButtons(thing, owner, array) {
         s += '<button class="greentintButton roundbutton" onclick ="ChangeSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\',1)">'
             + "+" +
             "</button>";
-        s += '<button class="middleButton" onclick="ZeroSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\')">'
+        s += '<button class="midtintButton" onclick="ZeroSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\')">'
             + ' ' + (thing?.owner_modified[stat] ? "(" + thing.owner_modified[stat] + ") " : "") + stat +
             "</button>";
         s += '<button class="redtintButton roundbutton" onclick ="ChangeSpell(\'' + thing.id + '\',\'' + owner.id + '\',\'' + stat + '\',-1)">'
@@ -3188,15 +3360,7 @@ function CastSpell(thingId, ownerId, advantage) {
             rollMoveStat(ownerId, stat, mv, "", advantage,
                 undefined, undefined, undefined, "");
 
-            // socket.emit('roll', {
-            //     title: owner.name + '<ul><li>' + stat.toUpperCase() + "</li><li>" + mv + ' ' + thing.name + "</li></ul>",
-            //     style: "dual-move",
-            //     advantage: advantage,
-            //     roll: baseDice + signed(bonus),
-            //     damage: thing.Damage,
-            //     damage_bonus: 0,
-            //     resultsTable: moves[mv]
-            // });
+
 
         } else if (moves[thing.Move]) {
             let mv = moves[thing.Move];

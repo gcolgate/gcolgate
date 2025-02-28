@@ -16,8 +16,8 @@ const jsonHandling = require('./json_handling.js');
 const probeImage = require('probe-image-size');
 
 const host = 'localhost';
-const port = 8000;
-//const port = 30000;
+//const port = 8000;
+const port = 30000;
 
 const app = express();
 const http_io = http.Server(app);
