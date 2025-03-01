@@ -569,6 +569,7 @@ var items = [
                 type: "Melee",
                 damage: [{ damage: "2d8", type: "piercing", when: "" }],
                 career: ["Martial"],
+                wounding: "Long Piercing"
             }, {
                 name: "Spear Clobber",
                 range: 1,
@@ -577,6 +578,7 @@ var items = [
                 type: "Melee",
                 damage: [{ damage: "2d4", type: "bludgeoning", when: "" }],
                 career: ["Brawling"],
+                wounding: "Light Bludgeon"
             }]
     },
     {
@@ -604,6 +606,7 @@ var items = [
                 type: "Melee",
                 damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
                 career: ["Brawling"],
+                wounding: "Light Bludgeon"
             }]
     },
     {
@@ -631,6 +634,7 @@ var items = [
                 type: "Melee",
                 damage: [{ damage: "2d10", type: "piercing or slashing", when: "" }],
                 career: ["Martial"],
+                wounding: "Polearm"
             },
             {
                 name: "Polearm Clobber",
@@ -639,7 +643,8 @@ var items = [
                 move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
-                career: ["Brawling"]
+                career: ["Brawling"],
+                wounding: "Light Bludgeon"
             }]
     },
     {
@@ -656,6 +661,7 @@ var items = [
             hands: 2,
             type: "Melee",
             career: ["Martial", "Brawling"],
+            wounding: "Light Bludgeon"
         }],
         weapon_modes:
             [{
@@ -667,6 +673,7 @@ var items = [
                 type: "Melee",
                 damage: [{ damage: "2d10", type: "piercing or slashing", when: "" }],
                 career: ["Martial"],
+                wounding: "Long Piercing"
             },
             {
                 name: "Pike Clobber",
@@ -677,6 +684,7 @@ var items = [
                 damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
                 career: ["Brawling"],
 
+                wounding: "Light Bludgeon"
             }]
     },
     {
@@ -694,6 +702,7 @@ var items = [
             hands: 1,
             type: "Melee",
             career: ["Paladin", "Martial", "Noble"],
+
         }],
         weapon_modes:
             [{
@@ -704,6 +713,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 type: "Melee",
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
+                wounding: "Heavy Cut"
             },
             {
                 name: "Longsword Horseback Charge",
@@ -714,6 +724,7 @@ var items = [
                 move: ["Attack"],
                 type: "Melee",
                 damage: [{ damage: "2d10", type: "slashing", when: "" }],
+                wounding: "Heavy Cut"
             },
             {
                 name: "Longsword Pommel Smash",
@@ -722,7 +733,8 @@ var items = [
                 career: ["Brawling"],
                 move: ["Attack", "Ambush"],
                 hands: 1,
-                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }]
+                damage: [{ damage: "1d8", type: "bludgeoning", when: "" }],
+                wounding: "Light Bludgeon"
             }],
     },
     {
@@ -751,6 +763,7 @@ var items = [
                 type: "Melee",
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
+                powers: ["Brutal Strength", "Bleeding"]
             }],
     },
 
@@ -821,6 +834,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d6", type: "slashing", when: "" }],
                 career: ["Martial"],
+                wounding: "Light Cut"
             },
             {
 
@@ -832,6 +846,7 @@ var items = [
                 move: ["Attack"],
                 damage: [{ damage: "3d6", type: "piercing or slashing", when: "" }],
                 career: ["Cavalry"],
+                wounding: "Light Cut"
             },
             {
                 name: "Cutlass Pommel",
@@ -840,7 +855,8 @@ var items = [
                 hands: 1,
                 move: ["Attack", "Ambush"],
                 career: ["Brawling"],
-                damage: [{ damage: "1d6", type: "bludgeoning", when: "" }]
+                damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
+                wounding: "Light Bludgeon"
             }
             ],
     },
@@ -868,6 +884,7 @@ var items = [
                 damage: [{ damage: "2d12+4", type: "Piercing", when: "" }],
                 career: ["Paladin", "Cavalry"],
                 move: ["Attack"],
+                wounding: "Heavy Pierce"
             },
             {
                 range: 2,
@@ -877,6 +894,7 @@ var items = [
                 damage: [{ damage: "2d8", type: "Piercing", when: "" }],
                 career: ["Martial"],
                 move: ["Attack", "Ambush"],
+                wounding: "Long Pierce"
             }],
         counters: [{ max: 1, cur: 1, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 1 },] }],
 
@@ -898,6 +916,7 @@ var items = [
                 damage: [{ damage: "2d4", type: "bludgeoning", when: "" }],
                 career: ["Martial", "Brawling"],
                 move: ["Attack", "Ambush"],
+                wounding: "Light Bludgeon"
             },
             ],
     },
@@ -918,6 +937,7 @@ var items = [
                 damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
                 career: ["Martial", "Brawling"],
                 move: ["Attack", "Ambush"],
+                wounding: "Medium Bludgeon"
             }],
     },
     {
@@ -944,6 +964,7 @@ var items = [
                 damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
                 career: ["Brawling"],
                 move: ["Attack", "Ambush"],
+                wounding: "Light Bludgeon"
             },
             {
                 name: "Kick",
@@ -953,6 +974,7 @@ var items = [
                 damage: [{ damage: "1d6", type: "bludgeoning", when: "" }],
                 career: ["Dancer", "Brawling"],
                 move: ["Attack", "Ambush"],
+                wounding: "Light Bludgeon"
             },
             {
                 name: "Grapple",
@@ -983,6 +1005,7 @@ var items = [
                 move: ["Ambush", "Attack"],
                 charges: 1,
                 no_strength: true,
+                wounding: "Short Pierce"
             },
             ],
         counters: [{ max: 6, cur: 6, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 6 },] }],
@@ -1007,6 +1030,7 @@ var items = [
                 move: ["Ambush", "Attack"],
                 charges: 1,
                 no_strength: true,
+                wounding: "Strong Pierce"
             },
             ],
         counters: [{ max: 20, cur: 20, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 20 },] }],
@@ -1030,6 +1054,7 @@ var items = [
                 move: ["Ambush", "Attack"],
                 career: ["Archer"],
                 charges: 1,
+                wounding: "Strong Pierce"
             },
             ],
         counters: [{ max: 20, cur: 20, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 20 },] }],
@@ -1053,6 +1078,7 @@ var items = [
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
                 career: ["HorseArcher", "Archer"],
                 charges: 1,
+                wounding: "Strong Pierce"
             },
             ],
         counters: [{ max: 20, cur: 20, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 20 },] }],
@@ -1075,6 +1101,7 @@ var items = [
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
                 career: ["Archer", "HorseArcher", "Hunter"],
                 charges: 1,
+                wounding: "Short Pierce"
             },
             ],
         counters: [{ max: 20, cur: 20, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 20 },] }],
@@ -1104,6 +1131,7 @@ var items = [
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
                 move: ["Attack", "Ambush"],
                 career: ["Noble", "Urban"],
+                wounding: "Short Pierce"
             },
 
             {
@@ -1121,6 +1149,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "1d4", type: "bludgeoning", when: "" }],
                 career: ["Brawling"],
+                wounding: "Light Bludgeon"
             }],
     }
     ,
@@ -1147,6 +1176,8 @@ var items = [
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
                 career: ["Noble", "Urban"],
+                wounding: "Short Pierce"
+
             },
 
             {
@@ -1163,6 +1194,8 @@ var items = [
                 move: ["Ambush", "Attack"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
                 career: ["Noble", "Assassin", "Urban"],
+                wounding: "Short Pierce"
+
             }],
     },
     {
@@ -1180,6 +1213,8 @@ var items = [
                 move: ["Attack", "Ambush"],
                 career: ["Brawling", "Assassin"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                wounding: "Short Pierce"
+
             },
             {
                 name: "Throwing dagger Feint",
@@ -1196,6 +1231,8 @@ var items = [
                 move: ["Attack", "Ambush"],
                 career: ["Brawling", "Assassin", "Urban"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                wounding: "Short Pierce"
+
             },
             {
                 name: "Thrown Dagger",
@@ -1205,6 +1242,8 @@ var items = [
                 move: ["Ambush", "Attack"],
                 damage: [{ damage: "1d8", type: "piercing", when: "" }],
                 charges: 1,
+                wounding: "Short Pierce"
+
             }],
         counters: [{ max: 1, cur: 1, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 1 },] }],
 
@@ -1225,6 +1264,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 career: ["Martial"],
                 damage: [{ damage: "2d6", type: "slashing", when: "" }],
+                wounding: "Light Cut"
             },
             {
                 name: "Hand Axe Thrown",
@@ -1234,6 +1274,7 @@ var items = [
                 range: 10,
                 damage: [{ damage: "1d8", type: "slashing", when: "" }],
                 charges: 1,
+                wounding: "Light Cut"
             }],
         counters: [{ max: 1, cur: 1, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 1 },] }],
 
@@ -1254,6 +1295,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 career: ["Hunter", "Infantry", "Gladiator", "Athlete"],
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
+                wounding: "Short Pierce"
             },
             {
                 name: "Throw Javelin",
@@ -1262,6 +1304,7 @@ var items = [
                 range: 10,
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d6", type: "piercing", when: "" }],
+                wounding: "Short Pierce",
                 charges: 1,
             }],
         counters: [{ max: 1, cur: 1, regen: [{ when: "After Fight", regen_amount: 1 }, { when: "Shopping", regen_amount: 1 },] }],
@@ -1282,6 +1325,7 @@ var items = [
                 range: 0.5,
                 damage: [{ damage: "1d6", type: "piercing", when: "" }],
                 career: ["Assassin", "Brawling"],
+                wounding: "Short Pierce"
             },
 
             {
@@ -1304,6 +1348,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 awkward: true,
                 damage: [{ damage: "1d6", type: "piercing", when: "" }],
+                wounding: "Short Pierce",
                 career: ["Assassin"],
 
             }],
@@ -1325,6 +1370,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d6", type: "bludgeoning", when: "" }],
                 career: ["Gladiator", "Paladin"],
+                wounding: "Heavy Bludgeon"
             },
             {
                 name: "Flail Extended Swing",
@@ -1333,6 +1379,7 @@ var items = [
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d8", type: "bludgeoning", when: "you have time to wind up" }],
                 career: ["Gladiator", "Paladin"],
+                wounding: "Heavy Bludgeon"
             }
             ],
 
@@ -1362,15 +1409,17 @@ var items = [
                 range: 1.1,
                 damage: [{ damage: "2d12", type: "slashing", when: "" }],
                 career: ["Martial"],
+               wounding: "Heavy Cut"
             },
-            {
-                name: "Great Axe Pommel",
-                type: "Grapple",
-                move: ["Attack", "Ambush"],
-                range: 0,
-                damage: [{ damage: "1d8", type: "piercing", when: "" }],
-                career: ["Martial", "Assassin"],
-            },
+            // {
+            //     name: "Great Axe Pommel",
+            //     type: "Grapple",
+            //     move: ["Attack", "Ambush"],
+            //     range: 0,
+            //     damage: [{ damage: "1d8", type: "piercing", when: "" }],
+            //     career: ["Martial", "Assassin"],
+
+            // },
             ],
 
     },
@@ -1391,15 +1440,17 @@ var items = [
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
                 career: ["Martial", "Strenth"],
+
+            wounding: "Heavy Bludgeon"
             },
-            {
-                name: "Great Club Pommel",
-                type: "Grapple",
-                move: ["Attack", "Ambush"],
-                range: 0,
-                damage: [{ damage: "1d8", type: "piercing", when: "" }],
-                career: ["Brawling", "Gladiator", "Strength"],
-            },
+            // {
+            //     name: "Great Club Pommel",
+            //     type: "Grapple",
+            //     move: ["Attack", "Ambush"],
+            //     range: 0,
+            //     damage: [{ damage: "1d8", type: "piercing", when: "" }],
+            //     career: ["Brawling", "Gladiator", "Strength"],
+            // },
             ],
 
     },
@@ -1457,15 +1508,16 @@ var items = [
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "4d6", type: "slashing", when: "" }],
                 career: ["Martial"],
+                wounding: "Heavy Cut",
             },
-            {
-                name: "Great Sword Pommel",
-                type: "Grapple",
-                move: ["Attack", "Ambush"],
-                range: 0,
-                damage: [{ damage: "1d8", type: "piercing", when: "" }],
-                career: ["Brawling", "Assassin"],
-            },
+            // {
+            //     name: "Great Sword Pommel",
+            //     type: "Grapple",
+            //     move: ["Attack", "Ambush"],
+            //     range: 0,
+            //     damage: [{ damage: "1d8", type: "piercing", when: "" }],
+            //     career: ["Brawling", "Assassin"],
+            // },
             ],
 
     },
@@ -1489,6 +1541,7 @@ var items = [
                     description: "Can set target alfame",
                     charges: 1,
                     no_strength: true,
+                    wounding: "Fire Blast",
                 }
             ],
         counters: [{ name: "charges", max: 7, cur: 7, regen_when: "Dawn", regen_amount: "1d4" }],
@@ -1511,6 +1564,7 @@ var items = [
                 career: ["Assassin"],
                 charges: 1,
                 no_strength: true,
+                wounding: "Acid Blast",
             }],
         counters: [{ max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
     },
@@ -1533,6 +1587,7 @@ var items = [
                 career: ["Assassin"],
                 charges: 1,
                 no_strength: true,
+                wounding: "Fire Blast",
             }],
         counters: [{ name: "vials", max: 1, cur: 1, regen_when: "Shopping", regen_amount: "1" }],
     },
@@ -1631,7 +1686,7 @@ var feats = {
 
     ElvishMagic: {
 
-        name: "Elviush Magic",
+        name: "Elvish Magic",
         description: "You draw upon the natural magic of elves",
         type: "Magic",
 

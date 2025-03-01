@@ -2,7 +2,7 @@ To do
 
 Conditions
     set condition: add icon and fx. Include all the results from moves
-    See if any of the spell or spell results should be conditions. Figure out how to use conditions in rolls 
+    See if any of the spell or spell results should be conditions. Figure out how to use conditions in rolls
 
 Editing map pain.
 
@@ -26,7 +26,7 @@ Wounds and conditions and effects also use this system, as do magic items.
 
 4) setting +z and -z buttons are broken due to mouseclicks beind disable. UI issue since the + and - buttons are in the way a lot
 
-5) Scaling is terribly implemented.  
+5) Scaling is terribly implemented.
         New method: when hovered, show 8 pins as new models
         the pin moves the coordinates so that the pin is in the new mouse point
         Only clicking on the pin moves it.
@@ -47,7 +47,7 @@ Clean up spacing in move chat
 
 
  exotic: 3d dice.
- 
+
 Creating new: Players, documents, need to use the typed in name, not a random name, in the displays. File id should be an uuid not a random name
 
 special weapon player defenses not shown or not working or something
@@ -55,10 +55,29 @@ special weapon player defenses not shown or not working or something
 There should be a spell to conjure or enhance weapons that add extra actions like burnify
 Add place to add conditions   for NPCs and to manage health
 Resist damage needs to automatically include armor and have some degree of hit location or maybe attacks allow hitting in the head or body or arms or legs.
-Damage is now all over the map include MERP ideas... weapons include penetration, damage type, 
+Damage is now all over the map include MERP ideas... weapons include penetration, damage type,
 Conditions referred to in Moves should be hoverable.
 spells need to provide ways to set damage
 make moves for every spell
+
+Matrix
+                    thigh abdomen neck head chest forearm shoulder foot face thing but groin / Armor at spot low/medium/high
+piercing
+cut
+Grapple
+Fire
+Lightning
+Frost
+Dark Magic
+
+thigh piercing : Glancing Blow, Cut, Bleed, Impale, Impale through bone, Bruise,
+abdomen  : Scrape, Cut, Bleed, Impale, Transfixed
+neck  , Scrape, cut, bleed, vocal coords damaged, airway damaged, spinal injury,throat cut (massive bleeding),
+
+
+Conditions: from above, defender has shield, defender is huge, defender is tiny, resistances, from below, from behind, area effect
+
+third dimension, strenth + size of weapon - size of creature
 
 
 pain POP-OUT:
@@ -72,20 +91,19 @@ pain POP-OUT:
     Many things break on pop out windows like the inventory screen
     Bug: Would like to pop out chat window ,
 For slow network, need to put up clock when loading initial scene, as each character sheet is loaded.
- 
+
 Tile propoerties: when editing map, allow double clicking on tiles to change properties such as color and shader , so far implented for tokens in documents only
     note: updating a player does not change the color (or rather it turns it white) until reloading the game
     Shaders: put a json in the shaders folder that details all combinations of shaders. give each one a name
     Create a shader for points of interest that twinkles them by making them more or less opaque or bright in semi random ways
     Put a menu on the appearance for tokens that allows changing the shader.
 
-Fix non-fighty characters dancer based had no , still an issue.   
+Fix non-fighty characters dancer based had no , still an issue.
 Make armor proficiencies more known on the sheet currently they are hidden.
 
-
-    
+A Remember camera position, a little more complicated because it is camera position per player per scene
 B Find token from sheet button
-C group things to scroll 
+C group things to scroll
 D buy item doesn't deduct money
 E Could spend some time to make a context menu for text editing with these
     bold: Toggles bold on/off for the selection or at the insertion point. (Key) control b
@@ -123,18 +141,18 @@ Reorganization:
 Bugs:
     Can we get rid of tag files completely? Or necc for compendiums for quick loading
 Instances:
- 
- 
-Bug: Do we need selecting more than one in directory window  for nulti drag? Deprioritized 
- 
 
- 
+Bug: Do we need selecting more than one in directory window  for nulti drag? Deprioritized
+
+Bug: Popup windows on spell screen start open
+
+
 Bug: Changes to inventory etc should be printed out to chat
 Need transaction history
 Need UNDO
 Seems to break if left alone for a while (like 3 hours)
 Careers should show feats chosen without opening panel. feats should hover
- 
+
 Tighten space for players sheets
 
 Layout: Spell window has lots of wasted space, Features too
@@ -156,12 +174,12 @@ Game: maybe cursor keys scroll map. Maybe control also controls map.
 
 
 future: provide Transactions tag where all transactions are recorded, with running total of money
- 
+
 
 4. Image library required on server 50%. Cut and copy images?. Need to remember last folder.
 
     LIGHTS deprioritized. default scene is full vision lights don't apply, these are toggleable
-      
+
     lights: gm placeable lights. Deprioritized
     lights: attach lights to different objects, when equipped by a player they show light Deprioritized
     darkvision, infravision, low light vision, true sight, etc. Deprioritized
@@ -170,7 +188,7 @@ future: provide Transactions tag where all transactions are recorded, with runni
       pull out templates when casting a spell based for area effects. Use the effect size on the spell
     Add a tokenizer
 
-Isometric projection of tiles.  
+Isometric projection of tiles.
     tiles are drawn flattened
     tokens are not unless a check box is hit. Add scale too on appearance tab
     would need new grid shaders
@@ -181,7 +199,7 @@ Isometric projection of tiles.
 
 
 2. Hud widget to adjust Z is broken since it shares css with new tooltips, need to differentiate
-     
+
 3. tooltip and story need better css
 
   4. Hiding things to players
@@ -221,7 +239,7 @@ Isometric projection of tiles.
 Window functionality
 New player picks random name, as does new document, also new scene doesn't update
 Delete item
-Scene editor scaling tiles not working well. 
+Scene editor scaling tiles not working well.
 1) Need to create handles
 2) Drag handles
 3) Create scene documents from a click that don't appear in documents but appear under the scene

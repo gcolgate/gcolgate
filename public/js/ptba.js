@@ -1218,13 +1218,13 @@ var takeDamageMove = {
                     <li>● You take a level of exhaustion. \
                  </ul> \
                 </div></div></a>',
-
-    "fail": 'Take double damage wounds and the   <a href="#"> choose 1 GM chooses chooses 1 \
+// here in 'you have an injury roll on injury table
+    "fail": 'Take double damage  and the   <a href="#"> and the GM chooses chooses 1 \
             <div class="tooltipcontainer">\
                 <div class="tooltip">\
                  <ul> \
                     <li>● You’re out of action: unconscious, trapped, incoherent or panicked.</li> \
-                    <li>● It’s worse than it seemed. Lose double damage. </li>\
+                    <li>● It’s worse than it seemed. Take double damage again. </li>\
                     <li>● You have an injury, like a hurt leg (slowed), bleeding (lose additional damage with a chance each round, \
                           each 6 for light bleeding or greater than 1 for heavy), a hurt arm (-1 with actions from that arm),\
                           partial blindness (-3 to steel, many actions become more difficult) Certain weapons get bonuses to some kinds of injuries, so if you get struck by those you might be in worse shape. \
