@@ -242,8 +242,9 @@ function writeJsonFileInPublic(dir, fileName, json) {
 
     try {
         let pathName = path.join(__dirname, 'public', dir, fileName + '.json');
-
+        console.log("Writing " + pathName);
         rawfs.writeFileSync(pathName, JSON.stringify(json));
+        console.log("Wrote " + pathName);
         if (++counter > 20) { console.log("."); counter = 0; }
 
     } catch (err) {
@@ -1409,17 +1410,17 @@ var items = [
                 range: 1.1,
                 damage: [{ damage: "2d12", type: "slashing", when: "" }],
                 career: ["Martial"],
-               wounding: "Heavy Cut"
+                wounding: "Heavy Cut"
             },
-            // {
-            //     name: "Great Axe Pommel",
-            //     type: "Grapple",
-            //     move: ["Attack", "Ambush"],
-            //     range: 0,
-            //     damage: [{ damage: "1d8", type: "piercing", when: "" }],
-            //     career: ["Martial", "Assassin"],
+                // {
+                //     name: "Great Axe Pommel",
+                //     type: "Grapple",
+                //     move: ["Attack", "Ambush"],
+                //     range: 0,
+                //     damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                //     career: ["Martial", "Assassin"],
 
-            // },
+                // },
             ],
 
     },
@@ -1441,16 +1442,16 @@ var items = [
                 damage: [{ damage: "2d8", type: "slashing", when: "" }],
                 career: ["Martial", "Strenth"],
 
-            wounding: "Heavy Bludgeon"
+                wounding: "Heavy Bludgeon"
             },
-            // {
-            //     name: "Great Club Pommel",
-            //     type: "Grapple",
-            //     move: ["Attack", "Ambush"],
-            //     range: 0,
-            //     damage: [{ damage: "1d8", type: "piercing", when: "" }],
-            //     career: ["Brawling", "Gladiator", "Strength"],
-            // },
+                // {
+                //     name: "Great Club Pommel",
+                //     type: "Grapple",
+                //     move: ["Attack", "Ambush"],
+                //     range: 0,
+                //     damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                //     career: ["Brawling", "Gladiator", "Strength"],
+                // },
             ],
 
     },
@@ -1510,14 +1511,14 @@ var items = [
                 career: ["Martial"],
                 wounding: "Heavy Cut",
             },
-            // {
-            //     name: "Great Sword Pommel",
-            //     type: "Grapple",
-            //     move: ["Attack", "Ambush"],
-            //     range: 0,
-            //     damage: [{ damage: "1d8", type: "piercing", when: "" }],
-            //     career: ["Brawling", "Assassin"],
-            // },
+                // {
+                //     name: "Great Sword Pommel",
+                //     type: "Grapple",
+                //     move: ["Attack", "Ambush"],
+                //     range: 0,
+                //     damage: [{ damage: "1d8", type: "piercing", when: "" }],
+                //     career: ["Brawling", "Assassin"],
+                // },
             ],
 
     },
@@ -1680,7 +1681,7 @@ var items = [
 ];
 /////////// PTBA source
 
-var feats = {
+var feats_master_list= {
 
 
 
@@ -1826,14 +1827,15 @@ var feats = {
         name: "Anatomy",
         description: "Do +5 damage to an on a surprise attack.",
         type: "Combat",
+        activated: true,
         bonusType: "Damage",
         bonus: 5,
-        Moves: ["Ambush", "Backstab"],
+        moves: ["Ambush", "Backstab"],
     },
     Animal_Communication: {
         name: "Animal Communication",
         description: "For Effort, ‘understand’ an animal and communicate to him your intentions without any sort of roll",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
     },
     Animal_Companion: {
@@ -1844,16 +1846,17 @@ var feats = {
     Animal_Influence: {
         name: "Animal Influence",
         description: "For Effort, automatically influence an animal.. Calm them, or make them back down due to your superior chest pounding, without any sort of roll",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
 
     },
     Armor_Master: {
         name: "Armor Master",
-        description: "+1 to resist damage when wearing heavy armor(requires profieciency in that)",
+        description: "+1 to resist damage when wearing heavy armor",
         type: "Combat",
         EquipmentNeeded: "Heavy Armor",
-        Moves: ["ResistDamage"],
+        activated: true,    // needs to be based onEquipment
+        moves: ["ResistDamage"],
         bonus: 1,
 
     },
@@ -1870,10 +1873,16 @@ var feats = {
     Berserk: {
         name: "Berserk",
         description: "Enter a rage, use 1 Effort, +1 forward on offense, -1 forward  on defense until you decide to stop raging",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
-        Moves: ["Attack", "Ambush"],
-        bonus: 1,
+        activated: false,
+        moves: ["Attack", "Ambush", "Parry", "Dodge"],
+        complexBonuses: {
+                Attack: 1,
+                Ambush: 1,
+                Parry: -1,
+                Dodge: -1},
+
         HinderedMoves: ["Parry", "Dodge"],
         minus: 1,
 
@@ -1896,7 +1905,7 @@ var feats = {
     Critic: {
         name: "Critic",
         description: "Spend a Effort to automatically know the weaknesses in your foe’s equipment (from your specialty), and gain an advantage of some kind.",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
     },
     Demonology_And_Cults: {
@@ -1907,7 +1916,7 @@ var feats = {
     Disguise_Master: {
         name: "Disguise Master",
         description: "Spend a Effort to make a perfect disguise, or as good as you can with the materials at hand.",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
     },
     Dynasties: {
@@ -1918,19 +1927,23 @@ var feats = {
     Expert_Lockpick: {
         name: "Expert Lockpick",
         description: "Spend Effort to pick a lock without any sort of roll.",
-        type: "Activated",
+        NeedsActivation:true,
+        moves: ["Devices"],
+        activated: false,
         EffortLoss: 1,
     },
     Expert_Pickpocket: {
         name: "Expert Pickpocket",
         description: "Spend Effort to steal something without any sort of roll",
-        type: "Activated",
+        NeedsActivation:true,
+        moves: ["Steal"],
+        activated: false,
         EffortLoss: 1,
     },
     Extra: {
         name: "Extra",
         description: "Spend Effort to pull out a backup or extra gear in your specialty from your pack",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
     },
     God_Talker: {
@@ -1951,280 +1964,295 @@ var feats = {
     Imbue_Magic: {
         name: "Imbue Magic",
         description: "You can, at great expense, and time, and Effort, make magical versions of your specialty or specialties.",
-        type: "Downtime",
-        Kata: {
-            name: "Kata",
-            description: "You dance in a spiritual way.  As you dance, spend a bonus action to gain 2 mana point you can immediately add to your aura (for use in spells)",
-            type: "bonus action",
-            stuff: "TODO",
-        },
-        Magical_Performance: {
-            name: "Magical Performance",
-            description: " You can cast a spell subtly through your performance that only the most alert will notice, well, as long as the spell results aren’t obvious. Spend Effort to cast a spell by singing it.",
-            type: "Activated",
-            EffortLoss: 1,
-        },
-        Master_Acrobat: {
-            name: "Master Acrobat",
-            description: "Spend Effort to automatically make a difficult acrobatic move without a roll, or to get advantage on dodge",
-            Moves: ["Dodge"],
-            type: "Activated",
-            EffortLoss: 1,
-        },
-        Master_Musician: {
-            name: "Master Musician",
-            description: "You are really good at your instrument. You could beat the devil in a fiddle duel. ",
-            type: "Scene",
-        },
-        Master_of_Stealth: {
-            name: "Master of Stealth",
-            description: "Spend Effort to sneak without any sort of roll, you can spend 1 additional effort points for all your friends. Also applies to ‘scout’ rolls",
-            type: "Activated",
-            EffortLoss: 1,
-        },
-        McGuyver: {
-            name: "McGuyver",
-            description: "You can use your specialty in a quick manner with improper tools, with an Effort point you can acheive unlikely results",
-            type: "Activated",
-            EffortLoss: 1,
-        },
-        Mercy: {
-            name: "Mercy! Spare Me!",
-            description: "Spend Effort to not be the target of a creature’s attack, lasts until you attack.",
-            type: "Activated",
-            EffortLoss: 1,
-        },
-        Mobile_Archer: {
-            name: "Mobile Archer",
-            description: "Can both move and shoot your bow. Normally all aimed bows and crossbows require you not to move on the turn you are shooting, this lets you skip that.",
-            type: "Combat"
-        },
-        Monotheist: {
-            name: "Monotheist",
-            description: "You believe all other gods are but reflections of your own. This is a heresy, but some gods like this and give you +1 rank in your usage dice.",
-            type: "Scene",
-            stuff: "TODO",
-        },
-        Musical_Number: {
-            name: "Musical Number",
-            description: "Explain to the GM the song,  the dance, the scene, and spend Effort. Resolve a problem (like building an orphanage, getting past the guards) after a broadway or bollywood sized dancing and musical number where everyone in the scene participates. Each player must say how he is contributing or fighting against or sitting out the musical number.  Each player can roll to give you a +1 or a -1  to the result.  Then roll Performance. On a hit it’s what you desire. (Note, no-one dies or gets injured during the musical number, although attitudes might change). A failure may indicate a counter narrative gains control of the scene.",
-            type: "Activated",
-            EffortLoss: 1,
-        },
-        Musical_Virtuoso: {
-            name: "Musical Virtuoso",
-            description: "Be able to play any instrument well, even a klaathian nose flute",
-            type: "Scene",
-        },
-        Pack_Rat: {
-            name: "Pack Rat",
-            description: "Carry 50% more than normal",
-            type: "equipment",
-            stuff: "TODO",
-        },
-        Poison_Master: {
-            name: "Poison Master",
-            description: "Each Effort spent after an attack deals an additional + 3 damage, or when introduced into drink can incapacitate or kill one individual. Brewing more poison for a bigger set of targets, like a garrison, requires being industrious and spending supplies and money.You can also spend supplies to get various poisons from the poison list.",
-            type: "Activated",
-            EffortLoss: 1,
-            Moves: ["Attack", "Backstab"],
-            bonusType: "Damage",
-            bonus: 3,
-        },
-        Polytheist: {
-            name: "Polytheist",
-            description: "You can call upon other gods, not just your main god, this might help for gaining advantage on planar forces rolls. Still use one usage dice though.",
-            stuff: "TODO",
-        },
-        Reflexes: {
-            name: "Reflexes",
-            description: "When surprised, you still get reactions",
-            type: "Scene",
-        },
-        Religious_Lore: {
-            name: "Religious Lore",
-            description: "You have advantage on questions involving religions",
-            type: "Scene",
-        },
-        Ride_By: {
-            name: "Ride By",
-            description: "For Effort, gain an extra attack versus a new target that you are moving by",
-            type: "Activated",
-            EffortLoss: 1,
-            Moves: ["Attack"],
-            EquipmentNeeded: "Mount",
+        type: "Downtime"
+    },
+    Kata: {
+        name: "Kata",
+        description: "You dance in a spiritual way.  As you dance, spend a bonus action to gain 2 mana point you can immediately add to your aura (for use in spells)",
+        type: "bonus action",
+        stuff: "TODO",
+    },
+    Magical_Performance: {
+        name: "Magical Performance",
+        description: " You can cast a spell subtly through your performance that only the most alert will notice, well, as long as the spell results aren’t obvious. Spend Effort to cast a spell by singing it.",
+        NeedsActivation:true,
+        EffortLoss: 1,
+    },
+    Master_Acrobat: {
+        name: "Master Acrobat",
+        description: "Spend Effort to automatically make a difficult acrobatic move without a roll, or to get advantage on dodge",
+        moves: ["Dodge"],
+        activated: false,
+        NeedsActivation:true,
+        EffortLoss: 1,
+    },
+    Master_Musician: {
+        name: "Master Musician",
+        description: "You are really good at your instrument. You could beat the devil in a fiddle duel. ",
+        type: "Scene",
+    },
+    Master_of_Stealth: {
+        name: "Master of Stealth",
+        description: "Spend Effort to sneak without any sort of roll, you can spend 1 additional effort points for all your friends. Also applies to ‘scout’ rolls",
+        NeedsActivation:true,
+        EffortLoss: 1,
+    },
+    McGuyver: {
+        name: "McGuyver",
+        description: "You can use your specialty in a quick manner with improper tools, with an Effort point you can acheive unlikely results",
+        NeedsActivation:true,
+        EffortLoss: 1,
+    },
+    Mercy: {
+        name: "Mercy! Spare Me!",
+        description: "Spend Effort to not be the target of a creature’s attack, lasts until you attack.",
+        NeedsActivation:true,
+        EffortLoss: 1,
+    },
+    Mobile_Archer: {
+        name: "Mobile Archer",
+        description: "Can both move and shoot your bow. Normally all aimed bows and crossbows require you not to move on the turn you are shooting, this lets you skip that.",
+        type: "Combat"
+    },
+    Monotheist: {
+        name: "Monotheist",
+        description: "You believe all other gods are but reflections of your own. This is a heresy, but some gods like this and give you +1 rank in your usage dice.",
+        type: "Scene",
+        stuff: "TODO",
+    },
+    Musical_Number: {
+        name: "Musical Number",
+        description: "Explain to the GM the song,  the dance, the scene, and spend Effort. Resolve a problem (like building an orphanage, getting past the guards) after a broadway or bollywood sized dancing and musical number where everyone in the scene participates. Each player must say how he is contributing or fighting against or sitting out the musical number.  Each player can roll to give you a +1 or a -1  to the result.  Then roll Performance. On a hit it’s what you desire. (Note, no-one dies or gets injured during the musical number, although attitudes might change). A failure may indicate a counter narrative gains control of the scene.",
+        NeedsActivation:true,
+        EffortLoss: 1,
+    },
+    Musical_Virtuoso: {
+        name: "Musical Virtuoso",
+        description: "Be able to play any instrument well, even a klaathian nose flute",
+        type: "Scene",
+    },
+    Pack_Rat: {
+        name: "Pack Rat",
+        description: "Carry 50% more than normal",
+        type: "equipment",
+        stuff: "TODO",
+    },
+    Poison_Master: {
+        name: "Poison Master",
+        description: "Each Effort spent after an attack deals an additional + 3 damage, or when introduced into drink can incapacitate or kill one individual. Brewing more poison for a bigger set of targets, like a garrison, requires being industrious and spending supplies and money.You can also spend supplies to get various poisons from the poison list.",
+        NeedsActivation:true,
+        EffortLoss: 1,
+        activated: false,
+        moves: ["Attack", "Backstab"],
+        bonusType: "Damage",
+        bonus: 3,
+    },
+    Polytheist: {
+        name: "Polytheist",
+        description: "You can call upon other gods, not just your main god, this might help for gaining advantage on planar forces rolls. Still use one usage dice though.",
+        stuff: "TODO",
+    },
+    Reflexes: {
+        name: "Reflexes",
+        description: "When surprised, you still get reactions",
+        type: "Scene",
+    },
+    Religious_Lore: {
+        name: "Religious Lore",
+        description: "You have advantage on questions involving religions",
+        type: "Scene",
+    },
+    Ride_By: {
+        name: "Ride By",
+        description: "For Effort, gain an extra attack versus a new target that you are moving by",
+        NeedsActivation:true,
+        EffortLoss: 1,
+        activated: false,
+        moves: ["Attack"],
+        EquipmentNeeded: "Mount",
 
-        },
-        Scholars_Guild: {
-            name: "Scholars Guild",
-            description: "You have an official degree and title, and  know many other scholars. You can wear a special badge. You are automatically permitted access to every library, due to your status, and might receive an income.",
-            type: "Scene",
-        },
-        Secrets: {
-            name: "Secrets",
-            description: "You know the secrets of your religion, the hidden passages behind temple altars, the passwords to get into the chambers, the secrets kept by the masters. You may (with table approval) invent secret facts about your religion that give you advantages",
-            type: "Scene",
-        },
-        Shield_Master: {
-            name: "Shield Master",
-            EquipmentNeeded: "Shield",
-            description: "+1 to resist damage when carrying a shield",
-            Moves: ["ResistDamage"],
-            bonus: 1,
-        },
-        Show_Off: {
-            name: "Show Off",
-            description: "You can spend Effort to reroll  a Challenge,Grisly Display,Fear my blade roll.",
-            type: "Activated",
-            EffortLoss: 1,
-            Moves: ["Fear my blade", "Challenge", "Grisly Display", "Flaming Brand"],
-            reroll: true,
+    },
+    Scholars_Guild: {
+        name: "Scholars Guild",
+        description: "You have an official degree and title, and  know many other scholars. You can wear a special badge. You are automatically permitted access to every library, due to your status, and might receive an income.",
+        type: "Scene",
+    },
+    Secrets: {
+        name: "Secrets",
+        description: "You know the secrets of your religion, the hidden passages behind temple altars, the passwords to get into the chambers, the secrets kept by the masters. You may (with table approval) invent secret facts about your religion that give you advantages",
+        type: "Scene",
+    },
+    Shield_Master: {
+        name: "Shield Master",
+        EquipmentNeeded: "Shield",
+        description: "+1 to resist damage when carrying a shield",
+        activated: true,
+        moves: ["ResistDamage"],
+        bonus: 1,
+    },
+    Show_Off: {
+        name: "Show Off",
+        description: "You can spend Effort to reroll  a Challenge,Grisly Display,Fear my blade roll.",
+        NeedsActivation:true,
+        EffortLoss: 1,
+        activated: false,
+        moves: ["Fear my blade", "Challenge", "Grisly Display", "Flaming Brand"],
+        reroll: true,
 
-        },
-        Sniper: {
-            name: "Sniper",
-            description: "Spend Effort  to reroll a ranged attack roll",
-            type: "Activated",
-            EffortLoss: 1,
-            EquipmentNeeded: "Ranged Weapon",
-            Moves: ["Attack"],
-            reroll: true,
-        },
-        Sorceror_Kings: {
-            name: "Sorceror Kings",
-            description: "You have advantage on questions involving the ancient sorceror kings",
-            type: "Scene",
-        },
-        Specialty_Alchemist: {
-            name: "Specialty Alchemist",
-            description: "Drugs and alchemy and brewing craft specialty",
-            type: "Scene",
-        },
-        Specialty_Cook: {
-            name: "Specialty Cook",
-            description: "Cooking and brewing craft specialty",
-            type: "Scene",
-        },
-        Specialty_Jeweler: {
-            name: "Specialty Jeweler",
-            description: "Jewelry craft specialty",
-            type: "Scene",
-        },
-        Specialty_Mason: {
-            name: "Specialty Mason",
-            description: "Buildlings craft specialty",
-            type: "Scene",
-        },
-        Specialty_Tailor: {
-            name: "Specialty Tailor",
-            description: "Clothing craft specialty",
-            type: "Scene",
-        },
-        Specialty_Weapon_Smith: {
-            name: "Specialty Weapon Smith",
-            description: "Weapons, armor, and metal objects craft specialty",
-            type: "Scene",
-        },
-        Spirited_Charge: {
-            name: "Spirited Charge",
-            description: "+2 to  damage in a charge",
-            type: "Optional",
-            bonusType: "Damage",
-            bonus: 2,
-        },
-        Swift_Rider: {
-            name: "Swift Rider",
-            description: "+1 movement when riding",
-            type: "TODO"
-        },
-        Swift: {
-            name: "Swift",
-            description: "+1 Movement on foot or swim",
-            type: "TODO"
-        },
-        Taboo: {
-            name: "Taboo",
-            description: "Pick 3 taboos, such as ‘eat no meat’, ‘never speak to a member of the opposite sex directly’, ‘fast while the sun is shining’, ‘never talk after darkness’. ‘Never ride a horse’  ‘always wear priestly vestments’,  ‘never wear armor, always wear a veil. While observing the taboo,  you get +1 rank on your usage dice, when you break it, get disadvantage until spiritually cured.",
-            type: "TODO"
-        },
-        The_dance_of_the_seven_veils: {
-            name: "The dance of the seven veils",
-            description: "Your dancing can cause someone to desire you in an almost magical way. Spend Effort to reroll your seduction attempt.", type: "Activated",
-            EffortLoss: 1,
-            Moves: ["Seduce/Flirt/Entertain"],
-            reroll: true,
-        },
-        Trade: {
-            name: "Trade",
-            description: "You know everything about the values of things and where they can be sold, advantage on shopping",
-            Moves: ["Shopping"],
-            advantage: true,
+    },
+    Sniper: {
+        name: "Sniper",
+        description: "Spend Effort  to reroll a ranged attack roll",
+        NeedsActivation:true,
+        EffortLoss: 1,
+        EquipmentNeeded: "Ranged Weapon",
+        activated: false,
+        moves: ["Attack"],
+        reroll: true,
+    },
+    Sorceror_Kings: {
+        name: "Sorceror Kings",
+        description: "You have advantage on questions involving the ancient sorceror kings",
+        type: "Scene",
+    },
+    Specialty_Alchemist: {
+        name: "Specialty Alchemist",
+        description: "Drugs and alchemy and brewing craft specialty",
+        type: "Scene",
+    },
+    Specialty_Cook: {
+        name: "Specialty Cook",
+        description: "Cooking and brewing craft specialty",
+        type: "Scene",
+    },
+    Specialty_Jeweler: {
+        name: "Specialty Jeweler",
+        description: "Jewelry craft specialty",
+        type: "Scene",
+    },
+    Specialty_Mason: {
+        name: "Specialty Mason",
+        description: "Buildlings craft specialty",
+        type: "Scene",
+    },
+    Specialty_Tailor: {
+        name: "Specialty Tailor",
+        description: "Clothing craft specialty",
+        type: "Scene",
+    },
+    Specialty_Weapon_Smith: {
+        name: "Specialty Weapon Smith",
+        description: "Weapons, armor, and metal objects craft specialty",
+        type: "Scene",
+    },
+    Spirited_Charge: {
+        name: "Spirited Charge",
+        description: "+2 to  damage in a charge",
+        NeedsActivation:true,
+        bonusType: "Damage",
+        bonus: 2,
+    },
+    Swift_Rider: {
+        name: "Swift Rider",
+        description: "+1 movement when riding",
+        type: "TODO"
+    },
+    Swift: {
+        name: "Swift",
+        description: "+1 Movement on foot or swim",
+        type: "TODO"
+    },
+    Taboo: {
+        name: "Taboo",
+        description: "Pick 3 taboos, such as ‘eat no meat’, ‘never speak to a member of the opposite sex directly’, ‘fast while the sun is shining’, ‘never talk after darkness’. ‘Never ride a horse’  ‘always wear priestly vestments’,  ‘never wear armor, always wear a veil. While observing the taboo,  you get +1 rank on your usage dice, when you break it, get disadvantage until spiritually cured.",
+        type: "TODO"
+    },
+    The_dance_of_the_seven_veils: {
+        name: "The dance of the seven veils",
+        description: "Your dancing can cause someone to desire you in an almost magical way. Spend Effort to reroll your seduction attempt.", NeedsActivation:true,
+        EffortLoss: 1,
+        activated: false,
+        moves: ["Seduce/Flirt/Entertain"],
+        reroll: true,
+    },
+    Trade: {
+        name: "Trade",
+        description: "You know everything about the values of things and where they can be sold, advantage on shopping",
+        moves: ["Shopping"],
+        advantage: true,
 
-        },
-        Tree_bends_in_the_Wind: {
-            name: "Tree bends in the Wind",
-            description: "When dodging an enemy, you can use his own force against him, on success or mixed for Effort you can also  knock them prone, make them collide into each other, or crash into walls, within reason",
-            Moves: ["Dodge"],
-            type: "Activated",
-            EffortLoss: 1,
-        },
-        Two_Weapon_Fighting: {
-            name: "Two Weapon Fighting",
-            description: "When fighting with two weapons, reduce by 1 the cost in Steel if attacking more than one opponent, do the damage of the better weapon",
-            Moves: ["Attack"],
-            stuff: "TODO",
+    },
+    Tree_bends_in_the_Wind: {
+        name: "Tree bends in the Wind",
+        description: "When dodging an enemy, you can use his own force against him, on success or mixed for Effort you can also  knock them prone, make them collide into each other, or crash into walls, within reason",
+        moves: ["Dodge"],
+        NeedsActivation:true,
+        EffortLoss: 1,
+    },
+    Two_Weapon_Fighting: {
+        name: "Two Weapon Fighting",
+        description: "When fighting with two weapons, reduce by 1 the cost in Steel if attacking more than one opponent, do the damage of the better weapon",
+        moves: ["Attack"],
+        stuff: "TODO",
 
-        },
-        Vicious_Mockery: {
-            name: "Vicious Mockery",
-            description: "Spend Effort to insult another and make them enraged, they will be berserk and lose defense, as long as this makes sense",
-            type: "Activated",
-            EffortLoss: 1,
-        },
-        Wasnt_Here: {
-            name: "I Wasn't Here",
-            description: "Spend Effort to opt out of a scene as long as you haven't acted in it yet",
-            type: "Activated",
-            EffortLoss: 1,
-        },
+    },
+    Vicious_Mockery: {
+        name: "Vicious Mockery",
+        description: "Spend Effort to insult another and make them enraged, they will be berserk and lose defense, as long as this makes sense",
+        NeedsActivation:true,
+        EffortLoss: 1,
+    },
+    Wasnt_Here: {
+        name: "I Wasn't Here",
+        description: "Spend Effort to opt out of a scene as long as you haven't acted in it yet",
+        moves: ["Avoid"],
+        activated: false,
+        NeedsActivation:true,
+        EffortLoss: 1,
+    },
 
-        Whip_Master: {
-            name: "Whip Master",
-            description: "You can attack at 2 hexes with a whip, disarming a foe on a success instead of damage, you can use the whip for swinging across chasms or putting out a candle or grabbing things. It doesn’t count as a reach weapon for defense against charges though.",
-            stuff: "TODO",
-        },
-        Whirlwind: {
-            name: "Whirlwind",
-            description: "for Effort,  attack all  adjacent targets, roll against each one  ",
-            type: "Activated",
-            EffortLoss: 1,
-        },
-        Wicked_Lie: {
-            name: "Wicked Lie",
-            description: "Spend Effort to reroll any deception attempt. Take the best roll.",
-            type: "Activated",
-            Moves: ["Wicked Lie"],
-            EffortLoss: 1,
-        },
+    Whip_Master: {
+        name: "Whip Master",
+        description: "You can attack at 2 hexes with a whip, disarming a foe on a success instead of damage, you can use the whip for swinging across chasms or putting out a candle or grabbing things. It doesn’t count as a reach weapon for defense against charges though.",
+        moves: ["Attack"],
+        stuff: "TODO",
+    },
+    Whirlwind: {
+        name: "Whirlwind",
+        description: "for Effort,  attack all  adjacent targets, roll against each one  ",
+        NeedsActivation:true,
+        activated: false,
+        moves: ["Attack"],
+        EffortLoss: 1,
+    },
+    Wicked_Lie: {
+        name: "Wicked Lie",
+        description: "Spend Effort to reroll any deception attempt. Take the best roll.",
+        NeedsActivation:true,
+        activated: false,
+        moves: ["Wicked Lie", "Avoid"],
+        EffortLoss: 1,
     },
     Wizard: {
         name: "Wizard",
         description: "You can learn spells outside your area of knowledge, and cast spells outside of your known area of magic, but must use Effort when you cast. You can also fuel your spells with any kind of mana when you do this.",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
 
     },
     Wrestler: {
         name: "Wrestler",
         description: "Add +1 to rolls involving wrestling",
-        Moves: ["Wrestle", "restle (defense)"],
+        activated: true,
+        moves: ["Wrestle", "Wrestle (defense)"],
         bonus: 1,
     },
     Zealot: {
         name: "Zealot",
         description: "You have +1 on attacks when fighting infidels and supernatural evil",
-        type: "Optional",
-        Moves: ["Attack"],
+        NeedsActivation:true,
+        activated: false,
+        moves: ["Attack"],
         bonus: 1,
     },
     Familiar: {
@@ -2245,8 +2273,9 @@ var feats = {
     Resist_Fire: {
         name: "Resist Fire",
         description: "Take -3 damage from fire, and don’t suffocate from smoke. If you are the recipeint of a Resist Fire spell, you are immune to fire.",
-        Moves: ["ResistDamage"],
-        type: "Optional",
+        activated: false,
+        moves: ["ResistDamage"],
+        NeedsActivation:true,
         bonus: -3,
     },
     By_Fire_Restored: {
@@ -2262,43 +2291,50 @@ var feats = {
     Phalanx: {
         name: "Phalanx",
         description: "+1 on attacks on a reach defense versus charge. If you also have a shield, you can defend even though you used your reaction for a reach attack.",
-        type: "Optional",
-        Moves: ["Attack"],
+        NeedsActivation:true,
+        activated: false,
+        moves: ["Attack"],
         bonus: 1,
     },
     Artillery: {
         name: "Artillery",
-        description: "You can operate artillery and catapults, and know about sieges",
+        description: "You can operate artillery and catapults, and know about sieges. Apply the career that taught you artillery to the roll",
         type: "Scene",
+        moves: ["Artillery"],
     },
     Tough: {
         name: "Tough",
         description: "Use Effort point to ignore the pain effect of a wound for a scene",
-        type: "Activated",
+        NeedsActivation:true,
+        activated: false,
         EffortLoss: 1,
+        moves: ["ResistDamage"],
     },
     Mobile_Archer: {
         name: "Mobile Archer",
         description: "You can both move and shoot, normally when shooting bows you forgo movement that turn",
-        type: "Scene",
+        type: "Movement",
     },
 
     Master_Surgeon: {
         name: "Master Surgeon",
         description: "You can do surgery to remove limbs or organs, or to heal wounds (triple healing but bad if you roll a failure), or to implant things.s",
         type: "Scene",
-        stuff: "TODO"
+        stuff: "TODO",
+        moves: ["Heal"]
     },
     Good_bedside_manner: {
         name: "Good Bedside Manner",
         description: "All your non magical healing are doubled",
         type: "Scene",
-        stuff: "TODO"
+        moves: ["Heal"]
+
     },
 
     Exorcist: {
         name: "Exorcist",
         description: "You can also recognize and diagnose demonic possession and curses, and sometimes can cure it, or at least know what will cure it.",
+        moves: ["Heal", "Insight/Investigate"],
         type: "Scene",
     },
     Potion_Maker: {
@@ -2312,7 +2348,8 @@ var feats = {
             "* Purgative: When drunk, removes parasites instantly\n" +
             "*Tirelessness: Drink first, then, when the drinker get tired, roll the potion maker’s medicine, success: prevent exhaustion, mixed: prevent 1 level of exhaustion, fail: gain +1 exhaustion,\n" +
             "You can also create magical potions. When you use a potion, spend one supply, and construct a potion that does a spell of the first magnitude to the person who drinks it. When the person drinks it, roll at that time with your skill for how successful the spell is and whether there are side effects., but spend the power now.",
-        type: "Activated",
+            activated: false,
+            NeedsActivation:true,
         EffortLoss: 1,
     },
 
@@ -2430,7 +2467,7 @@ var feats = {
     Invisible_Man: {
         name: "Invisible Man",
         description: "Use Effort not to be paid attention to during the scene as long as you don’t act up",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
     },
     Tracking_Scent: {
@@ -2441,13 +2478,13 @@ var feats = {
     Human_Communication: {
         name: "Human Communication",
         description: "For Effort, ‘understand’ a human and communicate to him your intentions without any sort of roll",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
     },
     Bodyguard: {
         name: "Bodyguard",
         description: "Bodyguard: for Effort out of sequence react to defend another person even if you have already used your turn",
-        type: "Activated",
+        NeedsActivation:true,
         EffortLoss: 1,
     }
 };
@@ -3785,35 +3822,23 @@ async function convertDnD5e() {
 
 function convertPTBA() {
 
-    Object.keys(feats).forEach(function (key, index) {
-        let feat = feats[key];
+    Object.keys(feats_master_list).forEach(function (key, index) {
+        let feat = feats_master_list[key];
         let tags = {
             "file": "CompendiumFiles/" + key,
             "page": "feats",
             "source": "Gil",
             "type": "feat",
             "name": feat.name,
+            "key" : key,
             "img": "images/careers/" + key + ".avif" /// need this
         };
 
-        let item = {
-            name: feat.name,
-
-            description: {
-                value: "<div class=\"rd__b  rd__b--3\"> " +
-                    feat.description + "</div>",
-            },
-            source: "GilPTBA",
-
-            type: "feat",
-            "img": "images/careers/" + key + ".avif" /// need this
-
-
-        };
+        feat.key = key;
         console.log(key);
 
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
-        writeJsonFileInPublic('CompendiumFiles', key, item);
+        writeJsonFileInPublic('CompendiumFiles', key, feat);
 
     });
 
@@ -3962,10 +3987,11 @@ function convertPTBA() {
             "img": items[item].image, /// need this
             "price": items[item].price, /// need this
         };
+
+        writeJsonFileInPublic('CompendiumFiles', key, items[item]);
         writeJsonFileInPublic('Compendium', "tag_" + key, tags);
 
 
-        writeJsonFileInPublic('CompendiumFiles', key, items[item]);
     }
 }
 // note, run convertDnD5e and do not translate feats

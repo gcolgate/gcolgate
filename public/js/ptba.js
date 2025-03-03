@@ -999,6 +999,7 @@ var tribal_languages = [
 
 ];
 
+
 function ListAllMagicPowers(owner) {
 
     let list = [];
@@ -1047,7 +1048,72 @@ function Listify(list, owner, sheet) {
     return output + "</ul>";
 }
 
-function ListAllFeats(owner) {
+function GetBonusFromFeats(owner, move) {
+    let bonus = 0;
+    let feats = GetRawFeatsForMove(owner, move);
+    for (let i = 0; i < feats.length; i++) {
+        let feat = feats[i];
+        if (feat.activated && feat.bonus) {
+            if (feat.complex_bonuses) {
+                bonus += feat.complex_bonuses[move];
+            }
+            else {
+                bonus += feat.bonus;
+            }
+        }
+    }
+    return bonus;
+}
+
+MakeAvailableToParser('GetBonusFromFeats', GetBonusFromFeats);
+MakeAvailableToHtml('GetBonusFromFeats', GetBonusFromFeats);
+
+
+function GetRawFeatsForMove(owner, move) {
+    let answer = [];
+    let feats = GetAllFeats(owner);
+    for (let i = 0; i < feats.length; i++) {
+        let feat = feats[i];
+        if (feat.moves) {
+            for (let a = 0; a < feat.moves.length; a++) {
+                if (feat.moves[a] == move) {
+                    answer.push(feat);
+                }
+            }
+        }
+
+
+    }
+    return answer;
+}
+
+
+function GetRawHinderingFeatsForMove(owner, move) {
+    let answer = [];
+    let feats = GetAllFeats(owner);
+    for (let i = 0; i < feats.length; i++) {
+        let feat = feats[i];
+        if (feat.HinderedMoves) {
+            for (let a = 0; a < feat.HinderedMoves.length; a++) {
+                if (feat.HinderedMoves[a] == move) {
+                    answer.push(feat);
+                }
+            }
+        }
+
+
+    }
+    return answer;
+}
+function GetFeatsForMove(owner, move) {
+
+    return Listify(GetRawFeatsForMove(owner, move), owner, "feats_rollmove");
+
+}
+MakeAvailableToParser('GetFeatsForMove', GetFeatsForMove);
+MakeAvailableToHtml('GetFeatsForMove', GetFeatsForMove);
+
+function GetAllFeats(owner) {
 
     let list = [];
     for (let i = 0; i < owner.items.length; i++) {
@@ -1056,17 +1122,26 @@ function ListAllFeats(owner) {
             let career = GetRegisteredThing(item.file);
             let keys = Object.keys(career.owner_featsChosen);
             for (let k = 0; k < keys.length; k++) {
-                if (career.owner_featsChosen[keys[k]]) {
+                if (career.owner_featsChosen[keys[k]] || true) {
                     let name = "CompendiumFiles/" + keys[k];
 
                     let featSheet = GetRegisteredThing(name);
+                    if (featSheet == undefined) {
+                        console.log("Missing feat " + name);
+                        continue;
+                    }
 
                     list.push(featSheet);
                 }
             }
         }
     }
+    return list;
+}
 
+function ListAllFeats(owner) {
+
+    let list = GetAllFeats(owner);
     return Listify(list, owner, "feats");
 }
 
@@ -1218,7 +1293,7 @@ var takeDamageMove = {
                     <li>● You take a level of exhaustion. \
                  </ul> \
                 </div></div></a>',
-// here in 'you have an injury roll on injury table
+    // here in 'you have an injury roll on injury table
     "fail": 'Take double damage  and the   <a href="#"> and the GM chooses chooses 1 \
             <div class="tooltipcontainer">\
                 <div class="tooltip">\
@@ -1777,7 +1852,7 @@ function featNoCheckBox(feats, i, thing, owner, checked, featSheet) {
 
 function featCheckBox(feats, i, thing, owner, checked, featSheet) {
 
-    let template = "";
+    if (featSheet == undefined) return "Missing feat";
     let clause = "ensureExists(thing, template, 'owner_featsChosen'); thing.owner_featsChosen['" + feats[i] + "']"
     let text = "<li> &#x25BA;"
     text += '<input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"'
@@ -2591,6 +2666,11 @@ function getRollAndRollResults(thing, owner) {
         result += numSixes - 1;
         results += " <span class='redtext'>" + (numSixes - 1) + "</span>";
     }
+    // should I also transmit the featbonus so the server feat is always used?
+    // TODO: change this
+    let featBonus= GetBonusFromFeats(owner, thing.name);
+    result += featBonus;
+    results += (featBonus > 0 ? " +" : "") + featBonus;
     result += Number(thing.statBonus);
     results += (thing.statBonus > 0 ? " +" : "") + thing.statBonus;
     result -= Number(thing.difficulty);

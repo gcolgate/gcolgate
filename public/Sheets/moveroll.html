@@ -64,9 +64,16 @@
                     }
 
             </div>
-            <button onclick="htmlContext.StartRecognizingForRollMove('{thing.id}')">
+            <div class="inline">
+                Bonus: <span class="bold"> { htmlContext.GetBonusFromFeats(owner, thing.move)
+                    }
+            </div>
+            <div>
+                { GetFeatsForMove(owner, thing.move) }
+            </div>
+            <!-- <button onclick="htmlContext.StartRecognizingForRollMove('{thing.id}')">
                 Voice
-            </button>
+            </button> -->
 
 
 
