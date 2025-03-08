@@ -1324,16 +1324,19 @@ export function three_mouseMove(event) {
       if (o) {
         if (three_outlinePass_token.selectedObjects.length == 0)
           three_outlinePass_token.selectedObjects = [intersect.object];
-        let screenPos = worldToScreen(intersect.object.position);
+        let pos = intersect.object.position.clone();
+        pos.x -= kGridSize;
+        pos.y -= kGridSize / 2;
+        let screenPos = worldToScreen(pos);
 
 
-        hud.style.left = Math.trunc(screenPos.x) + 'px';
-        hud.style.top = Math.trunc(screenPos.y) + 'px';
         let thang = intersect.object.tile?.reference;
 
         let thing = GetRegisteredThing(thang.file)
         hud.innerHTML = parseSheet(thing, thing.hud ? thing.hud : 'hud', intersect.object.tile);
 
+        hud.style.left = Math.trunc(screenPos.x) + 'px';
+        hud.style.top = Math.trunc(screenPos.y) + 'px';
 
 
         if (!card) {
