@@ -49,6 +49,7 @@ ensureSheetLoaded("spell_tooltip");
 ensureSheetLoaded("weapon_tooltip");
 ensureSheetLoaded("moveroll");
 ensureSheetLoaded("feats");
+ensureSheetLoaded("feats_rollmove");
 
 function ClickCollapsible(evt, ownerid, id) {
 
