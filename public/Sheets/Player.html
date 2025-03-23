@@ -108,11 +108,7 @@
         </div> <!-- Columntwo -->
     </div><!-- two columns-->
 </div><!-- tab class-->
-
-
 <!-- Different tabs here -->
-
-
 <div id="appearance" { tabClass( thing.tab && thing?.tab=="appearance" ) }>
 
     <div class="twocolumns">
@@ -121,12 +117,11 @@
                 thing.current_appearance }
             </div>
             <div> Portrait</div>
-            <image src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+            <img src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
                 onclick="htmlContext.showPasteAndChoose(event, window, 'portrait_{thing.id}','token_{thing.id}')"
                 ondragenter="onDragEnter(event,this)" ondragover="onDragOver(event,this)"
-                ondrop="onDropOnImage(event,this,'{thing.id}', 'portrait')" ondragleave="onDragLeave(event,this)"
-                </image>
+                ondrop="onDropOnImage(event,this,'{thing.id}', 'portrait')" ondragleave="onDragLeave(event,this)" </img>
 
         </div>
         <div>
@@ -138,7 +133,6 @@
     </div>
 </div>
 <!-- Different tabs here -->
-
 <div id="careers" { tabClass( thing.tab && thing?.tab=="careers" ) }>
     <div class=" outlined dragitem">
         <div class="relative_inline_block">
@@ -153,26 +147,13 @@
         </div>
     </div>
 </div>
-
+<!-- Different tabs here -->
 <div id="feats" { tabClass( thing.tab && thing?.tab=="feats" ) }>
     <div class=" outlined dragitem">
         { ListAllFeats(thing) }
     </div>
 </div>
-<!-- <p class="c31 c32 c13"><span class="c2"></span></p>
-    <p class="c31 c32 c13"><span class="c2"></span></p>
-    <h2 class="c41 c32" id="h.mgj5wnut02kc"><span class="c16 c30 c24">Steel:
-            PTBAComputeSteel(thing) </span></h2>
-    <p class="npcBold"><span
-            class="c16 c24 c38">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    </p>
-    <h2 class="c32 c41" id="h.yj31nys9qpei"><span>Supplies</span><span class="c16 c24 c30">:
-            PTBAComputeMaxSupplies(thing)/{thing.counters.supplies}</span></h2>
-    <p clas=" npcBold"c13"><span class="c2"></span></p><a id="t.65e1cb7adb445e5b6fb90a596e799c0ac98d7fbc"></a><a
-        id="t.1"></a> -->
-
 <!-- Different tabs here -->
-
 <div id="spells" { tabClass( thing.tab && thing.tab=="spells" )}>
 
     <p class="npcBold"><span class="c12">Mana in aura: { Editable(thing,
@@ -214,30 +195,8 @@
         { drawItems(thing, IsSpellItem, "full") }
     </div>
 </div>
+<!-- Different tabs here -->
 
-<div id="features" { tabClass( thing.tab && thing.tab=="features" )}>
-
-    <div class=" twocolumns"> { PTBAMoves(thing) } </div>
-
-
-</div>
-
-
-
-<div id="raw" { tabClass( thing.tab && thing.tab=="raw" )}>
-
-    <div> {
-        RawEditor(thing, thing, "")
-        } </div>
-
-</div>
-<!-- Different tabs here onclick="showApperancePopUp(event,'{thing.id}')"
-
- onclick="showApperancePopUp(event,'{thing.id}')"
-
-  onclick="showApperancePopUp(event,'{thing.id}')"
-
--->
 
 <div id="inventory" { tabClass( thing.tab && thing.tab=="inventory" )}>
     <div id="{'InventoryTooltip_' + thing.id}" class="tooltip">
@@ -247,18 +206,10 @@
     </div>
     <div class="twocolumnsuneven">
         <div class="imageWrapper">
-            <!-- <img class="overlayImage" src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
-                style="width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"></image> -->
-            <!-- <img class="overlayImage" src="assets/black.webp" alt="{thing.name}"
-                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"></image> -->
-            <!-- <img class="overlayImage" src="assets/paperdoll.webp" alt="{thing.name}"
-                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"></image> -->
-
             <svg viewBox="0 0 250 400" xmlns="http://www.w3.org/2000/svg" class="overlayImageDolll" ownerid="{thing.id}"
                 ondragenter="svgDragOver(evt)" ondragover="svgDragOver(evt)" ondrop="svgDragDrop(evt)"
                 ondragleave="svgDragOut(evt)">
                 <rect x=0% y="0%" width="100%" height="100%" class="inventorygbkg" />
-
                 <defs>
                     <linearGradient id="darktolight" x1="0%" x2="100%" y1="0%" y2="0%">
                         <stop offset="0%" stop-color="black" stop-opacity="1.0" />
@@ -270,16 +221,12 @@
                         <stop offset="100%" stop-color="black" stop-opacity="0.0" />
                     </linearGradient>
                 </defs>
-
                 <image href="{getAppearanceImage(thing, 'portrait')}" width="75%" height="80%" y="05%" x="10%"
                     title="image" preserveAspectRatio="xMidYMid meet"
                     onclick="htmlContext.showApperancePopUp(event,'{thing.id}')">
                 </image>/>
-
                 <rect x="0%" y="0%" width="20%" height="100%" fill="url(#darktolight)"></rect>
                 <rect x="70%" y="0%" width="40%" height="100%" fill="url(#lighttodark)"></rect>
-
-
                 <g slot="head">
                     <image href='{ getSlotImage(thing,"head","assets/helm.webp")}' x=01% y="1%" width="11.25%"
                         height="7.03125%" />
@@ -289,7 +236,6 @@
                         <title>Headgear</title>
                     </rect>
                 </g>
-
                 <g slot="cloak">
                     <image href=' { getSlotImage(thing,"cloak","assets/cloak.webp")}' , x=1% y="11%" width="11.25%"
                         height="7.03125%"" />
@@ -477,9 +423,7 @@
                         <title>Potion 3</title>
                     </rect>
                 </g>
-
             </svg>
-
         </div>
 
         <div id=" columntwo">
@@ -497,4 +441,13 @@
         </div>
     </div>
 </div>
+
+<div id="raw" { tabClass( thing.tab && thing.tab=="raw" )}>
+    <div> {
+        RawEditor(thing, thing, "")
+        } </div>
+</div>
+<div id="features" { tabClass( thing.tab && thing.tab=="features" )}>
+
+    <div class=" twocolumns"> { PTBAMoves(thing) } </div>
 </div>
