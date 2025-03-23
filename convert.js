@@ -90,22 +90,35 @@ var conditions = {
     },
     Distracted: {
         name: "Distracted",
-        description: "You can take only actions or reactions this next turn",
+        description: "You can take only actions OR reactions this next turn",
         stackable: "No",
     },
     Cowed: {
         name: "Cowed",
-        description: "You can take only  reactions this next turn",
+        description: "You can take only  reactions this next turn, but get advantage on them",
         stackable: "No",
+        duration: "1 round",
+        next: "Frightened",
+    },
+    Frightened: {
+        name: "Frightned",
+        description: "A frightened creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature can’t willingly move closer to the source of its fear.",
+        next: "Routed",
+    },
+    Routed: {
+        name: "Routed",
+        description: "A Routed creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature must try to escape if possible.",
     },
     Burning: {
         name: "You are burning",
         description: "You must roll On Fire each turn until extinguished",
+        duration: "Until fire is out",
         stackable: "Yes, adds damage"
     },
     Bleeding: {
         name: "Bleeding",
         description: "You lose 1 health each turn.",
+        duration: "Until healed",
         stackable: "Yes, add damge",
     },
     Concussed: {
@@ -143,10 +156,7 @@ var conditions = {
         description: "A Deafened creature automatically fails any checks that require hearing",
         stackable: "No",
     },
-    Frightened: {
-        name: "Frightned",
-        description: "A frightened creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature can’t willingly move closer to the source of its fear.",
-    },
+
     Panicked: {
         name: "Frightned",
         description: "A panicked creature has disadvantage on ability checks and attack rolls while the source of its fear is within line of sight. The creature must move away from the source of his fear.",
@@ -530,7 +540,7 @@ var items = [
         price: 20,
         weapon_defenses: [{
             name: "Large Shield Block",
-            move: [""],
+            move: ["Parry"],
             range: 1,
             hands: 1,
             type: "Melee",
@@ -555,12 +565,23 @@ var items = [
         price: 2,
         weapon_defenses: [{
             name: "Quaterstaff(spear) Block",
-            move: [""],
+            move: ["Parry"],
             range: 1,
             hands: 2,
             type: "Melee",
             career: ["Infantry", "Gladiator", "Brawling"],
-        }],
+        },
+        {
+            name: "Spear Opportunity Attack",
+            range: 2,
+            hands: 1,
+            move: ["OpportunityAttack"],
+            type: "Melee",
+            damage: [{ damage: "2d8", type: "piercing", when: "" }],
+            career: ["Martial"],
+            wounding: "Long Piercing"
+        }
+        ],
         weapon_modes:
             [{
                 name: "Spear Stab",
@@ -591,7 +612,7 @@ var items = [
         price: 0.5,
         weapon_defenses: [{
             name: "Quaterstaff Block",
-            move: [""],
+            move: ["Parry"],
             range: 1,
             move: ["Attack", "Ambush"],
             hands: 2,
@@ -619,11 +640,21 @@ var items = [
         price: 20,
         weapon_defenses: [{
             name: "Quaterstaff (Glaive) Block",
-            move: [""],
+            move: ["Parry"],
             range: 1,
             hands: 2,
             type: "Melee",
             career: ["Martial", "Brawling"],
+        }, {
+            name: "Polearm Opportunity Attack",
+            range: 2,
+            min_range: 2,
+            hands: 2,
+            move: ["OpportunityAttack"],
+            type: "Melee",
+            damage: [{ damage: "2d10", type: "piercing or slashing", when: "" }],
+            career: ["Martial"],
+            wounding: "Polearm"
         }],
         weapon_modes:
             [{
@@ -657,12 +688,22 @@ var items = [
         price: 5,
         weapon_defenses: [{
             name: "Quaterstaff Block",
-            move: [""],
+            move: ["Parry"],
             range: 1,
             hands: 2,
             type: "Melee",
             career: ["Martial", "Brawling"],
             wounding: "Light Bludgeon"
+        }, {
+            name: "Pike Opporunity Attack",
+            range: 3,
+            min_range: 2,
+            hands: 2,
+            move: ["OpportunityAttack"],
+            type: "Melee",
+            damage: [{ damage: "2d10", type: "piercing or slashing", when: "" }],
+            career: ["Martial"],
+            wounding: "Long Piercing"
         }],
         weapon_modes:
             [{
@@ -698,7 +739,7 @@ var items = [
         price: 20,
         weapon_defenses: [{
             name: "Long Sword Parry",
-            move: [""],
+            move: ["Parry"],
             range: 1,
             hands: 1,
             type: "Melee",
@@ -748,7 +789,7 @@ var items = [
         wealth: 3,
         weapon_defenses: [{
             name: "Battleaxe Parry",
-            move: [""],
+            move: ["Parry"],
             range: 1,
             hands: 1,
             type: "Melee",
@@ -825,7 +866,16 @@ var items = [
             hands: 1,
             type: "Melee",
             career: ["Martial", "Pirate"],
-        }],
+        }, {
+            name: "Cutlass Opportunity Attack",
+            range: 1,
+            type: "Melee",
+            hands: 1,
+            move: ["OpportunityAttack"],
+            damage: [{ damage: "2d6", type: "slashing", when: "" }],
+            career: ["Martial", "Pirate"],
+            wounding: "Light Cut"
+        },],
         weapon_modes:
             [{
                 name: "Cutlass Slash",
@@ -834,7 +884,7 @@ var items = [
                 hands: 1,
                 move: ["Attack", "Ambush"],
                 damage: [{ damage: "2d6", type: "slashing", when: "" }],
-                career: ["Martial"],
+                career: ["Martial", "Pirate"],
                 wounding: "Light Cut"
             },
             {
@@ -1681,7 +1731,7 @@ var items = [
 ];
 /////////// PTBA source
 
-var feats_master_list= {
+var feats_master_list = {
 
 
 
@@ -1835,7 +1885,7 @@ var feats_master_list= {
     Animal_Communication: {
         name: "Animal Communication",
         description: "For Effort, ‘understand’ an animal and communicate to him your intentions without any sort of roll",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Animal_Companion: {
@@ -1846,7 +1896,7 @@ var feats_master_list= {
     Animal_Influence: {
         name: "Animal Influence",
         description: "For Effort, automatically influence an animal.. Calm them, or make them back down due to your superior chest pounding, without any sort of roll",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
 
     },
@@ -1873,15 +1923,16 @@ var feats_master_list= {
     Berserk: {
         name: "Berserk",
         description: "Enter a rage, use 1 Effort, +1 forward on offense, -1 forward  on defense until you decide to stop raging",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
         activated: false,
         moves: ["Attack", "Ambush", "Parry", "Dodge"],
         complexBonuses: {
-                Attack: 1,
-                Ambush: 1,
-                Parry: -1,
-                Dodge: -1},
+            Attack: 1,
+            Ambush: 1,
+            Parry: -1,
+            Dodge: -1
+        },
 
         HinderedMoves: ["Parry", "Dodge"],
         minus: 1,
@@ -1905,7 +1956,7 @@ var feats_master_list= {
     Critic: {
         name: "Critic",
         description: "Spend a Effort to automatically know the weaknesses in your foe’s equipment (from your specialty), and gain an advantage of some kind.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Demonology_And_Cults: {
@@ -1916,7 +1967,7 @@ var feats_master_list= {
     Disguise_Master: {
         name: "Disguise Master",
         description: "Spend a Effort to make a perfect disguise, or as good as you can with the materials at hand.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Dynasties: {
@@ -1927,7 +1978,7 @@ var feats_master_list= {
     Expert_Lockpick: {
         name: "Expert Lockpick",
         description: "Spend Effort to pick a lock without any sort of roll.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         moves: ["Devices"],
         activated: false,
         EffortLoss: 1,
@@ -1935,7 +1986,7 @@ var feats_master_list= {
     Expert_Pickpocket: {
         name: "Expert Pickpocket",
         description: "Spend Effort to steal something without any sort of roll",
-        NeedsActivation:true,
+        NeedsActivation: true,
         moves: ["Steal"],
         activated: false,
         EffortLoss: 1,
@@ -1943,7 +1994,7 @@ var feats_master_list= {
     Extra: {
         name: "Extra",
         description: "Spend Effort to pull out a backup or extra gear in your specialty from your pack",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     God_Talker: {
@@ -1975,7 +2026,7 @@ var feats_master_list= {
     Magical_Performance: {
         name: "Magical Performance",
         description: " You can cast a spell subtly through your performance that only the most alert will notice, well, as long as the spell results aren’t obvious. Spend Effort to cast a spell by singing it.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Master_Acrobat: {
@@ -1983,7 +2034,7 @@ var feats_master_list= {
         description: "Spend Effort to automatically make a difficult acrobatic move without a roll, or to get advantage on dodge",
         moves: ["Dodge"],
         activated: false,
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Master_Musician: {
@@ -1994,19 +2045,19 @@ var feats_master_list= {
     Master_of_Stealth: {
         name: "Master of Stealth",
         description: "Spend Effort to sneak without any sort of roll, you can spend 1 additional effort points for all your friends. Also applies to ‘scout’ rolls",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     McGuyver: {
         name: "McGuyver",
         description: "You can use your specialty in a quick manner with improper tools, with an Effort point you can acheive unlikely results",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Mercy: {
         name: "Mercy! Spare Me!",
         description: "Spend Effort to not be the target of a creature’s attack, lasts until you attack.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Mobile_Archer: {
@@ -2023,7 +2074,7 @@ var feats_master_list= {
     Musical_Number: {
         name: "Musical Number",
         description: "Explain to the GM the song,  the dance, the scene, and spend Effort. Resolve a problem (like building an orphanage, getting past the guards) after a broadway or bollywood sized dancing and musical number where everyone in the scene participates. Each player must say how he is contributing or fighting against or sitting out the musical number.  Each player can roll to give you a +1 or a -1  to the result.  Then roll Performance. On a hit it’s what you desire. (Note, no-one dies or gets injured during the musical number, although attitudes might change). A failure may indicate a counter narrative gains control of the scene.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Musical_Virtuoso: {
@@ -2040,7 +2091,7 @@ var feats_master_list= {
     Poison_Master: {
         name: "Poison Master",
         description: "Each Effort spent after an attack deals an additional + 3 damage, or when introduced into drink can incapacitate or kill one individual. Brewing more poison for a bigger set of targets, like a garrison, requires being industrious and spending supplies and money.You can also spend supplies to get various poisons from the poison list.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
         activated: false,
         moves: ["Attack", "Backstab"],
@@ -2065,7 +2116,7 @@ var feats_master_list= {
     Ride_By: {
         name: "Ride By",
         description: "For Effort, gain an extra attack versus a new target that you are moving by",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
         activated: false,
         moves: ["Attack"],
@@ -2093,7 +2144,7 @@ var feats_master_list= {
     Show_Off: {
         name: "Show Off",
         description: "You can spend Effort to reroll  a Challenge,Grisly Display,Fear my blade roll.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
         activated: false,
         moves: ["Fear my blade", "Challenge", "Grisly Display", "Flaming Brand"],
@@ -2103,7 +2154,7 @@ var feats_master_list= {
     Sniper: {
         name: "Sniper",
         description: "Spend Effort  to reroll a ranged attack roll",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
         EquipmentNeeded: "Ranged Weapon",
         activated: false,
@@ -2148,7 +2199,7 @@ var feats_master_list= {
     Spirited_Charge: {
         name: "Spirited Charge",
         description: "+2 to  damage in a charge",
-        NeedsActivation:true,
+        NeedsActivation: true,
         bonusType: "Damage",
         bonus: 2,
     },
@@ -2169,7 +2220,7 @@ var feats_master_list= {
     },
     The_dance_of_the_seven_veils: {
         name: "The dance of the seven veils",
-        description: "Your dancing can cause someone to desire you in an almost magical way. Spend Effort to reroll your seduction attempt.", NeedsActivation:true,
+        description: "Your dancing can cause someone to desire you in an almost magical way. Spend Effort to reroll your seduction attempt.", NeedsActivation: true,
         EffortLoss: 1,
         activated: false,
         moves: ["Seduce/Flirt/Entertain"],
@@ -2186,7 +2237,7 @@ var feats_master_list= {
         name: "Tree bends in the Wind",
         description: "When dodging an enemy, you can use his own force against him, on success or mixed for Effort you can also  knock them prone, make them collide into each other, or crash into walls, within reason",
         moves: ["Dodge"],
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Two_Weapon_Fighting: {
@@ -2199,7 +2250,7 @@ var feats_master_list= {
     Vicious_Mockery: {
         name: "Vicious Mockery",
         description: "Spend Effort to insult another and make them enraged, they will be berserk and lose defense, as long as this makes sense",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Wasnt_Here: {
@@ -2207,7 +2258,7 @@ var feats_master_list= {
         description: "Spend Effort to opt out of a scene as long as you haven't acted in it yet",
         moves: ["Avoid"],
         activated: false,
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
 
@@ -2220,7 +2271,7 @@ var feats_master_list= {
     Whirlwind: {
         name: "Whirlwind",
         description: "for Effort,  attack all  adjacent targets, roll against each one  ",
-        NeedsActivation:true,
+        NeedsActivation: true,
         activated: false,
         moves: ["Attack"],
         EffortLoss: 1,
@@ -2228,7 +2279,7 @@ var feats_master_list= {
     Wicked_Lie: {
         name: "Wicked Lie",
         description: "Spend Effort to reroll any deception attempt. Take the best roll.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         activated: false,
         moves: ["Wicked Lie", "Avoid"],
         EffortLoss: 1,
@@ -2236,7 +2287,7 @@ var feats_master_list= {
     Wizard: {
         name: "Wizard",
         description: "You can learn spells outside your area of knowledge, and cast spells outside of your known area of magic, but must use Effort when you cast. You can also fuel your spells with any kind of mana when you do this.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
 
     },
@@ -2250,7 +2301,7 @@ var feats_master_list= {
     Zealot: {
         name: "Zealot",
         description: "You have +1 on attacks when fighting infidels and supernatural evil",
-        NeedsActivation:true,
+        NeedsActivation: true,
         activated: false,
         moves: ["Attack"],
         bonus: 1,
@@ -2275,7 +2326,7 @@ var feats_master_list= {
         description: "Take -3 damage from fire, and don’t suffocate from smoke. If you are the recipeint of a Resist Fire spell, you are immune to fire.",
         activated: false,
         moves: ["ResistDamage"],
-        NeedsActivation:true,
+        NeedsActivation: true,
         bonus: -3,
     },
     By_Fire_Restored: {
@@ -2291,7 +2342,7 @@ var feats_master_list= {
     Phalanx: {
         name: "Phalanx",
         description: "+1 on attacks on a reach defense versus charge. If you also have a shield, you can defend even though you used your reaction for a reach attack.",
-        NeedsActivation:true,
+        NeedsActivation: true,
         activated: false,
         moves: ["Attack"],
         bonus: 1,
@@ -2305,7 +2356,7 @@ var feats_master_list= {
     Tough: {
         name: "Tough",
         description: "Use Effort point to ignore the pain effect of a wound for a scene",
-        NeedsActivation:true,
+        NeedsActivation: true,
         activated: false,
         EffortLoss: 1,
         moves: ["ResistDamage"],
@@ -2348,8 +2399,8 @@ var feats_master_list= {
             "* Purgative: When drunk, removes parasites instantly\n" +
             "*Tirelessness: Drink first, then, when the drinker get tired, roll the potion maker’s medicine, success: prevent exhaustion, mixed: prevent 1 level of exhaustion, fail: gain +1 exhaustion,\n" +
             "You can also create magical potions. When you use a potion, spend one supply, and construct a potion that does a spell of the first magnitude to the person who drinks it. When the person drinks it, roll at that time with your skill for how successful the spell is and whether there are side effects., but spend the power now.",
-            activated: false,
-            NeedsActivation:true,
+        activated: false,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
 
@@ -2467,7 +2518,7 @@ var feats_master_list= {
     Invisible_Man: {
         name: "Invisible Man",
         description: "Use Effort not to be paid attention to during the scene as long as you don’t act up",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Tracking_Scent: {
@@ -2478,13 +2529,13 @@ var feats_master_list= {
     Human_Communication: {
         name: "Human Communication",
         description: "For Effort, ‘understand’ a human and communicate to him your intentions without any sort of roll",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     },
     Bodyguard: {
         name: "Bodyguard",
         description: "Bodyguard: for Effort out of sequence react to defend another person even if you have already used your turn",
-        NeedsActivation:true,
+        NeedsActivation: true,
         EffortLoss: 1,
     }
 };
@@ -3504,7 +3555,7 @@ async function convertDnD5e() {
                         if (level < 0) {
                             console.log("Error in conversion");
                             console.log(oneEntry);
-                            exit(-1);
+                            return (-1);
                         }
                         if (level === 0) {
 
@@ -3830,7 +3881,7 @@ function convertPTBA() {
             "source": "Gil",
             "type": "feat",
             "name": feat.name,
-            "key" : key,
+            "key": key,
             "img": "images/careers/" + key + ".avif" /// need this
         };
 

@@ -3,6 +3,7 @@ import { dragDrop } from './drag.js';
 import { dragCareersAndItems, sumCareerFeats } from './ptba.js';
 import { socket } from './main.js';
 import { calculate } from './calculator.js';
+import { getChat } from './chat.js';
 
 function SanitizeNonAlphanumeric(id) {
 
@@ -587,7 +588,43 @@ function isToken(text, i, token) {
     return (tok == token)
 }
 
+// sheet context
+
+export function parseSheetContext(thing, sheetName, window, owner, notes, additionalParms, chat_id) { // thing and w and owner are  required by evals, w or owner can be undefined
+    return {
+        thing: thing,
+        sheetName: sheetName,
+        window: window,
+        owner: owner,
+        notes: notes,
+        additionalParms: additionalParms,
+        chat_id: chat_id,
+
+
+    };
+
+
+}
+
 export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) { // thing and w and owner are  required by evals, w or owner can be undefined
+    let context = parseSheetContext(thing, sheetName, w, owner, notes, additionalParms);
+    return parseSheetWithContext(context);
+}
+
+export function parseSheetWithContext(context) { // thing and w and owner are  required by evals, w or owner can be undefined
+
+
+    let thing = context.thing;
+    let sheetName = context.sheetName;
+    let w = context.window;
+    let owner = context.owner;
+    let notes = context.notes;
+    let additionalParms = context.additionalParms;
+    let chat_id = context.chat_id;
+    let chat = undefined;
+    if (chat_id) chat = getChat(chat_id);
+
+
     let text = `${registeredSheets[sheetName]}`; // makes a copy to destroy the copy,  TODO: maybe should make structure context
     let newText = "";
     let state = 0;

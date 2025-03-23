@@ -1,6 +1,5 @@
 import { bringToFront, createOrGetChatWindow, fadeIn } from './window.js';
 import { socket } from './main.js';
-
 import { parseSheet, GetRegisteredThing, ensureThingLoadedElem } from './characters.js';
 
 
@@ -24,6 +23,12 @@ function stripRoll(id) {
 
 export function setLogin(name) {
     login = name;
+}
+
+export function getChat(chatId) {
+    let rollMove = savedChats[stripRoll(chatId)];
+    return rollMove;
+
 }
 
 export function update_roll(change) {

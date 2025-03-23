@@ -51,7 +51,7 @@
                 Stat: <a href="#"> { thing.stat }
                     <span class="bold"> { GetStatBonus(owner, thing.stat) } </span>
                     <div class="tooltipcontainer">
-                        <div class=" tooltip reset_top" id="roll_career_menu_{thing.id}">
+                        <div class=" tooltip reset_top" id="roll_stat_menu_{thing.id}">
                             {htmlContext.ChooseStat(owner, thing.id, "roll_stat_menu"+thing.id)}
                         </div>
                     </div>
@@ -59,17 +59,66 @@
             </div>
 
             <div class="inline">
-                Difficulty: <span class="bold"> { Editable(thing,"thing.difficulty", "itemsetheader npcNum
-                    width32px")
-                    }
-
+                <a href="#"> Difficulty:
+                    <span class="bold"> { Editable(thing,"thing.difficulty", "itemsetheader npcNum
+                        width32px")
+                        }
+                        <div class="tooltipcontainer">
+                            <div class=" tooltip reset_top" id="roll_difficulty_menu_{thing.id}">
+                                <ul class='popup-menu'>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','0','roll_difficulty_menu_{thing.id}')">
+                                        -3 super easy/li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','0','roll_difficulty_menu_{thing.id}')">
+                                        -2</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','0','roll_difficulty_menu_{thing.id}')">
+                                        -1</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','0','roll_difficulty_menu_{thing.id}')">
+                                        0 basic</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','1','roll_difficulty_menu_{thing.id}')">
+                                        1 Basic Orc</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','2','roll_difficulty_menu_{thing.id}')">
+                                        2 Bandit captain, Banshee</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','3','roll_difficulty_menu_{thing.id}')">
+                                        3 Ooze, Cambion Devil</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','4','roll_difficulty_menu_{thing.id}')">
+                                        4 Cyclops, Drow Priestess</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','5','roll_difficulty_menu_{thing.id}')">
+                                        5</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','6','roll_difficulty_menu_{thing.id}')">
+                                        6 Dragon, Balor</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','7','roll_difficulty_menu_{thing.id}')">
+                                        7</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','8','roll_difficulty_menu_{thing.id}')">
+                                        8</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','9','roll_difficulty_menu_{thing.id}')">
+                                        9</li>
+                                    <li
+                                        onclick="changeChatDifficulty('{thing.id}','10','roll_difficulty_menu_{thing.id}')">
+                                        10 Kraken, Lich, Ancient Dragon</li>
+                                </ul>
+                            </div>
+                        </div>
+                </a>
             </div>
             <div class="inline">
-                Bonus: <span class="bold"> { htmlContext.GetBonusFromFeats(owner, thing.move)
+                Bonus: <span class="bold"> { htmlContext.GetBonusFromFeats(thing.id, owner, thing.move)
                     }
             </div>
-            <div>
-                { GetFeatsForMove(owner, thing.move) }
+            <div class="feats">
+                { GetFeatsForMove(owner, thing.move, thing.id, "feats_rollmove") }
             </div>
             <!-- <button onclick="htmlContext.StartRecognizingForRollMove('{thing.id}')">
                 Voice

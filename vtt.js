@@ -16,8 +16,8 @@ const jsonHandling = require('./json_handling.js');
 const probeImage = require('probe-image-size');
 
 const host = 'localhost';
-//const port = 8000;
-const port = 30000;
+const port = 8000;
+//const port = 30000;
 
 const app = express();
 const http_io = http.Server(app);
@@ -464,8 +464,8 @@ async function NewPlayer(socket, msg) {
         },
         languages: { FarDuric: true, Dwarvish: false, Firespeech: false, PrittanianLow: false, ImperialCourt: false },
         items: [], tab: "stats",
-        featsChosen: {}
-
+        featsChosen: {},
+        featsChecked: {}
     };
 
     let newPartyMemberTag = {

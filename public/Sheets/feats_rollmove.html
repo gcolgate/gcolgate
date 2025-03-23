@@ -4,28 +4,13 @@
       <a href="#">
         <h1 class="itemsetheader">{ thing.name }</h1>
         <div class="tooltipcontainer">
-          <div class="tooltip front">{thing.description}</div>
+          <div class="tooltip front feats_roll">{thing.name }:{thing.description}</div>
         </div>
       </a>
-      { thing.NeedsActivation ? "Activateion button" : ""}
-      so
+      { (thing.NeedsActivation ? ActivationButton(chat_id, owner, thing.name,
+      chat.featsChecked[thing.name] == true ? "checked":"") :
+      "")}
     </div>
-    <div
-      style="
-        box-sizing: border-box;
-        color: rgb(0, 0, 0);
-        color-scheme: light dark;
-        font-family: Georgia, serif;
-        font-size: 15px;
-        font-style: italic;
-        font-weight: 400;
-        margin: 8px;
-        line-height: 26.1333px;
-        text-transform: lowercase;
-      "
-    >
 
-
-</div>
   </div>
 </div>

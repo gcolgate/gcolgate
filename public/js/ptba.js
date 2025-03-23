@@ -1,8 +1,9 @@
 import { slotList } from './drag.js';
 import { sendChat } from './chat.js';
-import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, MakeAvailableToParser, MakeAvailableToHtml, chkDiv } from './characters.js'
+import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, parseSheetWithContext, MakeAvailableToParser, MakeAvailableToHtml, chkDiv } from './characters.js'
 import { socket } from './main.js';
 import { extractFromCompendium } from './directoryWindow.js';
+import { getChat } from './chat.js';
 
 const kAction = "1. Action (1 per turn)";
 const kReaction = "2. Reaction (1 type per turn)";
@@ -310,6 +311,7 @@ export const moves = {
         ],
         "action": kMaybeAction,
         "tooltip": "When you challenge or trash talk your opponent. This may be difficult in some cirumstances. It usually cannot be repeated against the same enemies",
+        "Comments": "When you challenge or trash talk your opponent or question their authority",
         "Critical": "Foes are panicked, you can take another, different, action ",
         "success": "Foes are cowed and you take another, different, action",
         "mixed": "Foes are cowed but afterwards treat you as the main threat",
@@ -321,6 +323,7 @@ export const moves = {
         ],
         "action": kMaybeAction,
         "tooltip": "Raise the severed head of an enemy, raising the grim trophy high, or some other fearful action",
+        "Comments": "Raise the severed head of an enemy, raising the grim trophy high, or some other fearful action",
         "Critical": "Foes are panicked, you can take another, different, action ",
         "success": "Foes are cowed and you take another, different, action",
         "mixed": "Foes are cowed but afterwards treat you as the main threat",
@@ -332,6 +335,7 @@ export const moves = {
         ],
         "action": kMaybeAction,
         "tooltip": "Against  beasts, the threat of fire is something that inspires a primal dread. Waving fire about or using magic fire can frighten them",
+        "Comments": "Against  beasts, the threat of fire is something that inspires a primal dread. Waving fire about or using magic fire can frighten them",
         "Critical": "Beasts are panicked, you can take another, different, action ",
         "success": "Beasts are cowed and you take another, different, action",
         "mixed": "Beasts are cowed but afterwards angered",
@@ -411,7 +415,51 @@ export const moves = {
             </a>',
         "mixed": ": You hit your foe",
         "fail": ' You miss,  \
+        <a href="#">and GM can choose 1 if the roll is very low or the foe is strong or tricky \
+            <div class="tooltipcontainer">\
+                <div class="tooltip">\
+                <ul>\
+                <li> &#x25BA; Weapon entangled or stuck</li>\
+                <li> &#x25BA; Foe retaliates (free attack) </li>\
+                <li> &#x25BA; lose some gear, perhaps it falls off</li>\
+                <li> &#x25BA; 1d3 hexes in a bad direction</li>\
+                </ul>\
+                 </div>\
+            </div>\
+            </a>',
+
+    },
+    "OpportunityAttack": {
+        "stat": [
+            "bravery", "cunning"
+        ],
+        "action": kReaction,
+        "tooltip": "Attack someone trying to move around or to advance on you past your reach",
+        "Comments": "Tricky",
+        "Critical": 'You hit your foe, do double damage, your foe ends his turn,\
         <a href="#">and GM can choose 1 \
+         <div class="tooltipcontainer">\
+                <div class="tooltip">\
+       <ul><li> &#x25BA; You hit him in a vulnerable spot. Add another x1 damage, and he is bleeding or stunned</li>\
+        <li> &#x25BA; You can immediately act again, maybe attacking a different foe</li>\
+        <li> &#x25BA; You use brutal strength. Add your Strength x4 more damage, foe is prone (Str Save), and you get a free action (Stain the Soils Red) to intimidate all enemies</li></ul> \
+        </div>\
+        </div>\
+        </a>',
+        "success": 'You hit your foe and do damage to him,your foe ends his turn, and the  \
+         <a href="#">and GM can let you choose 1 to 2 of these \
+            <div class="tooltipcontainer">\
+                <div class="tooltip">\
+        <ul><li> &#x25BA; Knock him back</li>\
+        <li> &#x25BA; Make him prone (Str Save)</li><li> &#x25BA; Get +1 on your next roll</li>\
+        <li> &#x25BA; Force him to retreat and you advance</li>\
+         <li> &#x25BA; Retreat away after, free move with disengagement</li></ul> </ul>\
+                 </div>\
+            </div>\
+            </a>',
+        "mixed": ": You hit your foe, but he continues his move and hits his target",
+        "fail": ' You miss,  \
+        <a href="#">and GM can choose 1 if it is really a low roll or the foe is strong or tricky \
             <div class="tooltipcontainer">\
                 <div class="tooltip">\
                 <ul>\
@@ -1038,22 +1086,55 @@ function appearanceDialog(thing) {
 }
 MakeAvailableToParser('appearanceDialog', appearanceDialog);
 
-function Listify(list, owner, sheet) {
-    let output = "<ul>"
+function Listify(list, owner, sheet, class_name, chat_id) {
+    let context = {
+        thing: null,
+        sheetName: sheet,
+        window: undefined,
+        owner: owner,
+        notes: undefined,
+        additionalParms: undefined,
+        chat_id: chat_id
+    };
+    let output = "<div>"
+    if (class_name != undefined)
+        output = "<div class=\"" + class_name + "\">";
 
     for (let i = 0; i < list.length; i++) {
-        output += "<li>" + parseSheet(list[i], sheet, undefined, owner) + "</li>";
-
+        context.thing = list[i];
+        output += "<div>" + parseSheetWithContext(context) + "</div>";
     }
-    return output + "</ul>";
+    return output + "</div>";
 }
 
-function GetBonusFromFeats(owner, move) {
+function ToggleActivate(checkbox, chat_id, owner_id, featName) {
+
+    let checked = checkbox.checked;
+    socket.emit("change", {
+        thing: chat_id, change: ' thing.featsChecked[ "' + featName + '"] = ' + checked
+    });
+
+
+}
+MakeAvailableToHtml('ToggleActivate', ToggleActivate);
+
+function ActivationButton(chat_id, owner, featName, checked) {
+    let labelid = chat_id + '_' + featName + '_activate';
+
+    let form = `<form> <input type="checkbox" id="${labelid}" ${checked} onchange="htmlContext.ToggleActivate(this,'${chat_id}', '${owner}.id', '${featName}')"> <label for="${labelid}">Activate</label> </form>`;
+
+    console.log(form);
+    return form;
+}
+MakeAvailableToParser('ActivationButton', ActivationButton);
+
+function GetBonusFromFeats(chat_id, owner, move) {
     let bonus = 0;
+    let chat = getChat(chat_id);
     let feats = GetRawFeatsForMove(owner, move);
     for (let i = 0; i < feats.length; i++) {
         let feat = feats[i];
-        if (feat.activated && feat.bonus) {
+        if ((feat.activated || chat.featsChecked[feat.name]) && feat.bonus) {
             if (feat.complex_bonuses) {
                 bonus += feat.complex_bonuses[move];
             }
@@ -1105,9 +1186,9 @@ function GetRawHinderingFeatsForMove(owner, move) {
     }
     return answer;
 }
-function GetFeatsForMove(owner, move) {
+function GetFeatsForMove(owner, move, chat_id, sheetName) {
 
-    return Listify(GetRawFeatsForMove(owner, move), owner, "feats_rollmove");
+    return Listify(GetRawFeatsForMove(owner, move), owner, sheetName, undefined, chat_id);
 
 }
 MakeAvailableToParser('GetFeatsForMove', GetFeatsForMove);
@@ -1142,7 +1223,7 @@ function GetAllFeats(owner) {
 function ListAllFeats(owner) {
 
     let list = GetAllFeats(owner);
-    return Listify(list, owner, "feats");
+    return Listify(list, owner, "feats", undefined);
 }
 
 MakeAvailableToParser('ListAllFeats', ListAllFeats);
@@ -2421,28 +2502,28 @@ MakeAvailableToParser('CreateRollMoveStatString', CreateRollMoveStatString);
 
 
 
-function FeatsToShow(ownerId, stat, mv, skill, advantage, weapon_id, defense_or_offset, weapon_mode) {
+// function FeatsToShow(ownerId, stat, mv, skill, advantage, weapon_id, defense_or_offset, weapon_mode) {
 
 
-    let owner = GetRegisteredThing(ownerId);
-    for (let i = 0; i < owner.items.length; i++) {
-        let item = owner.items[i];
-        if (item.page == "careers" || item.page == "background") {
-            let career = GetRegisteredThing(item.file);
-            let keys = Object.keys(career.owner_featsChosen);
-            for (let k = 0; k < keys.length; k++) {
-                if (career.owner_featsChosen[keys[k]]) {
-                    let name = "CompendiumFiles/" + keys[k];
+//     let owner = GetRegisteredThing(ownerId);
+//     for (let i = 0; i < owner.items.length; i++) {
+//         let item = owner.items[i];
+//         if (item.page == "careers" || item.page == "background") {
+//             let career = GetRegisteredThing(item.file);
+//             let keys = Object.keys(career.owner_featsChosen);
+//             for (let k = 0; k < keys.length; k++) {
+//                 if (career.owner_featsChosen[keys[k]]) {
+//                     let name = "CompendiumFiles/" + keys[k];
 
-                    let featSheet = GetRegisteredThing(name);
+//                     let featSheet = GetRegisteredThing(name);
 
-                    list.push(featSheet);
-                }
-            }
-        }
-    }
+//                     list.push(featSheet);
+//                 }
+//             }
+//         }
+//     }
 
-}
+// }
 
 function changeChatSkill(id, career, divElement) {
     //let menu = document.getElementById(divElement);
@@ -2458,9 +2539,22 @@ MakeAvailableToParser('changeChatSkill', changeChatSkill);
 MakeAvailableToHtml('changeChatSkill', changeChatSkill);
 
 
+function changeChatDifficulty(id, amt) {
+
+    console.log("Chaning skill to " + amt + "for id " + id);
+    socket.emit('change', {
+        change: "thing.difficulty = '" + amt + "'",
+        thing: id
+    })
+
+}
 
 
-function changeChatStat(id, stat, divElement) {
+MakeAvailableToParser('changeChatDifficulty', changeChatDifficulty);
+MakeAvailableToHtml('changeChatDifficulty', changeChatDifficulty);
+
+
+function changeChatStat(id, stat) {
     //let menu = document.getElementById(divElement);
     //  menu.classList.remove("active")
     console.log("Chaning stat to " + stat + "for id " + id);
@@ -2541,7 +2635,8 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
             move: mv,
             difficulty: 0,
             advantage: advantage,
-            resultsTable: moves[mv]
+            resultsTable: moves[mv],
+            featsChecked: {}
         });
     } else {
         let weapon = GetRegisteredThing(weapon_id);
@@ -2569,6 +2664,7 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
             weapon_name: weapon.name,
             damage: mode.damage,
             damage_bonus: FindBestCareerNode(owner, mode)[0],
+            featsChecked: {}
 
 
         });
@@ -2668,7 +2764,7 @@ function getRollAndRollResults(thing, owner) {
     }
     // should I also transmit the featbonus so the server feat is always used?
     // TODO: change this
-    let featBonus= GetBonusFromFeats(owner, thing.name);
+    let featBonus = GetBonusFromFeats(thing.id, owner, thing.move);
     result += featBonus;
     results += (featBonus > 0 ? " +" : "") + featBonus;
     result += Number(thing.statBonus);
@@ -2912,9 +3008,8 @@ function WeaponParries(thing, weaponId) {
                     let bonus = FindBestCareerNode(thing, mode);
 
 
-                    let stats = ["avoidance"];
-                    console.log(mode);
-                    if (mode.move[k] == "Parry") stats.push("bravery");
+                    let stats = moves[mode.move[k]].stat;
+
                     for (let j = 0; j < stats.length; j++) {
                         let stat = stats[j];
                         answer += "<div>"
@@ -2987,56 +3082,56 @@ function PTBAMoves(thing) {
             answer += "<div><div class=\"npcheader\" >" + action + "</div>"
 
         }
-        if (key == "Parry") {
+        if (key == "Parry" || key == "OpporunityAttack") {
 
             let weapons = GetWeaponsList(thing);
             for (let w = 0; w < weapons.length; w++) {
                 answer += WeaponParries(thing, weapons[w]);
             }
-        }
-        if (key == "Attack") {
-            let weapons = GetWeaponsList(thing);
-            for (let w = 0; w < weapons.length; w++) {
-                answer += WeaponMoves(thing, weapons[w]);
-            }
-
-        } else {
-            let bonus = FindBestCareer(thing, key);
-            let skill = bonus[1];
-            for (let j = 0; j < moves[key].stat.length; j++) {
-                let stat = moves[key].stat[j];
-
-                answer += "<div class=\"padded\" >";
-
-                if (key == "Confront") {
-                    console.log("jhj");
+        } else
+            if (key == "Attack") {
+                let weapons = GetWeaponsList(thing);
+                for (let w = 0; w < weapons.length; w++) {
+                    answer += WeaponMoves(thing, weapons[w]);
                 }
 
+            } else {
+                let bonus = FindBestCareer(thing, key);
+                let skill = bonus[1];
+                for (let j = 0; j < moves[key].stat.length; j++) {
+                    let stat = moves[key].stat[j];
 
-                answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
-                    moves[key].Comments, thing.id, stat, key, skill, 1);
+                    answer += "<div class=\"padded\" >";
 
-                answer += CreateRollMoveStatString("midtintButton ",
-                    '<span class="superEmphasis">' + key + '</span> ' + stat + "(" + thing.stats[stat] + ") " + skill + '(' + bonus[0] + ")",
-                    moves[key].Comments, thing.id, stat, key, skill, 0);
-                answer += CreateRollMoveStatString("redtintButton roundbutton ", '+',
-                    moves[key].Comments, thing.id, stat, key, skill, -1);
-
-                chkDiv('<a href="#"> Info  ' +
-                    '<div class="tooltipcontainer">' +
-                    '<div class="tooltip moveright">'
-                    + moves[key].tooltip
-                    + '</div>  </div>  </a> ');
-
-                answer += '<a href="#"> Info  ' +
-                    '<div class="tooltipcontainer">' +
-                    '<div class="tooltip moveright">'
-                    + moves[key].tooltip
-                    + '</div>  </div>  </a>  </div>';
+                    if (key == "Confront") {
+                        console.log("jhj");
+                    }
 
 
+                    answer += CreateRollMoveStatString("greentintButton roundbutton ", '+',
+                        moves[key].Comments ? moves[key].Comments : moves[key].tooltip, thing.id, stat, key, skill, 1);
+
+                    answer += CreateRollMoveStatString("midtintButton ",
+                        '<span class="superEmphasis">' + key + '</span> ' + stat + "(" + thing.stats[stat] + ") " + skill + '(' + bonus[0] + ")",
+                        moves[key].Comments ? moves[key].Comments : moves[key].tooltip, thing.id, stat, key, skill, 0);
+                    answer += CreateRollMoveStatString("redtintButton roundbutton ", '+',
+                        moves[key].Comments ? moves[key].Comments : moves[key].tooltip, thing.id, stat, key, skill, -1);
+
+                    chkDiv('<a href="#"> Info  ' +
+                        '<div class="tooltipcontainer">' +
+                        '<div class="tooltip moveright">'
+                        + moves[key].tooltip
+                        + '</div>  </div>  </a> ');
+
+                    answer += '<a href="#"> Info  ' +
+                        '<div class="tooltipcontainer">' +
+                        '<div class="tooltip moveright">'
+                        + moves[key].tooltip
+                        + '</div>  </div>  </a>  </div>';
+
+
+                }
             }
-        }
     }
     return (answer);
 }
@@ -3062,9 +3157,9 @@ function PTBADefenses(thing) {
 
     let bonus = FindBestCareerNode(thing, mv);
 
-    answer += CreateRollMoveStatString("greentintButton roundbutton", "+", moves[mv].Comments, thing.id, stat, mv, bonus[1], 1);
-    answer += CreateRollMoveStatString("midtintButton", "+ ", moves[mv].Comments, thing.id, stat, mv, bonus[1], 0);
-    answer += CreateRollMoveStatString("redtintButton roundbutton", "-", moves[mv].Comments, thing.id, stat, mv, bonus[1], -1);
+    answer += CreateRollMoveStatString("greentintButton roundbutton", "+", moves[mv].Comments ? moves[mv].Comments : moves[mv].tooltip, thing.id, stat, mv, bonus[1], 1);
+    answer += CreateRollMoveStatString("midtintButton", "+ ", moves[mv].Comments ? moves[mv].Comments : moves[mv].tooltip, thing.id, stat, mv, bonus[1], 0);
+    answer += CreateRollMoveStatString("redtintButton roundbutton", "-", moves[mv].Comments ? moves[mv].Comments : moves[mv].tooltip, thing.id, stat, mv, bonus[1], -1);
 
 
 
@@ -3359,7 +3454,7 @@ function addManaStab(button, thingId) {
     if (HasFeat(thingId, "Blood_Sacrifice")) advantage = 1;
     let thing = GetRegisteredThing(thingId);
 
-    takeDamageAmt(thing, 1, 'slashing', advantage)
+    // takeDamageAmt(thing, 1, 'slashing', advantage)
     addMana(thingId, mana);
 }
 MakeAvailableToHtml('addManaStab', addManaStab);
