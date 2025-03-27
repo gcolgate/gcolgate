@@ -90,12 +90,12 @@ var conditions = {
     },
     Distracted: {
         name: "Distracted",
-        description: "You can take only actions OR reactions this next turn",
+        description: "Players  can take only actions OR reactions this next turn, monsters take disadvantage on attacks",
         stackable: "No",
     },
     Cowed: {
         name: "Cowed",
-        description: "You can take only  reactions this next turn, but get advantage on them",
+        description: "Players can take only  reactions this next turn, but get advantage on them, monstesr will not attack but get advantage on defense",
         stackable: "No",
         duration: "1 round",
         next: "Frightened",

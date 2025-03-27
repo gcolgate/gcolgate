@@ -495,7 +495,7 @@ export const moves = {
                  </ul> \
                  </div></div></a>',
 
-        "mixed": 'Take the indicated damage and <a href="#">choose 1 GM chooses 1: \
+        "mixed": 'Take 1 health and <a href="#">choose 1 GM chooses 1: \
      <div class="tooltipcontainer">\
                 <div class="tooltip">\
                  <ul> \
@@ -508,7 +508,7 @@ export const moves = {
                  </ul> \
                 </div></div></a>',
 
-        "fail": 'Take double damage wounds and the   <a href="#"> choose 1 GM chooses 1 \
+        "fail": 'Take 2 health   and the   <a href="#"> choose 1 GM chooses 1 \
             <div class="tooltipcontainer">\
                 <div class="tooltip">\
                  <ul> \
@@ -1296,7 +1296,7 @@ function KnowsChannelling(owner) {
 MakeAvailableToParser('KnowsChannelling', KnowsChannelling);
 
 function getMaxHealth(owner) {
-    return 20 + Number(owner.stats.strength) + Number(owner.stats.will) + Number(owner.stats.health) * 5;
+    return 2 + Number(owner.stats.strength) + Number(owner.stats.will) + Number(owner.stats.health) * 2;
 }
 MakeAvailableToHtml('getMaxHealth', getMaxHealth);
 
