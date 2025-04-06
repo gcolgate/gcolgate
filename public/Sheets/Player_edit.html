@@ -80,14 +80,7 @@
                     <button class="redtintButton roundbutton"
                         onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),-1)">-</button>
                 </div>
-
-                <button onclick="htmlContext.dropDownToggle('dinury_{thing.id}',window.document)"
-                    class="injuryButton">Take Injury</button>
-                <div id="dinury_{thing.id}" class="dropdown-content itemsetheadershort crit">
-                    <input type=" text" placeholder="Search.." id="dinury_c_{thing.id}"
-                        onkeyup="filterDropDown('dinury_c_{thing.id}','dinury_{thing.id}')">
-                    { extractFromCompendium(["injuries"], thing); }
-                </div>
+                { MakeDropDownWidget('Take Injury',"injuries", thing); }
                 <div class="outlined dragitem">
                     { drawItems(thing, IsInjury) }
                 </div>
@@ -155,14 +148,10 @@
     <div id="careers" { tabClass( thing.tab && thing?.tab=="careers" ) }>
         <div class=" outlined dragitem">
             <div class="relative_inline_block">
-                <button onclick="htmlContext.dropDownToggle('dropdown_{thing.id}', window.document)"
-                    class="blueButton">Add
-                    Career</button>
-                <div id="dropdown_{thing.id}" class="dropdown-content itemsetheadershort crit">
-                    <input type=" text" placeholder="Search.." id="dropdown_content_{thing.id}"
-                        onkeyup="filterDropDown('dropdown_content_{thing.id}','dropdown_{thing.id}')">
-                    { extractFromCompendium(["careers"], thing); }
-                </div>
+
+                { MakeDropDownWidget('Career',"careers", thing) }
+
+
                 { drawItems(thing, IsCareerItem, undefined) }
             </div>
         </div>
@@ -215,14 +204,10 @@
         <button onclick="htmlContext.AddManaGotCritOrFumble(this,'{thing.id}')">Got a crit or fumble</button>
         { drawItems(thing, IsSpellIngredient, undefined) }
         <button onclick="htmlContext.resetManaButtons(this.parentElement,'{thing.id}')">reset turn</button>
-        <button onclick="htmlContext.dropDownToggle('ddispells_{thing.id}',window.document)" class="blueButton">Learn
-            Spell</button>
-        <div id="ddispells_{thing.id}" class="dropdown-content itemsetheadershort crit">
-            <input type=" text" placeholder="Search.." id="ddispells_c_{thing.id}"
-                onkeyup="htmlContext.filterDropDown('ddispells_c_{thing.id}','ddispells_{thing.id}')">
-            { extractFromCompendium(["spell"], thing , ListAllMagicPowers(thing), SpellPowerOnOf )
-            }
-        </div>
+
+        { MakeDropDownWidget('Learn Spell', "spell", thing, ListAllMagicPowers(thing), SpellPowerOnOf) }
+
+
 
         <div class="threecolumnsevenfull">
             { drawItems(thing, IsSpellItem, "full") }
@@ -498,13 +483,9 @@
 
             <div id=" columntwo">
                 <div>Items</div>
-                <button onclick="htmlContext.dropDownToggle('ddi_{thing.id}',window.document)" class="blueButton">Buy
-                    Item</button>
-                <div id="ddi_{thing.id}" class="dropdown-content itemsetheadershort crit">
-                    <input type=" text" placeholder="Search.." id="ddi_c_{thing.id}"
-                        onkeyup="filterDropDown('ddi_c_{thing.id}','ddi_{thing.id}')">
-                    { extractFromCompendium(["weapon"], thing); }
-                </div>
+                { MakeDropDownWidget('Buy',"weapon", thing) }
+
+
                 <div class="outlined dragitem">
                     { drawItems(thing, IsInventoryItem) }
                 </div>

@@ -394,7 +394,7 @@ var items = [
     {
         name: "Breastplate",
         description: "breast plate",
-        image: "images/icons/equipment/chest/breastplate-cuirass-steel-grey.webp",
+        img: "images/icons/equipment/chest/breastplate-cuirass-steel-grey.webp",
         slot: "armor",
         wealth: 3,
         price: 400,
@@ -402,13 +402,13 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 1,
             bonus: 2,
-            career: ["LightArmor"],
+            career: ["LightArmor", "HeavyArmor"],
         },
     },
     // {
     //     name: "Hoplite Armor",
     //     description: "Greek Armor",
-    //     image: "",
+    //     img: "",
     //     slot: "armor",
     //     wealth: 3,
     //     price: 600,
@@ -422,7 +422,7 @@ var items = [
     {
         name: "Knights Armor",
         description: "Knightly Armor, reduces movement by 1 on foot",
-        image: "",
+        img: "",
         slot: "armor",
         wealth: 3,
         price: 1500,
@@ -437,7 +437,7 @@ var items = [
     {
         name: "Viking Armor",
         description: "Chainmail Armor",
-        image: "",
+        img: "",
         price: 200,
         slot: "armor",
         wealth: 3,
@@ -452,7 +452,7 @@ var items = [
     {
         name: "Padded Armor",
         description: "Padded Armor",
-        image: "",
+        img: "",
         slot: "armor",
         wealth: 2,
         price: 5,
@@ -460,14 +460,14 @@ var items = [
             type: ["bludgeoning", "piercing", "slashing"],
             sacrifice: 1,
             bonus: 1,
-            career: ["LightArmor"],
+            career: ["LightArmor", "HeavyArmor"],
             movement: -1
         },
     },
     {
         name: "Leather Armor",
         description: "Leather Armor",
-        image: "",
+        img: "",
         slot: "armor",
         wealth: 2,
         price: 10,
@@ -475,13 +475,13 @@ var items = [
             type: ["bludgeoning", "slashing"],
             sacrifice: 1,
             bonus: 1,
-            career: ["LightArmor"],
+            career: ["LightArmor", "HeavyArmor"],
         },
     },
     {
         name: "Open Helmet",
         description: "Open faced helmet",
-        image: "",
+        img: "",
         slot: "head",
         wealth: 2,
         price: 50,
@@ -489,14 +489,14 @@ var items = [
             type: ["bludgeoning", "slashing"],
             bonus: 1,
             sacrifice: 1,
-            career: ["LightArmor"],
+            career: ["LightArmor", "HeavyArmor"],
 
         },
     },
     {
         name: "Closed Helmet",
         description: "Closed faced helmet",
-        image: "",
+        img: "",
         slot: "head",
         wealth: 2,
         price: 150,
@@ -512,7 +512,7 @@ var items = [
     {
         name: "Shield",
         description: "shield",
-        image: "",
+        img: "",
         slot: "armor",
         wealth: 2,
         price: 10,
@@ -534,7 +534,7 @@ var items = [
     {
         name: "Large Shield",
         description: "shield",
-        image: "",
+        img: "",
         slot: "armor",
         wealth: 2,
         price: 20,
@@ -559,7 +559,7 @@ var items = [
     {
         name: "Phalanx Spear",
         description: "Your classic spear",
-        image: "images/icons/weapons/polearms/spear-flared-worn-grey.webp",
+        img: "images/icons/weapons/polearms/spear-flared-worn-grey.webp",
         slot: "longarm",
         wealth: 1,
         price: 2,
@@ -606,7 +606,7 @@ var items = [
     {
         name: "Quarterstaff",
         description: "Your classic staff",
-        image: "images/icons/skills/melee/hand-grip-staff-blue.webp",
+        img: "images/icons/skills/melee/hand-grip-staff-blue.webp",
         slot: "longarm",
         wealth: 0,
         price: 0.5,
@@ -634,7 +634,7 @@ var items = [
     {
         name: "Glaive ",
         description: "Your classic Polearm",
-        image: "images/icons/weapons/polearm/halberd-crescent-glowing.webp",
+        img: "images/icons/weapons/polearm/halberd-crescent-glowing.webp",
         slot: "longarm",
         wealth: 3,
         price: 20,
@@ -682,7 +682,7 @@ var items = [
     {
         name: "Pike ",
         description: "A very long spear",
-        image: "images/icons/weapons/polearms/spear-hooked-blue.webp",
+        img: "images/icons/weapons/polearms/spear-hooked-blue.webp",
         slot: "longarm",
         wealth: 1,
         price: 5,
@@ -732,7 +732,7 @@ var items = [
     {
         name: "Long Sword",
         description: "Your classic sword",
-        image: "images/icons/weapons/swords/sword-guard-brown.webp",
+        img: "images/icons/weapons/swords/sword-guard-brown.webp",
         slot: "sidearm",
         hands: 1,
         wealth: 3,
@@ -782,7 +782,7 @@ var items = [
     {
         name: "BattleAxe",
         description: "A big axe",
-        image: "images/icons/weapons/polearms/halberd-curved-steel.webp",
+        img: "images/icons/weapons/polearms/halberd-curved-steel.webp",
         slot: "sidearm",
         price: 20,
         hands: 1,
@@ -812,7 +812,7 @@ var items = [
     {
         name: "Cavalry Horse",
         description: "A horse used to battle",
-        image: "images/assets/srd5e/img/MM/Riding_Horse.png",
+        img: "images/assets/srd5e/img/MM/Riding_Horse.png",
         slot: "mount",
         hands: 0,
         wealth: 4,
@@ -834,7 +834,7 @@ var items = [
     {
         name: "Riding Horse",
         description: "A horse not used to battle - might have to control it",
-        image: "images/assets/srd5e/img/MM/Riding_Horse.png",
+        img: "images/assets/srd5e/img/MM/Riding_Horse.png",
         slot: "mount",
         hands: 0,
         wealth: 3,
@@ -855,7 +855,7 @@ var items = [
     {
         name: "Cutlass",
         description: "A light sword",
-        image: "images/cutlass.jpg",
+        img: "images/cutlass.jpg",
         slot: "sidearm",
         wealth: 2,
         price: 20,
@@ -914,7 +914,7 @@ var items = [
     {
         name: "Lance",
         description: "Pointy spear",
-        image: "",
+        img: "",
         slot: "longarm",
         wealth: 2,
         price: 10,
@@ -953,7 +953,7 @@ var items = [
     {
         name: "Club",
         description: "A basic heavy club",
-        image: "images/icons/weapons/clubs/club-simple-barbed.webp",
+        img: "images/icons/weapons/clubs/club-simple-barbed.webp",
         slot: "longarm",
         wealth: 0,
         price: 0.1,
@@ -974,7 +974,7 @@ var items = [
     {
         name: "Mace",
         description: "A heavy metal crusher",
-        image: "images/icons/weapons/maces/mace-spiked-steel-grey.webp",
+        img: "images/icons/weapons/maces/mace-spiked-steel-grey.webp",
         slot: "sidearm",
         wealth: 2,
         price: 10,
@@ -994,7 +994,7 @@ var items = [
     {
         name: "Unarmed",
         description: "Kick or fist",
-        image: "images/icons/skills/melee/unarmed-punch-fist.webp",
+        img: "images/icons/skills/melee/unarmed-punch-fist.webp",
         slot: "Always",
         wealth: 0,
         weapon_defenses: [{
@@ -1040,7 +1040,7 @@ var items = [
     {
         name: "Hand Crossbow",
         description: "A small ahistorical crossbow useful as a stand in for pistols in urban adventures",
-        image: "images/icons/weapons/crossbows/crossbow-simple-brown.webp",
+        img: "images/icons/weapons/crossbows/crossbow-simple-brown.webp",
         slot: "sidearm",
         wealth: 3,
         price: 75,
@@ -1064,7 +1064,7 @@ var items = [
     {
         name: "Crossbow",
         description: "A heavy crossbow that requires winding up, useful for assassinations or seiges, takes 3 rounds to wind",
-        image: "images/icons/weapons/crossbows/crossbow-blue.webp",
+        img: "images/icons/weapons/crossbows/crossbow-blue.webp",
         slot: "longarm",
         wealth: 3,
         price: 50,
@@ -1089,7 +1089,7 @@ var items = [
     {
         name: "Longbow",
         description: "A powerful bow",
-        image: "images/icons/weapons/bows/longbow-leather-green.webp",
+        img: "images/icons/weapons/bows/longbow-leather-green.webp",
         slot: "longarm",
         wealth: 3,
         price: 50,
@@ -1113,7 +1113,7 @@ var items = [
     {
         name: "Horse Bow",
         description: "A powerful bow, short enough to be used from the saddle",
-        image: "images/icons/weapons/bows/longbow-recurve-leather-red.webp",
+        img: "images/icons/weapons/bows/longbow-recurve-leather-red.webp",
         slot: "longarm",
         wealth: 3,
         price: 50,
@@ -1137,7 +1137,7 @@ var items = [
     {
         name: "Short Bow",
         description: "A  bow for hunting",
-        image: "images/icons/weapons/bows/shortbow-recurve.webp",
+        img: "images/icons/weapons/bows/shortbow-recurve.webp",
         slot: "longarm",
         wealth: 3,
         price: 25,
@@ -1160,7 +1160,7 @@ var items = [
     {
         name: "Rapier",
         description: "A duelling sword",
-        image: "images/icons/weapons/swords/Rapier.webp",
+        img: "images/icons/weapons/swords/Rapier.webp",
         slot: "sidearm",
         range: 1.5,
         wealth: 3,
@@ -1207,7 +1207,7 @@ var items = [
     {
         name: "Rapier with spring dagger hilt",
         description: "A duelling sword",
-        image: "images/icons/weapons/swords/Rapier.webp",
+        img: "images/icons/weapons/swords/Rapier.webp",
         slot: "sidearm",
         wealth: 4,
         price: 100,
@@ -1252,7 +1252,7 @@ var items = [
     {
         name: "Throwing dagger",
         description: "A dagger balanced to throw as well as stab",
-        image: "images/icons/weapons/daggers/dagger-jeweled-purple.webp",
+        img: "images/icons/weapons/daggers/dagger-jeweled-purple.webp",
         slot: "pockets",
         wealth: 2,
         price: 5,
@@ -1303,7 +1303,7 @@ var items = [
     {
         name: "Hand Axe",
         description: "A hand axe balanced to throw as well as chop, useful as a tool too",
-        image: "images/icons/weapons/axes/axe-broad-black.webp",
+        img: "images/icons/weapons/axes/axe-broad-black.webp",
         slot: "pockets",
         wealth: 2,
         price: 5,
@@ -1334,7 +1334,7 @@ var items = [
     {
         name: "Javelin",
         description: "A light spear",
-        image: "images/icons/weapons/polearms/javelin.webp",
+        img: "images/icons/weapons/polearms/javelin.webp",
         slot: "longarm",
         wealth: 0,
         price: 0.5,
@@ -1364,7 +1364,7 @@ var items = [
     {
         name: "Knife",
         description: "A knife, not primarily intended as a weapon",
-        image: "images/icons/weapons/polearms/Kobold__knife.webp",
+        img: "images/icons/weapons/polearms/Kobold__knife.webp",
         slot: "pockets",
         wealth: 1,
         price: 1,
@@ -1409,7 +1409,7 @@ var items = [
     {
         name: "Flail",
         description: "A ball on a chain. A skillful user can try to grapple or disarm opponents.",
-        image: "images/icons/weapons/polearms/ouroboros-flail.webp",
+        img: "images/icons/weapons/polearms/ouroboros-flail.webp",
         slot: "longarm",
         wealth: 1,
         price: 10,
@@ -1438,7 +1438,7 @@ var items = [
     {
         name: "Great Axe",
         description: "A very heavy axe",
-        image: "images/icons/weapons/polearms/Berserker Axe.jpg",
+        img: "images/icons/weapons/polearms/Berserker Axe.jpg",
         slot: "longarm",
         strengthMin: 2,
         wealth: 4,
@@ -1477,7 +1477,7 @@ var items = [
     {
         name: "Great Club",
         description: "A very heavy club",
-        image: "images/icons/weapons/polearms/Maul01_01_Regular_White_Thumb.webp",
+        img: "images/icons/weapons/polearms/Maul01_01_Regular_White_Thumb.webp",
         slot: "longarm",
         strengthMin: 2,
         wealth: 1,
@@ -1508,7 +1508,7 @@ var items = [
     {
         name: "Net",
         description: "A Large or smaller creature hit by a net is restrained until it is freed. A net has no effect on creatures that are formless, or creatures that are Huge or larger.A creature can use its action to make a DC 10 Strength check, freeing itself or another creature within its reach on a success. Dealing 5 slashing damage to the net  also frees the creature without harming it, ending the effect and destroying the net.",
-        image: "images/icons/weapons/polearms/net.webp",
+        img: "images/icons/weapons/polearms/net.webp",
         slot: "longarm",
         strengthMin: 2,
         wealth: 1,
@@ -1537,7 +1537,7 @@ var items = [
     {
         name: "Great Sword",
         description: "A very heavy Sword",
-        image: "images/icons/weapons/polearms/GreatSword.webp",
+        img: "images/icons/weapons/polearms/GreatSword.webp",
         slot: "longarm",
         strengthMin: 2,
         wealth: 5,
@@ -1575,7 +1575,7 @@ var items = [
     {
         name: "Fireball Wand",
         description: "Opens a temporary rift to the plane of fire, on defense, it could be used in reverse to parry a fire blast",
-        image: "images/icons/weapons/polearms/Wand of Fireballs.jpg",
+        img: "images/icons/weapons/polearms/Wand of Fireballs.jpg",
         slot: "sidearm",
         wealth: 10,
         price: 3000,
@@ -1600,7 +1600,7 @@ var items = [
     {
         name: "Acid Vial ",
         description: "A vial of strong acid",
-        image: "images/icons/weapons/polearms/acid-flask.webp",
+        img: "images/icons/weapons/polearms/acid-flask.webp",
         slot: "pockets",
         wealth: 3,
         price: 25,
@@ -1622,7 +1622,7 @@ var items = [
     {
         name: "Alchemist's Fire",
         description: "Sticky, adhesive fluid that ignites when exposed to air",
-        image: "images/icons/weapons/polearms/bottled-sunlight.webp",
+        img: "images/icons/weapons/polearms/bottled-sunlight.webp",
         slot: "pockets",
         wealth: 3,
         price: 50,
@@ -1647,7 +1647,7 @@ var items = [
     {
         name: "Arcane Ingredients-Common",
         description: "As an action, a character expend this which will grant him mana to his aura",
-        image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
+        img: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
         wealth: 2,
         price: 25,
@@ -1668,7 +1668,7 @@ var items = [
     {
         name: "Arcane Ingredients- Rare",
         description: "As an action, a character expend this which will grant him mana to his aura",
-        image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
+        img: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
         price: 50,
         wealth: 4,
@@ -1689,7 +1689,7 @@ var items = [
     {
         name: "Arcane Ingredients- Legendary",
         description: "As an action, a character expend this which will grant him mana to his aura",
-        image: "images/icons/weapons/polearms/blindpepper-bomb.webp",
+        img: "images/icons/weapons/polearms/blindpepper-bomb.webp",
         slot: "pockets",
         price: 700,
         wealth: 8,
@@ -1710,7 +1710,7 @@ var items = [
     {
         name: "Boomerang",
         description: "The boomerang is a ranged weapon, on a miss it returns to your hand. Useful for killing birds.",
-        image: "images/icons/weapons/polearms/boomerang.webp",
+        img: "images/icons/weapons/polearms/boomerang.webp",
         slot: "pockets",
         wealth: 1,
         price: 5,
@@ -2725,7 +2725,7 @@ var careers = {
     Cavalry: {
         name: "Cavalry",
         description: "Raiding and soldiers: Fighting with cavalry weapons, but on foot too, familiar with horses, living off the land, pillaging, marching, scouting, following orders, preparing trips, logistics, interrogating locals, understanding enemy troop movements, getting the advantage in an attack involving a group using tactics.",
-        weapons: ["Martial", "Mounted", "HeavyArmor", "Cavalry"],
+        weapons: ["Martial", "Mounted", "LightArmor", "HeavyArmor", "Cavalry"],
         moves: ["Scout", "Control Mount", "Perilous Journey", "Fear My Blade",],
 
         feats: [
@@ -3636,10 +3636,10 @@ async function convertDnD5e() {
 
                         "name": "normal",
                         "portrait": {
-                            "image": json.img,
+                            "img": json.img,
                         },
                         "token": {
-                            "image": tokenImage ? tokenImage : json.img,
+                            "img": tokenImage ? tokenImage : json.img,
                         },
                         "slots": {}
                     });

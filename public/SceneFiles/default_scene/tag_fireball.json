@@ -5,7 +5,7 @@
   "guiLayer": "token",
   "sheet": {
     "name": "fireball",
-    "image": "/images/icons/white.webp",
+    "img": "/images/icons/white.webp",
     "type": "guiLayer",
     "windowId": "images"
   },

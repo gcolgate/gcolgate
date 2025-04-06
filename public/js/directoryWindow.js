@@ -136,7 +136,7 @@ function createFilterButtonsText(allTypes) {
     }
 }
 
-export function extractFromCompendium(filter_array, owner, types, matches) {
+export function extractFromCompendium(filter_array, owner, cancelButton, types, matches) {
 
     if (!folders.Compendium) {
         return [];
@@ -158,6 +158,8 @@ export function extractFromCompendium(filter_array, owner, types, matches) {
     let search_in_directory = new searchInDirectory(array);
     let searched = search_in_directory.search();
 
+    if (cancelButton)
+        answer += `<button class="cancel" onmousedown="htmlContext.dropDownToggle('${cancelButton}', window.document)">Cancel</button>`;
     answer += "<ul>";
     for (let i = 0; i < searched.length; i++) {
 
@@ -173,7 +175,7 @@ export function extractFromCompendium(filter_array, owner, types, matches) {
 
 
         answer += ">";
-        answer += '<div ' + '" onMouseLeave="itemToolTip(\'' + searched[i].file + '\',\'' + owner.id + '\', false)"' +
+        answer += '<div ' + '  onMouseLeave="itemToolTip(\'' + searched[i].file + '\',\'' + owner.id + '\', false)"' +
             ' onMouseEnter="itemToolTip(\'' + searched[i].file + '\',\'' + owner.id + '\', true)" >';
         if ((searched[i].page == "spell" || searched[i].page == "weapon")) {
             answer += '<div class="tooltipcontainer">';
@@ -192,7 +194,7 @@ export function extractFromCompendium(filter_array, owner, types, matches) {
             answer += '</div>';
             answer += '</div>';
         }
-        answer += '<img src="' + (searched[i].image != undefined ? searched[i].image : searched[i].img) + '" width="32" height="32"></img>';
+        answer += `<img src = "${searched[i].img}" width = "32" height = "32" /> `;
         answer += searched[i].name;
         if (searched[i].price) answer += '<span class="bold"> ' + searched[i].price + "</span > "
         answer += '</div>';
@@ -303,6 +305,9 @@ function sortDirEntry(a, b) {
 
     if (a.dir && !b.dir) return -1;
     if (!a.dir && b.dir) return 1;
+    if (!a.name && !b.name) return 0;
+    if (!a.name) return 1;
+    if (!b.name) return -1;
     return a.name.localeCompare(b.name);
 }
 
@@ -708,3 +713,29 @@ function showDirectoryWindow(id, array) {
     fadeIn(window);
 
 }
+
+var uniqueCounter = 0;
+
+
+export function UniqueId() {
+    uniqueCounter++;
+    return "filter_" + uniqueCounter;
+}
+MakeAvailableToParser('UniqueId', UniqueId);
+
+
+
+export function MakeDropDownWidget(title, type, thing, types, matches) {
+    let dropDownId = UniqueId();
+    let filterId = UniqueId();
+    let answer = `<button onclick = "htmlContext.dropDownToggle('${dropDownId}',window.document,'${filterId}')"` +
+        `class="injuryButton" > ${title} </button > ` +
+        ` <div id = "${dropDownId}" class="dropdown-content itemsetheadershort" > ` +
+        ` <input type = "text" placeholder = "Search.." id = "${filterId}"` +
+        `onkeyup = "filterDropDown('${filterId}','${dropDownId}')" > ` +
+        extractFromCompendium([type], thing, dropDownId, types, matches) +
+        '</div>';
+    console.log(answer);
+    return answer;
+}
+MakeAvailableToParser('MakeDropDownWidget', MakeDropDownWidget);

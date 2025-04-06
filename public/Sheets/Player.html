@@ -2,8 +2,7 @@
 
 
     <div class="tab displayblock">
-        <!-- <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="goals" ) ) }
-            onclick="htmlContext.openTab(event, 'goals', this, '{ thing.id }')">Goals</div> -->
+
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="appearance" ) ) }
             onclick="htmlContext.openTab(event, 'appearance', this, '{ thing.id }')">Image</div>
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="stats" ) ) }
@@ -30,15 +29,13 @@
         </div>
         <br>
     </div>
-    <!-- Include Initiative, Health/Max Health, Conditions, Exhaustion, take Damage, be healed, and Mana on the title
-    bar
-    -->
+
 
 
     <div id="stats" { tabClass( thing.tab && thing?.tab=="stats" ) }>
         <div class=" twocolumnsuneven">
 
-            <div><!-- column one -->
+            <div>
                 { hasItemOfType(thing, IsBackgroundItem) ? "" : BackgroundButton(thing,window) }
                 { drawItems(thing, IsBackgroundItem, undefined) }
                 <div style="display: flex;
@@ -52,17 +49,6 @@
                     font-weight: 400">
                     { PTBAAbilities(thing, true); }
                 </div>
-
-                <button onclick="htmlContext.dropDownToggle('ccondition{thing.id}',window.document)"
-                    class="injuryButton">Add Condition</button>
-                <div id="ccondition{thing.id}" class="dropdown-content itemsetheadershort  ">
-                    <input type=" text" placeholder="Search.." id="cconditionc_{thing.id}"
-                        onkeyup="filterDropDown('cconditionc_{thing.id}','ccondition{thing.id}')">
-                    { extractFromCompendium(["conditions"], thing); }
-                </div>
-                <div class="outlined dragitem">
-                    { drawItems(thing, IsCondition) }
-                </div>
             </div>
             <div id="columntwo" class="columntwo">
 
@@ -73,381 +59,346 @@
                         "thing.counters.exhaustion.cur",
                         "itemsetheader numberinput") } of 12</span></p>
 
-                <!-- <div class="padded speedline ">
-                    <button class="greentintBu6tton roundbutton"
-                        onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),1)">
-                        +</button>
-                    <button class="injuryButton "
-                        onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),0)">
-                        Take Damage
-                    </button>
+                <p class="npcBold"><span class="c12 ">Armor:
+                        { getArmor(thing) }
+                    </span></p>
 
-                    <button class="redtintButton roundbutton"
-                        onclick="htmlContext.takeDamage('{thing.id}',getTakenDamage('{thing.id}'),getTakenDamageType('{thing.id}'),-1)">-</button
-                        <!-- <div class="speedline"> Damage: {Editable(thing, 'thing.counters.damageToTakeAmt' ,
-                    "npcNum")}
-                    type: {Editable(thing, 'thing.counters.damageToTakeType' , "npcText")}
-                </div> --> -->
-                >
+                <p class="npcBold"><span class="c12 ">Condition Threshold: {
+                        { getMinorConditionsLevel(thing) +'/' + 2*getMinorConditionsLevel(thing) } }
+                    </span></p>
             </div>
-
-            <button onclick="htmlContext.dropDownToggle('dinury_{thing.id}',window.document)" class="injuryButton">Take
-                Injury</button>
-            <div id="dinury_{thing.id}" class="dropdown-content itemsetheadershort  ">
-                <input type=" text" placeholder="Search.." id="dinury_c_{thing.id}"
-                    onkeyup="filterDropDown('dinury_c_{thing.id}','dinury_{thing.id}')">
-                { extractFromCompendium(["injuries"], thing); }
-            </div>
-            <div class="outlined dragitem">
-                { drawItems(thing, IsInjury) }
-            </div>
-
-
-
-
-        </div> <!-- Columntwo -->
-    </div><!-- two columns-->
-</div><!-- tab class-->
-<!-- Different tabs here -->
-<div id="appearance" { tabClass( thing.tab && thing?.tab=="appearance" ) }>
-
-    <div class="twocolumns">
-        <div>
-            <div class="npcheader" onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"> {
-                thing.current_appearance }
-            </div>
-            <div> Portrait</div>
-            <img src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
-                style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                onclick="htmlContext.showPasteAndChoose(event, window, 'portrait_{thing.id}','token_{thing.id}')"
-                ondragenter="onDragEnter(event,this)" ondragover="onDragOver(event,this)"
-                ondrop="onDropOnImage(event,this,'{thing.id}', 'portrait')" ondragleave="onDragLeave(event,this)" </img>
-
         </div>
-        <div>
-            <div> Token</div>
-            { appearanceDialog(thing) }
-
+        { MakeDropDownWidget('Add Condition',"conditions", thing) }
+        <div class="outlined dragitem">
+            { drawItems(thing, IsCondition) }
 
         </div>
     </div>
-</div>
-<!-- Different tabs here -->
-<div id="careers" { tabClass( thing.tab && thing?.tab=="careers" ) }>
-    <div class=" outlined dragitem">
-        <div class="relative_inline_block">
-            <button onclick="htmlContext.dropDownToggle('dropdown_{thing.id}', window.document)" class="blueButton">Add
-                Career</button>
-            <div id="dropdown_{thing.id}" class="dropdown-content itemsetheadershort crit">
-                <input type=" text" placeholder="Search.." id="dropdown_content_{thing.id}"
-                    onkeyup="filterDropDown('dropdown_content_{thing.id}','dropdown_{thing.id}')">
-                { extractFromCompendium(["careers"], thing); }
+
+    <div id="appearance" { tabClass( thing.tab && thing?.tab=="appearance" ) }>
+
+        <div class="twocolumns">
+            <div>
+                <div class="npcheader" onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"> {
+                    thing.current_appearance }
+                </div>
+                <div> Portrait</div>
+                <img src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
+                    style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
+                    onclick="htmlContext.showPasteAndChoose(event, window, 'portrait_{thing.id}','token_{thing.id}')"
+                    ondragenter="onDragEnter(event,this)" ondragover="onDragOver(event,this)"
+                    ondrop="onDropOnImage(event,this,'{thing.id}', 'portrait')" ondragleave="onDragLeave(event,this)">
+
             </div>
-            { drawItems(thing, IsCareerItem, undefined) }
+            <div>
+                <div> Token</div>
+                { appearanceDialog(thing) }
+
+
+            </div>
         </div>
     </div>
-</div>
-<!-- Different tabs here -->
-<div id="feats" { tabClass( thing.tab && thing?.tab=="feats" ) }>
-    <div class=" outlined dragitem">
-        { ListAllFeats(thing) }
+
+    <div id="careers" { tabClass( thing.tab && thing?.tab=="careers" ) }>
+        <div class=" outlined dragitem">
+            <div class="relative_inline_block">
+                { MakeDropDownWidget('Add Career',"careers", thing) }
+
+                { drawItems(thing, IsCareerItem, undefined) }
+            </div>
+        </div>
     </div>
-</div>
-<!-- Different tabs here -->
-<div id="spells" { tabClass( thing.tab && thing.tab=="spells" )}>
 
-    <p class="npcBold"><span class="c12">Mana in aura: { Editable(thing,
-            "thing.counters.manaInAura.cur",
-            "itemsetheader numberinput") } of { (getMaxMageLevel(thing)+1) }</span></p>
-    <p class="npcBold"> Raise Mana </p>
+    <div id="feats" { tabClass( thing.tab && thing?.tab=="feats" ) }>
+        <div class=" outlined dragitem">
+            { ListAllFeats(thing) }
+        </div>
+    </div>
 
-    <button onclick="htmlContext.addManaOncePerTurn(this,'{thing.id}')">Once Per turn</button>
-    <button onclick="htmlContext.addManaExhaust(this,'{thing.id}')">From Exhaustion</button>
-    <button onclick="htmlContext.addManaStab(this,'{thing.id}')">Action: Cut yourself (blood magic) </button>
-    <button onclick="htmlContext.addManaStabAnother(this,'{thing.id}')">Action: Stab another </button>
-    <button onclick="htmlContext.addManaSpendIngredients(this,'{thing.id}')">Action: Spend ingredients</button>
-    {
-    ( KnowsWordsOfPower(thing)>0 ?
-    '<button onclick="htmlContext.AddManaWordsOfPower(this,\'' + thing.id  +'\')">Bonus Action: Call upon Planar
-        Forces</button>'
-    : "" )
-    }
+    <div id="spells" { tabClass( thing.tab && thing.tab=="spells" )}>
 
-    {
-    ( KnowsChannelling(thing)>0 ?
-    '<button onclick="htmlContext.AddManaPlanarForces(this,\'' + thing.id  +'\')">Bonus Action: Call upon Planar
-        Forces</button>'
-    : "" )
-    }
-    <button onclick="htmlContext.AddManaGotCritOrFumble(this,'{thing.id}')">Got a crit or fumble</button>
-    { drawItems(thing, IsSpellIngredient, undefined) }
-    <button onclick="htmlContext.resetManaButtons(this.parentElement,'{thing.id}')">reset turn</button>
-    <button onclick="htmlContext.dropDownToggle('ddispells_{thing.id}',window.document)" class="blueButton">Learn
-        Spell</button>
-    <div id="ddispells_{thing.id}" class="dropdown-content itemsetheadershort crit">
-        <input type=" text" placeholder="Search.." id="ddispells_c_{thing.id}"
-            onkeyup="htmlContext.filterDropDown('ddispells_c_{thing.id}','ddispells_{thing.id}')">
-        { extractFromCompendium(["spell"], thing , ListAllMagicPowers(thing), SpellPowerOnOf )
+        <p class="npcBold"><span class="c12">Mana in aura: { Editable(thing,
+                "thing.counters.manaInAura.cur",
+                "itemsetheader numberinput") } of { (getMaxMageLevel(thing)+1) }</span></p>
+        <p class="npcBold"> Raise Mana </p>
+
+        <button onclick="htmlContext.addManaOncePerTurn(this,'{thing.id}')">Once Per turn</button>
+        <button onclick="htmlContext.addManaExhaust(this,'{thing.id}')">From Exhaustion</button>
+        <button onclick="htmlContext.addManaStab(this,'{thing.id}')">Action: Cut yourself (blood magic) </button>
+        <button onclick="htmlContext.addManaStabAnother(this,'{thing.id}')">Action: Stab another </button>
+        <button onclick="htmlContext.addManaSpendIngredients(this,'{thing.id}')">Action: Spend ingredients</button>
+        {
+        ( KnowsWordsOfPower(thing)>0 ?
+        '<button onclick="htmlContext.AddManaWordsOfPower(this,\'' + thing.id  +'\')">Bonus Action: Call upon Planar
+            Forces</button>'
+        : "" )
         }
+
+        {
+        ( KnowsChannelling(thing)>0 ?
+        '<button onclick="htmlContext.AddManaPlanarForces(this,\'' + thing.id  +'\')">Bonus Action: Call upon Planar
+            Forces</button>'
+        : "" )
+        }
+        <button onclick="htmlContext.AddManaGotCritOrFumble(this,'{thing.id}')">Got a crit or fumble</button>
+        { drawItems(thing, IsSpellIngredient, undefined) }
+        <button onclick="htmlContext.resetManaButtons(this.parentElement,'{thing.id}')">reset turn</button>
+
+        { MakeDropDownWidget('Learn Spell', "spell", thing, ListAllMagicPowers(thing), SpellPowerOnOf) }
+
+
+        <div class="threecolumnsevenfull">
+            { drawItems(thing, IsSpellItem, "full") }
+        </div>
     </div>
 
-    <div class="threecolumnsevenfull">
-        { drawItems(thing, IsSpellItem, "full") }
-    </div>
-</div>
-<!-- Different tabs here -->
+    <div id="inventory" { tabClass( thing.tab && thing.tab=="inventory" )}>
+        <div id="{'InventoryTooltip_' + thing.id}" class="tooltip">
+        </div>
+        <div class="npcheader" onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"> {
+            thing.current_appearance }
+        </div>
+        <div class="twocolumnsuneven">
+            <div class="imageWrapper">
+                <svg viewBox="0 0 250 400" xmlns="http://www.w3.org/2000/svg" class="overlayImageDolll"
+                    ownerid="{thing.id}" ondragenter="svgDragOver(evt)" ondragover="svgDragOver(evt)"
+                    ondrop="svgDragDrop(evt)" ondragleave="svgDragOut(evt)">
+                    <rect x=0% y="0%" width="100%" height="100%" class="inventorygbkg" />
+                    <defs>
+                        <linearGradient id="darktolight" x1="0%" x2="100%" y1="0%" y2="0%">
+                            <stop offset="0%" stop-color="black" stop-opacity="1.0" />
+                            <stop offset="100%" stop-color="black" stop-opacity="0.0" />
+                        </linearGradient>
 
-
-<div id="inventory" { tabClass( thing.tab && thing.tab=="inventory" )}>
-    <div id="{'InventoryTooltip_' + thing.id}" class="tooltip">
-    </div>
-    <div class="npcheader" onclick="htmlContext.showApperancePopUp(event,'{thing.id}')"> {
-        thing.current_appearance }
-    </div>
-    <div class="twocolumnsuneven">
-        <div class="imageWrapper">
-            <svg viewBox="0 0 250 400" xmlns="http://www.w3.org/2000/svg" class="overlayImageDolll" ownerid="{thing.id}"
-                ondragenter="svgDragOver(evt)" ondragover="svgDragOver(evt)" ondrop="svgDragDrop(evt)"
-                ondragleave="svgDragOut(evt)">
-                <rect x=0% y="0%" width="100%" height="100%" class="inventorygbkg" />
-                <defs>
-                    <linearGradient id="darktolight" x1="0%" x2="100%" y1="0%" y2="0%">
-                        <stop offset="0%" stop-color="black" stop-opacity="1.0" />
-                        <stop offset="100%" stop-color="black" stop-opacity="0.0" />
-                    </linearGradient>
-
-                    <linearGradient id="lighttodark" x1="100%" x2="0%" y1="0%" y2="0%">
-                        <stop offset="0%" stop-color="black" stop-opacity="1.0" />
-                        <stop offset="100%" stop-color="black" stop-opacity="0.0" />
-                    </linearGradient>
-                </defs>
-                <image href="{getAppearanceImage(thing, 'portrait')}" width="75%" height="80%" y="05%" x="10%"
-                    title="image" preserveAspectRatio="xMidYMid meet"
-                    onclick="htmlContext.showApperancePopUp(event,'{thing.id}')">
-                </image>/>
-                <rect x="0%" y="0%" width="20%" height="100%" fill="url(#darktolight)"></rect>
-                <rect x="70%" y="0%" width="40%" height="100%" fill="url(#lighttodark)"></rect>
-                <g slot="head">
-                    <image href='{ getSlotImage(thing,"head","assets/helm.webp")}' x=01% y="1%" width="11.25%"
-                        height="7.03125%" />
-                    <rect x=1% y="1%" width="11.25%" height="7.03125%" slot="head" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Headgear</title>
-                    </rect>
-                </g>
-                <g slot="cloak">
-                    <image href=' { getSlotImage(thing,"cloak","assets/cloak.webp")}' , x=1% y="11%" width="11.25%"
-                        height="7.03125%"" />
-                    <rect x=1% y=" 11%" width="11.25%" height="7.03125%" slot="cloak" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Cloak</title>
+                        <linearGradient id="lighttodark" x1="100%" x2="0%" y1="0%" y2="0%">
+                            <stop offset="0%" stop-color="black" stop-opacity="1.0" />
+                            <stop offset="100%" stop-color="black" stop-opacity="0.0" />
+                        </linearGradient>
+                    </defs>
+                    <image href="{getAppearanceImage(thing, 'portrait')}" width="75%" height="80%" y="05%" x="10%"
+                        title="image" preserveAspectRatio="xMidYMid meet"
+                        onclick="htmlContext.showApperancePopUp(event,'{thing.id}')">
+                    </image>/>
+                    <rect x="0%" y="0%" width="20%" height="100%" fill="url(#darktolight)"></rect>
+                    <rect x="70%" y="0%" width="40%" height="100%" fill="url(#lighttodark)"></rect>
+                    <g slot="head">
+                        <image href='{ getSlotImage(thing,"head","assets/helm.webp")}' x=01% y="1%" width="11.25%"
+                            height="7.03125%" />
+                        <rect x=1% y="1%" width="11.25%" height="7.03125%" slot="head" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Headgear</title>
                         </rect>
-                </g>
-                <g slot="armor">
-                    <image href=' {getSlotImage(thing,"armor","assets/armor.webp")}' x=01% y="21%" width="11.25%"
-                        height="7.03125%" />
-                    <rect x=1% y="21%" width="11.25%" height="7.03125%" slot="armor" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Armor</title>
-                    </rect>
-                </g>
-                <g slot="glove">
-                    <image href=' {getSlotImage(thing,"glove","assets/glove.webp")}' x=01% y="31%" width="11.25%"
-                        height="7.03125%" />
-                    <rect x=1% y="31%" width="11.25%" height="7.03125%" slot="glove" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Gloves</title>
-                    </rect>
-                </g>
-                <g slot="feet">
-                    <image href=' {getSlotImage(thing,"feet","assets/feet.webp")}' x=01% y="41%" width="11.25%"
-                        height="7.03125%" />
-                    <rect x=1% y="41%" width="11.25%" height="7.03125%" slot="foot" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Shoes</title>
-                    </rect>
-                </g>
+                    </g>
+                    <g slot="cloak">
+                        <image href=' { getSlotImage(thing,"cloak","assets/cloak.webp")}' , x=1% y="11%" width="11.25%"
+                            height="7.03125%"" />
+                    <rect x=1% y=" 11%" width="11.25%" height="7.03125%" slot="cloak" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Cloak</title>
+                            </rect>
+                    </g>
+                    <g slot="armor">
+                        <image href=' {getSlotImage(thing,"armor","assets/armor.webp")}' x=01% y="21%" width="11.25%"
+                            height="7.03125%" />
+                        <rect x=1% y="21%" width="11.25%" height="7.03125%" slot="armor" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Armor</title>
+                        </rect>
+                    </g>
+                    <g slot="glove">
+                        <image href=' {getSlotImage(thing,"glove","assets/glove.webp")}' x=01% y="31%" width="11.25%"
+                            height="7.03125%" />
+                        <rect x=1% y="31%" width="11.25%" height="7.03125%" slot="glove" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Gloves</title>
+                        </rect>
+                    </g>
+                    <g slot="feet">
+                        <image href=' {getSlotImage(thing,"feet","assets/feet.webp")}' x=01% y="41%" width="11.25%"
+                            height="7.03125%" />
+                        <rect x=1% y="41%" width="11.25%" height="7.03125%" slot="foot" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Shoes</title>
+                        </rect>
+                    </g>
 
-                <g slot="longarm">
-                    <image href=' {getSlotImage(thing,"longarm","assets/longarm.webp")}' x=01% y="51%" width="9%"
-                        height="18%" />
-                    <rect x=1% y="51%" width="9%" slot="longarm" height="18%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>LongArm</title>
-                    </rect>
-                </g>
-                <g slot="sidearm">
-                    <image href=' {getSlotImage(thing,"sidearm", "assets/sidearm.webp")}' x="1%" y="81%" width="11.25%"
-                        height="7.03125%" />
-                    <rect x="1%" y="81%" width="11.25%" height="7.03125%" slot="sidearm" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>sideArm</title>
-                    </rect>
-                </g>
-                <g slot="shield">
-                    <image href=' {getSlotImage(thing,"shield", "assets/shield.webp")}' x="15%" y="81%" width="11.25%"
-                        height="7.03125%" />
-                    <rect x="15%" y="81%" width="11.25%" height="7.03125%" slot="shield" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>LeftArm</title>
-                    </rect>
-                </g>
+                    <g slot="longarm">
+                        <image href=' {getSlotImage(thing,"longarm","assets/longarm.webp")}' x=01% y="51%" width="9%"
+                            height="18%" />
+                        <rect x=1% y="51%" width="9%" slot="longarm" height="18%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>LongArm</title>
+                        </rect>
+                    </g>
+                    <g slot="sidearm">
+                        <image href=' {getSlotImage(thing,"sidearm", "assets/sidearm.webp")}' x="1%" y="81%"
+                            width="11.25%" height="7.03125%" />
+                        <rect x="1%" y="81%" width="11.25%" height="7.03125%" slot="sidearm" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>sideArm</title>
+                        </rect>
+                    </g>
+                    <g slot="shield">
+                        <image href=' {getSlotImage(thing,"shield", "assets/shield.webp")}' x="15%" y="81%"
+                            width="11.25%" height="7.03125%" />
+                        <rect x="15%" y="81%" width="11.25%" height="7.03125%" slot="shield" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>LeftArm</title>
+                        </rect>
+                    </g>
 
 
-                <g slot="mount">
-                    <image href='{ getSlotImage(thing,"mount","assets/mount.webp")}' x=30% y="81%" width="16.25%"
-                        height="10%" />
-                    <rect x=30% y="81%" width="16.25%" height="10%" slot="mount" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Mount</title>
-                    </rect>
-                </g>
+                    <g slot="mount">
+                        <image href='{ getSlotImage(thing,"mount","assets/mount.webp")}' x=30% y="81%" width="16.25%"
+                            height="10%" />
+                        <rect x=30% y="81%" width="16.25%" height="10%" slot="mount" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Mount</title>
+                        </rect>
+                    </g>
 
-                <g slot="pendant">
-                    <image href=' {getSlotImage(thing,"pendant","assets/pendant.webp")}' x="78%" y="1%" width="11.25%"
-                        height="7.03125%" />
-                    <rect x="78%" y="1%" width="11.25%" height="7.03125%" slot="pendant" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>pendant</title>
-                    </rect>
-                </g>
-                <g slot="ring">
-                    <image href='{getSlotImage(thing,"ring0","assets/ring.webp")}' x="75%" y="11%" width="9%"
-                        height="5.625%" />
-                    <rect x="75%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Ring 1</title>
-                    </rect>
-                </g>
-                <g slot="ring">
-                    <image href='{getSlotImage(thing,"ring1","assets/ring.webp")}' x="85%" y="11%" width="9%"
-                        height="5.625%" />
-                    <rect x="85%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Ring 2</title>
-                    </rect>
-                </g>
-                <g slot="pockets">
-                    <image href='{getSlotImage(thing,"pockets0","assets/bag.webp")}' x="75%" y="21%" width="9%"
-                        height="5.625%" />
-                    <rect x="75%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}','pockets0');"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Pockets 1</title>
-                    </rect>
-                </g>
-                <g slot="pockets">
-                    <image href='{getSlotImage(thing,"pockets1","assets/bag.webp")}' x="85%" y="21%" width="9%"
-                        height="5.625%" />
-                    <rect x="85%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}','pockets1');"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Pockets 2</title>
-                    </rect>
-                </g>
-                <g slot="pockets">
-                    <image href='{getSlotImage(thing,"pockets2","assets/bag.webp")}' x="75%" y="31%" width="9%"
-                        height="5.625%" />
-                    <rect x="75%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'pockets2');"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Pockets 3</title>
-                    </rect>
-                </g>
-                <g slot="pockets">
-                    <image href='{getSlotImage(thing,"pockets3","assets/bag.webp")}' x="85%" y="31%" width="9%"
-                        height="5.625%" />
-                    <rect x="85%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'pockets3');"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Pockets 4</title>
-                    </rect>
-                </g>
-                <g slot="pockets">
-                    <image href='{getSlotImage(thing,"pockets4","assets/bag.webp")}' x="75%" y="41%" width="9%"
-                        height="5.625%" />
+                    <g slot="pendant">
+                        <image href=' {getSlotImage(thing,"pendant","assets/pendant.webp")}' x="78%" y="1%"
+                            width="11.25%" height="7.03125%" />
+                        <rect x="78%" y="1%" width="11.25%" height="7.03125%" slot="pendant" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>pendant</title>
+                        </rect>
+                    </g>
+                    <g slot="ring">
+                        <image href='{getSlotImage(thing,"ring0","assets/ring.webp")}' x="75%" y="11%" width="9%"
+                            height="5.625%" />
+                        <rect x="75%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Ring 1</title>
+                        </rect>
+                    </g>
+                    <g slot="ring">
+                        <image href='{getSlotImage(thing,"ring1","assets/ring.webp")}' x="85%" y="11%" width="9%"
+                            height="5.625%" />
+                        <rect x="85%" y="11%" width="9%" slot="ring" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', this.slot);"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Ring 2</title>
+                        </rect>
+                    </g>
+                    <g slot="pockets">
+                        <image href='{getSlotImage(thing,"pockets0","assets/bag.webp")}' x="75%" y="21%" width="9%"
+                            height="5.625%" />
+                        <rect x="75%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}','pockets0');"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Pockets 1</title>
+                        </rect>
+                    </g>
+                    <g slot="pockets">
+                        <image href='{getSlotImage(thing,"pockets1","assets/bag.webp")}' x="85%" y="21%" width="9%"
+                            height="5.625%" />
+                        <rect x="85%" y="21%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}','pockets1');"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Pockets 2</title>
+                        </rect>
+                    </g>
+                    <g slot="pockets">
+                        <image href='{getSlotImage(thing,"pockets2","assets/bag.webp")}' x="75%" y="31%" width="9%"
+                            height="5.625%" />
+                        <rect x="75%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', 'pockets2');"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Pockets 3</title>
+                        </rect>
+                    </g>
+                    <g slot="pockets">
+                        <image href='{getSlotImage(thing,"pockets3","assets/bag.webp")}' x="85%" y="31%" width="9%"
+                            height="5.625%" />
+                        <rect x="85%" y="31%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', 'pockets3');"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Pockets 4</title>
+                        </rect>
+                    </g>
+                    <g slot="pockets">
+                        <image href='{getSlotImage(thing,"pockets4","assets/bag.webp")}' x="75%" y="41%" width="9%"
+                            height="5.625%" />
 
-                    <rect x="75%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}','pockets4');"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Pockets 5</title>
-                    </rect>
-                </g>
-                <g slot="pockets">
-                    <image href='{getSlotImage(thing,"pockets5","assets/bag.webp")}' x="85%" y="41%" width="9%"
-                        height="5.625%" />
+                        <rect x="75%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}','pockets4');"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Pockets 5</title>
+                        </rect>
+                    </g>
+                    <g slot="pockets">
+                        <image href='{getSlotImage(thing,"pockets5","assets/bag.webp")}' x="85%" y="41%" width="9%"
+                            height="5.625%" />
 
-                    <rect x="85%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'pockets5');"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Pockets 6</title>
-                    </rect>
-                </g>
-                <g slot="potion">
-                    <image href='{getSlotImage(thing,"potion1","assets/potion.webp")}' x="80%" y="51%" width="9%"
-                        height="5.625%" />
-                    <rect x="80%" y="51%" width="9%" slot="potion" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'potion1');"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Potion 1</title>
-                    </rect>
-                </g>
-                <g slot="potion">
-                    <image href='{getSlotImage(thing,"potion2","assets/potion.webp")}' x="80%" y="61%" width="9%"
-                        height="5.625%" />
-                    <rect x="80%" y="61%" width="9%" slot="potion" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'potion2');"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Potion 2</title>
-                    </rect>
-                </g>
-                <g slot="potion">
-                    <image href='{getSlotImage(thing,"potion3","assets/potion.webp")}' x="80%" y="71%" width="9%"
-                        height="5.625%" />
+                        <rect x="85%" y="41%" width="9%" slot="pockets" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', 'pockets5');"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Pockets 6</title>
+                        </rect>
+                    </g>
+                    <g slot="potion">
+                        <image href='{getSlotImage(thing,"potion1","assets/potion.webp")}' x="80%" y="51%" width="9%"
+                            height="5.625%" />
+                        <rect x="80%" y="51%" width="9%" slot="potion" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', 'potion1');"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Potion 1</title>
+                        </rect>
+                    </g>
+                    <g slot="potion">
+                        <image href='{getSlotImage(thing,"potion2","assets/potion.webp")}' x="80%" y="61%" width="9%"
+                            height="5.625%" />
+                        <rect x="80%" y="61%" width="9%" slot="potion" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', 'potion2');"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Potion 2</title>
+                        </rect>
+                    </g>
+                    <g slot="potion">
+                        <image href='{getSlotImage(thing,"potion3","assets/potion.webp")}' x="80%" y="71%" width="9%"
+                            height="5.625%" />
 
-                    <rect x="80%" y="71%" width="9%" slot="potion" height="5.625%" class="inventoryitem"
-                        onmousemove="showInventoryTooltip(evt, '{thing.id}', 'potion3');"
-                        onmouseout="hideInventoryTooltip('{thing.id}');">
-                        <title>Potion 3</title>
-                    </rect>
-                </g>
-            </svg>
-        </div>
-
-        <div id=" columntwo">
-            <div>Items</div>
-            <button onclick="htmlContext.dropDownToggle('ddi_{thing.id}',window.document)" class="blueButton">Buy
-                Item</button>
-            <div id="ddi_{thing.id}" class="dropdown-content itemsetheadershort crit">
-                <input type=" text" placeholder="Search.." id="ddi_c_{thing.id}"
-                    onkeyup="filterDropDown('ddi_c_{thing.id}','ddi_{thing.id}')">
-                { extractFromCompendium(["weapon"], thing); }
+                        <rect x="80%" y="71%" width="9%" slot="potion" height="5.625%" class="inventoryitem"
+                            onmousemove="showInventoryTooltip(evt, '{thing.id}', 'potion3');"
+                            onmouseout="hideInventoryTooltip('{thing.id}');">
+                            <title>Potion 3</title>
+                        </rect>
+                    </g>
+                </svg>
             </div>
-            <div class="outlined dragitem">
-                { drawItems(thing, IsInventoryItem) }
+
+            <div id=" columntwo">
+                <div>Items</div>
+                { MakeDropDownWidget('Buy',"weapon", thing) }
+                <p class="npcBold"><span class="c12 ">Armor:
+                        { getArmor(thing) }
+                    </span></p>
+                <div class="outlined dragitem">
+                    { drawItems(thing, IsInventoryItem) }
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="raw" { tabClass( thing.tab && thing.tab=="raw" )}>
-    <div> {
-        RawEditor(thing, thing, "")
-        } </div>
-</div>
-<div id="features" { tabClass( thing.tab && thing.tab=="features" )}>
+    <div id="raw" { tabClass( thing.tab && thing.tab=="raw" )}>
+        <div> {
+            RawEditor(thing, thing, "")
+            } </div>
+    </div>
+    <div id="features" { tabClass( thing.tab && thing.tab=="features" )}>
 
-    <div class=" twocolumns"> { PTBAMoves(thing) } </div>
-</div>
+        <div class=" twocolumns"> { PTBAMoves(thing) } </div>
+    </div>

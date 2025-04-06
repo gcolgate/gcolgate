@@ -3,7 +3,7 @@
         <div>
             <img src="{getAppearanceImage(thing, 'portrait')}" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'portrait')}"
-                onclick="showPasteAndChoose(event, window, 'portrait_{thing.id}','token_{thing.id}')"></img>
+                onclick="showPasteAndChoose(event, window, 'portrait_{thing.id}','token_{thing.id}')">
             <div id="portrait_{thing.id}" class="hiddenButton">
                 <button>Paste</button>
                 <form action="/uploadFromButton" method="POST" enctype="multipart/form-data"
@@ -20,7 +20,7 @@
             <div> Token</div>
             <img src="{getAppearanceImage(thing, 'token')}" alt="{thing.name}"
                 style="max-width:256px{FetchStyleFromAppearanceArray(thing, 'token')}"
-                onclick="showPasteAndChoose(event, window, 'token_{thing.id}','portrait_{thing.id}')"></img>
+                onclick="showPasteAndChoose(event, window, 'token_{thing.id}','portrait_{thing.id}')">
             <div id="token_{thing.id}" class="hiddenButton">
                 <button>Paste</button>
                 <form action="/uploadFromButton" method="POST" enctype="multipart/form-data" id="token_form_{thing.id}">

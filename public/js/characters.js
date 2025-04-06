@@ -414,7 +414,7 @@ function DrawImageArray(dir, array, ext) {
 
     let s = "";
     for (let i = 0; i < array.length; i++) {
-        s += ' <img src="' + dir + array[i] + ext + '" width="48" height="48")> </img>'
+        s += ' <img src="' + dir + array[i] + ext + '" width="48" height="48" >'
     }
     return s;
 
@@ -534,14 +534,17 @@ export async function UpdateNPC(change) {
     }
 }
 
-export async function RedrawWindow(thing) {
+export async function RedrawWindow(thingId) {
 
-    let w = windowShowing(thing.registeredId); // GIL thing.id?
+    let w = windowShowing(thingId); // GIL thing.id?
     if (w) {
-        displayThing(thing.registeredId, w.sheet);
+        displayThing(thingId, w.sheet);
     }
 
 }
+
+
+
 
 export async function AddItemToNPC(change) {
 
@@ -763,7 +766,7 @@ async function displayThing(fullthingname, sheetName) {
 }
 
 export function formatRemoveButton(ownerid, itemid) {
-    return "<img class='image-holder' src='Sheets/trashcan.png' width='16' height='16' onclick=htmlContext.RemoveItemFromThing('" + ownerid + "','" + itemid + "')  </img>";
+    return "<img class='image-holder' src='Sheets/trashcan.png' width='16' height='16' onclick=htmlContext.RemoveItemFromThing('" + ownerid + "','" + itemid + "') />";
 }
 
 function LineOfCareer(owner, thing, notes) {

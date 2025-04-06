@@ -1,5 +1,5 @@
 import { MakeAvailableToHtml, MakeAvailableToParser, GetRegisteredThing } from './characters.js';
-import { setSlot, findInNamedArray, isEquipped, setAppearanceImage } from './ptba.js';
+import { setSlot, findInNamedArray, isEquipped, setAppearanceImage, isAllowedToWear } from './ptba.js';
 export var thingDragged = null;
 
 export function setThingDragged(t) {
@@ -78,6 +78,12 @@ function svgDragDrop(event) {
         let foundSlot = null;
         let which = 0;
 
+        if (!isAllowedToWear(svg.getAttribute("ownerid"), thingDragged.id)) {
+            alert("Not proficient.");
+            // redraw
+
+            return;
+        }
         if (isEquipped(svg.getAttribute("ownerid"), thingDragged.id)) {
             alert("Already equipped");
             return;

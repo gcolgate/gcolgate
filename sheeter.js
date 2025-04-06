@@ -68,8 +68,7 @@ function getAppearanceImage(thing, type) {
     answer = answer[type];
     console.log(answer);
     if (!answer) return missingImage;
-    console.log(answer.image);
-    return answer.image ? answer.image : missingImage;
+    return answer.img ? answer.img : missingImage;
   }
   return missingImage;
 }

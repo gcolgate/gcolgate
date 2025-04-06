@@ -425,7 +425,7 @@ async function NewPlayer(socket, msg) {
     let newPartyMember = {
         isptba: true,
         appearance: [{
-            name: "armed", portrait: { image: "images/questionMark.png" },
+            name: "armed", portrait: { img: "images/questionMark.png" },
             token: { image: "images//questionMark.png" },
             slots: {
                 X: "X", armor: "", pockets: "",
@@ -433,21 +433,21 @@ async function NewPlayer(socket, msg) {
                 pockets3: "", pockets4: ""
             }
         }, {
-            name: "sleeping", portrait: { image: "images/questionMark.png" },
-            token: { image: "images/questionMark.png", rotation: "90" },
+            name: "sleeping", portrait: { img: "images/questionMark.png" },
+            token: { img: "images/questionMark.png", rotation: "90" },
             slots: { X: "X" }
         }, {
             name: "relaxation",
-            portrait: { image: "images/questionMark.png" },
-            token: { image: "images/questionMark.png" },
+            portrait: { img: "images/questionMark.png" },
+            token: { img: "images/questionMark.png" },
             slots: { X: "X" }
         }, {
-            name: "fancy", portrait: { image: "images/questionMark.png" },
-            token: { image: "images/questionMark.png" },
+            name: "fancy", portrait: { img: "images/questionMark.png" },
+            token: { img: "images/questionMark.png" },
             slots: { X: "X" }
         }, {
-            name: "bathing", portrait: { image: "images/questionMark.png" },
-            token: { image: "images/questionMark.png" },
+            name: "bathing", portrait: { img: "images/questionMark.png" },
+            token: { img: "images/questionMark.png" },
             slots: { X: "X" }
         }],
         current_appearance: "armed", name: baseName,
@@ -581,8 +581,8 @@ async function NewPOI(socket, msg) {
         hud: "tooltip_hud",
 
         appearance: [{
-            name: "normal", portrait: { image: "images/icons/pin.webp" },
-            token: { image: "images/icons/pin.webp" },
+            name: "normal", portrait: { img: "images/icons/pin.webp" },
+            token: { img: "images/icons/pin.webp" },
 
         }
         ],

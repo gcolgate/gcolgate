@@ -41,14 +41,14 @@ for row in spells.index:
         pieces[index] = '"' + str(pieces[index]).strip() + '"'
     tag_f.write(" ,".join(pieces))
     tag_f.write("],")
-    tag_f.write('"image": "images/questionMark.png"')
+    tag_f.write('"img": "images/questionMark.png"')
 
     tag_f.write("}")
     tag_f.close()
 
     f = open(path, "w")
     f.write("{")
-    f.write('"image": "images/questionMark.png"')
+    f.write('"img": "images/questionMark.png"')
     for col in spells.columns:
         if pd.isna(spells[col][row]) == False:
             if col == "Powers" or col == "PossibleEnhancements":

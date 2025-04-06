@@ -1,8 +1,11 @@
 import { slotList } from './drag.js';
 import { sendChat } from './chat.js';
-import { RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, parseSheetWithContext, MakeAvailableToParser, MakeAvailableToHtml, chkDiv } from './characters.js'
+import {
+    RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, parseSheetWithContext,
+    MakeAvailableToParser, MakeAvailableToHtml, chkDiv
+} from './characters.js'
 import { socket } from './main.js';
-import { extractFromCompendium } from './directoryWindow.js';
+import { MakeDropDownWidget } from './directoryWindow.js';
 import { getChat } from './chat.js';
 
 const kAction = "1. Action (1 per turn)";
@@ -633,6 +636,7 @@ export const moves = {
          <div class="tooltipcontainer">  \
             <div class="tooltip">  \
             <ul> \
+        <li> &#x25BA; You are hit in a less armored location</li>\
         <li> &#x25BA; Your weapon, shield, or armor piece is damaged or knocked away</li>\
         <li> &#x25BA; you knocked prone or otherwise put into a bad position, or forced into bad terrain or off ledge or down some stairs </li></ul> \
               </div></div></a>',
@@ -679,7 +683,14 @@ export const moves = {
         <li> &#x25BA; Your weapon is damaged or knocked away or dropped</li>\
         <li> &#x25BA; You are knocked prone or otherwise put into a bad position</li></ul>\
         </div></div></a>',
-        "fail": "You are squarely hit"
+        "fail": "You are squarely hit and the GM is allowed to <a href='#'> choose 1: \
+         <div class='tooltipcontainer'>  \
+         <div class='tooltip'>  \
+            <ul> \
+        <li> &#x25BA; You are hit in a less armored location</li>\
+        <li> &#x25BA; Your weapon is damaged or knocked away</li>\
+        <li> &#x25BA; You are knocked prone or otherwise put into a bad position</li></ul>\
+        </div></div></a>",
     },
     "Bargain": {
         "stat": [
@@ -1071,12 +1082,11 @@ MakeAvailableToParser('ListAllMagicPowers', ListAllMagicPowers);
 
 
 function appearanceDialog(thing) {
-    let a = " <image src=\"" + getAppearanceImage(thing, 'token') + "\" alt=\"" + thing.name + "\"" +
+    let a = " <img src=\"" + getAppearanceImage(thing, 'token') + "\" alt=\"" + thing.name + "\"" +
         "   style=\"max-width:256px" + FetchStyleFromAppearanceArray(thing, 'token') + "\"" +
         "   ondragenter=\"onDragEnter(event,this)\" ondragover=\"onDragOver(event,this)\"" +
-        "   ondrop=\"onDropOnImage(event,this,'" + thing.id + "', 'token')\" ondragleave=\"onDragLeave(event,this)\">" +
-        " </image>" +
-        " <input type=\"color\" id=\"" + thing.id + "colorPicker\" name=\"" + thing.id + "colorPicker\"" +
+        "   ondrop=\"onDropOnImage(event,this,'" + thing.id + "', 'token')\" ondragleave=\"onDragLeave(event,this)\"/>"
+    " <input type=\"color\" id=\"" + thing.id + "colorPicker\" name=\"" + thing.id + "colorPicker\"" +
         "   value=\"" + getAppearanceTintForHTML(thing, 'token') + "\"" +
         "   oninput=\"htmlContext.setAppearanceColor('" + thing.id + '", "token")>';
 
@@ -1301,39 +1311,52 @@ function getMaxHealth(owner) {
 MakeAvailableToHtml('getMaxHealth', getMaxHealth);
 
 
-function isArmorProficient(owner_id, thingId) {
+export function isAllowedToWear(owner_id, thingId) {
 
     let thing = GetRegisteredThing(thingId);
-    if (!thing.armor) return false;
+    if (!thing.armor) return true;
 
     let owner = GetRegisteredThing(owner_id);
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
-        if (item.page == "careers" && item.armor) {
-            for (let k = 0; k < item.armor.length; k++) {
-                for (let j = 0; j < thing.armor.career.length; j++) {
-                    if (thing.armor.career[j] == item.armor[k]) {
-                        return true;
+        if (item.page == "careers") {
+            let career = GetRegisteredThing(item.file);
+            if (career.weapons) {
+
+                for (let k = 0; k < career.weapons.length; k++) {
+                    for (let j = 0; j < thing.armor.career.length; j++) {
+                        if (career.weapons[k] == thing.armor.career[j]) {
+                            return true;
+                        }
                     }
                 }
+
             }
         }
     }
     return false;
 }
 
+function getMinorConditionsLevel(owner) {
+    let strbonus = getStrength(owner);
+    let will = Number(owner.stats.will);
+    let health = Number(owner.stats.health);
+    return 2 + strbonus + will + health;
+
+
+}
+
+MakeAvailableToParser("getMinorConditionsLevel", getMinorConditionsLevel);
+MakeAvailableToHtml("getMinorConditionsLevel", getMinorConditionsLevel);
 
 function getArmor(owner, damageType) {
 
-    let strbonus = getStrength(owner) - 1;
-    let brave = Number(owner.stats.bravery);
-    let bonus = Math.max(strbonus, brave);
+    let bonus = 0;
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
         if (item.page == "weapon" && isEquipped(owner.id, item.file)) {
             let weapon = GetRegisteredThing(item.file);
-            if (!isNaN(weapon?.armor?.bonus) &&
-                isArmorProficient(owner.id, item.file))
+            if (!isNaN(weapon?.armor?.bonus))
                 bonus += weapon.armor.bonus;
 
         }
@@ -1342,6 +1365,10 @@ function getArmor(owner, damageType) {
 
     return bonus;
 }
+
+
+MakeAvailableToParser("getArmor", getArmor);
+MakeAvailableToHtml("getArmor", getArmor);
 
 var takeDamageMove = {
     "stat": [
@@ -1358,11 +1385,10 @@ var takeDamageMove = {
                   <li>● You lose track of someone or something you’re attending to.  </li>\
                   <li>● You miss noticing something important.  </li>\
                   <li>● You take half damage.</li> \
-                  <li>● You take a level of exhaustion.  </li>\
                  </ul> \
                  </div></div></a>',
 
-    "mixed": 'Take the indicated damage and <a href="#">choose 1 GM chooses 1: \
+    "mixed": 'Take 1 wound and <a href="#">choose 1 GM chooses 1: \
      <div class="tooltipcontainer">\
                 <div class="tooltip">\
                  <ul> \
@@ -1371,7 +1397,6 @@ var takeDamageMove = {
                     <li>● You lose track of someone or something you’re attending to</li> \
                     <li>● You miss noticing something important.</li> \
                     <li>● You take double damage.</li>\
-                    <li>● You take a level of exhaustion. \
                  </ul> \
                 </div></div></a>',
     // here in 'you have an injury roll on injury table
@@ -1597,7 +1622,7 @@ export function getAppearanceImage(thing, type) {
         if (!answer) return missingImage;
         answer = answer[type];
         if (!answer) return missingImage;
-        return answer.image ? answer.image : missingImage;
+        return answer.img ? answer.img : missingImage;
     } catch {
 
         return missingImage;
@@ -1685,7 +1710,7 @@ function getSlotImage(thing, type, placeholder) {
     }
     let item = GetRegisteredThing(slots[type]);
     if (item) {
-        return item.image;
+        return item.img;
     }
     return placeholder;
 
@@ -1772,6 +1797,15 @@ function ToggleEquip(owner_id, thingId) {
             return;
         }
     }
+
+
+    if (!isAllowedToWear(owner_id, thingId)) {
+        alert("Not proficient.");
+        // redraw
+        RedrawWindow(owner_id);
+        return;
+    }
+
     // else turn it on
     for (let i = 0; i < slotList.length; i++) {
         if (slotList[i].slot == thing.slot) {
@@ -2104,15 +2138,18 @@ function showPasteAndChoose(e, w, show, hide) {
 }
 MakeAvailableToHtml('showPasteAndChoose', showPasteAndChoose);
 
-function dropDownToggle(elemId, doc) {
+function dropDownToggle(elemId, doc, filterId) {
 
     let toShow = doc.getElementById(elemId);
+
     if (toShow.style.visibility == "visible")
         toShow.style.visibility = "hidden";
     else {
+        let searchText = doc.getElementById(filterId);
         toShow.style.visibility = "visible";
         toShow.style.display = "block";
-
+        searchText.style.visibility = "visibility";
+        searchText.focus();
     }
 
 
@@ -2126,7 +2163,7 @@ function filterDropDown(input, dropdown) {
     input = document.getElementById(input);
     filter = input.value.toUpperCase();
     let div = document.getElementById(dropdown);
-    a = div.getElementsByTagName("p");
+    a = div.getElementsByTagName("li");
     for (i = 0; i < a.length; i++) {
         let txtValue = a[i].textContent || a[i].innerText;
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -2643,7 +2680,7 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
         if (!weapon) throw ("err");
         let mode = (weapon[attackOrDefense][weapon_mode]); // weaksauce fix
         if (Expend(weapon_id, mode)) {
-            RedrawWindow(owner)
+            RedrawWindow(owner.registeredId)
         }
         let skill = FindBestCareerNode(owner, mode)[1];
         console.log(skill);
@@ -3032,22 +3069,9 @@ function WeaponParries(thing, weaponId) {
 function BackgroundButton(thing, window) {
 
 
-    let text = `< button onclick = "htmlContext.dropDownToggle('backg_` + thing.id + `',window.document)" class="blueButton" > Choose Background</button > `;
+    return MakeDropDownWidget(" Choose Background", "background", thing);
 
-    text += `< div id = "backg_` + thing.id + `" class="dropdown-content itemsetheader short crit" > `;
 
-    text += `< input type = " text" placeholder = "Search.." id = "backg_c_` + thing.id + `"
-    onkeyup = "filterDropDown('backg_c_`+ thing.id + `','backg_` + thing.id + `')" > </input >
-        `+ extractFromCompendium(["background"], thing);
-
-    // text += '<div class="outlined dragitem">'
-    //     + drawItems(thing, IsBackgroundItem) +
-    //     '</div>'
-
-    text += '</div>'
-    console.log(text);
-
-    return text;
 }
 MakeAvailableToParser('BackgroundButton', BackgroundButton);
 
@@ -3345,7 +3369,7 @@ function ZeroSpell(thingId, ownerId, stat) {
     let owner = GetRegisteredThing(ownerId);
     // hack around redrawing keeping the tooltip as open
     owner.openSpell = thing.name;
-    RedrawWindow(owner)
+    RedrawWindow(owner.registeredId)
     owner.openSpell = "";
 
 }
@@ -3599,3 +3623,5 @@ function AttackOrAmbushButton(thing, owner) {
 }
 
 MakeAvailableToHtml('AttackOrAmbushButton', AttackOrAmbushButton);
+
+
