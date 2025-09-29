@@ -1,1 +1,9 @@
-{"type":"","id":"Beatrey","file":"./SceneFiles/Menzoberranzan/DocumentsFiles/Beatrey","page":"Document","source":"","name":"Beatrey","img":"images/icons/pin.webp"}
+{
+    "type": "",
+    "id": "Beatrey",
+    "id": "./SceneFiles/Menzoberranzan/DocumentsFiles/Beatrey",
+    "page": "Document",
+    "source": "",
+    "name": "Beatrey",
+    "img": "images/icons/pin.webp"
+}

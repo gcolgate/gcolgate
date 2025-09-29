@@ -9,12 +9,9 @@
             onclick="htmlContext.openTab(event, 'stats', this, '{ thing.id }')">Stats</div>
         <div { tabLinkClass( !thing.tab || (thing.tab && thing.tab=="inventory" ) ) }
             onclick="htmlContext.openTab(event, 'inventory', this,  '{ thing.id }')">Inventory</div>
-        <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="careers" ) ) }
-            onclick="htmlContext.openTab(event, 'careers',  this, '{ thing.id }')">Careers</div>
-        <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="feats" ) ) }
-            onclick="htmlContext.openTab(event, 'feats',  this, '{ thing.id }')">Feats</div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="spells" ) ) }
-            onclick="htmlContext.openTab(event, 'spells', this,  '{ thing.id }')">Spells</div>
+            onclick="htmlContext.openTab(event, 'spells', this, '{ thing.id }')">Spells
+        </div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="features" ) ) }
             onclick="htmlContext.openTab(event, 'features', this,  '{ thing.id }')">All Rolls</div>
         <div {tabLinkClass( !thing.tab || (thing.tab && thing.tab=="raw" ) ) }
@@ -24,8 +21,9 @@
     <div class="verticalLine displayblock">
         <br>
         <div class="basicFont npcTitleInput displayblock"> Name:
-            <input class="itemsetheader npcTitleInput" type="text" data-thingid="{thing.id}" value="{thing.name}"
-                onchange="htmlContext.ChangeName(this)">
+            { await Editable(thing,
+            "thing.name",
+            "itemsetheader npcTitleInput")}
         </div>
         <br>
     </div>
@@ -36,7 +34,7 @@
         <div class=" twocolumnsuneven">
 
             <div>
-                { hasItemOfType(thing, IsBackgroundItem) ? "" : BackgroundButton(thing,window) }
+                { hasItemOfType(thing, IsBackgroundItem) ? "" : await BackgroundButton(thing,window) }
                 { drawItems(thing, IsBackgroundItem, undefined) }
                 <div style="display: flex;
                     color: rgb(88, 23, 13);
@@ -47,15 +45,15 @@
                     font-family: Georgia, serif;
                     font-size: 20px;
                     font-weight: 400">
-                    { PTBAAbilities(thing, true); }
+                    { PTBAAbilities(thing, false); }
                 </div>
             </div>
             <div id="columntwo" class="columntwo">
 
-                <p class="npcBold"><span class="c12 ">Health Loss: { Editable(thing,
+                <p class="npcBold"><span class="c12 ">Health Loss:{ await Editable(thing,
                         "thing.counters.hurt.cur",
                         "itemsetheader numberinput") } of { getMaxHealth(thing) }</span></p>
-                <p class="npcBold"><span class="c12 ">Exhaustion Suffered: { Editable(thing,
+                <p class="npcBold"><span class="c12 ">Exhaustion Suffered:{ await Editable(thing,
                         "thing.counters.exhaustion.cur",
                         "itemsetheader numberinput") } of 12</span></p>
 
@@ -64,13 +62,21 @@
                     </span></p>
 
                 <p class="npcBold"><span class="c12 ">Condition Threshold: {
-                        { getMinorConditionsLevel(thing) +'/' + 2*getMinorConditionsLevel(thing) } }
+                        getMaxHealth(thing) +'/' + 2*getMaxHealth(thing) }
                     </span></p>
             </div>
         </div>
-        { MakeDropDownWidget('Add Condition',"conditions", thing) }
+        { await MakeDropDownWidget('Add Condition',"conditions", thing) }
         <div class="outlined dragitem">
             { drawItems(thing, IsCondition) }
+
+        </div>
+
+        { await MakeDropDownWidget('Add Feat',"feats", thing,
+        Object.keys(await fetchJson('/data/Compendium_all_feat_types_list')),
+        featTypeMatches) }
+        <div class="outlined dragitem">
+            { drawItems(thing, isFeat) }
 
         </div>
     </div>
@@ -99,58 +105,10 @@
         </div>
     </div>
 
-    <div id="careers" { tabClass( thing.tab && thing?.tab=="careers" ) }>
-        <div class=" outlined dragitem">
-            <div class="relative_inline_block">
-                { MakeDropDownWidget('Add Career',"careers", thing) }
-
-                { drawItems(thing, IsCareerItem, undefined) }
-            </div>
-        </div>
-    </div>
-
-    <div id="feats" { tabClass( thing.tab && thing?.tab=="feats" ) }>
-        <div class=" outlined dragitem">
-            { ListAllFeats(thing) }
-        </div>
-    </div>
-
-    <div id="spells" { tabClass( thing.tab && thing.tab=="spells" )}>
-
-        <p class="npcBold"><span class="c12">Mana in aura: { Editable(thing,
-                "thing.counters.manaInAura.cur",
-                "itemsetheader numberinput") } of { (getMaxMageLevel(thing)+1) }</span></p>
-        <p class="npcBold"> Raise Mana </p>
-
-        <button onclick="htmlContext.addManaOncePerTurn(this,'{thing.id}')">Once Per turn</button>
-        <button onclick="htmlContext.addManaExhaust(this,'{thing.id}')">From Exhaustion</button>
-        <button onclick="htmlContext.addManaStab(this,'{thing.id}')">Action: Cut yourself (blood magic) </button>
-        <button onclick="htmlContext.addManaStabAnother(this,'{thing.id}')">Action: Stab another </button>
-        <button onclick="htmlContext.addManaSpendIngredients(this,'{thing.id}')">Action: Spend ingredients</button>
-        {
-        ( KnowsWordsOfPower(thing)>0 ?
-        '<button onclick="htmlContext.AddManaWordsOfPower(this,\'' + thing.id  +'\')">Bonus Action: Call upon Planar
-            Forces</button>'
-        : "" )
-        }
-
-        {
-        ( KnowsChannelling(thing)>0 ?
-        '<button onclick="htmlContext.AddManaPlanarForces(this,\'' + thing.id  +'\')">Bonus Action: Call upon Planar
-            Forces</button>'
-        : "" )
-        }
-        <button onclick="htmlContext.AddManaGotCritOrFumble(this,'{thing.id}')">Got a crit or fumble</button>
-        { drawItems(thing, IsSpellIngredient, undefined) }
-        <button onclick="htmlContext.resetManaButtons(this.parentElement,'{thing.id}')">reset turn</button>
-
-        { MakeDropDownWidget('Learn Spell', "spell", thing, ListAllMagicPowers(thing), SpellPowerOnOf) }
 
 
-        <div class="threecolumnsevenfull">
-            { drawItems(thing, IsSpellItem, "full") }
-        </div>
-    </div>
+
+
 
     <div id="inventory" { tabClass( thing.tab && thing.tab=="inventory" )}>
         <div id="{'InventoryTooltip_' + thing.id}" class="tooltip">
@@ -380,18 +338,20 @@
                 </svg>
             </div>
 
-            <div id=" columntwo">
+            <div id="columntwo">
                 <div>Items</div>
-                { MakeDropDownWidget('Buy',"weapon", thing) }
+                { await MakeDropDownWidget('Buy',"weapon", thing) }
                 <p class="npcBold"><span class="c12 ">Armor:
                         { getArmor(thing) }
                     </span></p>
                 <div class="outlined dragitem">
-                    { drawItems(thing, IsInventoryItem) }
+                    { drawItems(thing, IsInventoryItem, undefined,'weapon') }
                 </div>
             </div>
         </div>
     </div>
+
+
 
     <div id="raw" { tabClass( thing.tab && thing.tab=="raw" )}>
         <div> {
@@ -400,5 +360,6 @@
     </div>
     <div id="features" { tabClass( thing.tab && thing.tab=="features" )}>
 
-        <div class=" twocolumns"> { PTBAMoves(thing) } </div>
+        <div class=" twocolumns"> { await PTBAMoves(thing) } </div>
     </div>
+</div>

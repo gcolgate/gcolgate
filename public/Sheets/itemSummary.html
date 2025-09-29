@@ -5,9 +5,6 @@
       {
       Editable(thing, "thing.name", "itemsetheader itemTitleInput") +
       (thing.type == "weapon" ?ItemWeapon(thing, owner, false) : "") +
-      (thing.type == "spell" ?ItemSpellOrFeat(thing, owner, true): "") +
-      (thing.type == "feat" ?ItemSpellOrFeat(thing, owner, false): "") +
-      (thing.type == "career" ?drawCareerFeats(thing,owner): "") +
       ItemArmor(thing) + thing.type +" "+ maybe(thing.consumableType) +" "+
       maybe(thing.attunement, "Requires Attunement ") +
       maybe(thing.rarity)

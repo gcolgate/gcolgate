@@ -4,7 +4,7 @@
 // document.getElementsByTagName("head")[0].appendChild(metaTag);
 
 import { MakeAvailableToHtml, MakeAvailableToParser } from "./characters.js";
-import { socket } from './main.js';
+import { socket } from './client_main.js';
 import { setThingDragged } from './drag.js';
 import { GoUpOneDirectory } from './directoryWindow.js';
 

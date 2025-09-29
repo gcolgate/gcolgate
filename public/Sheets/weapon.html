@@ -1,7 +1,7 @@
-<div class="body itemsetnada displayinline ">
+<div class="displayinline ">
     <div class=" weapon_columns" ondragenter="ondragenter(event)" ondragover="ondragover(event)"
         ondragleave="ondragleave(event)" ondrop="ondrop(event)">
-        <img src="{thing.image}" width="20" height="20" draggable=true
+        <img src="{thing.img}" width="20" height="20" draggable=true
             ondragstart="htmlContext.setDragStart(event,'{thing.id}')">
         {
         "<span>" + thing.name + "</span>" }
@@ -14,7 +14,7 @@
                     <div inline_block>
                         { thing.description } (
                         {thing.slot} )
-                        <span class="italic"> Price:</span> <span class="bold"></span>{ thing.wealth }</span>
+                        <span class="italic"> Price:</span> Cost: { thing.wealth }
                     </div>
 
 
@@ -27,9 +27,9 @@
             </div>
         </a>
 
-        { ( owner && additionalParms ? "<span>" + formatRemoveButton(owner.id,
-            additionalParms.file) + "</span>":"") +
-        "<span>" + EquippedCheckBox(owner.id, additionalParms.file)+ "</span>"}
+        { ( owner && thing ? "<span>" + formatRemoveButton(owner.id,
+            thing.id) + "</span>":"") +
+        "<span>" + await EquippedCheckBox(owner.id, thing.id)+ "</span>"}
 
 
 

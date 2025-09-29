@@ -15,6 +15,7 @@ const Scene = require('./scene.js');
 const jsonHandling = require('./json_handling.js');
 const probeImage = require('probe-image-size');
 
+
 const host = 'localhost';
 const port = 8000;
 //const port = 30000;
@@ -29,6 +30,24 @@ var passwords, players;
 
 app.use(fileUpload());
 
+
+
+
+// Endpoint to retrieve JSON data
+app.get('/data/:key', async (req, res) => {
+    const key = req.params.key;
+    try {
+        const data = await jsonHandling.readFromDB(key);
+        if (data) {
+            res.json(data);
+        } else {
+            res.status(404).json({ error: 'Data not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 var init = { inited: false }
 
 function waitInit() {
@@ -39,11 +58,11 @@ function waitInit() {
     return new Promise(poll);
 }
 
-
+function getKey(dir, key) { return dir + "_" + key; }
 
 async function justAnUpload(res, req) {
 
-    let file = req.files.file;
+    let file = req.files.id;
     console.log(req.files);
     if (!file.mimetype.startsWith('image')) {
         console.log("Must be image not " + file.mimetype);
@@ -63,7 +82,7 @@ async function justAnUpload(res, req) {
 
 async function doTheUpload(res, req) {
 
-    let file = req.files.file;
+    let file = req.files.id;
     console.log(req.files);
 
     // Log the files to the console
@@ -77,7 +96,7 @@ async function doTheUpload(res, req) {
     // Move the uploaded image to our upload folder
     try {
 
-        let probed = probeImage.sync(req.files.file.data);
+        let probed = probeImage.sync(req.files.id.data);
 
 
         let tile = { x: req.body.x, y: req.body.y, z: req.body.z, texture: file.name, scale: { x: probed.width, y: probed.height, z: 1 } };
@@ -105,7 +124,7 @@ app.post('/upload', (req, res) => {
 
 
     // If no image submitted, exit
-    if (!req.files || !req.files.file) {
+    if (!req.files || !req.files.id) {
         console.log("Cant find image");
         return res.sendStatus(400);
     }
@@ -116,7 +135,7 @@ app.post('/upload', (req, res) => {
 
 async function toUploadToDir(res, req) {
 
-    let file = req.files.file;
+    let file = req.files.id;
     console.log(req.files);
 
     // Log the files to the console
@@ -130,7 +149,7 @@ async function toUploadToDir(res, req) {
     // Move the uploaded image to our upload folder
     try {
 
-        let probed = probeImage.sync(req.files.file.data);
+        let probed = probeImage.sync(req.files.id.data);
         let newDir = req.body.newDir;
         let t = Date.now();
 
@@ -154,7 +173,7 @@ app.post('/uploadToDir', (req, res) => {
 
 
     // If no image submitted, exit
-    if (!req.files || !req.files.file) {
+    if (!req.files || !req.files.id) {
         console.log("Cant find image");
         return res.sendStatus(400);
     }
@@ -170,7 +189,7 @@ app.post('/uploadFromButton', (req, res) => {
     // Upload expects a file, an x, a y, and a z
     // and it will create a new image
     // If no image submitted, exit
-    if (!req.files || !req.files.file) {
+    if (!req.files || !req.files.id) {
         console.log("Cant find image");
         return res.sendStatus(400);
     }
@@ -187,12 +206,12 @@ async function InitialDiskLoad() {
     promises.push(fs.readFile(path.join(__dirname, 'passwords.json'))); // TODO: use file cache
     promises.push(fs.readFile(path.join(__dirname, 'public', 'players/players.json'))); // TODO: use file cache
 
-    promises.push(fs.readdir(path.join(__dirname, 'public', 'Compendium'))); // TODO: use file cache
+    //   promises.push(fs.readdir(path.join(__dirname, 'public', 'Compendium'))); // TODO: use file cache
     //  promises.push(fs.readdir(path.join(__dirname, 'public', 'Favorites'))); // TODO: use file cache
-    promises.push(fs.readdir(path.join(__dirname, 'public', 'Party'))); // TODO: use file cache
+    //   promises.push(fs.readdir(path.join(__dirname, 'public', 'Party'))); // TODO: use file cache
     //  promises.push(fs.readdir(path.join(__dirname, 'public', 'Uniques'))); // TODO: use file cache
     promises.push(fs.readdir(path.join(__dirname, 'public', 'Scenes'))); // TODO: use file cache
-    promises.push(fs.readdir(path.join(__dirname, 'public', 'Documents'))); // TODO: use file cache
+    //  promises.push(fs.readdir(path.join(__dirname, 'public', 'Documents'))); // TODO: use file cache
 
     let results = await Promise.all(promises);
 
@@ -201,12 +220,12 @@ async function InitialDiskLoad() {
     players = jsonHandling.ParseJson('players.json', results[index]); index++;
 
     promises = [];
-    promises.push(jsonHandling.fillDirectoryTable("Compendium", results[index])); index++;
-    //  promises.push(jsonHandling.fillDirectoryTable("Favorites", results[index])); index++;
-    promises.push(jsonHandling.fillDirectoryTable("Party", results[index])); index++;
-    //  promises.push(jsonHandling.fillDirectoryTable("Uniques", results[index])); index++;
-    promises.push(jsonHandling.fillDirectoryTable("Scenes", results[index])); index++;
-    promises.push(jsonHandling.fillDirectoryTable("Documents", results[index])); index++;
+    promises.push(jsonHandling.fillDirectoryTableDB("Compendium"))
+    //  promises.push(jsonHandling.fillDirectoryTable("Favorites");
+    promises.push(jsonHandling.fillDirectoryTableDB("Party"));
+    //  promises.push(jsonHandling.fillDirectoryTable("Uniques");
+    promises.push(jsonHandling.fillDirectoryTableScene("Scenes", results[index])); index++;
+    promises.push(jsonHandling.fillDirectoryTableDB("Documents"));
 
     results = await Promise.all(promises);
 
@@ -221,10 +240,10 @@ async function InitialDiskLoad() {
 
 
     for (let i = 0; i < sheeter.folders.Scenes.length; i++) {
-        let unparsed = sheeter.folders.Scenes[i];
-        let scene = jsonHandling.ParseJson(i, unparsed);
+        let scene = sheeter.folders.Scenes[i];
+        //  let scene = jsonHandling.ParseJson(i, unparsed);
         let nom = scene.name;
-        sheeter.folders.ScenesParsed[nom] = scene;
+        sheeter.folders.ScenesParsed[nom] = scene; // todo,remove copy
 
     }
 
@@ -284,37 +303,37 @@ async function login(socket, credentials) {
 }
 
 
-async function CopyThingFIles(socket, msg) {
-    if (!msg.from.file) return; // what the hell bug with documents
+// async function CopyThingFIles(socket, msg) {
+//     if (!msg.from.id) return; // what the hell bug with documents
 
 
-    let p = path.parse(path.normalize(msg.from.file));
-    //   let indexFolderDir = p.dir.substring(0, p.dir.length - 5);
+//     let p = path.parse(path.normalize(msg.from.id));
+//     //   let indexFolderDir = p.dir.substring(0, p.dir.length - 5);
 
 
-    // let srcName = p.name;
-    // let srcDir = p.dir;
-    let src = path.join(__dirname, "public", p.dir, p.name + '.json');
-    let dest = path.join(__dirname, "public", msg.to + "Files", p.name + '.json');
+//     // let srcName = p.name;
+//     // let srcDir = p.dir;
+//     let src = path.join(__dirname, "public", p.dir, p.name + '.json');
+//     let dest = path.join(__dirname, "public", msg.to + "Files", p.name + '.json');
 
-    // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + p.name + '.json');
-    let dest2 = path.join(__dirname, "public", msg.to, "tag_" + p.name + '.json');
+//     // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + p.name + '.json');
+//     let dest2 = path.join(__dirname, "public", msg.to, "tag_" + p.name + '.json');
 
-    // console.log(src + " to " + dest);
-    // console.log(src2 + " to " + dest2);
-    // warning overwrites msg.from.file, poor form
-    msg.from.file = SanitizeSlashes(msg.to + "Files/" + p.name + '.json');
+//     // console.log(src + " to " + dest);
+//     // console.log(src2 + " to " + dest2);
+//     // warning overwrites msg.from.id, poor form
+//     msg.from.id = SanitizeSlashes(msg.to + "Files/" + p.name + '.json');
 
-    await Promise.all([
-        fs.writeFile(dest2, JSON.stringify(msg.from)),
-        fs.copyFile(src, dest)
-    ]);
-    sheeter.folders[msg.to].push(msg.from);
+//     await Promise.all([
+//         fs.writeFile(dest2, JSON.stringify(msg.from)),
+//         fs.copyFile(src, dest)
+//     ]);
+//     sheeter.folders[msg.to].push(msg.from);
 
-    socket.emit('updateDir', { id: msg.to, folder: sheeter.folders[msg.to] });
+//     socket.emit('updateDir', { id: msg.to, folder: sheeter.folders[msg.to] });
 
 
-}
+// }
 
 let RandomNames = [
     "dhirhan",
@@ -414,14 +433,23 @@ async function UniqueName(dir, ext) {
     } while (true);
 }
 
-
+function
+    uuidv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
+        .replace(
+            /[018]/g,
+            c => (c ^
+                crypto.getRandomValues(new Uint8Array(1))[0] &
+                15 >> c / 4)
+                .toString(16));
+}
 async function NewPlayer(socket, msg) {
 
     let dir = "Party";
 
-    let baseName = await UniqueName(path.join(__dirname, "public", dir), ".json");
+    let key = uuidv4();
 
-    console.log("New baseName " + baseName);
+    console.log("New baseName " + key);
     let newPartyMember = {
         isptba: true,
         appearance: [{
@@ -450,7 +478,7 @@ async function NewPlayer(socket, msg) {
             token: { img: "images/questionMark.png" },
             slots: { X: "X" }
         }],
-        current_appearance: "armed", name: baseName,
+        current_appearance: "armed", name: 'New Player',
         stats: { avoidance: 0, allure: 0, bravery: 0, caring: 0, cunning: 0, intelligence: 0, strength: 0, will: 0, health: 0 },
         counters: {
             hurt: { cur: 0, long_rest: "subtract1", haven: "reset_to_zero", display: "special" },
@@ -469,35 +497,24 @@ async function NewPlayer(socket, msg) {
     };
 
     let newPartyMemberTag = {
-        file: "PartyFiles/" + baseName,
+        file: getKey(dir, key),
         page: "Player",
         source: "",
         type: "",
-        name: baseName,
+        name: 'New Player',
         img: "images/questionMark.png"
     };
-
 
     // let srcName = p.name;
     // let srcDir = dir;
 
-    console.log("New baseName " + baseName);
+    console.log("New key " + key);
 
-    let dest1 = path.join(__dirname, "public", dir + "Files", baseName + '.json');
-
-    // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + name + '.json');
-    let dest2 = path.join(__dirname, "public", dir, "tag_" + baseName + '.json');
-
-    console.log(" to " + dest1);
-    console.log(" to " + dest2);
-    // warning overwrites msg.from.file, poor form
+    jsonHandling.writeToDB(dir, key, newPartyMember, newPartyMemberTag);
+    jsonHandling.iterateDB();
 
 
-    await Promise.all([
-        fs.writeFile(dest1, JSON.stringify(newPartyMember)),
-        fs.writeFile(dest2, JSON.stringify(newPartyMemberTag)),
 
-    ]);
     sheeter.folders[dir].push(newPartyMemberTag);
 
     socket.emit('updateDir', { id: dir, folder: sheeter.folders[dir] });
@@ -527,7 +544,7 @@ async function EnsureEnsureDirExists(path) {
 
 async function GetImageFor(thing_tag, thing, current_scene) {
     // based on scene we may want to do something different
-    let name = thing_tag.file;
+    let name = thing_tag.id;
 
     console.log('Current scene', current_scene);
     console.log('Current scene t' + current_scene.type);
@@ -556,78 +573,73 @@ async function GetImageFor(thing_tag, thing, current_scene) {
 
 async function NewPOI(socket, msg) {
 
-    let dir = "DocumentsFiles/";
-    let dir_tag = "Documents/";
-
+    let dir = "Documents";
     //   let indexFolderDir = dir.substring(0, dir.length - 5);
-
+    var dir_tag = "";
 
     if (msg.scene) {
         dir = msg.scene_subdir;
         dir_tag = msg.scene_subdir_tag;
 
-    }
-
-    let baseName = await UniqueName(path.join(__dirname, "public", dir), ".json");
+        let baseName = await UniqueName(path.join(__dirname, "public", dir), ".json");
 
 
-    let newPOI = {
-        type: 'poi',
-        id: SanitizeNonAlphanumeric(baseName),
-        name: baseName,
-        text: "",
-        tooltip: "",
-        tooltip_html: "",
-        hud: "tooltip_hud",
+        let newPOI = {
+            type: 'poi',
+            id: SanitizeNonAlphanumeric(baseName),
+            name: baseName,
+            text: "",
+            tooltip: "",
+            tooltip_html: "",
+            hud: "tooltip_hud",
 
-        appearance: [{
-            name: "normal", portrait: { img: "images/icons/pin.webp" },
-            token: { img: "images/icons/pin.webp" },
+            appearance: [{
+                name: "normal", portrait: { img: "images/icons/pin.webp" },
+                token: { img: "images/icons/pin.webp" },
 
-        }
-        ],
-        current_appearance: "normal", name: baseName,
+            }
+            ],
+            current_appearance: "normal", name: baseName,
 
-    };
-
-
-    let newPOITag = {
-        type: 'poi_tag',
-        id: SanitizeNonAlphanumeric(baseName),
-        file: dir + baseName,
-        page: "Document",
-        source: "",
-        type: "",
-        name: baseName,
-        img: "images/icons/pin.webp"
-    };
+        };
 
 
-    // let srcName = p.name;
-    // let srcDir = dir;
-
-    console.log("New baseName " + baseName);
-
-    await EnsureEnsureDirExists(path.join(__dirname, "public", dir_tag));
-    await EnsureEnsureDirExists(path.join(__dirname, "public", dir));
-
-    let dest1 = path.join(__dirname, "public", dir, baseName + '.json');
-
-    // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + name + '.json');
-    let dest2 = path.join(__dirname, "public", dir_tag, "tag_" + baseName + '.json');
-
-    console.log(" to " + dest1);
-    console.log(" to " + dest2);
-    // warning overwrites msg.from.file, poor form
+        let newPOITag = {
+            type: 'poi_tag',
+            id: SanitizeNonAlphanumeric(baseName),
+            file: dir + baseName,
+            page: "Document",
+            source: "",
+            type: "",
+            name: baseName,
+            img: "images/icons/pin.webp"
+        };
 
 
-    await Promise.all([
-        fs.writeFile(dest1, JSON.stringify(newPOI)),
-        fs.writeFile(dest2, JSON.stringify(newPOITag)),
+        // let srcName = p.name;
+        // let srcDir = dir;
 
-    ]);
+        console.log("New baseName " + baseName);
 
-    if (msg.scene) {
+        await EnsureEnsureDirExists(path.join(__dirname, "public", dir_tag));
+        await EnsureEnsureDirExists(path.join(__dirname, "public", dir));
+
+        let dest1 = path.join(__dirname, "public", dir, baseName + '.json');
+
+        // let src2 = path.join(__dirname, "public", indexFolderDir, "tag_" + name + '.json');
+        let dest2 = path.join(__dirname, "public", dir_tag, "tag_" + baseName + '.json');
+
+        console.log(" to " + dest1);
+        console.log(" to " + dest2);
+        // warning overwrites msg.from.id, poor form
+
+
+        await Promise.all([
+            fs.writeFile(dest1, JSON.stringify(newPOI)),
+            fs.writeFile(dest2, JSON.stringify(newPOITag)),
+
+        ]);
+
         let scene = sheeter.folders.ScenesParsed[msg.scene];
         let newTile = {
             'x': msg.x,
@@ -656,14 +668,58 @@ async function NewPOI(socket, msg) {
         msg.scene = { name: msg.scene };
         Scene.updateSceneTile(scene, newTile);
         io.emit('newTile', { tile: newTile, scene: scene });
+        socket.emit('newPOIid', { id: newPOITag });
 
-    }
-    else {
+
+    } else {
+
+        let key = uuidv4();
+        let basename = 'New Document';
+
+        let newPOI = {
+            type: 'poi',
+            id: key,
+            name: basename,
+            text: "",
+            tooltip: "",
+            tooltip_html: "",
+            hud: "tooltip_hud",
+
+            appearance: [{
+                name: "normal", portrait: { img: "images/icons/pin.webp" },
+                token: { img: "images/icons/pin.webp" },
+
+            }
+            ],
+            current_appearance: "normal", name: basename,
+
+        };
+
+
+        let newPOITag = {
+            type: 'poi_tag',
+            id: dir + "_" + key,
+            file: getKey(dir, key),
+            page: "Document",
+            source: "",
+            type: "",
+            name: basename,
+            img: "images/icons/pin.webp"
+        };
+
+
+        // let srcName = p.name;
+        // let srcDir = dir;
+
+        console.log("New baseName " + key);
+
+        // warning overwrites msg.from.id, poor form
+        jsonHandling.writeToDB(dir, key, newPOI, newPOITag);
         sheeter.folders[dir].push(newPOITag);
         socket.emit('updateDir', { id: dir, folder: sheeter.folders[dir] });
-    }
 
-    socket.emit('newPOIid', { id: newPOITag });
+        socket.emit('newPOIid', { id: newPOITag });
+    }
 
 
 }
@@ -712,7 +768,7 @@ async function NewScene(socket, msg) {
 
     console.log(" to " + baseName);
     console.log(" to " + sceneDir);
-    // warning overwrites msg.from.file, poor form
+    // warning overwrites msg.from.id, poor form
 
     // this is not good, let's try to change to leveldb soon
 
@@ -746,61 +802,61 @@ async function NewScene(socket, msg) {
 }
 
 
-async function ChangeName(dir, thingName, newName, io, msg, updateAppearance) {
+// async function ChangeName(dir, thingName, newName, io, msg, updateAppearance) {
 
-    /// this could be done better with more callbacks instead of async
-    let tagDir = dir.slice(0, -5);
-    let folder = sheeter.folders[tagDir];
+//     /// this could be done better with more callbacks instead of async
+//     let tagDir = dir.slice(0, -5);
+//     let folder = sheeter.folders[tagDir];
 
-    console.log("Tag dir (" + tagDir + ")");
-    let filePath = path.normalize(path.join(__dirname, 'public', dir, sheeter.optionallyAddExt(thingName, ".json")));
-    let tag_filePath = path.normalize(path.join(__dirname, 'public', tagDir, "tag_" + sheeter.optionallyAddExt(thingName, ".json")));
-    console.log("filePath " + filePath);
-    console.log("tag_filePath " + tag_filePath);
+//     console.log("Tag dir (" + tagDir + ")");
+//     let filePath = path.normalize(path.join(__dirname, 'public', dir, sheeter.optionallyAddExt(thingName, ".json")));
+//     let tag_filePath = path.normalize(path.join(__dirname, 'public', tagDir, "tag_" + sheeter.optionallyAddExt(thingName, ".json")));
+//     console.log("filePath " + filePath);
+//     console.log("tag_filePath " + tag_filePath);
 
-    let result = await fs.readFile(filePath);
-    let thing = jsonHandling.ParseJson(filePath, result);
+//     let result = await fs.readFile(filePath);
+//     let thing = jsonHandling.ParseJson(filePath, result);
 
-    result = await fs.readFile(tag_filePath);
-    let tag = jsonHandling.ParseJson(tag_filePath, result);
+//     result = await fs.readFile(tag_filePath);
+//     let tag = jsonHandling.ParseJson(tag_filePath, result);
 
-    for (let i = 0; i < folder.length; i++) {
+//     for (let i = 0; i < folder.length; i++) {
 
-        let entry = jsonHandling.ParseJson("inline", folder[i]);
-        console.log(entry.file + " vs " + tag.file);
-        console.log("%o", folder[i]);
+//         let entry = jsonHandling.ParseJson("inline", folder[i]);
+//         console.log(entry.id + " vs " + tag.id);
+//         console.log("%o", folder[i]);
 
-        if (entry.file == tag.file) {
-            entry.name = newName;
-            folder[i] = JSON.stringify(entry);
-            break;
-        }
-    }
+//         if (entry.id == tag.id) {
+//             entry.name = newName;
+//             folder[i] = JSON.stringify(entry);
+//             break;
+//         }
+//     }
 
-    thing.name = newName;
-    tag.name = newName;
+//     thing.name = newName;
+//     tag.name = newName;
 
-    await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
-        if (err)
-            console.log(err);
-        else {
-            console.log("File written successfully\n");
-            console.log("The written has the following contents:");
-            //  console.log(fs.readFileSync("books.txt", "utf8"));
-        }
-    });
-    await fs.writeFile(tag_filePath, JSON.stringify(tag), (err) => {
-        if (err)
-            console.log(err);
-        else {
-            console.log("File written successfully\n");
-            console.log("The written has the following contents:");
-            //  console.log(fs.readFileSync("books.txt", "utf8"));
-        }
-    });
-    io.emit('refresh_scenes');
+//     await fs.writeFile(filePath, JSON.stringify(thing), (err) => {
+//         if (err)
+//             console.log(err);
+//         else {
+//             console.log("File written successfully\n");
+//             console.log("The written has the following contents:");
+//             //  console.log(fs.readFileSync("books.txt", "utf8"));
+//         }
+//     });
+//     await fs.writeFile(tag_filePath, JSON.stringify(tag), (err) => {
+//         if (err)
+//             console.log(err);
+//         else {
+//             console.log("File written successfully\n");
+//             console.log("The written has the following contents:");
+//             //  console.log(fs.readFileSync("books.txt", "utf8"));
+//         }
+//     });
+//     io.emit('refresh_scenes');
 
-}
+// }
 
 async function sendScene(msg, socket) {
 
@@ -809,8 +865,14 @@ async function sendScene(msg, socket) {
 
     let scene = sheeter.folders.ScenesParsed[msg.name];
 
-
+    console.log("Loading scene " + msg.name);
+    if (!scene) {
+        console.log("Error scene not found " + msg.name);
+        socket.emit('error', { message: "Scene " + msg.name + " not found" });
+        return;
+    }
     await Scene.loadScene(scene);
+    console.log("Loaded scene " + msg.name + " with " + Object.keys(scene.tiles).length + " tiles");
     let array = [];
     let keys = Object.keys(scene.tiles);
     for (let i = 0; i < keys.length; i++) {
@@ -883,9 +945,7 @@ io.on('connection', (socket) => {
             io.emit("chat", msg);
         }
     });
-    socket.on('changeName', (msg) => {
-        ChangeName(msg.dir, msg.thingName, msg.newName, io, msg, true);
-    });
+
     socket.on('updateTile', (msg) => {
 
         let sender = getUser(socket);
@@ -912,6 +972,20 @@ io.on('connection', (socket) => {
             io.emit('deletedTile', msg);
         }
     });
+    socket.on("delete", (msg) => {
+        let dir = jsonHandling.getDir(msg.id);
+        let file = jsonHandling.getFile(msg.id);
+        console.log("delete file " + msg.id);;
+        jsonHandling.delete_entries(dir, file);
+
+        socket.emit('updateDir', { id: dir, folder: sheeter.folders[dir] });
+        jsonHandling.fillDirectoryTableDB(dir).then((result) => {
+            sheeter.folders[dir] = result;
+            socket.emit('updateDir', { id: dir, folder: sheeter.folders[dir] });
+        });
+
+    });
+
     socket.on("add_token", (msg) => {
 
         let sender = getUser(socket);
@@ -921,14 +995,14 @@ io.on('connection', (socket) => {
             console.log(msg.tile);
             let ref = msg.tile.reference;
             if (ref.windowId == "Compendium" || ref.windowId === "Favorites") {
-                let instance = path.join('SceneFiles', msg.scene, path.basename(ref.file) + Scene.uuidv4());
+                let instance = path.join('SceneFiles', msg.scene, path.basename(ref.id) + Scene.uuidv4());
 
-                fs.copyFile(path.join(__dirname, "public", ref.file + '.json'),
+                fs.copyFile(path.join(__dirname, "public", ref.id + '.json'),
                     path.join(__dirname, "public", instance + '.json')
                 );
-                ref.file = (instance);
+                ref.id = (instance);
                 msg.tile.sheet = ref;
-                ref.file = msg.tile.sheet.file = path.join(instance + '.json');
+                ref.id = msg.tile.sheet.id = path.join(instance + '.json');
 
             }
 
@@ -963,7 +1037,7 @@ io.on('connection', (socket) => {
             sheeter.ChangeThing(msg.thing, msg.change, io, msg, false);
     });
     socket.on('addItem', (msg) => {
-
+        console.log("addItem  ", msg);
         sheeter.AddItem(msg.thing, msg.item, io, msg);
     })
     // to do in utilities class
@@ -1374,13 +1448,13 @@ recurseReadImageDir(path.join(__dirname, 'public', 'images'));
 
 app.use("/images", (req, res, next) => {
 
-    console.log("images");
-    console.log(req.originalUrl);
+    //console.log("images");
+    // console.log(req.originalUrl);
 
 
     res.setHeader("Content-Type", "application/json");
     res.writeHead(200);
-    console.log(imageDirMap[req.originalUrl]);
+    //    console.log(imageDirMap[req.originalUrl]);
 
     let answer = imageDirMap[req.originalUrl];
     res.end(JSON.stringify(answer));
@@ -1494,3 +1568,4 @@ http_io.listen(port, () => console.log(`VTT listening on port ${port}`))
 // 3. shop
 
 console.log(`Server is running on http://${host}:${port}`);
+

@@ -34,18 +34,7 @@
                         </button>
             </div>
             <br>
-            <div class="inline">
 
-                Skill: <a href="#"> {(thing.skill == "" ? "None" : thing.skill ) } <span class="bold">{
-                        GetCareerLevel(owner,
-                        thing.skill)}</span>
-                    <div class="tooltipcontainer">
-                        <div class=" tooltip reset_top" id="roll_career_menu_{thing.id}">
-                            {htmlContext.ShowAllPlayerSkills(owner, thing.id, "roll_career_menu_"+thing.id)}
-                        </div>
-                    </div>
-                </a>
-            </div>
 
             <div class="inline">
                 Stat: <a href="#"> { thing.stat }
@@ -60,7 +49,7 @@
 
             <div class="inline">
                 <a href="#"> Difficulty:
-                    <span class="bold"> { Editable(thing,"thing.difficulty", "itemsetheader npcNum
+                    <span class="bold">{ await Editable(thing,"thing.difficulty", "itemsetheader npcNum
                         width32px")
                         }
                         <div class="tooltipcontainer">

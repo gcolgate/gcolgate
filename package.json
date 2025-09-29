@@ -10,21 +10,23 @@
   "author": "Gil Colgate",
   "license": "ISC",
   "dependencies": {
+    "classic-level": "^3.0.0",
     "drag-drop": "7.2.0",
     "ejs": "^3.1.9",
-    "express": "^4.18.2",
+    "express": "5.1.0",
     "express-fileupload": "^1.4.0",
     "fs-extra": "11.1.1",
+    "level": "^9.0.0",
     "mime": "^3.0.0",
     "probe-image-size": "^7.2.3",
     "sanitize-filename": "1.6.3",
     "socket.io": "^4.6.1",
-    "three": "^0.170.0",
+    "sublevel": "^2.4.0",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.4",
-    "vite": "^4.2.1"
+    "vite": "^6.3.2"
   },
   "nodemonConfig": {
     "ignore": [

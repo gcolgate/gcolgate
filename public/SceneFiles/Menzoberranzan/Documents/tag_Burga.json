@@ -1,1 +1,9 @@
-{"type":"","id":"Burga","file":"./SceneFiles/Menzoberranzan/DocumentsFiles/Burga","page":"Document","source":"","name":"Burga","img":"images/icons/pin.webp"}
+{
+    "type": "",
+    "id": "Burga",
+    "id": "./SceneFiles/Menzoberranzan/DocumentsFiles/Burga",
+    "page": "Document",
+    "source": "",
+    "name": "Burga",
+    "img": "images/icons/pin.webp"
+}

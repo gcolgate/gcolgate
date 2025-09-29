@@ -1,6 +1,6 @@
 import { bringToFront, createOrGetChatWindow, fadeIn } from './window.js';
-import { socket } from './main.js';
-import { parseSheet, GetRegisteredThing, ensureThingLoadedElem } from './characters.js';
+import { socket } from './client_main.js';
+import { parseSheet, GetRegisteredThing, ensureThingLoaded } from './characters.js';
 
 
 
@@ -8,10 +8,10 @@ var login;
 var savedChats = [];
 
 export function sendChat(msg) {
-    if(!msg.chat)
-        msg = {chat: msg};
+    if (!msg.chat)
+        msg = { chat: msg };
     socket.emit('chat', msg);
-     
+
 }
 
 function stripRoll(id) {
@@ -31,24 +31,23 @@ export function getChat(chatId) {
 
 }
 
-export function update_roll(change) {
- 
-    let d =  document.getElementById(change.thing);
-   // await ensureThingLoadedElem(rollMove.ownerId, rollMove.ownerId);
+export async function update_roll(change) {
+
+    let d = document.getElementById(change.thing);
     let rollMove = savedChats[stripRoll(change.thing)];
     let owner = GetRegisteredThing(rollMove.ownerId);
 
     let thing = rollMove; // do I need to register it? 
     eval(change.change);
-  
-    d.innerHTML =  parseSheet(thing, "moveroll", null, owner, undefined);
+
+    d.innerHTML = await parseSheet(thing, "moveroll", null, owner, undefined);
     dice_sound();
- 
+
 
 }
 function compareChatTimes(a, b) {
     return a.time - b.time;
-  }
+}
 
 export function showChatWindow(chatObject) {
     const chat_window_name = "window_chat";
@@ -68,12 +67,12 @@ export function showChatWindow(chatObject) {
     for (let i = 0; i < keys.length; i++) {
         array.push(chatObject[keys[i]]);
 
-    } 
-     array.sort(compareChatTimes);
+    }
+    array.sort(compareChatTimes);
 
     for (let i = 0; i < array.length; i++) {
         console.log(array[i].time)
-        addChat(array[i],false);
+        addChat(array[i], false);
     }
     var footer = document.createElement("footer");
     var chatInput = document.createElement("input");
@@ -89,7 +88,7 @@ export function showChatWindow(chatObject) {
             socket.emit('roll', { roll: evt.target.value.substr(6) });
         }
         else {
-            sendChat({ chat: evt.target.value});
+            sendChat({ chat: evt.target.value });
         }
 
         evt.target.value = "";
@@ -100,62 +99,37 @@ export function showChatWindow(chatObject) {
 }
 
 export function dice_sound() {
-var audio = document.getElementById('dice_throw_mp3');
+    var audio = document.getElementById('dice_throw_mp3');
     audio.play();
 }
 
-export async function addChat(chat,audible) {
+export async function addChat(chat, audible) {
     const chat_window_name = "window_chat";
     let ul = document.getElementById(chat_window_name + "_list");
 
     var li = document.createElement("div");
 
-    console.log("Add chat %o" , chat);
-    let text = chat.chat; 
+    console.log("Add chat %o", chat);
+    let text = chat.chat;
     let rollMove = chat.rollMove;
-    if(rollMove) {
-        await ensureThingLoadedElem(rollMove.ownerId, rollMove.ownerId);
-        let owner = GetRegisteredThing(rollMove.ownerId);
+    if (rollMove) {
+        let owner = await ensureThingLoaded(rollMove.ownerId);
 
         savedChats[chat.id] = rollMove;
-    
+
         let thing = rollMove; // do I need to register it? 
-        text = parseSheet(thing, "moveroll", null, owner, undefined);
-        if(audible) dice_sound();
-    
+        text = await parseSheet(thing, "moveroll", null, owner, undefined);
+        if (audible) dice_sound();
+
     }
-    li.insertAdjacentHTML('beforeend', "<div class='chatsender' id='"+ chat.id +"'>" + chat.sender + "</div>" + text  );
-    
+    li.insertAdjacentHTML('beforeend', "<div class='chatsender' id='" + chat.id + "'>" + chat.sender + "</div>" + text);
+
 
 
     ul.appendChild(li);
     li.scrollIntoView();
 
 }
- 
 
 
-// export async function addChatRollMove(rollMove) {
-//     const chat_window_name = "window_chat";
-//     let ul = document.getElementById(chat_window_name + "_list");
-
-//     var li = document.createElement("div");
- 
-
-//     await ensureThingLoadedElem(rollMove.ownerId, rollMove.ownerId);
-//     let owner = GetRegisteredThing(rollMove.ownerId);
-
-//     let thing = rollMove; // do I need to register it? 
-//     let text = parseSheet(thing, "moveroll", null, owner, undefined);
-
-
-
-//     console.log("Roll chat :" + text);
-//     li.insertAdjacentHTML('beforeend', text);
-
-
-//     ul.appendChild(li);
-//     li.scrollIntoView();
-
-// }
 

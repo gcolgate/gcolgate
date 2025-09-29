@@ -1,9 +1,9 @@
 import { chkDiv } from "./characters.js";
-import { uploadDroppedImages } from "./main.js"
+import { uploadDroppedImages } from "./client_main.js"
 import { thingDragged, dragDrop, setThingDragged } from "./drag.js";
 import { bringToFront, clickOne, createOrGetDirWindow, fadeIn } from './window.js';
-import { parseSheet, MakeAvailableToHtml, GetRegisteredThing, MakeAvailableToParser, showThing, SetRegisteredThing, ensureThingLoadedElem } from './characters.js';
-import { socket } from './main.js';
+import { parseSheet, MakeAvailableToHtml, ensureThingLoaded, GetRegisteredThing, MakeAvailableToParser, showThing, SetRegisteredThing } from './characters.js';
+import { socket } from './client_main.js';
 
 
 export var folders = {
@@ -17,7 +17,7 @@ export var folders = {
 };
 var dirWindowCustomization = {
     Compendium: { dimensions: [.2, .6, .2, .2] },
-    Party: { newButton: ["newPlayer"], dimensions: [.2, .6, .2, .2] },
+    Party: { newButton: ["newPlayer"], dimensions: [.2, .6, .2, .2], deleteButton: true },
     //  Favorites: { dimensions: [.2, .6, .2, .2] },
     //    Uniques: { dimensions: [.2, .6, .2, .2] },
     Scenes: { newButton: ["newScene"], dimensions: [.2, .6, .2, .2] },
@@ -93,7 +93,9 @@ export async function GetDirectory(directory, processDir) {
 
 
 }
-
+function isObject(value) {
+    return typeof value === 'object' && value !== null;
+}
 async function addToPlayerFromDropdown(thing_file, ownerid) {
 
     // await (ensureThingLoaded(thingName));
@@ -101,6 +103,8 @@ async function addToPlayerFromDropdown(thing_file, ownerid) {
 
     console.log(thing_file);
     console.log(ownerid);
+    if (isObject(thing_file))
+        thing_file = thing_file.id;
 
     socket.emit('addItem', {
         item: thing_file,
@@ -112,84 +116,75 @@ async function addToPlayerFromDropdown(thing_file, ownerid) {
 MakeAvailableToHtml('addToPlayerFromDropdown', addToPlayerFromDropdown);
 
 
-function itemToolTip(name, owner, on) {
+function itemToolTip(elem, name, owner, on) {
+    elem.style.backgroundColor = on ? "yellow" : "white";
     let t = document.getElementById(name + owner);
     if (t) {
-        if (on) t.style.display = 'block';
-        else t.style.display = 'none';
+        if (on) {
+            t.style.display = 'block';
+            // Position tooltip relative to the ul element
+            positionTooltipRelativeToUl(elem, t);
+        } else {
+            t.style.display = 'none';
+        }
     }
 }
 MakeAvailableToHtml('itemToolTip', itemToolTip);
 
+export function itemToolTipElem(name, owner) {
+    return document.getElementById(name + owner);
 
-
-
-function createFilterButtonsText(allTypes) {
-    let answer = "";
-    for (const item of allTypes.keys()) {
-
-
-        answer += ' <input type="checkbox" id="' + 'chk' + item + '" name="' + item + '" />' +
-            ' <label for="' + 'chk' + item + '>' + item + '</label>';
-
-
-    }
 }
 
-export function extractFromCompendium(filter_array, owner, cancelButton, types, matches) {
+export async function extractFromCompendium(filter_array, owner, elemId, type, matches) {
 
     if (!folders.Compendium) {
         return [];
     }
+    let filter_by_type = type || "All";
 
     let answer = "";
     let whole = folders.Compendium;
 
     let array = filter(whole, filter_array);
 
-    // if(types)
-    // {
-
-    //  answer += createFilterButtonsText(types);
-
-    // }
 
     // filtering these requires loading them all first
     let search_in_directory = new searchInDirectory(array);
     let searched = search_in_directory.search();
 
-    if (cancelButton)
-        answer += `<button class="cancel" onmousedown="htmlContext.dropDownToggle('${cancelButton}', window.document)">Cancel</button>`;
-    answer += "<ul>";
+    if (elemId) {
+        answer += `<button class="cancel" onmousedown="htmlContext.dropDownToggle('${elemId}', window.document)">Cancel</button>`;
+        answer += '<div class="dropdown-list" id="' + elemId + '_list">' + "<ul>";
+    }
+    else {
+        answer += '<div class="dropdown-list">' + "<ul>";
+    }
     for (let i = 0; i < searched.length; i++) {
 
-
-        if (!(!types || !matches || matches(searched[i], types))) {
+        if (filter_by_type != "All" && !matches(searched[i], filter_by_type)) {
             continue;
         }
 
         let quote = '"';
         console.log(owner.id);
-        answer += "<li class='preview'  onmousedown='htmlContext.addToPlayerFromDropdown("
-            + JSON.stringify(searched[i]) + "," + quote + owner.id + quote + ")'";
+        answer += "<li class='compendiumSyle'  onmousedown='htmlContext.addToPlayerFromDropdown("
+            + JSON.stringify(searched[i]) + "," + quote + owner.id + quote + ")'" + '  onMouseLeave="itemToolTip(this,\'' + searched[i].id + '\',\'' + owner.id + '\', false)"' +
+            ' onMouseEnter="itemToolTip(this,\'' + searched[i].id + '\',\'' + owner.id + '\', true)" >';
 
 
-        answer += ">";
-        answer += '<div ' + '  onMouseLeave="itemToolTip(\'' + searched[i].file + '\',\'' + owner.id + '\', false)"' +
-            ' onMouseEnter="itemToolTip(\'' + searched[i].file + '\',\'' + owner.id + '\', true)" >';
-        if ((searched[i].page == "spell" || searched[i].page == "weapon")) {
+
+        if (searched[i].page == "spell" || searched[i].page == "weapon" || searched[i].page == "feats" && searched[i].id) {
             answer += '<div class="tooltipcontainer">';
-            answer += '<div class="tooltip" id="' + searched[i].file + owner.id + '">';
-            if (!GetRegisteredThing(searched[i].file)) {
-                ensureThingLoadedElem(searched[i].file, searched[i].file + owner.id).then(data => {
+            answer += '<div class="tooltip_wide_left" id="' + searched[i].id + owner.id + '">';
 
-                    let a = parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
-                    document.getElementById(data).innerHTML = a;
+            let data = await ensureThingLoaded(searched[i].id, searched[i].id + owner.id);
 
-                });
-            } else {
-                answer += parseSheet(GetRegisteredThing(searched[i].file), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].file }); // no w
-            }
+            let a = await parseSheet(GetRegisteredThing(searched[i].id), searched[i].page + "_tooltip", undefined, owner, "", { file: searched[i].id }); // no w
+
+            answer += a;
+
+
             //parseSheet(thing, sheetName, w, owner, notes, additionalParms)
             answer += '</div>';
             answer += '</div>';
@@ -197,12 +192,13 @@ export function extractFromCompendium(filter_array, owner, cancelButton, types, 
         answer += `<img src = "${searched[i].img}" width = "32" height = "32" /> `;
         answer += searched[i].name;
         if (searched[i].price) answer += '<span class="bold"> ' + searched[i].price + "</span > "
-        answer += '</div>';
+
 
 
         answer += "</li>";
     }
     answer += "</ul>";
+    answer += "</div>";
     return chkDiv(answer);
 
 }
@@ -210,7 +206,7 @@ MakeAvailableToParser('extractFromCompendium', extractFromCompendium);
 
 function clickOnThing(event) {
 
-    let name = this.references.file;
+    let name = this.references.id || this.references.file;
 
     // hack to handle scenes, which don't have a seperate file. TODO: make more readable
     if (name === undefined) {
@@ -248,6 +244,7 @@ function search(array, for_what) {
         for (let i = 0; i < array.length; i++) {
             try {
                 if (array[i]?.name?.toLowerCase().search(s) >= 0) {
+                    console.log(array[i]?.name?.toLowerCase() + " matches " + s);
                     searched.push(array[i]);
                 }
             } catch (err) { console.log(i, array[i]); }
@@ -260,8 +257,8 @@ function filter(whole, buttons) {
     if (buttons.length === 0) { // none selected same as all selected
         let filtered = [];
         for (let i = 0; i < whole.length; i++) {
-            if ("itemSummary" != whole[i].page)
-                filtered.push(whole[i]);
+
+            filtered.push(whole[i]);
         }
         return filtered;
     } else {
@@ -296,6 +293,7 @@ function collectFilter(id) {
 
     return {
         filter: filter,
+        field: "page"
 
     };
 
@@ -331,6 +329,7 @@ export function refreshDirectoryWindow(id, whole) {
 
 
     let window = document.getElementById("window_" + id);
+
     let array;
     if (id === "images") {
         if (!window.subdir) {
@@ -416,13 +415,15 @@ export function refreshDirectoryWindow(id, whole) {
         return;
     }
 
+    let deleteButton = dirWindowCustomization[id].deleteButton;
+
     let params = collectFilter(id);
     let searched = window.search_in_directory.search();
 
     //
 
     window.search_in_directory.set_array(whole); //search_input.array = array;
-    array = filter(searched, params.filter);
+    array = filter(searched, params.filter, params.field);
 
 
 
@@ -474,6 +475,19 @@ export function refreshDirectoryWindow(id, whole) {
         li.appendChild(text);
         li.references = array[i];
         li.draggable = true;
+        if (deleteButton) {
+            let deleteButton = document.createElement("button");
+            deleteButton.className = "deleteButton";
+            deleteButton.innerHTML = "X"; // todo: trash icon
+            deleteButton.onclick = function (event) {
+                event.stopPropagation();
+                event.preventDefault();
+                console.log(array[i].id);
+                socket.emit("delete", { file: array[i].id });
+
+            };
+            li.appendChild(deleteButton);
+        }
         if (!array[i].dir) {
             li.onmousedown = function (event) { clickOne(this); };
             li.ondblclick = clickOnThing;
@@ -608,6 +622,7 @@ function showDirectoryWindow(id, array) {
     let ul = document.getElementById("window_" + id + "_list");
 
 
+
     if (!window.inited) {
 
         window.inited = true;
@@ -648,7 +663,7 @@ function showDirectoryWindow(id, array) {
         ul.acceptDrag = function (thingDragged, event) {
 
             for (let i = 0; i < array.length; i++) {
-                if (array[i].file == thingDragged.file) {
+                if (array[i].id == thingDragged.id) {
                     console.log("Dupe");
                     return;
                 }
@@ -723,19 +738,129 @@ export function UniqueId() {
 }
 MakeAvailableToParser('UniqueId', UniqueId);
 
+async function filterDropDownByType(value, dropDownId) {
 
+    const widgetElem = document.getElementById(dropDownId + '_widget');
+    if (!widgetElem) {
+        DropDownWidgets[dropDownId] = undefined;
+        return;
+    }
 
-export function MakeDropDownWidget(title, type, thing, types, matches) {
+    // finishDropDownWidget is async — await its result and write into the DOM correctly
+    try {
+        const htmlString = await finishDropDownWidget(
+            dropDownId,
+            DropDownWidgets[dropDownId].filterId,
+            DropDownWidgets[dropDownId].title,
+            DropDownWidgets[dropDownId].type,
+            DropDownWidgets[dropDownId].thing,
+            DropDownWidgets[dropDownId].types,
+            DropDownWidgets[dropDownId].matches,
+            value
+        );
+
+        widgetElem.innerHTML = htmlString;
+
+        // Ensure the dropdown content is visible/open
+        const listElem = document.getElementById(dropDownId);
+        if (listElem) {
+            listElem.style.display = 'block';
+        }
+
+        // If there is a filter input, re-run the text filter so the displayed list is filtered
+        const filterId = DropDownWidgets[dropDownId].filterId;
+        const filterInput = document.getElementById(filterId);
+        if (filterInput) {
+            // html.filterDropDown is used elsewhere via the html object in your markup
+            if (typeof html !== 'undefined' && typeof html.filterDropDown === 'function') {
+                html.filterDropDown(filterId, dropDownId);
+            } else if (typeof filterDropDown === 'function') {
+                // fallback to local function
+                filterDropDown(filterId, dropDownId);
+            }
+        }
+
+        // If the type selector exists, set its selected value to the passed value
+        const sel = document.getElementById(dropDownId + '_type_select');
+        if (sel) {
+            sel.value = value;
+        }
+
+    } catch (err) {
+        console.error("filterDropDownByType error:", err);
+    }
+
+}
+MakeAvailableToHtml('filterDropDownByType', filterDropDownByType);
+
+var DropDownWidgets = {}; // DOTO: Cleanup old ones.
+
+export async function MakeDropDownWidget(title, type, thing, types, matches) {
     let dropDownId = UniqueId();
     let filterId = UniqueId();
-    let answer = `<button onclick = "htmlContext.dropDownToggle('${dropDownId}',window.document,'${filterId}')"` +
+
+
+    DropDownWidgets[dropDownId] = {
+        filterId: filterId,
+        title: title, type: type, thing: thing, types: types, matches: matches
+    };
+
+
+    return finishDropDownWidget(dropDownId, filterId, title, type, thing, types, matches, 'All');
+}
+MakeAvailableToParser('MakeDropDownWidget', MakeDropDownWidget);
+
+async function finishDropDownWidget(dropDownId, filterId, title, type, thing, types, matches, curSel) {
+
+    let typeSelectorHtml = "";
+    if (Array.isArray(types) && types.length > 0) {
+        const selId = `${dropDownId}_type_select`;
+        // build select without a blank option; show curSel (or "All") as the default first option
+        typeSelectorHtml = `<div style="margin:4px 0;"><label>Type: <select id="${selId}" onchange="htmlContext.filterDropDownByType(this.value,'${dropDownId}')">`;
+        const defaultVal = curSel || "All";
+        typeSelectorHtml += `<option value="${defaultVal}"${defaultVal === curSel ? ' selected' : ''}>${defaultVal}</option>`;
+        if (defaultVal !== "All") {
+            typeSelectorHtml += `<option value="All">All</option>`;
+        }
+        for (const t of types) {
+            const safe = String(t).replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const selAttr = (safe === curSel) ? ' selected' : '';
+            typeSelectorHtml += `<option value="${safe}"${selAttr}>${safe}</option>`;
+        }
+        typeSelectorHtml += `</select></label></div>`;
+    }
+
+
+    let answer = `<div id="${dropDownId}_widget"> <button onclick = "htmlContext.dropDownToggle('${dropDownId}',window.document,'${filterId}')"` +
         `class="injuryButton" > ${title} </button > ` +
         ` <div id = "${dropDownId}" class="dropdown-content itemsetheadershort" > ` +
         ` <input type = "text" placeholder = "Search.." id = "${filterId}"` +
-        `onkeyup = "filterDropDown('${filterId}','${dropDownId}')" > ` +
-        extractFromCompendium([type], thing, dropDownId, types, matches) +
-        '</div>';
+        `onkeyup = "htmlContext.filterDropDown('${filterId}','${dropDownId}')" > ` +
+        typeSelectorHtml +
+        await extractFromCompendium([type], thing, dropDownId, curSel, matches) +
+
+        '</div></div>';
     console.log(answer);
     return answer;
 }
 MakeAvailableToParser('MakeDropDownWidget', MakeDropDownWidget);
+
+// Function to position tooltip relative to the ul element
+function positionTooltipRelativeToUl(liElement, tooltip) {
+    // Find the ul element (parent of the li)
+    const ulElement = liElement.closest('ul');
+    if (ulElement && tooltip) {
+        const ulRect = ulElement.getBoundingClientRect();
+        // const liRect = liElement.getBoundingClientRect();
+
+        const ulScrollTop = ulElement.parentElement.scrollTop;
+        // Use window scroll to convert viewport coords to document coords
+        // Position tooltip at the right edge of the ul, aligned with the li's top
+        const left = ulRect.right + 10 + (window.scrollX || 0);
+        const top = ulRect.top + (window.scrollY || 0) + ulScrollTop;
+
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+    }
+}
+MakeAvailableToHtml('positionTooltipRelativeToUl', positionTooltipRelativeToUl);

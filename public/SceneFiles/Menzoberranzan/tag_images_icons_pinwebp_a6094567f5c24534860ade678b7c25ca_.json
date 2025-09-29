@@ -1,1 +1,32 @@
-{"x":-3037.949549052501,"y":6440.628827150286,"z":100,"guiLayer":"tile","sheet":{"type":"","id":"iqor","file":"./SceneFiles/Menzoberranzan/DocumentsFiles/iqor","page":"Document","source":"","name":"iqor","img":"images/icons/pin.webp"},"texture":"images/icons/pin.webp","scale":{"x":100,"y":100,"z":1},"tile_id":"images_icons_pinwebp_a6094567f5c24534860ade678b7c25ca","tile_json":"SceneFiles\\Menzoberranzan\\tag_images_icons_pinwebp_a6094567f5c24534860ade678b7c25ca_.json","reference":{"type":"","id":"iqor","file":"./SceneFiles/Menzoberranzan/DocumentsFiles/iqor","page":"Document","source":"","name":"iqor","img":"images/icons/pin.webp"}}
+{
+    "x": -3037.949549052501,
+    "y": 6440.628827150286,
+    "z": 100,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "iqor",
+        "id": "./SceneFiles/Menzoberranzan/DocumentsFiles/iqor",
+        "page": "Document",
+        "source": "",
+        "name": "iqor",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+    },
+    "tile_id": "images_icons_pinwebp_a6094567f5c24534860ade678b7c25ca",
+    "tile_json": "SceneFiles\\Menzoberranzan\\tag_images_icons_pinwebp_a6094567f5c24534860ade678b7c25ca_.json",
+    "reference": {
+        "type": "",
+        "id": "iqor",
+        "id": "./SceneFiles/Menzoberranzan/DocumentsFiles/iqor",
+        "page": "Document",
+        "source": "",
+        "name": "iqor",
+        "img": "images/icons/pin.webp"
+    }
+}

@@ -6,7 +6,7 @@
     "guiLayer": "tile",
     "sheet": {
         "name": "/images/mapsofall/battlemaps/Alter in Woods v1.jpg",
-        "image": "/images/mapsofall/battlemaps/Alter in Woods v1.jpg",
+        "img": "/images/mapsofall/battlemaps/Alter in Woods v1.jpg",
         "type": "tile",
         "windowId": "images"
     },

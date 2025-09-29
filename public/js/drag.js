@@ -66,7 +66,7 @@ export var slotList = [
     { slot: "mount", num: 1 },
 ];
 
-function svgDragDrop(event) {
+async function svgDragDrop(event) {
 
     event.stopPropagation();
     event.preventDefault();
@@ -84,7 +84,8 @@ function svgDragDrop(event) {
 
             return;
         }
-        if (isEquipped(svg.getAttribute("ownerid"), thingDragged.id)) {
+        let b = await isEquipped(svg.getAttribute("ownerid"), thingDragged.id);
+        if (b) {
             alert("Already equipped");
             return;
         }
@@ -601,7 +602,7 @@ function processEntry(entry, cb) {
 
     if (entry.isFile) {
         console.log(" isfile ", file.fullPath);
-        entry.file(file => {
+        entry.id(file => {
             file.fullPath = entry.fullPath // preserve path for consumer
 
             file.isFile = true

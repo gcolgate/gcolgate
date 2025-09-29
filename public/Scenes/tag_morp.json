@@ -1,15 +1,15 @@
 {
-    "name": "default_scene",
+    "name": "morp",
     "page": "scene",
     "img": "modules/plutonium/media/icon/mighty-force.svg",
-    "view": "threeD",
-    "directory": "default_scene",
+    "view": "topdown",
+    "directory": "morp",
     "gridScaleInPixels": 100,
     "gridScaleInUnits": "5ft",
-    "typeOfGrid": "square",
+    "typeOfGrid": "hex",
     "cameraStartX": 0,
     "cameraStartY": 0,
     "nextZ": 0.00001,
     "next_tile_id": 0,
-    "scalingFactor": -195.5999999999998
+    "count": 0
 }

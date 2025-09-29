@@ -19,6 +19,6 @@ LineOfCareer(owner, thing, notes)
   <!-- <span class="npcBold">Weapons </span>{ thing.weapons } -->
   <!-- <span class="npcBold">Tools </span>{ thing.tools } -->
 
-  <div> { drawCareerFeats(thing,owner, notes) } </div>
+  <div> { await drawCareerFeats(thing,owner, notes) } </div>
   {EndCollapsible()}
 </div>

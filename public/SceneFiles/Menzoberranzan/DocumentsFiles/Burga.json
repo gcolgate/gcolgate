@@ -1,1 +1,21 @@
-{"type":"poi","id":"Burga","name":"Burga","text":"<div>The lower-class neighborhood of struggling merchants, lesser tradesfolk, and mercenaries.</div><div>Population: 5,000 drow, 3,000 non-drow.</div><div>Noble Houses: House Hunzrin, House Kenafin (until the Reckoning)</div><div>Common Families: Asbodela, Dlaen Del’Amatar, Fael Olyphar, llystryph, Uluar, and Zalyzryn.</div><div>Trade: Artisans making common, necessary items, such as pottery, tools, furniture, boots, and clothing,</div><div>as well as barbers and massage parlours.</div><div>Security: Drow street patrols regularly sweep through the neighbourhood’s main avenues, but not as frequently as in the other more prosperous parts of the city. House Hunzrin patrols near its compound, and their forces respond to calls for help from their underlings.</div><div><br></div>  ","tooltip":"Eastmyr","tooltip_html":"","hud":"tooltip_hud","appearance":[{"name":"normal","portrait":{"image":"images/icons/pin.webp"},"token":{"image":"images/icons/pin.webp"}}],"current_appearance":"normal"}
+{
+    "type": "poi",
+    "id": "Burga",
+    "name": "Burga",
+    "text": "<div>The lower-class neighborhood of struggling merchants, lesser tradesfolk, and mercenaries.</div><div>Population: 5,000 drow, 3,000 non-drow.</div><div>Noble Houses: House Hunzrin, House Kenafin (until the Reckoning)</div><div>Common Families: Asbodela, Dlaen Del’Amatar, Fael Olyphar, llystryph, Uluar, and Zalyzryn.</div><div>Trade: Artisans making common, necessary items, such as pottery, tools, furniture, boots, and clothing,</div><div>as well as barbers and massage parlours.</div><div>Security: Drow street patrols regularly sweep through the neighbourhood’s main avenues, but not as frequently as in the other more prosperous parts of the city. House Hunzrin patrols near its compound, and their forces respond to calls for help from their underlings.</div><div><br></div>  ",
+    "tooltip": "Eastmyr",
+    "tooltip_html": "",
+    "hud": "tooltip_hud",
+    "appearance": [
+        {
+            "name": "normal",
+            "portrait": {
+                "img": "images/icons/pin.webp"
+            },
+            "token": {
+                "img": "images/icons/pin.webp"
+            }
+        }
+    ],
+    "current_appearance": "normal"
+}

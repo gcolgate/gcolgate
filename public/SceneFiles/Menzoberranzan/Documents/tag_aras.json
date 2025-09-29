@@ -1,1 +1,9 @@
-{"type":"","id":"aras","file":"./SceneFiles/Menzoberranzan/DocumentsFiles/aras","page":"Document","source":"","name":"aras","img":"images/icons/pin.webp"}
+{
+    "type": "",
+    "id": "aras",
+    "id": "./SceneFiles/Menzoberranzan/DocumentsFiles/aras",
+    "page": "Document",
+    "source": "",
+    "name": "aras",
+    "img": "images/icons/pin.webp"
+}

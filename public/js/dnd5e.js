@@ -1,5 +1,5 @@
-import { socket } from './main.js';
-import { parseSheet, details, Editable, MakeAvailableToHtml, chkDiv, div, GetRegisteredThing, MakeAvailableToParser, signed, span, commaString, formatRemoveButton } from './characters.js';
+import { socket } from './client_main.js';
+import { parseSheet, details, Editable, MakeAvailableToHtml, ensureThingLoaded, div, GetRegisteredThing, MakeAvailableToParser, signed, span, commaString, formatRemoveButton } from './characters.js';
 
 
 
@@ -100,21 +100,23 @@ function ItemWeapon(thing, owner, full) {
 
     let s = thing;
     let atk = s.attackBonus;
-    let damage = s.damage.parts;
+    let damage = s?.damage?.parts;
     if (!atk) { atk = 0; }
     let answer = '';
-    if (owner != undefined && !owner.isptba) {
-        answer += "<button  onclick=\"htmlContext.rollWeapon('" + owner.id + "','" + thing.id + "')\">Damage</button>";
-        //  include applydamage button on roll need to decide who is target
+
+    if (damage != undefined) {
+        if (owner != undefined && !owner.isptba) {
+            answer += "<button  onclick=\"htmlContext.rollWeapon('" + owner.id + "','" + thing.id + "')\">Damage</button>";
+            //  include applydamage button on roll need to decide who is target
+        }
+        if (full && atk != 0) answer += div(" <span>Attack</span> " + atk + "<span> Damage: </span>" + commaString(damage));
+        else if (full) answer += div("<span> Damage: </span > " + commaString(damage));
+        if (s.damage.versatile && s.damage.versatile != "")
+            answer += div("<span>Versatile</span>" + s.damage.versatile);
+
     }
-    if (full && atk != 0) answer += div(" <span>Attack</span> " + atk + "<span> Damage: </span>" + commaString(damage));
-    else if (full) answer += div("<span> Damage: </span > " + commaString(damage));
-    if (s.damage.versatile && s.damage.versatile != "")
-        answer += div("<span>Versatile</span>" + s.damage.versatile);
-
-
-
-    answer += div(commaString(thing.types));
+    if (thing.types)
+        answer += div(commaString(thing.types));
     if (s.range && s.range.value) {
         let longString = "";
         if (s.range.long && s.range.long != 0) {
@@ -124,9 +126,6 @@ function ItemWeapon(thing, owner, full) {
         answer += div("<span>Range</span> " + s.range.value + longString
             + " " + s.range.units);
 
-    }
-    if (career_value) {
-        answer = answer.split("@mod").join(career_value + " ");
     }
 
     return div(answer);
@@ -182,123 +181,6 @@ function DisplaySpellSaveDC(thing, owner) {
 }
 
 
-function ItemSpellOrFeat(thing, owner, spell) {
-
-    let answer = '';
-
-    let circle = " &#x25EF; "
-
-    if (spell)
-        answer += "level " + thing.level + circle + thing.school + circle;
-
-
-    if (thing?.school?.components) {
-        let space = false;
-        if (thing.school.components.vocal) { answer += space + "V"; space = true; }
-        if (thing.school.components.somatic) { answer += space + "S"; space = true; }
-        if (thing.school.components.material) { answer += space + "M"; space = true; }
-        if (space) answer += " ";
-        if (thing.school.components.ritual) answer += "ritual "
-        if (thing.school.components.comcentration) answer += "conc. "
-        answer += circle;
-    }
-    if (thing?.activation?.type) {
-        answer += thing.activation.type + " ";;
-        if (thing.activation.cost > 1) {
-            answer += thing.activation.cost + " ";;
-        }
-        if (thing.activation.condition) {
-            answer += thing.activation.condition + " ";;
-        }
-        answer += circle;
-    }
-
-    if (SpellIsAreaEffect(thing, owner)) {
-        answer += "Area Effect " + thing.target.value + " ";;
-        answer += circle;
-
-    } else {
-        if (thing?.target?.value == 1)
-            answer += "1 Target ";
-        answer += circle;
-    }
-    if (thing?.range?.value) {
-        answer += "Range " + thing.range.value + " " + thing.range.units;
-        answer += circle;
-
-    }
-
-    if (thing?.duration?.value > 0) {
-        answer += "Duration " + thing.duration.value + " " + thing.duration.units;
-        answer += circle;
-
-    }
-    if (thing?.uses?.value) {
-        // should add a counter instead
-        answer += "Uses " + thing.uses.value + "/" + thing.uses.max;
-        if (thing.uses.recovery) answer += " per " + thing.uses.recovery;
-        answer += circle;
-
-    }
-    if (thing?.consume?.type) {
-        // should add a counter instead, also fix in converter
-        let path = "owner." + thing.consume.target;
-        path = path.substring(0, path.lastIndexOf("."));
-        answer += "Consumes " + niceMiscName(thing.consume.target) + " " + thing.consume.amount + " of " + eval(path + ".value") + "/" + eval(path + ".max")
-
-        answer += circle;
-
-    }
-    answer += DisplaySpellSaveDC(thing, owner);
-    // let s = thing;
-    // let atk = s.attackBonus;
-    // let damage = s.damage.parts;
-    // if (!atk) { atk = 0; }
-    // let answer = ""
-    // if (owner != undefined) {
-    //     answer += "<button  onclick=\"rollWeapon('" + owner.id + "','" + thing.id + "')\">Roll</button>";
-
-    // }
-    // if (full) answer += "<div><span>Attack</span>" + atk + "<span> Damage: </span>" + commaString(damage);
-    // if (s.damage.versatile && s.damage.versatile != "")
-    //     answer += "<div><span>Versatile</span>" + s.damage.versatile + "</div>";
-    // let props = [];
-    // if (s.properties.fin) props.push("Finesse");
-    // if (s.properties.lgt) props.push("Light");
-    // if (s.properties.thr) props.push("Thrown");
-    // if (s.properties.mgc) props.push("Magic");
-    // answer += "<div> " + commaString(props) + "</div>";
-    // if (s.range && s.range.value) {
-    //     let longString = "";
-    //     if (s.range.long && s.range.long != 0) {
-    //         longString = "/" + s.range.long;
-    //     }
-
-    //     answer += "<div><span>Range</span>" + s.range.value + longString
-    //         + " " + s.range.units + "</div>"
-
-    // }
-
-    return answer;
-}
-MakeAvailableToParser('ItemSpellOrFeat', ItemSpellOrFeat);
-
-// function ItemMaybe(x, stringo) {
-//     if (x) return stringo;
-//     else return "";
-// };
-
-function niceMiscName(s) {
-    if (s == "resources.legres.value") {
-        return "Legendary Resistance";
-    }
-    if (s == "resources.legact.value") {
-        return "Legendary Action";
-    }
-    return s
-
-}
-MakeAvailableToParser('niceMiscName', niceMiscName);
 
 
 // create support for sheet
@@ -353,9 +235,9 @@ var dndNiceSkillNames = {
     sur: "Survival",
 };
 
-function rollStat(ownerId, stat, isSave) {
+async function rollStat(ownerId, stat, isSave) {
 
-    let owner = GetRegisteredThing(ownerId);
+    let owner = await ensureThingLoaded(ownerId);
     let bonus = DndAbilityBonus(owner, owner.abilities[stat].value);
 
     // should check if proficient here
@@ -383,8 +265,8 @@ MakeAvailableToParser('rollStat', rollStat);
 MakeAvailableToHtml('rollStat', rollStat);
 
 
-function DndAbility(thing, stat) {
-    let answer = Editable(thing, thing.abilities[stat].value, "npcNum") +
+async function DndAbility(thing, stat) {
+    let answer = await Editable(thing, thing.abilities[stat].value, "npcNum") +
         " (" + DndAbilityBonus(thing, thing.abilities[stat].value)
         + ')<input type ="checkbox"' + (thing.abilities[stat].proficient != 0 ? " checked " : "") + " > Prof</input > "; // todo use label not text word prof
 
@@ -409,8 +291,8 @@ function DnDAbilities(thing) {
 }
 MakeAvailableToParser('DnDAbilities', DnDAbilities);
 
-function rollSkill(ownerId, skillid) {
-    let owner = GetRegisteredThing(ownerId);
+async function rollSkill(ownerId, skillid) {
+    let owner = await ensureThingLoaded(ownerId);
     let skill = owner.skills[skillid];
     let stat = skill.ability;
     let statBonus = DndAbilityBonus(owner, owner.abilities[stat].value);
@@ -462,9 +344,9 @@ function DnDSkills(thing, showDefault) {
 }
 MakeAvailableToParser('DnDSkills', DnDSkills);
 
-function DndSpeed(title, thing, ability, units) {
+async function DndSpeed(title, thing, ability, units) {
     if (!eval(ability)) return "";
-    let value = Editable(thing, ability, "numberinput");
+    let value = await Editable(thing, ability, "numberinput");
     return '<li class="speedline"><span class="npcBold">' + title + '</span>' + value + units + '</li>';
 }
 MakeAvailableToParser('DndSpeed', DndSpeed);
@@ -591,8 +473,7 @@ function GetArmorClass(thing) {
     let dexMax = 100000;
 
     if (thing.items) for (let i = 0; i < thing.items.length; i++) {
-        let item = GetRegisteredThing(thing.items[i].file);
-        if (!item) console.log("Error fetching " + thing.items[i].file);
+        let item = thing.items[i];
         if (item && item.equipped && item.armor && item.armor.value) {
 
             switch (item.armor.type) {
@@ -614,7 +495,7 @@ function GetArmorClass(thing) {
     let dexBonus = DndAbilityBonus(thing, thing.abilities.dex.value);
     if (dexBonus > dexMax) dexBonus = dexMax;
     let ac2 = startingAc + adds + dexBonus;
-    return Math.max(ac, ac2);
+    return Math.max(ac, ac2) / 2;
 
 };
 MakeAvailableToParser('GetArmorClass', GetArmorClass);
@@ -698,27 +579,28 @@ function IsCondition(item) {
 
 MakeAvailableToHtml('IsCondition', IsCondition);
 
+function IsBackgroundItem(item) {
+
+    switch (item.page) {
+        case "background": return true;
+        default: return false;
+    }
+}
+MakeAvailableToParser("IsBackgroundItem", IsBackgroundItem);
+
+
+
+function isFeat(item) {
+
+    switch (item.page) {
+        case "feats": return true;
+        default: return false;
+    }
+}
+MakeAvailableToParser("isFeat", isFeat);
 
 function IsInventoryItem(item) {
-    switch (item.page) {
-        case "armor": return true;
-        case "careers": return false;
-        case "bestiary": return true;
-        case "expensive": return true;
-        case "items": return true;
-        case "weapon": return true;
-        case "magic_items": return true;
-        case "spell": return false;
-        case "background": return false;
-        case "background": return false;
-        case "injuries": return false;
-        case "conditions": return false;
-        default:
-            console.log("Unkown type ", item.page);
-            throw ("Uknown type" + item);
-
-
-    }
+    return !!item.slot;
 }
 MakeAvailableToParser("IsInventoryItem", IsInventoryItem);
 
@@ -732,9 +614,10 @@ function IsSpellItem(item) {
 MakeAvailableToParser("IsSpellItem", IsSpellItem);
 
 function hasItemOfType(thing, ffunction) {
-
-    for (let i = 0; i < thing.items.length; i++) {
-        if (ffunction(thing.items[i])) return true;
+    if (thing.items) {
+        for (let i = 0; i < thing.items.length; i++) {
+            if (ffunction(thing.items[i])) return true;
+        }
     }
     return false;
 }
@@ -744,10 +627,10 @@ MakeAvailableToParser("hasItemOfType", hasItemOfType);
 
 function IsSpellIngredient(item) {
     if (IsInventoryItem(item)) {
-        let o = GetRegisteredThing(item.file);
-        if (o && o.use) {
-            for (let i = 0; i < o.use.length; i++)
-                if (o.use[i].mana) {
+
+        if (item && item.use) {
+            for (let i = 0; i < item.use.length; i++)
+                if (item.use[i].mana) {
                     return true;
                 }
         }
@@ -756,31 +639,15 @@ function IsSpellIngredient(item) {
 }
 MakeAvailableToParser("IsSpellIngredient", IsSpellIngredient);
 
-function IsCareerItem(item) {
-
-    switch (item.page) {
-        case "careers": return true;
-    }
-    return false;
-}
-MakeAvailableToParser("IsCareerItem", IsCareerItem);
 
 
-function IsBackgroundItem(item) {
-
-    switch (item.page) {
-        case "background": return true;
-    }
-    return false;
-}
-MakeAvailableToParser("IsBackgroundItem", IsBackgroundItem);
 
 function ItemFiltered(item, filter) {
     if (!filter) return false;
     return !(filter(item));
 
 }
-function drawDnDItems(thing) {
+async function drawDnDItems(thing) {
 
 
     let text = "";
@@ -788,7 +655,7 @@ function drawDnDItems(thing) {
     for (let i = 0; i < thing.items.length; i++) {
         let item = thing.items[i];
 
-        let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, undefined, { file: item.file }); // no w
+        let a = await parseSheet(item, item.page, undefined, thing, undefined, { file: item.tag.id }); // no w
 
         text += div(a);
     }
@@ -797,18 +664,22 @@ function drawDnDItems(thing) {
 }
 MakeAvailableToParser("drawDnDItems", drawDnDItems);
 
-function drawItems(thing, filter, notes) {
+async function drawItems(thing, filter, notes, pageOverride) {
     let text = "";
     if (!thing) { console.error("thing  missing "); return text; }
     if (!thing.items) thing.items = [];
     for (let i = 0; i < thing.items.length; i++) {
         let item = thing.items[i];
+        console.log(i + " item ", item);
+        if ((typeof item === 'number')) continue; // WTF
         if (!item) { console.error("item missing "); continue; }
 
         if (ItemFiltered(item, filter)) { continue; }
-        let a = parseSheet(GetRegisteredThing(item.file), item.page, undefined, thing, notes, { file: item.file }); // no w
-        // if (item.page != "careers" && item.page != "weapon" && item.page != "spell")
-        //     a += formatRemoveButton(thing.id, item.file);;
+        //  let subthing = GetRegisteredThing(item.id);
+        if (pageOverride)
+            console.log("pageOverride ", pageOverride);
+        let a = await parseSheet(item, pageOverride ? pageOverride : item.page, undefined, thing, notes, { file: item.id });
+        console.log("a ", a);
         text += div(a);
     }
     return (text);

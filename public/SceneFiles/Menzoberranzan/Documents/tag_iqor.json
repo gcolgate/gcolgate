@@ -1,1 +1,9 @@
-{"type":"","id":"iqor","file":"./SceneFiles/Menzoberranzan/DocumentsFiles/iqor","page":"Document","source":"","name":"iqor","img":"images/icons/pin.webp"}
+{
+    "type": "",
+    "id": "iqor",
+    "id": "./SceneFiles/Menzoberranzan/DocumentsFiles/iqor",
+    "page": "Document",
+    "source": "",
+    "name": "iqor",
+    "img": "images/icons/pin.webp"
+}

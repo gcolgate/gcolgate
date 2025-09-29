@@ -1,1 +1,21 @@
-{"type":"poi","id":"azasim","name":"azasim","text":"","tooltip":"","tooltip_html":"","hud":"tooltip_hud","appearance":[{"name":"normal","portrait":{"image":"images/icons/pin.webp"},"token":{"image":"images/icons/pin.webp"}}],"current_appearance":"normal"}
+{
+    "type": "poi",
+    "id": "azasim",
+    "name": "azasim",
+    "text": "",
+    "tooltip": "",
+    "tooltip_html": "",
+    "hud": "tooltip_hud",
+    "appearance": [
+        {
+            "name": "normal",
+            "portrait": {
+                "img": "images/icons/pin.webp"
+            },
+            "token": {
+                "img": "images/icons/pin.webp"
+            }
+        }
+    ],
+    "current_appearance": "normal"
+}

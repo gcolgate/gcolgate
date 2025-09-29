@@ -1,0 +1,32 @@
+{
+    "x": 950,
+    "y": 350,
+    "z": 0,
+    "guiLayer": "token",
+    "sheet": {
+        "id": "Party_b2c530dd-67e5-40aa-914f-74a319cad6f3",
+        "page": "Player",
+        "source": "",
+        "type": "",
+        "name": "New Plaer",
+        "img": "images/questionMark.png",
+        "windowId": "Party"
+    },
+    "texture": "images/questionMark.png",
+    "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+    },
+    "reference": {
+        "id": "Party_b2c530dd-67e5-40aa-914f-74a319cad6f3",
+        "page": "Player",
+        "source": "",
+        "type": "",
+        "name": "New Plaer",
+        "img": "images/questionMark.png",
+        "windowId": "Party"
+    },
+    "tile_id": "images_questionMarkpng_1763820bed83428a9176f0ece686523d",
+    "tile_json": "SceneFiles\\default_scene\\tag_images_questionMarkpng_1763820bed83428a9176f0ece686523d_.json"
+}

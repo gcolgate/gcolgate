@@ -1,1 +1,32 @@
-{"x":-3812.6664505075323,"y":4906.6293307503165,"z":100,"guiLayer":"tile","sheet":{"type":"","id":"idirune","file":"./SceneFiles/Menzoberranzan/DocumentsFiles/idirune","page":"Document","source":"","name":"idirune","img":"images/icons/pin.webp"},"texture":"images/icons/pin.webp","scale":{"x":100,"y":268.64322766570604,"z":1},"tile_id":"tag_images_icons_pinwebp_ac48081f0af14128ba8fdd7ebba114aa_.json","tile_json":"SceneFiles\\Menzoberranzan\\tag_images_icons_pinwebp_ac48081f0af14128ba8fdd7ebba114aa_.json","reference":{"type":"","id":"idirune","file":"./SceneFiles/Menzoberranzan/DocumentsFiles/idirune","page":"Document","source":"","name":"idirune","img":"images/icons/pin.webp"}}
+{
+    "x": -3812.6664505075323,
+    "y": 4906.6293307503165,
+    "z": 100,
+    "guiLayer": "tile",
+    "sheet": {
+        "type": "",
+        "id": "idirune",
+        "id": "./SceneFiles/Menzoberranzan/DocumentsFiles/idirune",
+        "page": "Document",
+        "source": "",
+        "name": "idirune",
+        "img": "images/icons/pin.webp"
+    },
+    "texture": "images/icons/pin.webp",
+    "scale": {
+        "x": 100,
+        "y": 268.64322766570604,
+        "z": 1
+    },
+    "tile_id": "tag_images_icons_pinwebp_ac48081f0af14128ba8fdd7ebba114aa_.json",
+    "tile_json": "SceneFiles\\Menzoberranzan\\tag_images_icons_pinwebp_ac48081f0af14128ba8fdd7ebba114aa_.json",
+    "reference": {
+        "type": "",
+        "id": "idirune",
+        "id": "./SceneFiles/Menzoberranzan/DocumentsFiles/idirune",
+        "page": "Document",
+        "source": "",
+        "name": "idirune",
+        "img": "images/icons/pin.webp"
+    }
+}

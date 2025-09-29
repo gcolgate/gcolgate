@@ -1,139 +1,45 @@
-To do
+ 
 
+
+A) G 
 Conditions
-    set condition: add icon and fx. Include all the results from moves
-    See if any of the spell or spell results should be conditions. Figure out how to use conditions in rolls
-
-Editing map pain.
+    set condition: add icon and fx. Include all the results from moves. Change text to actually affect players rolls.
+     
 
 1) Downloading new art to the server folders don't make the server aware of them unless you restart Cheat: added button to refresh for now
+2) Cannot drag images to player portraits
 
 2) make all tiles at same Z be sorted, add widget to sort them. Cease using Z for this alone
 so they can be at the same Z.. added sort order, need to add widget
 
 3) Threed scroll is hacky but no longer flaky, deprioritized
 
-3) Store feats differently on the character as items when chosen on the career page we can hide and show them, so all itesm can work this way.
-If you are in a rollmove, and the feat applies (move, equipment, stat, etc) show the feat
-There is also a place to see movement and senses feats
-
-The feat can be activated, in which case there is a checkbutton
-The feat can cost effort to use, in which case clicking the checkbutton reduces effort (unclicking returns it)
-The feat can provide a bonus to damage or to hit or grant advantage or some other benefit
-The feat can also provide a minus.
-It seems feats should list each of these as a seperate thing.
-Wounds and conditions and effects also use this system, as do magic items.
-
-4) setting +z and -z buttons are broken due to mouseclicks beind disable. UI issue since the + and - buttons are in the way a lot
-
-5) Scaling is terribly implemented.
-        New method: when hovered, show 8 pins as new models
-        the pin moves the coordinates so that the pin is in the new mouse point
-        Only clicking on the pin moves it.
-        The top and bottom can only go up and down
-        The left and right can only go left and right
-        The corners can move freely
-
-6) sheets should be able to scale themselves, perhaps based on content. So tooltip not edit should be skinnier
-
-7) make add POI go to grid boundaries
-
-8) destroying items from scenes leaves stuff behind in the directories
-
-content: fill out comments for all moves.
-Clean up spacing in move chat
-
- Rollmove stat formatting and dice
-
-
- exotic: 3d dice.
-
-Creating new: Players, documents, need to use the typed in name, not a random name, in the displays. File id should be an uuid not a random name
-
+4) Put feats back into the character. Yes
+Double check they work in modes.
+A feat can be a move
+A feat can be a bonus to a different move
+A feat can give advantage to a differet move
+A feat can give disadvantage to all moves of a characteristic
+A feat can give proficiency to a class of weapons, or to a move.
+All feats relating to a move should be shown on the roll card, and each can be activated or deactivated
+A spell is a move and an inventory item
+Add weapons proficiency
+Change spells into items that have to be equipped. Some spells have ingredients, that vanish once used.
+Inventory items don't do their moves when clicked.  This might mean refactoring inventory items. 
 special weapon player defenses not shown or not working or something
 
-There should be a spell to conjure or enhance weapons that add extra actions like burnify
-Add place to add conditions   for NPCs and to manage health
+Resist Damage missing.
 Resist damage needs to automatically include armor and have some degree of hit location or maybe attacks allow hitting in the head or body or arms or legs.
-Damage is now all over the map include MERP ideas... weapons include penetration, damage type,
-Conditions referred to in Moves should be hoverable.
-spells need to provide ways to set damage
-make moves for every spell
 
-Matrix
-                    thigh abdomen neck head chest forearm shoulder foot face thing but groin / Armor at spot low/medium/high
-piercing
-cut
-Grapple
-Fire
-Lightning
-Frost
-Dark Magic
-
-thigh piercing : Glancing Blow, Cut, Bleed, Impale, Impale through bone, Bruise,
-abdomen  : Scrape, Cut, Bleed, Impale, Transfixed
-neck  , Scrape, cut, bleed, vocal coords damaged, airway damaged, spinal injury,throat cut (massive bleeding),
-
-
-Conditions: from above, defender has shield, defender is huge, defender is tiny, resistances, from below, from behind, area effect
-
-third dimension, strenth + size of weapon - size of creature
-
+Feats: Add uses to feats. Add automatic success bonus.
 
 pain POP-OUT:
-     This sounds like it will take some days to work out:
-    Need to be able to POP OUT sub windows and scale them smaller/bigger. Lots of work on appearance.
-    https://stackoverflow.com/questions/21671218/window-opener-not-working-in-chrome
-    Need to access globals through this? probaly window.opener is working now
-    https://stackoverflow.com/questions/17493027/can-i-open-a-new-window-and-populate-it-with-a-string-variable
-    https://daily-dev-tips.com/posts/javascript-sending-data-between-windows/
-    Issue: if closing main window window copy screws up, add button to make main window hide and copy window open. When closing copy window make copy main window visible
-    Many things break on pop out windows like the inventory screen
-    Bug: Would like to pop out chat window ,
-For slow network, need to put up clock when loading initial scene, as each character sheet is loaded.
-
-Tile propoerties: when editing map, allow double clicking on tiles to change properties such as color and shader , so far implented for tokens in documents only
-    note: updating a player does not change the color (or rather it turns it white) until reloading the game
-    Shaders: put a json in the shaders folder that details all combinations of shaders. give each one a name
-    Create a shader for points of interest that twinkles them by making them more or less opaque or bright in semi random ways
-    Put a menu on the appearance for tokens that allows changing the shader.
-
-Fix non-fighty characters dancer based had no , still an issue.
-Make armor proficiencies more known on the sheet currently they are hidden.
+      get rid of all popouts. Instead make a new window completely with a link.
 
 A Remember camera position, a little more complicated because it is camera position per player per scene
 B Find token from sheet button
 C group things to scroll
-D buy item doesn't deduct money
-E Could spend some time to make a context menu for text editing with these
-    bold: Toggles bold on/off for the selection or at the insertion point. (Key) control b
-    italic: Toggles italics on/off for the selection or at the insertion point. (Key) control i
-    underline: Toggles underline on/off for the selection or at the insertion point.(key) control u
-    strikeThrough: Toggles strikethrough on/off for the selection or at the insertion point.
-    subscript: Toggles subscript on/off for the selection or at the insertion point.
-    superscript: Toggles superscript on/off for the selection or at the insertion point.
-    insertOrderedList: Creates an ordered list (numbered) for the selection or at the insertion point.
-    insertUnorderedList: Creates an unordered list (bulleted) for the selection or at the insertion point.
-    justifyLeft: Justifies the selection or insertion point to the left.
-    justifyCenter: Centers the selection or insertion point.
-    justifyRight: Justifies the selection or insertion point to the right.
-    justifyFull: Justifies the selection or insertion point fully.
-    insertHorizontalRule: Inserts a horizontal rule at the insertion point.
-    createLink: Creates a hyperlink for the selection or at the insertion point.
-    unlink: Removes hyperlinks from the selection.
-    insertImage: Inserts an image at the insertion point.
-    foreColor: Changes the text color for the selection or at the insertion point.
-    backColor: Changes the background color for the selection or at the insertion point.
-    fontName: Changes the font name for the selection or at the insertion point.
-    fontSize: Changes the font size for the selection or at the insertion point.
-    cut: Cuts the selection to the clipboard.
-    copy: Copies the selection to the clipboard. (control c)
-    paste: Pastes the clipboard contents at the insertion point. (control v)
-    delete: Deletes the selection. (delete)
-    selectAll: Selects all content. (control a)
-    undo: Undoes the last executed command. (control shift z)
-    redo: Redoes the last undone command. (control z)
-1. Damage on players maybe too variable. add MERP rules for both players and monsters. No add weapon effect powers.
+D buy item doesn't deduct money  .
 3. Mount required for certain moves, don't allow them without mount?
 4. Need to have stat use a drop down, include Luck which makes a zero stack
 Reorganization:

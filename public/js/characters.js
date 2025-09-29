@@ -1,7 +1,7 @@
 import { createOrGetWindow, windowShowing, fetchRealWindow } from './window.js';
 import { dragDrop } from './drag.js';
-import { dragCareersAndItems, sumCareerFeats } from './ptba.js';
-import { socket } from './main.js';
+import { dragItems } from './ptba.js';
+import { socket } from './client_main.js';
 import { calculate } from './calculator.js';
 import { getChat } from './chat.js';
 
@@ -51,6 +51,7 @@ ensureSheetLoaded("weapon_tooltip");
 ensureSheetLoaded("moveroll");
 ensureSheetLoaded("feats");
 ensureSheetLoaded("feats_rollmove");
+ensureSheetLoaded("background");
 
 function ClickCollapsible(evt, ownerid, id) {
 
@@ -80,7 +81,7 @@ MakeAvailableToHtml('ClickCollapsible', ClickCollapsible);
 
 function Collapsible(text, owner, thing) {
     let shown = false;
-    let id = SanitizeNonAlphanumeric(thing.id);
+    let id = thing.id; //SanitizeNonAlphanumeric(thing.id);
 
     if (!owner) return "";
     else
@@ -175,25 +176,27 @@ function SanitizeSlashes(a) {
     return a;
 }
 
-function construct_fetch_path(thingName, ext) {
+function construct_fetch_path(thingName) {
     let s = SanitizeSlashes(thingName);
-    if (!s.startsWith('./')) {
-        if (!s.startsWith('/')) s = '/' + s;
-        if (!s.startsWith('.')) s = '.' + s;
+    if (thingName.indexOf('/') >= 0) {
+        let ext = '.json';
+        if (!s.startsWith('./')) {
+            if (!s.startsWith('/')) s = '/' + s;
+            if (!s.startsWith('.')) s = '.' + s;
+        }
+        if (!s.endsWith(ext)) s += ext;
+        return s;
     }
-    if (!s.endsWith(ext)) s += ext;
-    return s;
+    else
+        return '/data/' + thingName;
 }
-export async function ensureThingLoadedElem(thingName, id) {
-    await ensureThingLoaded(thingName);
-    return id;
-}
+
 
 export async function ensureThingLoaded(thingName) {
 
     let file;
     if (!GetRegisteredThing(thingName)) {
-        file = construct_fetch_path(thingName, '.json');
+        file = construct_fetch_path(thingName);
 
         console.log(file);
         try {
@@ -213,7 +216,7 @@ export async function ensureThingLoaded(thingName) {
 
             SetRegisteredThing(thingName, thing);
 
-            thing.acceptDrag = dragCareersAndItems; // todo do better
+            thing.acceptDrag = dragItems; // todo do better
 
 
 
@@ -227,24 +230,7 @@ export async function ensureThingLoaded(thingName) {
     try {
         if (thing === undefined) throw ("Could not load " + file);
         let promises = [];
-        if (thing.items) {
-            // promises.push(ensureSheetLoaded("itemSummary"));
-            for (let i = 0; i < thing.items.length; i++) {
-                console.log("Adding thingie" + i + " " + thing.items[i].file);
-                if (thing.items[i].file) {
-                    console.log(thing.items[i].file);
-                    promises.push(EnsureLoaded(thing.items[i].page, thing.items[i].file));
-                }
-            }
 
-        }
-        if (thing?.feats != undefined) { // should combine with items
-            for (let i = 0; i < thing.feats.length; i++) {
-                console.log("Adding feat" + i + " " + thing.feats[i]);
-                promises.push(EnsureLoaded("items", "CompendiumFiles/" + thing.feats[i]));
-            }
-
-        }
         await Promise.all(promises);
 
 
@@ -254,6 +240,25 @@ export async function ensureThingLoaded(thingName) {
 
     return thing;
 
+}
+
+// async function asyncEval(code, thing, w, owner, notes, additionalParms, chat_id, chat) {
+//     return new Promise((resolve, reject) => {
+//         try {
+//             resolve(eval(`(async () => { ${code} })()`));
+//         } catch (error) {
+//             reject(error);
+//         }
+//     });
+// };
+
+async function asyncEval(code, thing, w, owner, notes, additionalParms, chat_id, chat) {
+    // try {
+    // Await the result of the evaluated async function
+    return await eval(`(async () => { return ${code} })()`);
+    //  } catch (error) {
+    //throw error;
+    //}
 }
 async function ensureSheetLoaded(sheetName) {
     if (!registeredSheets[sheetName]) {
@@ -270,7 +275,7 @@ async function ensureSheetLoaded(sheetName) {
                     let response = await fetch("./Sheets/" + depends[d]);
                     if (depends[d].endsWith('.js')) {
                         js = await response.text();
-                        eval(js);
+                        await asyncEval(js);
                     }
                     else if (depends[d].endsWith('.html')) {
                         const text = await response.text();
@@ -289,6 +294,7 @@ async function ensureSheetLoaded(sheetName) {
         }
 
     }
+    return registeredSheets[sheetName];
 }
 
 async function EnsureLoaded(sheetName, thingName) {
@@ -344,6 +350,20 @@ function changeSheetNum(button) {
 MakeAvailableToParser('changeSheetNum', changeSheetNum);
 MakeAvailableToHtml('changeSheetNum', changeSheetNum);
 
+function tagName(name) { return 'tag_' + name; }
+
+// hack for now
+function AlsoChangeTags(clause, evaluation, id) {
+    // todo: add images
+    if (clause == "thing.name") {
+
+        socket.emit('change', {
+            change: evaluation,
+            thing: tagName(id)
+        })
+    }
+}
+
 function changeSheet(button) {
     let id = button.dataset.thingid; // the window id is window_fullthingname
     console.log(id);
@@ -351,51 +371,16 @@ function changeSheet(button) {
     let evaluation = clause + ' = "' + SanitizeText(button.innerHTML) + '"';
     console.log(clause);
     console.log(evaluation);
-
     socket.emit('change', {
         change: evaluation,
         thing: id
-    })
+    });
+    AlsoChangeTags(clause, evaluation, id);
 
-    // if (!typeof button.value === "string") { // no should be if button.value evaluates to number
-    //     eval(button.id + ' = ' + button.value);  // the button id is code like thing.strength.value
-    //     socket.emit('change', {
-    //         change: button.id + ' = ' + button.value,
-    //         thing: id
-    //     })
-    // } else {
-    //     let t = button.value.replace(/\"/g, '\''); // double quotes to single quotes
-    //     eval(button.id + ' = "' + t + '"');  // the button id is code like thing.strength.value
-    //     socket.emit('change', {
-    //         change: button.id + ' = "' + t + '"',
-    //         thing: id
-    //     })
-    // };
-
-    // do do this displayThing should be called after network round trip
-    // server should not do eval so server update has to be different, or it could evaluate the incoming thing
-    // to be only characters and dots
 }
 MakeAvailableToParser('changeSheet', changeSheet);
 MakeAvailableToHtml('changeSheet', changeSheet);
 
-
-async function ChangeName(button) {
-
-    // let thing = GetRegisteredThing(change.thing);
-    // if (!thing) {
-    //     return; //  NPC has never been opened
-    // }
-
-    let id = button.dataset.thingid; // the window id is window_fullthingname
-    let newName = button.value;
-
-
-    let split = id.split('/');
-
-    socket.emit('changeName', { dir: split[0], thingName: split[1], newName: newName });
-}
-MakeAvailableToHtml('ChangeName', ChangeName);
 
 function DrawArray(array) {
 
@@ -434,7 +419,6 @@ MakeAvailableToHtml('HandleEnter', HandleEnter);
 export function Editable(thing, clause, className, listName) { // thing must be here because the eval might use it
     console.log("clause " + clause);
     let t = eval(clause);
-
     let id = thing.id;
 
     if (className.includes("npcNum") || className.includes("numeric")) { // if numeric, don't allow bold, italic, etc.
@@ -491,23 +475,8 @@ export async function showThing(name, sheet, editMode) {
     displayThing(key, s);
 }
 
-function showThingInline(thing, sheet) {
-    //  then get the sheet
-    let key = SanitizeSlashes(name);
-
-    //   EnsureLoaded(sheet, key).then(np
 
 
-    return parseSheet(thing, sheet, undefined, undefined);
-
-}
-
-function ParentId(id) {
-    // todo, using _ in names would break this
-    let index = id.indexOf("_");
-    return id.substring(0, index);
-
-}
 
 export async function UpdateNPC(change) {
 
@@ -552,7 +521,9 @@ export async function AddItemToNPC(change) {
     if (!thing) {
         return; //  NPC has never been opened
     }
-    thing.items.push(change.item); // GIL thing.id?
+    let item = await ensureThingLoaded(change.item);
+    if (!thing.items) thing.items = [];
+    thing.items.push(item); // GIL thing.id?
     console.log("Add item to npc");
     let w = windowShowing(thing.registeredId);
     if (w) {
@@ -571,7 +542,7 @@ export async function RemoveFromNPC(change) {
 
     if (thing.items) {
         for (let i = 0; i < thing.items.length; i++) {
-            if (thing.items[i].file == change.itemId) {
+            if (thing.items[i].id == change.itemId) {
                 thing.items.splice(i, 1);
                 break;
             }
@@ -609,12 +580,12 @@ export function parseSheetContext(thing, sheetName, window, owner, notes, additi
 
 }
 
-export function parseSheet(thing, sheetName, w, owner, notes, additionalParms) { // thing and w and owner are  required by evals, w or owner can be undefined
+export async function parseSheet(thing, sheetName, w, owner, notes, additionalParms) { // thing and w and owner are  required by evals, w or owner can be undefined
     let context = parseSheetContext(thing, sheetName, w, owner, notes, additionalParms);
-    return parseSheetWithContext(context);
+    return await parseSheetWithContext(context);
 }
 
-export function parseSheetWithContext(context) { // thing and w and owner are  required by evals, w or owner can be undefined
+export async function parseSheetWithContext(context) { // thing and w and owner are  required by evals, w or owner can be undefined
 
 
     let thing = context.thing;
@@ -626,9 +597,8 @@ export function parseSheetWithContext(context) { // thing and w and owner are  r
     let chat_id = context.chat_id;
     let chat = undefined;
     if (chat_id) chat = getChat(chat_id);
-
-
-    let text = `${registeredSheets[sheetName]}`; // makes a copy to destroy the copy,  TODO: maybe should make structure context
+    let data = await ensureSheetLoaded(sheetName)
+    let text = `${data}`; // makes a copy to destroy the copy,  TODO: maybe should make structure context
     let newText = "";
     let state = 0;
     let code = "";
@@ -714,7 +684,27 @@ export function parseSheetWithContext(context) { // thing and w and owner are  r
                     if (state == 0) {
                         //  try {
 
-                        newText += eval(code);
+                        console.log("code " + code);
+
+                        let a = await asyncEval(code, thing, w,
+                            owner,
+                            notes,
+                            additionalParms,
+                            chat_id,
+                            chat);
+                        console.log("a " + a);
+                        if (String(a).includes("[object Promise]")) {
+                            console.log("promise bad code " + code);
+                            let b = await asyncEval(code, thing, w,
+                                owner,
+                                notes,
+                                additionalParms,
+                                chat_id,
+                                chat);
+
+                        }
+
+                        newText += a;
 
 
                         //   } catch (error) {
@@ -748,7 +738,7 @@ async function displayThing(fullthingname, sheetName) {
 
     let thing = GetRegisteredThing(fullthingname);
     let body = document.getElementById("window_" + fullthingname + "_body");
-    body.innerHTML = parseSheet(thing, sheetName, w, undefined);
+    body.innerHTML = await parseSheet(thing, sheetName, w, undefined);
 
 
 
@@ -768,33 +758,6 @@ async function displayThing(fullthingname, sheetName) {
 export function formatRemoveButton(ownerid, itemid) {
     return "<img class='image-holder' src='Sheets/trashcan.png' width='16' height='16' onclick=htmlContext.RemoveItemFromThing('" + ownerid + "','" + itemid + "') />";
 }
-
-function LineOfCareer(owner, thing, notes) {
-    if (!thing) return "";
-    if (notes == undefined && owner != undefined)
-        return div(
-            div(Editable(thing, "thing.name", "itemsetheadershort crit")) +
-            div(span("Level ", Editable(thing, "thing.owner_level", "npcNum shortwidth"), "crit")) +
-            div(span("Feats chosen", " " + sumCareerFeats(thing) + "/" + thing.owner_level, "shortwidth coloring basicFont bodyText crit")) +
-            //  div(span("CP spent", Editable(thing, "thing.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")) +
-            formatRemoveButton(owner.id, thing.id),
-            'class="fourcolumncareers"');
-    else if (notes)
-        return div(
-            div("Career:", 'class="basicFont italic"') +
-            div(thing.name, "itemsetheadershort") +
-            div(span("Level ", thing.owner_level, "shortwidth coloring basicFont bodyText crit", "crit")) +
-            //  div(span("CP spent", Editable(thing, "thing.owner_careerPointsSpent", "shortwidth coloring basicFont bodyText crit"), "crit")),
-            'class="fourcolumncareers2"');
-    else {
-        return div(
-            div("Career:", 'class="basicFont italic"') +
-            div(thing.name, "itemsetheadershort"));
-
-
-    }
-}
-MakeAvailableToHtml('LineOfCareer', LineOfCareer);
 
 
 // recover tooltip that has been refreshed from the server while the tooltup

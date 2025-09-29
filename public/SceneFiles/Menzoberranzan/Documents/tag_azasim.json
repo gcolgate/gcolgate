@@ -1,1 +1,9 @@
-{"type":"","id":"azasim","file":"./SceneFiles/Menzoberranzan/DocumentsFiles/azasim","page":"Document","source":"","name":"azasim","img":"images/icons/pin.webp"}
+{
+    "type": "",
+    "id": "azasim",
+    "id": "./SceneFiles/Menzoberranzan/DocumentsFiles/azasim",
+    "page": "Document",
+    "source": "",
+    "name": "azasim",
+    "img": "images/icons/pin.webp"
+}

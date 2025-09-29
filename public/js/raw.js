@@ -13,7 +13,7 @@ function indent(amt) {
 }
 
 
-function RawEditorArray(current, thing, path) {
+async function RawEditorArray(current, thing, path) {
     let answer = "";
     if (!current)
         return "";
@@ -26,9 +26,9 @@ function RawEditorArray(current, thing, path) {
         let keyText = "[" + key + "]";
         switch (typeof item) {
             case "string":
-                answer += div(indent(recursion) + (span(keyText + ":   ", Editable(thing, "thing" + path + keyText, "itemsetheadershort")))); break;
+                answer += div(indent(recursion) + (span(keyText + ":   ", await Editable(thing, "thing" + path + keyText, "itemsetheadershort")))); break;
             case "number":
-                answer += div(indent(recursion) + (span(keyText + ":   ", Editable(thing, "thing" + path + keyText, "itemsetheadershort")))); break;
+                answer += div(indent(recursion) + (span(keyText + ":   ", await Editable(thing, "thing" + path + keyText, "itemsetheadershort")))); break;
             case "bigint":
                 console.log("BIgInt");
                 break;
@@ -74,7 +74,7 @@ function RawEditorArray(current, thing, path) {
     return answer;
 }
 
-export function RawEditor(current, thing, path) {
+export async function RawEditor(current, thing, path) {
 
     if (!current)
         return "";
@@ -92,9 +92,9 @@ export function RawEditor(current, thing, path) {
         switch (typeof item) {
             case "string":
                 console.log("path " + path + key);
-                answer += div(indent(recursion) + (span(key + ":   ", Editable(thing, "thing" + path + keyText, "itemsetheadershort")))); break;
+                answer += div(indent(recursion) + (span(key + ":   ", await Editable(thing, "thing" + path + keyText, "itemsetheadershort")))); break;
             case "number":
-                answer += div(indent(recursion) + (span(key + ":   ", Editable(thing, "thing" + path + keyText, "itemsetheadershort")))); break;
+                answer += div(indent(recursion) + (span(key + ":   ", await Editable(thing, "thing" + path + keyText, "itemsetheadershort")))); break;
             case "bigint":
                 console.log("BIgInt");
                 break;

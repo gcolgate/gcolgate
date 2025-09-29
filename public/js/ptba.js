@@ -1,10 +1,10 @@
 import { slotList } from './drag.js';
 import { sendChat } from './chat.js';
 import {
-    RedrawWindow, GetRegisteredThing, signed, span, div, Editable, parseSheet, parseSheetWithContext,
+    RedrawWindow, ensureThingLoaded, GetRegisteredThing, signed, span, div, Editable, parseSheet, parseSheetWithContext,
     MakeAvailableToParser, MakeAvailableToHtml, chkDiv
 } from './characters.js'
-import { socket } from './main.js';
+import { socket } from './client_main.js';
 import { MakeDropDownWidget } from './directoryWindow.js';
 import { getChat } from './chat.js';
 
@@ -16,7 +16,81 @@ const kScene = "5. Scene";
 const kDowntime = "6. Downtime (Weeks)";
 const kStat = "7. Stat"
 
-export const moves = {
+
+// function WriteMovesFOrFountry() {
+
+
+//     for (const moveName in moves) {
+//         if (moves.hasOwnProperty(moveName)) {
+//             let move = moves[moveName];
+//             let json =
+//             {
+//                 folder: "tpwn2RrtXZyM1eB3",
+//                 name: moveName,
+//                 type: "move",
+//                 img: "icons/svg/aura.svg",
+//                 system: {
+//                     description: move.Comments,
+//                     moveType: "basic",
+//                     rollFormula: "",
+//                     moveResults: {
+//                         failure: {
+//                             key: "system.moveResults.failure.value",
+//                             label: "Complications...",
+//                             value: move.fail
+//                         },
+//                         partial: {
+//                             key: "system.moveResults.partial.value",
+//                             label: "Partial success",
+//                             value: move.mixed
+//                         },
+//                         success: {
+//                             key: "system.moveResults.success.value",
+//                             label: "Success!",
+//                             value: move.success
+//                         },
+//                         critical: {
+//                             key: "system.moveResults.critical.value",
+//                             label: "Critical Success!",
+//                             value: move.Critical,
+//                         }
+//                     },
+//                     uses: 0,
+//                     rollType: move.stat[0],
+//                     rollMod: 0,
+//                     actorType: "character",
+//                     choices: ""
+//                 },
+//                 effects: [],
+//                 flags: {},
+//                 _stats: {
+//                     coreVersion: "13.346",
+//                     systemId: "pbta",
+//                     systemVersion: "1.1.21",
+//                     createdTime: 1755307139650,
+//                     modifiedTime: 1755307366332,
+//                     lastModifiedBy: "9dvwwv9FxL0Qoluj",
+//                     exportSource: {
+//                         worldId: "dw2",
+//                         uuid: "Item.gFVEeO9BE7K56lzb",
+//                         coreVersion: "13.346",
+//                         systemId: "pbta",
+//                         systemVersion: "1.1.21"
+//                     }
+//                 }
+//             };
+//             // write out the json to a file
+//             const fileName = `move_${sanitize(moveName)}.json`;
+//             const filePath = path.join(outputDir, fileName);
+//             fs.writeFileSync(filePath, JSON.stringify(json, null, 2), 'utf8');
+
+
+//         }
+
+//     }
+// }
+
+const moves = {
 
     "Stat Check": {
         "stat": [
@@ -53,179 +127,179 @@ export const moves = {
         "fail": "You definitely lose the confrontation, taking pain"
     },
 
-    "Visit a sorcerous library": {
-        "stat": [
-            "intelligence"
-        ],
-        "action": kDowntime,
-        "tooltip": "If one is in this town, one can visit the sorcerous library. ",
-        "Comments": "If one is in this town, one can visit the sorcerous library. The best libraries have a difficulty of zero. ",
-        "Critical": "You find the spell of your choice from those avbailable at the library, and another another ",
-        "success": "You find the spell of the GM's choice from the list of those available at the library",
-        "mixed": 'you find a spell, but  <a href="#">choose 1 \
-                    <div class="tooltipcontainer">\
-                    <div class="tooltip">\
-                     <ul><li> &#x25BA; IWt is a lessor version, that has a side effect whenever you cast it</li>\
-                    <li> &#x25BA; It is far away from the library and you will need to convince the party to help you find it</li>\
-                    <li> &#x25BA; An imp will trade you for it for a favor</li>\
-                    <li> &#x25BA; You have to steal the book from the library (roll steal)</li>\
-                    <li> &#x25BA; The book is locked and the you have to unlock it (roll devices)</li>\
-                    <li> &#x25BA; The librarian says this spell is behind lock and key, convince him to see</li>\
-                    <li> &#x25BA; The book is in a strange, unknown tounge</li>\
-                </div >\
-            </div ></a >',
-        "fail": "Nothing good here. Perhaps you are kicked out of the library, perhaps you are banned from the library."
-    },
-    "Take mind altering drugs for visions of a spell": {
-        "stat": [
-            "will"
-        ],
-        "action": kDowntime,
-        "tooltip": "A dangerous way to learn magic",
-        "Comments": "A dangerous way to learn magic ",
-        "Critical": "You find the spell of your choice, perhaps you learn another ",
-        "success": "You find the spell of the GM's choice",
-        "mixed": 'you find a spell, but  <a href="#">choose 1 \
-                    <div class="tooltipcontainer">\
-                    <div class="tooltip">\
-                     <ul><li> &#x25BA; You immediately cast it uncontrolled and get a bad result on the t</li>\
-                    <li> &#x25BA; You have to bargain with an astral gatekeepert</li>\
-                    <li> &#x25BA; An imp will trade you for it for a favor</li>\
-                    <li> &#x25BA; You have to avoid the evil inhabitants of the dreamland on a perilous journey</li>\
-                    <li> &#x25BA; You get a level of chaos taint</li>\
-                    <li> &#x25BA; The librarian says this spell is behind lock and key, convince him to see</li>\
-                </div >\
-            </div ></a >',
-        "fail": "Nothing good here."
-    },
+    // "Visit a sorcerous library": {
+    //     "stat": [
+    //         "intelligence"
+    //     ],
+    //     "action": kDowntime,
+    //     "tooltip": "If one is in this town, one can visit the sorcerous library. ",
+    //     "Comments": "If one is in this town, one can visit the sorcerous library. The best libraries have a difficulty of zero. ",
+    //     "Critical": "You find the spell of your choice from those avbailable at the library, and another another ",
+    //     "success": "You find the spell of the GM's choice from the list of those available at the library",
+    //     "mixed": 'you find a spell, but  <a href="#">choose 1 \
+    //                 <div class="tooltipcontainer">\
+    //                 <div class="tooltip">\
+    //                  <ul><li> &#x25BA; IWt is a lessor version, that has a side effect whenever you cast it</li>\
+    //                 <li> &#x25BA; It is far away from the library and you will need to convince the party to help you find it</li>\
+    //                 <li> &#x25BA; An imp will trade you for it for a favor</li>\
+    //                 <li> &#x25BA; You have to steal the book from the library (roll steal)</li>\
+    //                 <li> &#x25BA; The book is locked and the you have to unlock it (roll devices)</li>\
+    //                 <li> &#x25BA; The librarian says this spell is behind lock and key, convince him to see</li>\
+    //                 <li> &#x25BA; The book is in a strange, unknown tounge</li>\
+    //             </div >\
+    //         </div ></a >',
+    //     "fail": "Nothing good here. Perhaps you are kicked out of the library, perhaps you are banned from the library."
+    // },
+    // "Take mind altering drugs for visions of a spell": {
+    //     "stat": [
+    //         "will"
+    //     ],
+    //     "action": kDowntime,
+    //     "tooltip": "A dangerous way to learn magic",
+    //     "Comments": "A dangerous way to learn magic ",
+    //     "Critical": "You find the spell of your choice, perhaps you learn another ",
+    //     "success": "You find the spell of the GM's choice",
+    //     "mixed": 'you find a spell, but  <a href="#">choose 1 \
+    //                 <div class="tooltipcontainer">\
+    //                 <div class="tooltip">\
+    //                  <ul><li> &#x25BA; You immediately cast it uncontrolled and get a bad result on the t</li>\
+    //                 <li> &#x25BA; You have to bargain with an astral gatekeepert</li>\
+    //                 <li> &#x25BA; An imp will trade you for it for a favor</li>\
+    //                 <li> &#x25BA; You have to avoid the evil inhabitants of the dreamland on a perilous journey</li>\
+    //                 <li> &#x25BA; You get a level of chaos taint</li>\
+    //                 <li> &#x25BA; The librarian says this spell is behind lock and key, convince him to see</li>\
+    //             </div >\
+    //         </div ></a >',
+    //     "fail": "Nothing good here."
+    // },
 
-    "Apprentice under a master": {
-        "stat": [
-            "cunning",
-            "will",
-            "intelligence"
-        ],
-        "action": kDowntime,
-        "tooltip": "A way to raise your skill",
-        "Comments": "A way to raise your skill, depending on the skill use a different stat. Your master has to have a higher skill than you",
-        "Critical": "You raise your skill by 1 and can choose a feat, and impress your master greatly.",
-        "success": "Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1 and choose a feat",
-        "mixed": 'Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, choose a feat, and choose\
-                    <div class="tooltipcontainer">\
-                    <div class="tooltip">\
-                     <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
-                    <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
-                    <li> &#x25BA; You relationship with the master is suffering, maybe you must quit</li>\
-                    <li> &#x25BA; You do not get to check the skill you wasted time </li>\
-                    <li> &#x25BA; You must pay something, like supplies or initiation fees </li> \
-                     </ul>\
-                </div >\
-            </div ></a >',
-        "fail": 'choose\
-                    <div class="tooltipcontainer">\
-                    <div class="tooltip">\
-                     <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
-                    <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
-                    <li> &#x25BA; You relationship with the master is suffering, maybe you are terminated</li>\
-                     <li> &#x25BA; You must pay something, like supplies or initiation fees to continue </li> \
-                    </ul>\
-                </div >\
-                 </div ></a >',
-    },
+    // "Apprentice under a master": {
+    //     "stat": [
+    //         "cunning",
+    //         "will",
+    //         "intelligence"
+    //     ],
+    //     "action": kDowntime,
+    //     "tooltip": "A way to raise your skill",
+    //     "Comments": "A way to raise your skill, depending on the skill use a different stat. Your master has to have a higher skill than you",
+    //     "Critical": "You raise your skill by 1 and can choose a feat, and impress your master greatly.",
+    //     "success": "Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1 and choose a feat",
+    //     "mixed": 'Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, choose a feat, and choose\
+    //                 <div class="tooltipcontainer">\
+    //                 <div class="tooltip">\
+    //                  <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+    //                 <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
+    //                 <li> &#x25BA; You relationship with the master is suffering, maybe you must quit</li>\
+    //                 <li> &#x25BA; You do not get to check the skill you wasted time </li>\
+    //                 <li> &#x25BA; You must pay something, like supplies or initiation fees </li> \
+    //                  </ul>\
+    //             </div >\
+    //         </div ></a >',
+    //     "fail": 'choose\
+    //                 <div class="tooltipcontainer">\
+    //                 <div class="tooltip">\
+    //                  <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+    //                 <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
+    //                 <li> &#x25BA; You relationship with the master is suffering, maybe you are terminated</li>\
+    //                  <li> &#x25BA; You must pay something, like supplies or initiation fees to continue </li> \
+    //                 </ul>\
+    //             </div >\
+    //              </div ></a >',
+    // },
 
-    "Work at a job": {
-        "stat": [
-            "strength",
-            "cunning",
-            "will",
-            "intelligence"
-        ],
-        "action": kDowntime,
-        "tooltip": "A way to raise your skill and earn a living",
-        "Comments": "A way to raise your skill, depending on the skill use a different stat ",
-        "Critical": "You raise your skill by 1 and can choose a feat, an earn double the normal amount you should get for this skill ",
-        "success": "Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill",
-        "mixed": 'Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill and choose\
-                    <div class="tooltipcontainer">\
-                    <div class="tooltip">\
-                     <ul><li> &#x25BA; Financial Hardship: You do not earn money and have to dip into savings </li>\
-                     <ul><li> &#x25BA; Your employer is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
-                    <li> &#x25BA; Your employer (if any) has a quest for you, refuse and end the job </li>\
-                    <li> &#x25BA; You relationship with the employer is suffering, maybe you must quit</li>\
-                    <li> &#x25BA; You do not get to check the skill you wasted time </li>\
-                    <li> &#x25BA; If your job is dangerous, you might have to save versus injury </li> \
-                     </ul>\
-                </div >\
-            </div ></a >',
-        "fail": 'choose\
-                    <div class="tooltipcontainer">\
-                    <div class="tooltip">\
-                     <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
-                    <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
-                    <li> &#x25BA; You relationship with the master is suffering, maybe you are terminated</li>\
-                     <li> &#x25BA; You must pay something, like supplies or initiation fees to continue </li> \
-                    </ul>\
-                </div >\
-                 </div ></a >',
-    },
+    // "Work at a job": {
+    //     "stat": [
+    //         "strength",
+    //         "cunning",
+    //         "will",
+    //         "intelligence"
+    //     ],
+    //     "action": kDowntime,
+    //     "tooltip": "A way to raise your skill and earn a living",
+    //     "Comments": "A way to raise your skill, depending on the skill use a different stat ",
+    //     "Critical": "You raise your skill by 1 and can choose a feat, an earn double the normal amount you should get for this skill ",
+    //     "success": "Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill",
+    //     "mixed": 'Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill and choose\
+    //                 <div class="tooltipcontainer">\
+    //                 <div class="tooltip">\
+    //                  <ul><li> &#x25BA; Financial Hardship: You do not earn money and have to dip into savings </li>\
+    //                  <ul><li> &#x25BA; Your employer is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+    //                 <li> &#x25BA; Your employer (if any) has a quest for you, refuse and end the job </li>\
+    //                 <li> &#x25BA; You relationship with the employer is suffering, maybe you must quit</li>\
+    //                 <li> &#x25BA; You do not get to check the skill you wasted time </li>\
+    //                 <li> &#x25BA; If your job is dangerous, you might have to save versus injury </li> \
+    //                  </ul>\
+    //             </div >\
+    //         </div ></a >',
+    //     "fail": 'choose\
+    //                 <div class="tooltipcontainer">\
+    //                 <div class="tooltip">\
+    //                  <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+    //                 <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
+    //                 <li> &#x25BA; You relationship with the master is suffering, maybe you are terminated</li>\
+    //                  <li> &#x25BA; You must pay something, like supplies or initiation fees to continue </li> \
+    //                 </ul>\
+    //             </div >\
+    //              </div ></a >',
+    // },
 
-    "Run a business": {
-        "stat": [
-            "cunning",
-            "will",
-            "intelligence"
-        ],
-        "action": kDowntime,
-        "tooltip": "A way to raise your skill and earn a living",
-        "Comments": "A way to raise your skill, depending on the skill use a different stat ",
-        "Critical": "You raise your skill by 1 and can choose a feat, an earn double the normal amount you should get for this business ",
-        "success": "Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill",
-        "mixed": 'Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill and choose\
-                    <div class="tooltipcontainer">\
-                    <div class="tooltip">\
-                     <ul><li> &#x25BA; Financial Hardship: You do not earn money and have to dip into savings </li>\
-                     <ul><li> &#x25BA; Your business in trouble with a GM plot relevant problemd </li>\
-                      <li> &#x25BA; You relationship with the employer is suffering, maybe you must quit</li>\
-                    <li> &#x25BA; You do not get to check the skill you wasted time </li>\
-                    <li> &#x25BA; If your job is dangerous, you might have to save versus injury </li> \
-                     </ul>\
-                </div >\
-            </div ></a >',
-        "fail": 'choose\
-                    <div class="tooltipcontainer">\
-                    <div class="tooltip">\
-                     <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
-                    <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
-                    <li> &#x25BA; You relationship with the master is suffering, maybe you are terminated</li>\
-                     <li> &#x25BA; You must pay something, like supplies or initiation fees to continue </li> \
-                    </ul>\
-                </div >\
-                 </div ></a >',
-    },
+    // "Run a business": {
+    //     "stat": [
+    //         "cunning",
+    //         "will",
+    //         "intelligence"
+    //     ],
+    //     "action": kDowntime,
+    //     "tooltip": "A way to raise your skill and earn a living",
+    //     "Comments": "A way to raise your skill, depending on the skill use a different stat ",
+    //     "Critical": "You raise your skill by 1 and can choose a feat, an earn double the normal amount you should get for this business ",
+    //     "success": "Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill",
+    //     "mixed": 'Check the skill, when the number of checks are equal to or greater than the skill, you raise it by 1, and earn the normal amount you should get for this skill and choose\
+    //                 <div class="tooltipcontainer">\
+    //                 <div class="tooltip">\
+    //                  <ul><li> &#x25BA; Financial Hardship: You do not earn money and have to dip into savings </li>\
+    //                  <ul><li> &#x25BA; Your business in trouble with a GM plot relevant problemd </li>\
+    //                   <li> &#x25BA; You relationship with the employer is suffering, maybe you must quit</li>\
+    //                 <li> &#x25BA; You do not get to check the skill you wasted time </li>\
+    //                 <li> &#x25BA; If your job is dangerous, you might have to save versus injury </li> \
+    //                  </ul>\
+    //             </div >\
+    //         </div ></a >',
+    //     "fail": 'choose\
+    //                 <div class="tooltipcontainer">\
+    //                 <div class="tooltip">\
+    //                  <ul><li> &#x25BA; Your master is in trouble with a GM plot relevant problem, maybe he is kidnapped </li>\
+    //                 <li> &#x25BA; Your master has a quest for you, refuse and end the relationship </li>\
+    //                 <li> &#x25BA; You relationship with the master is suffering, maybe you are terminated</li>\
+    //                  <li> &#x25BA; You must pay something, like supplies or initiation fees to continue </li> \
+    //                 </ul>\
+    //             </div >\
+    //              </div ></a >',
+    // },
 
 
-    "Meditate or pray for a spell": {
-        "stat": [
-            "will"
-        ],
-        "action": kDowntime,
-        "tooltip": "A dangerous way to learn magic",
-        "Comments": "A dangerous way to learn magic ",
-        "Critical": "You find the spell of your choice, perhaps you learn another ",
-        "success": "You find the spell of the GM's choice",
-        "mixed": 'you find a spell, but  <a href="#">choose 1 \
-                    <div class="tooltipcontainer">\
-                    <div class="tooltip">\
-                     <ul><li> &#x25BA; You immediately cast it uncontrolled and get a bad result on the t</li>\
-                    <li> &#x25BA; You have to bargain with an astral gatekeepert</li>\
-                    <li> &#x25BA; An imp will trade you for it for a favor</li>\
-                    <li> &#x25BA; You have to avoid the evil inhabitants of the dreamland on a perilous journey</li>\
-                    <li> &#x25BA; You get a level of chaos taint</li>\
-                    <li> &#x25BA; The librarian says this spell is behind lock and key, convince him to see</li>\
-                </div >\
-            </div ></a >',
-        "fail": "Nothing good here."
-    },
+    // "Meditate or pray for a spell": {
+    //     "stat": [
+    //         "will"
+    //     ],
+    //     "action": kDowntime,
+    //     "tooltip": "A dangerous way to learn magic",
+    //     "Comments": "A dangerous way to learn magic ",
+    //     "Critical": "You find the spell of your choice, perhaps you learn another ",
+    //     "success": "You find the spell of the GM's choice",
+    //     "mixed": 'you find a spell, but  <a href="#">choose 1 \
+    //                 <div class="tooltipcontainer">\
+    //                 <div class="tooltip">\
+    //                  <ul><li> &#x25BA; You immediately cast it uncontrolled and get a bad result on the t</li>\
+    //                 <li> &#x25BA; You have to bargain with an astral gatekeepert</li>\
+    //                 <li> &#x25BA; An imp will trade you for it for a favor</li>\
+    //                 <li> &#x25BA; You have to avoid the evil inhabitants of the dreamland on a perilous journey</li>\
+    //                 <li> &#x25BA; You get a level of chaos taint</li>\
+    //                 <li> &#x25BA; The librarian says this spell is behind lock and key, convince him to see</li>\
+    //             </div >\
+    //         </div ></a >',
+    //     "fail": "Nothing good here."
+    // },
     "Control Mount": {
         "stat": [
             "bravery", "caring"
@@ -777,7 +851,7 @@ export const moves = {
         ],
         "action": kScene,
         "tooltip": "Spout Lore : Know something about something ",
-        "Comments": "When you search your memories and experiences or library for clues. The knowledge you get is like consulting a bestiary, travel guide, or library. You get facts about the subject matter. This is highly dependent on your careers ",
+        "Comments": "When you search your memories and experiences or library for clues. The knowledge you get is like consulting a bestiary, travel guide, or library. You get facts about the subject matter. This is highly dependent on your background ",
         "Critical": "",
         "success": "The GM will reveal something interesting and useful relevant to your situation. This might help you investigate further",
         "mixed": "GM will only tell you something interesting—it’s on you to make it useful. The GM might ask you “How do you know this?” Tell them the truth, now.",
@@ -793,7 +867,7 @@ export const moves = {
         "Critical": "",
         "success": "Heal 15 harm.",
         "mixed": "Heal 3 calm and  bandage  wound.",
-        "fail": "if you don’t have medicine or other appropriate career , you make things worse cause damage or possible infection"
+        "fail": "if you don’t have proficiency , you make things worse cause damage or possible infection"
     },
     "Calm": {
         "stat": [
@@ -829,7 +903,7 @@ export const moves = {
         ],
         "action": kScene,
         "tooltip": "stat entertain",
-        "Comments": "Performance will often require a level of Bard/Dancing/Noble  career to match the difficulty. A Tavern is but 1, but a King’s palace is more difficult (3 or 4). This is used to determine if the roll is easy or difficult.  ",
+        "Comments": "Performance will often require a proficiency to match the difficulty. A Tavern is but 1, but a King’s palace is more difficult (3 or 4). This is used to determine if the roll is easy or difficult.  ",
         "Critical": "",
         "success": "you receive applause and rewards, and you leave the audience with a particular emotion and theme, like ‘The Heroes are Great’ or ‘The Emperor is Evil’, or you can get one particular  person in the audience to come up to talk to you with them being inclined to like you",
         "mixed": "choose 1:<ul>\
@@ -887,7 +961,7 @@ export const moves = {
           <li> &#x25BA; You get interrupted by something or someone </li>\
         <li> &#x25BA; It takes a longer time</li>\
         <li> &#x25BA; You are tired (exhaustion)</li></ul>",
-        "fail": "You don't get much done, you are tired (exhausted), and should consider a new career"
+        "fail": "You don't get much done, you are tired (exhausted)"
     },
     "Hard Mental Work": {
         "stat": [
@@ -903,7 +977,7 @@ export const moves = {
           <li> &#x25BA; You get interrupted by something or someone </li>\
         <li> &#x25BA; It takes a longer time</li>\
         <li> &#x25BA; You are tired (exhaustion)</li></ul>",
-        "fail": "You don't get much done, you are tired (exhausted), and should consider a new career"
+        "fail": "You don't get much done, you are tired (exhausted)"
     },
     "Steal": {
         "stat": [
@@ -1057,28 +1131,10 @@ var tribal_languages = [
     "Trollish (Tribal)",
 
 ];
+// console.log("Loaded Moves for Fourty");
+// WriteMovesFOrFountry();
 
-
-function ListAllMagicPowers(owner) {
-
-    let list = [];
-    for (let i = 0; i < owner.items.length; i++) {
-        let item = owner.items[i];
-        if (item.page == "careers" || item.page == "background") {
-            let career = GetRegisteredThing(item.file);
-            let keys = Object.keys(career.owner_featsChosen);
-            for (let k = 0; k < keys.length; k++) {
-                if (career.owner_featsChosen[keys[k]]) {
-                    if (keys[k].endsWith("Magic")) {
-                        list.push(keys[k]);
-                    }
-                }
-            }
-        }
-    }
-    return list;
-}
-MakeAvailableToParser('ListAllMagicPowers', ListAllMagicPowers);
+// ///  
 
 
 function appearanceDialog(thing) {
@@ -1096,7 +1152,7 @@ function appearanceDialog(thing) {
 }
 MakeAvailableToParser('appearanceDialog', appearanceDialog);
 
-function Listify(list, owner, sheet, class_name, chat_id) {
+async function Listify(list, owner, sheet, class_name, chat_id) {
     let context = {
         thing: null,
         sheetName: sheet,
@@ -1112,7 +1168,7 @@ function Listify(list, owner, sheet, class_name, chat_id) {
 
     for (let i = 0; i < list.length; i++) {
         context.thing = list[i];
-        output += "<div>" + parseSheetWithContext(context) + "</div>";
+        output += "<div>" + await parseSheetWithContext(context) + "</div>";
     }
     return output + "</div>";
 }
@@ -1137,6 +1193,10 @@ function ActivationButton(chat_id, owner, featName, checked) {
     return form;
 }
 MakeAvailableToParser('ActivationButton', ActivationButton);
+
+
+
+
 
 function GetBonusFromFeats(chat_id, owner, move) {
     let bonus = 0;
@@ -1196,9 +1256,9 @@ function GetRawHinderingFeatsForMove(owner, move) {
     }
     return answer;
 }
-function GetFeatsForMove(owner, move, chat_id, sheetName) {
+async function GetFeatsForMove(owner, move, chat_id, sheetName) {
 
-    return Listify(GetRawFeatsForMove(owner, move), owner, sheetName, undefined, chat_id);
+    return await Listify(GetRawFeatsForMove(owner, move), owner, sheetName, undefined, chat_id);
 
 }
 MakeAvailableToParser('GetFeatsForMove', GetFeatsForMove);
@@ -1209,106 +1269,30 @@ function GetAllFeats(owner) {
     let list = [];
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
-        if (item.page == "careers" || item.page == "background") {
-            let career = GetRegisteredThing(item.file);
-            let keys = Object.keys(career.owner_featsChosen);
-            for (let k = 0; k < keys.length; k++) {
-                if (career.owner_featsChosen[keys[k]] || true) {
-                    let name = "CompendiumFiles/" + keys[k];
+        if (item.page == "feats") {
 
-                    let featSheet = GetRegisteredThing(name);
-                    if (featSheet == undefined) {
-                        console.log("Missing feat " + name);
-                        continue;
-                    }
 
-                    list.push(featSheet);
-                }
-            }
+            list.push(item);
         }
     }
     return list;
 }
 
-function ListAllFeats(owner) {
+async function ListAllFeats(owner) {
 
     let list = GetAllFeats(owner);
-    return Listify(list, owner, "feats", undefined);
+    return await Listify(list, owner, "feats", undefined);
 }
 
 MakeAvailableToParser('ListAllFeats', ListAllFeats);
 
-function HasFeat(thingId, featName) {
 
-    let owner = GetRegisteredThing(thingId);
-    for (let i = 0; i < owner.items.length; i++) {
-        let item = owner.items[i];
-        if (item.page == "careers" || item.page == "background") {
-            let career = GetRegisteredThing(item.file);
-            if (career.owner_featsChosen[featName]) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 
 function getStrength(owner) {
 
     return Number(owner.stats.strength);
 }
 
-function getMaxMageLevel(owner) {
-    let answer = 0;
-    for (let i = 0; i < owner.items.length; i++) {
-        let item = owner.items[i];
-        if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file);
-
-            if (career.mana) {
-                answer = Math.max(Number(career.owner_level), answer);
-            }
-        }
-    }
-    return answer;
-}
-MakeAvailableToParser('getMaxMageLevel', getMaxMageLevel);
-
-function KnowsTool(owner, tool) {
-    let answer = 0;
-    for (let i = 0; i < owner.items.length; i++) {
-        let item = owner.items[i];
-        if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file);
-
-            if (career.tools.includes(tool))
-                answer = Math.max(Number(career.owner_level), answer);
-
-        }
-    }
-    return answer;
-
-}
-
-function KnowsWordsOfPower(owner) {
-
-    return KnowsTool(owner, "Magic Words");
-
-}
-MakeAvailableToParser('KnowsWordsOfPower', KnowsWordsOfPower);
-
-
-function KnowsChannelling(owner) {
-    return KnowsTool(owner, "Planar Forces");
-
-
-}
-MakeAvailableToParser('KnowsChannelling', KnowsChannelling);
-
-function getMaxHealth(owner) {
-    return 2 + Number(owner.stats.strength) + Number(owner.stats.will) + Number(owner.stats.health) * 2;
-}
-MakeAvailableToHtml('getMaxHealth', getMaxHealth);
 
 
 export function isAllowedToWear(owner_id, thingId) {
@@ -1316,59 +1300,48 @@ export function isAllowedToWear(owner_id, thingId) {
     let thing = GetRegisteredThing(thingId);
     if (!thing.armor) return true;
 
-    let owner = GetRegisteredThing(owner_id);
-    for (let i = 0; i < owner.items.length; i++) {
-        let item = owner.items[i];
-        if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file);
-            if (career.weapons) {
-
-                for (let k = 0; k < career.weapons.length; k++) {
-                    for (let j = 0; j < thing.armor.career.length; j++) {
-                        if (career.weapons[k] == thing.armor.career[j]) {
-                            return true;
-                        }
-                    }
-                }
-
-            }
-        }
-    }
-    return false;
+    console.log("New rule for armor required level");
+    return true;
 }
 
-function getMinorConditionsLevel(owner) {
+function getMaxHealth(owner) {
     let strbonus = getStrength(owner);
     let will = Number(owner.stats.will);
     let health = Number(owner.stats.health);
-    return 2 + strbonus + will + health;
+    return 10 + strbonus + will + health * 2;
 
 
 }
 
-MakeAvailableToParser("getMinorConditionsLevel", getMinorConditionsLevel);
-MakeAvailableToHtml("getMinorConditionsLevel", getMinorConditionsLevel);
+MakeAvailableToParser("getMaxHealth", getMaxHealth);
+MakeAvailableToHtml("getMaxHealth", getMaxHealth);
 
-function getArmor(owner, damageType) {
+async function getArmorValue(owner, damageType) {
 
     let bonus = 0;
     for (let i = 0; i < owner.items.length; i++) {
         let item = owner.items[i];
-        if (item.page == "weapon" && isEquipped(owner.id, item.file)) {
-            let weapon = GetRegisteredThing(item.file);
-            if (!isNaN(weapon?.armor?.bonus))
-                bonus += weapon.armor.bonus;
-
+        if (item.page == "weapon") {
+            let b = await isEquipped(owner.id, item.id)
+            if (b && !isNaN(item?.armor?.bonus))
+                bonus += item.armor.bonus;
         }
-
     }
-
     return bonus;
 }
 
 
+MakeAvailableToParser("getArmorValue", getArmorValue);
+
+function getArmor(item) {
+    if (!isNaN(item?.armor?.bonus))
+        return " Armor:" + item.armor.bonus + " ";
+
+
+
+    return "";
+}
 MakeAvailableToParser("getArmor", getArmor);
-MakeAvailableToHtml("getArmor", getArmor);
 
 var takeDamageMove = {
     "stat": [
@@ -1415,10 +1388,11 @@ var takeDamageMove = {
 };
 
 
-function takeDamage(ownerId, damage, damageType, advantage) {
+async function takeDamage(ownerId, damage, damageType, advantage) {
 
-    let owner = GetRegisteredThing(ownerId);
-    let armor = getArmor(owner, damageType);
+    // let owner = await ensureThingLoaded(ownerId);
+    //let armor = await getArmorValue(owner, damageType);
+    // this is broken, let's figure out how damage works later
     let mod_damage = Math.floor((-(damage - 3) + armor * 2) / 2);
 
     rollMoveStat(ownerId, "health", "ResistDamage", "", advantage,
@@ -1443,75 +1417,11 @@ function getTakenDamageType(thingId) {
 MakeAvailableToHtml("getTakenDamage", getTakenDamage);
 MakeAvailableToHtml("getTakenDamageType", getTakenDamageType);
 
-function FindBestCareer(owner, move_name) {
 
-    let bonus = 0;
-    let career_string = "";
 
-    if (!owner) { return [0, ""] }
-    for (let i = 0; i < owner.items.length; i++) {
-        let item = owner.items[i];
-        if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file);
-            let level = Number(career.owner_level);
-            if (level > bonus) {
-                if (career?.moves?.length) {
-                    for (let i = 0; i < career.moves.length; i++) {
-                        if (career.moves[i] == move_name) {
-                            bonus = level;
-                            career_string = career.name;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return [bonus, career_string]
-
-}
-
-// input: owner, node, output [ damage, skill]
-function FindBestCareerNode(owner, node) {
-
-    let bonus = 0;
-    let strbonus = 0;
-    let career_string = "";
-    if (!node.career) return [0, ""]; // old d7d armors
-
-    if (!owner) {
-        let s = "";
-        for (let i = 0; i < node.career.length; i++) {
-            if (i > 1) s += ","
-            s += node.career[i];
-        }
-        return [0, s];
-
-    }
-
-    for (let i = 0; i < owner.items.length; i++) {
-
-        let item = owner.items[i];
-        if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file);
-            let level = Number(career.owner_level);
-            if (level > bonus) {
-                if (career?.weapons?.length)
-                    for (let k = 0; k < career.weapons.length; k++)
-                        for (let w2 = 0; w2 < node.career.length; w2++) {
-                            if (career.weapons[k] == node.career[w2]) {
-                                bonus = level;
-                                career_string = career.name;
-                            }
-
-                        }
-            }
-            if (node.strAdd == true) {
-                strbonus = owner.stats.strength;
-            }
-        }
-    }
-    console.log(career_string);
-    return [bonus + strbonus, career_string];
+function FindProficiencyBonus(owner, mode, move) {
+    // should return a bonus for proficiency
+    return 0;
 }
 
 
@@ -1527,7 +1437,7 @@ function showWeaponModes(thing, owner) {
             if (mode.min_range) answer += (span("minimum range ", mode.min_range, "italic")) + ".  ";
             if (mode.radius) answer += (span("radius range ", mode.radius, "italic")) + ".  ";
             answer += span(mode.type + " ", (mode.hands > 1 ? " Two Handed. " : ""), "italic");
-            let bonus = FindBestCareerNode(owner, mode, move);
+            let bonus = FindProficiencyBonus(owner, mode, move);
             for (let d = 0; d < mode.damage.length; d++) {
                 if (mode.damage) {
                     let damage = mode.damage[d];
@@ -1558,44 +1468,13 @@ function showArmorBenefit(thing, owner) {
     answer += div(span("protects vs ", a));
     answer += div(span("bonus ", armor.bonus + ""));
 
-    let steel = FindBestCareerNode(owner, armor);
+    let steel = FindProficiencyBonus(owner, armor);
     answer += div(span("Steel ", steel[0] + ""));
     answer += div(span("Sacrifice", (armor.usedSacrifice ? armor.sacrifice - armor.usedSacrifice : armor.sacrifice) + "/" + armor.sacrifice));
 
     return div(answer);
 }
 MakeAvailableToParser('showArmorBenefit', showArmorBenefit);
-
-// function validateCareer(thing, owner) {
-//     if (!owner) return;
-
-//     if (owner.chosen == undefined)
-//         owner.chosen = {}
-//     if (owner.chosen[thing.name] == undefined)
-//         owner.chosen[thing.name] = { level: 0, featChosen: [] };
-
-//     let career = owner.chosen[thing.name];
-
-//     if (career.level < 0) career.level = 0;
-
-//     if (career.level < career.featChosen.length) {
-//         career.featChosen.length = career.level;
-//     }
-
-//     if (career.level > career.featChosen.length) {
-//         console.log("Please choose more feats");
-//     }
-//     return career;
-
-// }
-
-// function getLine(offset) {
-//     var stack = new Error().stack.split('\n'),
-//         line = stack[offset + 1].split(':');
-//     return parseInt(line[line.length - 2], 10);
-// }
-// MakeAvailableToParser('getLine', getLine);
-
 
 
 
@@ -1835,8 +1714,8 @@ function ToggleEquip(owner_id, thingId) {
 }
 MakeAvailableToHtml("ToggleEquip", ToggleEquip);
 
-function EquippedCheckBox(owner_id, thingId) {
-    let e = isEquipped(owner_id, thingId);
+async function EquippedCheckBox(owner_id, thingId) {
+    let e = await isEquipped(owner_id, thingId);
     console.log("e " + e);
 
     console.log('<input type="checkbox" id="' + owner_id + "_" + thingId + '" name="Equipped"' + (e ? ' checked="true"' : "") + '"' +
@@ -1959,7 +1838,7 @@ function featNoCheckBox(feats, i, thing, owner, checked, featSheet) {
     let template = "";
     let text = "<li> &#x25BA;"
     text += '<span class=npcBold>' +
-        featSheet.name + ':</span>' + featSheet.description.value + '</li > ';
+        featSheet.name + ':</span>' + featSheet.description + '</li > ';
 
     return text;
 }
@@ -1968,114 +1847,25 @@ function featNoCheckBox(feats, i, thing, owner, checked, featSheet) {
 function featCheckBox(feats, i, thing, owner, checked, featSheet) {
 
     if (featSheet == undefined) return "Missing feat";
+
     let clause = "ensureExists(thing, template, 'owner_featsChosen'); thing.owner_featsChosen['" + feats[i] + "']"
     let text = "<li> &#x25BA;"
     text += '<input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"'
         + '"  data-owner="' + owner.id + '" '
         + '" data-clause="' + clause
-        + '"  data-thingid="' + thing.id
+        + '"  data-thingid="' + thing.id // straighten out id and file
         + '" ' + (checked ? " checked " : "")
         + ' onchange="htmlContext.featclicked(this);"'
         + ' /><label for="' + feats[i] + '"> <span class=npcBold>' +
-        featSheet.name + ':</span>' + featSheet.description.value + '</li > ';
+        featSheet.name + ':</span>' + featSheet.description + '</li > ';
 
     return text;
 }
 
 MakeAvailableToParser('featCheckBox', featCheckBox);
 
-export function sumCareerFeats(thing) {
 
 
-    let feats = thing.feats;
-
-    if (!thing?.owner_featsChosen) return 0;
-    let count = 0;
-
-    for (let i = 0; i < feats.length; i++) {
-        let name = "CompendiumFiles/" + feats[i];
-
-        let checked = thing.owner_featsChosen[feats[i]];
-
-        if (checked) count++;
-
-
-    }
-    return count;
-
-}
-
-function drawBackgroundFeat(thing, owner, notes) {
-
-    MakeAvailableToParser('drawBackgroundFeat', drawBackgroundFeat);
-
-    let text = "";
-    // let career = validateCareer(thing, owner);
-
-
-    let feats = thing.feats;
-
-    text += '<ul class=" .dropdown-check-list-ul-item">';
-
-    for (let i = 0; i < feats.length; i++) {
-        let name = "CompendiumFiles/" + feats[i];
-
-        let checked = thing?.owner_featsChosen[feats[i]];
-
-        let featSheet = GetRegisteredThing(name);
-
-        text += featNoCheckBox(feats, i, thing, owner, checked, featSheet);
-        featSheet.name + ':</span>' + featSheet.description.value + '</label></li > ';
-
-    }
-    text += '</ul> </div>';
-    return text;
-}
-MakeAvailableToParser('drawBackgroundFeat', drawBackgroundFeat);
-
-
-function drawCareerFeats(thing, owner, notes) {
-    let text = "";
-    // let career = validateCareer(thing, owner);
-
-
-    let feats = thing.feats;
-
-    text += div(span("Weapons Proficiencies:", thing.weapons, "bold"));
-    if (thing.tools && thing.tools.length) {
-        text += div(span("Tool Proficiencies", thing.tools, "bold"));
-    }
-
-    text += div(span("Magic: ", thing.mana ? "Yes" : "No", "bold"));
-    text += '<div id="list3" class="dropdown-check-list" tabindex="100">';
-
-    text += '<ul class=" .dropdown-check-list-ul-item">';
-
-    for (let i = 0; i < feats.length; i++) {
-        let name = "CompendiumFiles/" + feats[i];
-
-        let checked = thing?.owner_featsChosen[feats[i]];
-
-        if (notes && !checked) continue;
-
-        let featSheet = GetRegisteredThing(name);
-
-        if (owner)
-            text += featCheckBox(feats, i, thing, owner, checked, featSheet);
-        else
-            text += featNoCheckBox(feats, i, thing, owner, checked, featSheet);
-        // let clause = "thing.owner_featsChosen['" + feats[i] + "']"
-        // text += '<li> &#x25BA; <input id="' + feats[i] + '" type="checkbox" class="dropdown-check-list-ul-items-li"' + '"  data-owner="' + owner.id + '" '
-        //     + '" data-clause="' + clause + '"  data-thingid="' + thing.id + '" ' + (checked ? " checked " : "") +
-        //     ' onchange="featclicked(this);" /><label for="' + feats[i] + '"> <span class=npcBold>' +
-        //     featSheet.name + ':</span>' + featSheet.description.value + '</label></li > ';
-
-    }
-    text += '</ul> </div>';
-    return text;
-}
-
-MakeAvailableToParser('drawCareerFeats', drawCareerFeats);
 
 // Hide the popup menu when clicking anywhere in the document
 document.addEventListener("mouseup", (event) => {
@@ -2175,6 +1965,7 @@ function filterDropDown(input, dropdown) {
 }
 MakeAvailableToHtml('filterDropDown', filterDropDown);
 
+
 function ChangeW(e, show, hide) {
 
     let toShow = document.getElementById(show);
@@ -2233,257 +2024,10 @@ function showApperancePopUp(e, id) {
 }
 MakeAvailableToHtml('showApperancePopUp', showApperancePopUp);
 
-// function drawCareerLevel(thing, owner, notes) {
-//     let text = "";
-//     // let career = validateCareer(thing, owner);
-
-
-
-
-
-//     if (owner && notes) {
-//         text += div('<span class="basicFont npcBold bodyText">Level </span>' +
-//             Editable(thing, "thing.owner_level", "shortwidth coloring basicFont bodyText"));
-
-//     }
-//     return text;
-// }
-
-
-// var weaponProf = {
-//     Ambush: "Ambush, skilled in all weapons during a surprise attack, otherwise, daggers",
-//     TribalWeapons: "Your tribe's weapons,  also Unarmed combat.",
-//     Pirate: "Sword, Dagger, Slings, unarmed",
-//     Melee: "Melee Weapons, Lance, Shield, Armor, also unarmed Combat",
-//     Ranged: "Bow, dagger, spear",
-//     Gladiator: "Melee weapons, shield, exotic, impractical and exotic wepaons, Unarmed, theatrical wrestling",
-//     Immolator: "Conjured Fire",
-//     Strong: "unarmed, swung weapons, wrestling"
-
-// };
-
-
-// var itemTags = {
-//     Area: "It hits or effects everything in an area. ",
-//     Armor: "Provides a bonus to your react to harm roll ",
-//     Awkward: "It’s unwieldy and tough to wield or use appropriately. ",
-//     Clumsy: "It’s unwieldy to use. ",
-//     Dangerous: "Unsafe; take the proper precautions when using it or the GM may freely invoke the consequences on failed rolls",
-//     Distinctive: "It has an obvious and unique sound, appearance or impression when used. ",
-//     Fiery: "It painfully burns, sears, and causes things to catch fire. Hot to the touch. Inflicts Firey Damage. ",
-//     Forceful: "It inflicts powerful, crushing blows that knock targets back and down. ",
-//     Heavy: "It requires two hands to wield properly.",
-//     Infinite: "Too many to keep count. Throw one away, and you have another one.",
-//     Messy: "It harms foes in a particularly destructive way, ripping people and things apart.",
-//     Piercing: "Inflicts Piercing Damage ",
-//     Bludgeoning: "Inflicts Bludgeoning Damage",
-//     Slashing: "Inflicts Slashing Damage ",
-//     Silvered: "Hurts magical things too",
-//     Blessed: "Hurts magical things and does double damage versus fiends and undead",
-//     Reload: "You have to take time to reload it between uses",
-//     Slow_Reload: "It takes at least one round to reload, and you have to be still to relaod it",
-//     Slow: "It takes a while to use - at least a minute, if not more. ",
-//     Unbreakable: "It can’t be broken or destroyed by normal means. ",
-//     Valuable: "It’s worth Wealth to the right person. ",
-//     Vicious: "It harms foes in an especially cruel way, its wounds inflicting debilitating pain",
-//     Concealable: "Easily Concealable",
-//     Armor_Piercing: "Reduces Armor",
-//     Cheap: "May break",
-//     Weak: "Won't penetrate proper armor",
-//     LuckySave: "Once per game session can prevent all damage from one attack",
-//     Knockback: "May knock foes back"
-// }
-
-// var itemRanges = {
-//     Intimate: 0,
-//     Close: 1,
-//     Reach: 2,
-//     Near: 10,
-//     Far: 40
-// };
-
-// var weaponType = {
-//     backup: 0,
-//     sheathed: 1,
-//     longarm: 2
-// };
-
-// var weapons = [
-//     {
-//         name: "Punch", description: "Basic unarmed attack", type: ["Melee",], Ranges: ["Intimate"],
-//         cost: 0, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Bludgeoning, Weak", "Knockback"]
-//     },
-//     {
-//         name: "Ragged Bow", description: "Crappy bow useful for rabbit hunting", steel: -1, type: ["Ranged",], Ranges: ["Near"],
-//         cost: 15, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
-//     },
-//     {
-//         name: "Fine Bow", description: "Basic Military bow", type: ["Ranged",], Ranges: ["Near", "Far"],
-//         cost: 60, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
-//     },
-//     {
-//         name: "Elven Bow", description: "Elvish Bow, not comon", steel: 1, type: ["Ranged",], Ranges: ["Near", "Far"],
-//         cost: 300, Hands: 2, encumerance: "longarm", Damage: 1, tags: ["Piercing"]
-//     },
-//     {
-//         name: "Crossbow", description: "Advanced Prittanian Arm", steel: 1, type: ["Ranged",], Ranges: ["Near", "Far"],
-//         cost: 100, Hands: 2, encumerance: "longarm", Damage: 2, tags: ["Piercing", "Slow_Reload", "Armor_Piercing", "Vicious"]
-//     },
-//     {
-//         name: "Dwarven Crossbow", description: "Powerful Dwarven Crossbow. Awkward for non-dwarves to use", steel: +2, type: ["Ranged"], Ranges: ["Near", "Far"],
-//         cost: 300, Hands: 2, encumerance: "longarm", Damage: 2, tags: ["Piercing", "Slow_Reload", "Armor_Piercing", "Vicious"]
-//     },
-//     {
-//         name: "Club", description: "Basic Club", type: ["Melee", "Swung",], Ranges: ["Close"],
-//         cost: 1, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning", "Cheap"]
-//     },
-//     {
-//         name: "Metal Shod Club", description: "Basic Club", type: ["Melee", "Swung",], Ranges: ["Close"],
-//         cost: 10, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
-//     },
-//     {
-//         name: "Staff", description: "Long piece of wood", type: ["Melee",], Ranges: ["Close"],
-//         cost: 1, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning", "Cheap"]
-//     },
-//     {
-//         name: "Dagger", description: "BIg Knife", steel: 1, type: ["Melee", "Ambush",], Ranges: ["Intimate"],
-//         cost: 2, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing"]
-//     },
-//     {
-//         name: "Shiv", description: "Small Knife", type: ["Melee", "Ambush",], Ranges: ["Intimate"],
-//         cost: 1, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing", "Concealable"]
-//     },
-//     {
-//         name: "Throwing Dagger", description: "Thrown dagger", type: ["Ranged",], Ranges: ["Near"],
-//         cost: 1, Hands: 1, encumerance: "backup", Damage: 1, tags: ["Piercing"]
-//     },
-//     {
-//         name: "Spear", description: "One handed spear", type: ["Melee",], Ranges: ["Close", "Reach"],
-//         cost: 10, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Piercing"]
-//     },
-//     {
-//         name: "Pike", description: "Two handed spear", type: ["Melee",], Ranges: ["Reach"],
-//         cost: 10, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Piercing"]
-//     },
-//     {
-//         name: "Lance", description: "Spear on horseback. Knockbacks with horse charge and +1 damage, will break", type: ["Melee",], Ranges: ["Reach"],
-//         cost: 2, Hands: 1, encumerance: "longarm", Damage: 3, tags: ["Piercing", "Knockback"]
-//     },
-//     {
-//         name: "Longsword", description: "Military weapon", steel: +1, type: ["Melee",], Ranges: ["Close"],
-//         cost: 25, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
-//     },
-//     {
-//         name: "Shortsword", description: "Military weapon", type: ["Melee",], Ranges: ["Close", "Intimate"],
-//         cost: 10, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
-//     },
-//     {
-//         name: "Greatsword", description: "Military weapon", type: ["Melee",], Ranges: ["Close", "Reach"],
-//         cost: 150, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Slashing"]
-//     },
-//     {
-//         name: "Rapier", description: "Military weapon", type: ["Melee,Duelist",], Ranges: ["Close", "Reach"],
-//         cost: 60, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Piercing"]
-//     },
-//     {
-//         name: "Peasant Axe", description: "Axe for chopping wood", steel: -1, type: ["Melee", "Swung",], Ranges: ["Close"],
-//         cost: 15, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
-//     },
-//     {
-//         name: "BattleAxe", description: "Basic battle axe", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
-//         cost: 29, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Slashing"]
-//     },
-//     {
-//         name: "GreatAxe", description: "Big axe", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
-//         cost: 100, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Slashing"]
-//     },
-//     {
-//         name: "War Hammer", description: "Basic hammere", steel: 1, type: ["Melee", "Swung",], Ranges: ["Close"],
-//         cost: 20, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
-//     },
-//     {
-//         name: "Whip", description: "Articulated Weapon", steel: 2, type: ["Exotic",], Ranges: ["Reach"],
-//         cost: 10, Hands: 1, encumerance: "sheathed", Damage: 2, tags: ["Slashing"]
-//     },
-//     {
-//         name: "Whip of Pain", description: "Articulated Weapon", steel: 2, type: ["Exotic",], Ranges: ["Reach"],
-//         cost: 400, Hands: 1, encumerance: "sheathed", Damage: 3, tags: ["Slashing"]
-//     },
-//     {
-//         name: "Flail", description: "Articulated Weapon", steel: 2, type: ["Melee", "Swung",], Ranges: ["Close"],
-//         cost: 40, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning", "Awkward"]
-//     },
-//     {
-//         name: "Halberd", description: "Axe on stick", steel: 2, type: ["Melee", "Swung",], Ranges: ["Reach"],
-//         cost: 80, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning"]
-//     },
-//     {
-//         name: "Mace", description: "spiky club", steel: 1, type: ["Melee", "Swung",], Ranges: ["Reach"],
-//         cost: 20, Hands: 1, encumerance: "longarm", Damage: 2, tags: ["Bludgeoning"]
-//     },
-//     {
-//         name: "Maul", description: "Two handed club", steel: 1, type: ["Melee", "Swung",], Ranges: ["Reach"],
-//         cost: 80, Hands: 2, encumerance: "longarm", Damage: 3, tags: ["Bludgeoning"]
-//     },
-//     {
-//         name: "Magic Longsword", description: "Watery tarts hand these out in lakes", steel: 3, type: ["Melee",], Ranges: ["Close"],
-//         cost: 2500, Hands: 1, encumerance: "sheathed", Damage: 3, tags: ["Slashing", "Blessed"]
-//     },
-
-// ];
-
-// var armor = [
-//     { name: "Light Armor", steel: 1, armor: 0, tags: [], cost: 50 },
-//     { name: "Medium Armor: like mail", steel: 2, armor: 1, tags: [], cost: 300 },
-//     { name: "Prittanian Plate", steel: 1, armor: 2, tags: ["Noisy",], cost: 1500 },
-//     { name: "Elven Mithril Undergarment", steel: 1, armor: 1, tags: ["Concealed", "LuckySave"], cost: 1000 },
-//     { name: "Scary Tribal Regalia", steel: 1, armor: 0, tags: [], cost: 50 },
-//     { name: "Dragon Scale Armor", steel: 3, armor: 2, tags: ["Immunity", "LuckySave"], cost: 5670 },
-// ];
-
 
 const baseDice = "2d10";
 
-// function rollptbadice(dice) {
-//     let rolls = []
-//     rolls.push(
-//         {
-//             title: dice,
-//             roll: dice,
-//         }
-//     ); socket.emit('rolls', rolls);
-// }
-
-function selectLanguage(id, event, name) {
-    let thing = GetRegisteredThing(id);
-    let result = (event.currentTarget.checked ? true : false);
-    eval('thing.languages["' + name + '"]' + ' = ' + result); socket.emit('change', {
-        change: 'thing.languages["' + name + '"]' + ' = ' + result,
-        thing: id
-    })
-};
-
-
-function languagesButtons(thing) {
-    let answer = ""; for (let i = 0; i < languages.length; i++) {
-        let name = (languages[i]);
-        answer += '<input type="checkbox" id="' + name + '" name="' + name + ((!!thing.languages[name]) ? '" checked="true"' : "") + '"' +
-            ' onChange= "htmlContext.selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
-    }
-    for (let i = 0; i < tribal_languages.length; i++) {
-        let name = (tribal_languages[i]);
-        answer += '<input type="checkbox" id="' + name + '" name="' + name + ((!!thing.languages[name]) ? '" checked="true"' : "") + '"' +
-            ' onChange= "htmlContext.selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
-    }
-    for (let i = 0; i < magic_languages.length; i++) {
-        let name = (magic_languages[i]);
-        answer += '<input type="checkbox" id="' + name + '" name="' + name + ((!!thing.languages[name]) ? '" checked="true"' : "") + '"' +
-            ' onChange= "htmlContext.selectLanguage(' + "'" + thing.id + "',  event,'" + name + "')" + '  ">'; answer += '<label for="' + name + '">' + name + '</label>'
-    }
-    return answer;
-}
-
-function showInventoryTooltip(evt, thing_id, slot) {
+async function showInventoryTooltip(evt, thing_id, slot) {
 
     let tooltip = document.getElementById("InventoryTooltip_" + thing_id);
     tooltip.innerHTML = slot;
@@ -2503,7 +2047,7 @@ function showInventoryTooltip(evt, thing_id, slot) {
     let leftPos = parent.getBoundingClientRect().left + window.scrollX;
 
     // this needs to be fixed, the calculation of the tooltip wrong
-    let weapon = GetRegisteredThing(slots[slot]);
+    let weapon = await GetRegisteredThing(slots[slot]);
     tooltip.innerHTML = weapon.description + '(' + weapon.slot + ')';
     tooltip.style.display = "block";
     tooltip.style.left = (10 + leftPos - leftWPos) + 'px';
@@ -2538,42 +2082,6 @@ function CreateRollMoveStatString(buttonClass, buttonText, description, ownerId,
 MakeAvailableToParser('CreateRollMoveStatString', CreateRollMoveStatString);
 
 
-
-// function FeatsToShow(ownerId, stat, mv, skill, advantage, weapon_id, defense_or_offset, weapon_mode) {
-
-
-//     let owner = GetRegisteredThing(ownerId);
-//     for (let i = 0; i < owner.items.length; i++) {
-//         let item = owner.items[i];
-//         if (item.page == "careers" || item.page == "background") {
-//             let career = GetRegisteredThing(item.file);
-//             let keys = Object.keys(career.owner_featsChosen);
-//             for (let k = 0; k < keys.length; k++) {
-//                 if (career.owner_featsChosen[keys[k]]) {
-//                     let name = "CompendiumFiles/" + keys[k];
-
-//                     let featSheet = GetRegisteredThing(name);
-
-//                     list.push(featSheet);
-//                 }
-//             }
-//         }
-//     }
-
-// }
-
-function changeChatSkill(id, career, divElement) {
-    //let menu = document.getElementById(divElement);
-    //  menu.classList.remove("active")
-    console.log("Chaning skill to " + career + "for id " + id);
-    socket.emit('change', {
-        change: "thing.skill = '" + career + "'",
-        thing: id
-    })
-
-}
-MakeAvailableToParser('changeChatSkill', changeChatSkill);
-MakeAvailableToHtml('changeChatSkill', changeChatSkill);
 
 
 function changeChatDifficulty(id, amt) {
@@ -2625,34 +2133,10 @@ function ChooseStat(owner, id, divElement) {
 MakeAvailableToParser('ChooseStat', ChooseStat);
 MakeAvailableToHtml('ChooseStat', ChooseStat);
 
-function ShowAllPlayerSkills(owner, id, divElement) {
-
-    let answer = "<ul class='popup-menu'>";
-    let quote = "'";
-    let comma = ",";
-    for (let i = 0; i < owner.items.length; i++) {
-
-        let item = owner.items[i];
-        if (item.page == "careers") {
-            let career = GetRegisteredThing(item.file);
-            let level = Number(career.owner_level);
-            answer += '<li onclick="changeChatSkill('
-                + quote + id + quote + comma + quote + career.name + quote + comma + quote
-                + divElement + quote + ')">' + career.name + '</li>';
-        }
-    }
-    answer += '<li onclick="changeChatSkill(' + quote + id + quote + comma + quote + "" + quote + comma + quote
-        + divElement + quote + ')">' + 'None</li>';
-    answer += '</ul>'
-    return answer;
-
+function GetProficiency(owner, skill) {
+    console.log("Add something about proficiency")
+    return 0;
 }
-
-
-MakeAvailableToParser('ShowAllPlayerSkills', ShowAllPlayerSkills);
-MakeAvailableToHtml('ShowAllPlayerSkills', ShowAllPlayerSkills);
-
-
 
 function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDefense, weapon_mode, description) {
     let owner = GetRegisteredThing(ownerId);
@@ -2668,7 +2152,7 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
             stat: stat,
             statBonus: owner.stats[stat],
             skill: skill,
-            skillDice: GetCareerLevel(owner, skill),
+            skillDice: GetProficiency(owner, skill),
             move: mv,
             difficulty: 0,
             advantage: advantage,
@@ -2682,7 +2166,7 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
         if (Expend(weapon_id, mode)) {
             RedrawWindow(owner.registeredId)
         }
-        let skill = FindBestCareerNode(owner, mode)[1];
+        let skill = FindProficiencyBonus(owner, mode)[1];
         console.log(skill);
         if (moves[mv] == undefined) { throw ("err"); }
 
@@ -2693,14 +2177,14 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
             description: description,
             statBonus: owner.stats[stat],
             skill: skill,
-            skillDice: GetCareerLevel(owner, skill),
+            skillDice: GetProficiency(owner, skill),
             move: mv,
             difficulty: 0,
             advantage: advantage,
             resultsTable: moves[mv],
             weapon_name: weapon.name,
             damage: mode.damage,
-            damage_bonus: FindBestCareerNode(owner, mode)[0],
+            damage_bonus: FindProficiencyBonus(owner, mode)[0],
             featsChecked: {}
 
 
@@ -2714,27 +2198,6 @@ function rollMoveStat(ownerId, stat, mv, skill, advantage, weapon_id, attackOrDe
 MakeAvailableToParser("rollMoveStat", rollMoveStat);
 MakeAvailableToHtml("rollMoveStat", rollMoveStat);
 
-
-
-
-function GetCareerLevel(owner, skill) {
-
-    for (let i = 0; i < owner.items.length; i++) {
-
-        let item = owner.items[i];
-        if (item.page == "careers" && item.name == skill) {
-            let career = GetRegisteredThing(item.file);
-            let level = Number(career.owner_level);
-            return level;
-        }
-    }
-    return 0;
-
-}
-
-
-
-MakeAvailableToParser("GetCareerLevel", GetCareerLevel);
 
 
 
@@ -2783,7 +2246,7 @@ function getRollAndRollResults(thing, owner) {
     let max = 0;
     let numSixes = 0;
 
-    let skill = GetCareerLevel(owner, thing.skill);
+    let skill = GetProficiency(owner, thing.skill);
 
     if (skill > 0)
         results += "d6s:(";
@@ -2842,58 +2305,8 @@ function getRollAndRollResults(thing, owner) {
 
 }
 
-//     let results = "";
+MakeAvailableToParser("getMaxHealth", getMaxHealth);
 
-//     results += "<b> " + (thing.d10[index].val) + "," + (thing.d10[index + 1].val) + " " + "</b>";
-//     if (thing.advantage != 0)
-//         results += (thing.d10[index ^ 2].val) + "," + (thing.d10[(index ^ 2) + 1].val) + " ";
-
-//     let result = Number(thing.d10[index].val) + Number(thing.d10[index + 1].val);
-
-//     let natural = result;
-
-//     let max = 0;
-//     let numSixes = 0;
-
-//     let skill = GetCareerLevel(owner, thing.skill);
-
-//     if (skill > 0)
-//         results += "(";
-//     for (let i = 0; i < skill; i++) {
-//         if (i > 0) results += ",";
-//         results += (thing.skillDice[i].val);
-//         max = Math.max(max, thing.skillDice[i].val);
-//         if (thing.skillDice[i].val == 6) numSixes++;
-//     }
-//     result += Number(max);
-//     if (max) results += ") = " + max;
-//     if (numSixes > 1) {
-//         result += numSixes - 1;
-//         results += " <span class='redtext'>" + (numSixes - 1) + "</span>";
-//     }
-//     result += Number(thing.statBonus);
-//     results += " + " + thing.statBonus;
-//     result -= Number(thing.difficulty);
-//     results += " -  " + thing.difficulty;
-//     let text = "";
-
-//     if (natural == 2)
-//         text = ("fail");
-//     else if (natural == 20)
-//         text = ("critical");
-//     else if (result < 10)
-//         text = ("fail");
-//     else if (result < 16)
-//         text = ("mixed");
-//     else if (result < 23)
-//         text = ("success");
-//     else
-//         text = ("critical");
-
-
-//     return { result: result, results: results, natural: natural, category: text }
-
-// }
 
 function GetRollResult(thing, owner) {
 
@@ -2970,8 +2383,8 @@ function GetWeaponsList(thing) {
     let result = [];
     if (thing.items) for (let i = 0; i < thing.items.length; i++) {
         if (thing.items[i].page == "weapon") {
-            result.push(thing.items[i].file);
-            //  if (!item) console.log("Error fetching " + thing.items[i].file);
+            result.push(thing.items[i].id);
+            //  if (!item) console.log("Error fetching " + thing.items[i].id);
             //    if (item && item.equipped && item.armor && item.armor.value) {
 
 
@@ -2981,14 +2394,15 @@ function GetWeaponsList(thing) {
 
 }
 
-function WeaponMoves(owner, weaponId) {
+async function WeaponMoves(owner, weaponId) {
 
     if (!owner) return "";
-    if (!isEquipped(owner.id, weaponId)) return "";
+    let equipped = await isEquipped(owner.id, weaponId);
+    if (!equipped)
+        return "";
     let answer = "";
-    let weapon = GetRegisteredThing(weaponId);
+    let weapon = await ensureThingLoaded(weaponId);
 
-    let name = weapon.name;
     if (weapon.weapon_modes)
         for (let m = 0; m < weapon.weapon_modes.length; m++) {
             if (isExpended(weaponId, m)) continue;
@@ -2999,33 +2413,30 @@ function WeaponMoves(owner, weaponId) {
                 // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
                 // if (mode.radius) answer += div(span("radius range ", mode.radius));
                 // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
-                let bonus = FindBestCareerNode(owner, mode);
-
-
-                let key = mode.move[k];
-                for (let j = 0; j < moves[key].stat.length; j++) {
-                    let stat = moves[key].stat[j];
-                    answer += "<div>"
-                    answer += CreateRollMoveStatString("greentintButton roundbutton", "+",
-                        mode.name, owner.id, stat, 'Attack', bonus[1], 1, weaponId, "weapon_modes", m);
-                    answer += CreateRollMoveStatString("midtintButton", '<span class="superEmphasis">'
-                        + mode.name + ' </span> ' + stat + "(" + owner.stats[stat] + ') ' + bonus[1] + '(' + bonus[0] + ") " + 'Rng(' + mode.range + ")",
-                        mode.name, owner.id, stat, 'Attack', bonus[1], 0, weaponId, "weapon_modes", m);
-                    answer += CreateRollMoveStatString("redtintButton roundbutton", '-',
-                        mode.name, owner.id, stat, 'Attack', bonus[1], -1, weaponId, "weapon_modes", m);
-                    answer += "</div>"
-
+                let bonus = FindProficiencyBonus(owner, mode, mode.move[k]);
+                for (let d = 0; d < mode.damage.length; d++) {
+                    if (mode.damage) {
+                        let damage = mode.damage[d];
+                        answer += span("damage ", "", "italic") + damage.damage + "+" + bonus[0] + " " + damage.type + " " + damage.when + ". ";
+                        bonus = 0;
+                    } else if (mode.condition) {
+                        let damage = mode.damage[d];
+                        answer += span("condition", "", "italic") + damage.damage + " " + damage.type + " " + damage.when + ". ";
+                    }
                 }
             }
         }
-    return chkDiv(answer);
+    return div(answer, "centered");
 }
 
 MakeAvailableToParser('WeaponMoves', WeaponMoves);
 
-function WeaponParries(thing, weaponId) {
+async function WeaponParries(thing, weaponId) {
 
-    if (!isEquipped(thing.id, weaponId)) return "";
+
+    let equipped = await isEquipped(thing.id, weaponId);
+    if (!equipped) return "";
+
     let answer = "";
     let weapon = GetRegisteredThing(weaponId);
 
@@ -3033,7 +2444,6 @@ function WeaponParries(thing, weaponId) {
     if (weapon.weapon_defenses)
         for (let m = 0; m < weapon.weapon_defenses.length; m++) {
             if (isExpended(weaponId, m)) continue;
-
             let mode = weapon.weapon_defenses[m];
             if (mode.move)
                 for (let k = 0; k < mode.move.length; k++) {
@@ -3042,7 +2452,7 @@ function WeaponParries(thing, weaponId) {
                     // if (mode.min_range) answer += div(span("minimum range ", mode.min_range));
                     // if (mode.radius) answer += div(span("radius range ", mode.radius));
                     // answer += mode.type + " " + (mode.hands > 1 ? " Two Handed " : "");
-                    let bonus = FindBestCareerNode(thing, mode);
+                    let bonus = FindProficiencyBonus(thing, mode);
 
 
                     let stats = moves[mode.move[k]].stat;
@@ -3066,16 +2476,16 @@ function WeaponParries(thing, weaponId) {
 }
 
 
-function BackgroundButton(thing, window) {
+async function BackgroundButton(thing, window) {
 
 
-    return MakeDropDownWidget(" Choose Background", "background", thing);
+    return await MakeDropDownWidget(" Choose Background", "background", thing);
 
 
 }
 MakeAvailableToParser('BackgroundButton', BackgroundButton);
 
-function PTBAMoves(thing) {
+async function PTBAMoves(thing) {
     let answer = "";
     let keys = Object.keys(moves);
 
@@ -3110,17 +2520,21 @@ function PTBAMoves(thing) {
 
             let weapons = GetWeaponsList(thing);
             for (let w = 0; w < weapons.length; w++) {
-                answer += WeaponParries(thing, weapons[w]);
+                if (weapons[w]) {
+                    let a = await WeaponParries(thing, weapons[w]);
+                    answer += a;
+                }
             }
         } else
             if (key == "Attack") {
                 let weapons = GetWeaponsList(thing);
                 for (let w = 0; w < weapons.length; w++) {
-                    answer += WeaponMoves(thing, weapons[w]);
+                    if (!weapons[w]) continue;
+                    let a = await WeaponMoves(thing, weapons[w]);
+                    answer += a;
                 }
-
             } else {
-                let bonus = FindBestCareer(thing, key);
+                let bonus = GetProficiency(thing, key);
                 let skill = bonus[1];
                 for (let j = 0; j < moves[key].stat.length; j++) {
                     let stat = moves[key].stat[j];
@@ -3179,7 +2593,7 @@ function PTBADefenses(thing) {
     let mv = "Dodge";
     let stat = "avoidance";
 
-    let bonus = FindBestCareerNode(thing, mv);
+    let bonus = FindProficiencyBonus(thing, mv);
 
     answer += CreateRollMoveStatString("greentintButton roundbutton", "+", moves[mv].Comments ? moves[mv].Comments : moves[mv].tooltip, thing.id, stat, mv, bonus[1], 1);
     answer += CreateRollMoveStatString("midtintButton", "+ ", moves[mv].Comments ? moves[mv].Comments : moves[mv].tooltip, thing.id, stat, mv, bonus[1], 0);
@@ -3193,7 +2607,7 @@ MakeAvailableToParser('PTBADefenses', PTBADefenses);
 
 
 
-export function dragCareersAndItems(thingDragged, evt) {
+export function dragItems(thingDragged, evt) {
 
     if (!this.items)
         return;
@@ -3205,11 +2619,11 @@ export function dragCareersAndItems(thingDragged, evt) {
         item: thingDragged,
         thing: id
     })
-    socket.emit('roll', {
-        title: ' debug2',
-        style: "dual",
-        roll: "1d6"
-    });
+    // socket.emit('roll', {
+    //     title: ' debug2',
+    //     style: "dual",
+    //     roll: "1d6"
+    // });
 }
 
 function getModifiedManaCost(thing) {
@@ -3247,9 +2661,10 @@ function GetModifiedDamageString(thing) {
             let a = AddDiceToExpression(thing.Damage[i].damage, intensity);
             a += " " + thing.Damage[i].type + ' ';
             if (thing.Damage[i].when) a += thing.Damage[i].when + " ";
-            answer += a;
+            answer += a; function GetRollColor(thing, owner) {
+            }
+            return answer;
         }
-        return answer;
     }
     return thing.Damage;
 }
@@ -3434,158 +2849,7 @@ function addManaExhaust(button, thingId) {
 MakeAvailableToHtml('addManaExhaust', addManaExhaust);
 
 
-function weapon_is_sharp(sidearm) {
 
-    let sharp = false;
-    let s = sidearm.weapon_modes;
-    for (let i = 0; i < s.length; i++) {
-        let w = s[i];
-        if (w.damage)
-            for (let j = 0; j < w.damage.length; j++) {
-                if (w.damage[j].type == "piercing" || w.damage[j].type == "slashing" || w.damage[j].type == "piercing or slashing") {
-                    return true;
-                }
-            }
-    }
-    return false;
-}
-
-
-/// should reverse this and calculate this on equip unequip
-//// having a key value pair of variables like roll20 does
-function addManaStab(button, thingId) {
-
-
-    let s = getSlotItem(thingId, 'sidearm');
-
-    if (!s) {
-        sendChat("No sidearm equipped. ");
-        return;
-    }
-    let sidearm = GetRegisteredThing(s);
-    if (!sidearm.weapon_modes) {
-        sendChat("No dangerous sidearm equipped. ");
-        return;
-    }
-    if (!weapon_is_sharp(sidearm)) {
-        sendChat("Not equipped with sharp sidearm. ");
-        return;
-    }
-
-    let mana = 3;
-    if (HasFeat(thingId, "Fuel")) mana += 2;
-    let advantage = 0;
-    if (HasFeat(thingId, "Blood_Sacrifice")) advantage = 1;
-    let thing = GetRegisteredThing(thingId);
-
-    // takeDamageAmt(thing, 1, 'slashing', advantage)
-    addMana(thingId, mana);
-}
-MakeAvailableToHtml('addManaStab', addManaStab);
-
-function addManaStabAnother(button, thingId) {
-    let mana = 1;
-    if (HasFeat(thingId, "Fuel")) mana += 2;
-    addMana(thingId, mana);
-}
-
-MakeAvailableToHtml('addManaStabAnother', addManaStabAnother);
-
-function addManaGetHurtd(button, thingId) {
-    let mana = 1;
-    if (HasFeat(thingId, "Fuel")) mana += 2;
-    addMana(thingId, mana);
-}
-MakeAvailableToHtml('addManaGetHurtd', addManaGetHurtd);
-
-function addManaSpendIngredients(button, thingId) {
-    addMana(thingId, 1);
-}
-MakeAvailableToHtml('addManaSpendIngredients', addManaSpendIngredients);
-
-function AddManaWorldsOfPower(button, thingId) {
-    let thing = GetRegisteredThing(thingId);
-
-    addMana(thingId, KnowsWordsOfPower(thing));
-}
-MakeAvailableToHtml('AddManaWorldsOfPower', AddManaWorldsOfPower);
-
-function AddManaPlanarForces(button, thingId) {
-    let thing = GetRegisteredThing(thingId);
-    addMana(thingId, KnowsChannelling(thing));
-
-}
-MakeAvailableToHtml('AddManaPlanarForces', AddManaPlanarForces);
-
-function AddManaGotCritOrFumble(button, thingId) {
-    addMana(thingId, 1);
-}
-MakeAvailableToHtml('AddManaGotCritOrFumble', AddManaGotCritOrFumble);
-
-function resetManaButtons(parent) {
-    for (let i = 0; i < parent.children.length; i++) {
-        parent.children[i].disabled = false;
-
-    }
-}
-MakeAvailableToHtml('resetManaButtons', resetManaButtons);
-
-
-function CastSpell(thingId, ownerId, advantage) {
-    ;
-
-    let thing = GetRegisteredThing(thingId);
-    let owner = GetRegisteredThing(ownerId);
-    let cost = getModifiedManaCost(thing);
-    if (cost <= Number(owner.counters.manaInAura.cur)) {
-        addMana(ownerId, -getModifiedManaCost(thing));
-        let a = parseSheet(thing, "spell_chat", undefined, owner, undefined, undefined); // no w
-
-        sendChat(a);
-
-        let mv = thing.attackOrAmbushResult;
-        if (mv) {
-            let bonus;
-            let stat;
-            if (mv == "Attack") {
-                bonus = owner.stats.bravery;
-                stat = "bravery";
-            }
-            else {
-                bonus = owner.stats.cunning;
-                stat = "cunning";
-            }
-
-            rollMoveStat(ownerId, stat, mv, "", advantage,
-                undefined, undefined, undefined, "");
-
-
-
-        } else if (moves[thing.Move]) {
-            let mv = moves[thing.Move];
-            let stat = mv.stat[0]; // todo pick best for player
-            let bonus = owner.stats[stat];
-
-            rollMoveStat(ownerId, stat, mv, "", advantage,
-                undefined, undefined, undefined, "");
-
-
-
-        }
-
-
-
-    } else {
-
-        sendChat("Not Enough mana in your aura to cast this spell. ");
-
-    }
-
-
-
-
-}
-MakeAvailableToHtml('CastSpell', CastSpell);
 
 function changeAttackMode(thingId, toWhat) {
 
@@ -3625,3 +2889,78 @@ function AttackOrAmbushButton(thing, owner) {
 MakeAvailableToHtml('AttackOrAmbushButton', AttackOrAmbushButton);
 
 
+function FormatFeat(thing, owner) {
+
+    let name = thing.name;
+    let description = thing.description;
+    let type = thing.type || "";
+    let equipmentNeeded = thing.equipmentNeeded || "";
+    let moves = thing.moves || [];
+    let bonus = thing.bonus || "";
+    let uses = "";
+    let recovery = "";
+    let usesUsed = "";
+    let bonusAdvantage = thing.bonusAdvantage || "";
+
+    if (thing.uses) {
+        uses = thing.uses;
+        usesUsed = thing.uses_used || 0;
+        recovery = thing.recovery || "";
+
+    }
+    // if (complexBonuses) {
+    //     moves = [];
+
+
+    // }
+
+
+    // build a safe HTML string showing only non-empty fields
+    const esc = (s) => {
+        if (s === null || s === undefined) return "";
+        return String(s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    };
+
+    let parts = [];
+
+    if (name) parts.push('<div><strong>Name:</strong> ' + esc(name) + '</div>');
+    if (type) parts.push('<div><strong>Type:</strong> ' + esc(type) + '</div>');
+    if (description) parts.push('<div><strong>Description:</strong> ' + esc(description) + '</div>');
+    if (equipmentNeeded) parts.push('<div><strong>Equipment needed:</strong> ' + esc(equipmentNeeded) + '</div>');
+    if (bonus) parts.push('<div><strong>Bonus:</strong> ' + esc(bonus) + '</div>');
+    if (bonusAdvantage) parts.push('<div><strong>Bonus advantage:</strong> ' + esc(bonusAdvantage) + '</div>');
+
+    if (uses || usesUsed || recovery) {
+        let usesPart = '<div><strong>Uses:</strong> ' + (uses ? esc(uses) : '0');
+        if (usesUsed !== "" && usesUsed !== undefined) usesPart += ' <em>(used: ' + esc(usesUsed) + ')</em>';
+        if (recovery) usesPart += ' <span>Recovery: ' + esc(recovery) + '</span>';
+        usesPart += '</div>';
+        parts.push(usesPart);
+    }
+
+    if (Array.isArray(moves) && moves.length > 0) {
+        // join moves by comma, skip empty strings
+        const filtered = moves.filter(m => m !== null && m !== undefined && String(m).trim() !== "");
+        if (filtered.length > 0) parts.push('<div><strong>Moves:</strong> ' + esc(filtered.join(', ')) + '</div>');
+    }
+
+    if (parts.length === 0) return '<div class="feat">No information</div>';
+
+    return '<div class="feat">' + parts.join('') + '</div>';
+
+
+
+}
+MakeAvailableToParser('FormatFeat', FormatFeat);
+
+
+function featTypeMatches(thing, type) {
+
+    return (thing.type == type);
+}
+MakeAvailableToParser('featTypeMatches', featTypeMatches);

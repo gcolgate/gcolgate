@@ -1,0 +1,16 @@
+{
+  "type": "node",
+  "request": "launch",
+  "name": "Run npm start",
+  "runtimeExecutable": "npm",
+  "runtimeArgs": ["start"],
+  "port": 9229,
+  "configurations": [
+  {
+    "command": "npm start",
+    "name": "Run npm start",
+    "request": "launch",
+    "type": "node-terminal"
+  }
+  ]
+}

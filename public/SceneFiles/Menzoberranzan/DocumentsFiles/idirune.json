@@ -1,1 +1,22 @@
-{"type":"poi","id":"idirune","name":"idirune","text":"<span style=\"color: rgb(58, 58, 58); font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 14px; background-color: rgb(248, 248, 248);\">Narbondel is the only unshaped piece of stone within the boundaries of the city cavern, and it is used as a clock. At the end of every day, the&nbsp;</span><a href=\"https://forgottenrealms.fandom.com/wiki/Archmage_of_Menzoberranzan\" title=\"Archmage of Menzoberranzan\" style=\"box-sizing: inherit; border: 0px; margin: 0px; padding: 0px; vertical-align: initial; color: var(--theme-link-color--hover); transition: color 0.3s; line-height: inherit; font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 14px; background-color: rgb(248, 248, 248);\">Archmage of Menzoberranzan</a><span style=\"color: rgb(58, 58, 58); font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 14px; background-color: rgb(248, 248, 248);\">&nbsp;casts magic upon the stone to heat it. The heat from the Archmage's spell forms a band around it and moved up. When the end of the glow was at the pillar's top, the day is almost done.</span><span style=\"color: rgb(58, 58, 58); font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; background-color: rgb(248, 248, 248); font-size: 10px; text-wrap-mode: nowrap;\">&nbsp;</span><span style=\"color: rgb(58, 58, 58); font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 14px; background-color: rgb(248, 248, 248);\">When the pillar is completely dark, it is called \"Narbondel's Black Death\" (effectively midnight).</span> ","tooltip":"Narbondel, <i>the stalagmate clock </i>","tooltip_html":"","hud":"tooltip_hud","appearance":[{"name":"normal","portrait":{"image":"http://localhost:8000/images/Menzobarren/Narbondel.webp"},"token":{"image":"images/icons/pin.webp","color":"#f79f08"}}],"current_appearance":"normal"}
+{
+    "type": "poi",
+    "id": "idirune",
+    "name": "idirune",
+    "text": "<span style=\"color: rgb(58, 58, 58); font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 14px; background-color: rgb(248, 248, 248);\">Narbondel is the only unshaped piece of stone within the boundaries of the city cavern, and it is used as a clock. At the end of every day, the&nbsp;</span><a href=\"https://forgottenrealms.fandom.com/wiki/Archmage_of_Menzoberranzan\" title=\"Archmage of Menzoberranzan\" style=\"box-sizing: inherit; border: 0px; margin: 0px; padding: 0px; vertical-align: initial; color: var(--theme-link-color--hover); transition: color 0.3s; line-height: inherit; font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 14px; background-color: rgb(248, 248, 248);\">Archmage of Menzoberranzan</a><span style=\"color: rgb(58, 58, 58); font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 14px; background-color: rgb(248, 248, 248);\">&nbsp;casts magic upon the stone to heat it. The heat from the Archmage's spell forms a band around it and moved up. When the end of the glow was at the pillar's top, the day is almost done.</span><span style=\"color: rgb(58, 58, 58); font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; background-color: rgb(248, 248, 248); font-size: 10px; text-wrap-mode: nowrap;\">&nbsp;</span><span style=\"color: rgb(58, 58, 58); font-family: &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 14px; background-color: rgb(248, 248, 248);\">When the pillar is completely dark, it is called \"Narbondel's Black Death\" (effectively midnight).</span> ",
+    "tooltip": "Narbondel, <i>the stalagmate clock </i>",
+    "tooltip_html": "",
+    "hud": "tooltip_hud",
+    "appearance": [
+        {
+            "name": "normal",
+            "portrait": {
+                "img": "http://localhost:8000/images/Menzobarren/Narbondel.webp"
+            },
+            "token": {
+                "img": "images/icons/pin.webp",
+                "color": "#f79f08"
+            }
+        }
+    ],
+    "current_appearance": "normal"
+}

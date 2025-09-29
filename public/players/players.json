@@ -4,6 +4,10 @@
         "permissions": "GM"
     },
     {
+        "name": "Dave",
+        "permissions": "Player"
+    },
+    {
         "name": "Mike",
         "permissions": "Player"
     }

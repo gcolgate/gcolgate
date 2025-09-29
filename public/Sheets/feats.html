@@ -14,7 +14,10 @@
           margin:8px;
           line-height: 26.1333px;
           text-transform: lowercase">
+      { FormatFeat(thing, owner)}
     </div>
-    <div>{thing.description}</div>
+
+    { ( owner && thing ? "<span>" + formatRemoveButton(owner.id, thing.id) + "</span>" : '')}
+
   </div>
 </div>

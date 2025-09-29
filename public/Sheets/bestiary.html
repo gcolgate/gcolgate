@@ -2,7 +2,7 @@
   <div class="body">
     <div>
       <h1 class="npcheader">
-        { Editable(thing,
+        { await Editable(thing,
         "thing.name",
         "itemsetheader npcTitleInput")} </h1>
     </div>
@@ -19,14 +19,11 @@
       {thing.traits ? thing.traits.size : "medium" }<span> {get5eDetails(thing)} </span>
     </div>
     <div class="grid-container">
-      <div> <span class="npcBold">Steel </span>{ Number(thing.steel) }
+      <div> <span class="npcBold">Offense Bonus </span>{ Number(thing.steel) }
       </div>
-      <div><span class="npcBold">Armor Class
+      <div><span class="npcBold">Defense Bonus
         </span>
-        {GetArmorClass(thing) +
-        (thing.attributes.ac.flat ? " " +thing.attributes.ac.calc +" "+ Editable(thing,
-        "thing.attributes.ac.flat",
-        "numberinput"): "")}
+        {GetArmorClass(thing)}
       </div>
 
       <div><span class="npcBold">Hit Points </span>{Editable(thing,
@@ -53,7 +50,7 @@
         </div>
         {thing?.attributes?.movement?.hover ? '<div>Can Hover</div>' : ""}
       </div>
-      { drawDnDItems(thing) }
+      { await drawDnDItems(thing) }
       <div>
         <div style="display: flex;
               color: rgb(88, 23, 13);

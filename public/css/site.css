@@ -239,19 +239,6 @@
      background-color: beige;
  }
 
- .fourcolumncareers {
-     display: grid;
-     grid-template-columns: 40% 25% 25% 10%;
-     background-color: beige;
-     width: 100%;
- }
-
- .fourcolumncareers2 {
-     display: grid;
-     grid-template-columns: 10% 40% 25% 25%;
-     background-color: beige;
-     width: 100%;
- }
 
  .threecolumnsunevenfull {
      display: grid;

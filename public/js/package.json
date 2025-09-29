@@ -2,8 +2,7 @@
     "name": "vttClient",
     "version": "1.0.0",
     "description": "Gil's vtt",
-    "main": "main.js",
-    "type": "module",
+    "main": "client_main.js",
     "scripts": {
         "test": "nodemon convert.js",
         "start": "nodemon vtt.js"

@@ -9,7 +9,9 @@
       </a>
       { (thing.NeedsActivation ? ActivationButton(chat_id, owner, thing.name,
       chat.featsChecked[thing.name] == true ? "checked":"") :
-      "")}
+      "") }
+      { (thing.uses ? "<div class='inline'> Uses: " + thing.uses - thing.uses_used + "/" + thing.uses + "</div>" : "")
+      }
     </div>
 
   </div>

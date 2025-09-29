@@ -29,7 +29,7 @@ for row in spells.index:
     print("tag_path " + tag_path)
     tag_f = open(tag_path, "w")
 
-    tag_f.write('{ "file": "CompendiumFiles/' + file + '",')
+    tag_f.write('{ "id": "CompendiumFiles/' + file + '",')
     tag_f.write('"page": "spell",')
     tag_f.write(' "type": "spell",')
     tag_f.write(' "name": "' + spells["Name"][row].strip() + '",')

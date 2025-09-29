@@ -1,3 +1,4 @@
+import { MakeAvailableToParser } from './characters.js';
 export async function fetchJson(file) {
 
     let raw = await fetch(file, {
@@ -9,3 +10,4 @@ export async function fetchJson(file) {
     return await raw.json();
 
 }
+MakeAvailableToParser('fetchJson', fetchJson);

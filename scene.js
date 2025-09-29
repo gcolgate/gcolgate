@@ -75,8 +75,13 @@ async function loadScene(scene) {
     scene.loaded == "InProgress";
     //  try {
     let filepath = getSceneFilePath(scene);
-
-    let result = (await fs.readFile(filepath)).toString();
+    let result = null;
+    try {
+        result = (await fs.readFile(filepath)).toString();
+    } catch (e) {
+        console.log("Error loading scene file ", filepath, e);
+        return;
+    }
 
     let info = jsonHandling.ParseJson(filepath, result); // for eval to work we need a thing
 
@@ -89,13 +94,17 @@ async function loadScene(scene) {
     for (let i = 0; i < dir.length; i++) {
 
         if (dir[i].endsWith(".json")) {
+            try {
+                let result = (await fs.readFile(path.join(__dirname, 'public', 'SceneFiles',
+                    scene.directory, dir[i]))).toString();
+                let tile = jsonHandling.ParseJson(dir[i], result); // for eval to work we need a thing
+                tile.tile_id = (dir[i]);
 
-            let result = (await fs.readFile(path.join(__dirname, 'public', 'SceneFiles',
-                scene.directory, dir[i]))).toString();
-            let tile = jsonHandling.ParseJson(dir[i], result); // for eval to work we need a thing
-            tile.tile_id = (dir[i]);
-
-            scene.tiles[tile.tile_id] = tile;
+                scene.tiles[tile.tile_id] = tile;
+            } catch (e) {
+                console.log("Error loading scene tile file ", path.join(__dirname, 'public', 'SceneFiles',
+                    scene.directory, dir[i]), e);
+            }
         }
     }
     loadedScenes[scene] = true;
